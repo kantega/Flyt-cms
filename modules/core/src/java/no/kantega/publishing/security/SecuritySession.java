@@ -96,23 +96,23 @@ public class SecuritySession {
 
         // If your is now logged in or has changed identity, must create new session
         if (identity != null && (currentIdentity == null || !identity.getUserId().equals(currentIdentity.getUserId()) || !identity.getDomain().equals(currentIdentity.getDomain()))) {
-            session = createNewUserInstance(identity);
-            try {
-                session.handlePostLogin(request);
-            } catch (ConfigurationException e) {
-                throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
-            }
-            // Innloggede brukere har lengre sesjonstimeout
-            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
-                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
-            }
-            request.getSession(true).setAttribute("aksess.securitySession", session);
+                session = createNewUserInstance(identity);
+                try {
+                    session.handlePostLogin(request);
+                } catch (ConfigurationException e) {
+                    throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
+                }
+                // Innloggede brukere har lengre sesjonstimeout
+                if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
+                    request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
+                }
+                request.getSession(true).setAttribute("aksess.securitySession", session);
 
-        } else if (identity == null && currentIdentity != null) {
-            // Bruker er utlogget via ekstern tjeneste - lag blank sesjon           
-            session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
-            request.getSession(true).removeAttribute("adminMode");
+            } else if (identity == null && currentIdentity != null) {
+                // Bruker er utlogget via ekstern tjeneste - lag blank sesjon
+                session = createNewInstance();
+                request.getSession(true).setAttribute("aksess.securitySession", session);
+                request.getSession(true).removeAttribute("adminMode");
         }
 
         return session;

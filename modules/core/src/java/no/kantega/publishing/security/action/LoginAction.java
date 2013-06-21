@@ -18,9 +18,11 @@ package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
+import no.kantega.commons.util.Base64;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
 import no.kantega.publishing.spring.RootContext;
@@ -36,11 +38,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LoginAction extends AbstractLoginAction {
 
@@ -49,18 +56,22 @@ public class LoginAction extends AbstractLoginAction {
 
     @Autowired
     private EventLog eventLog;
+
+    @Autowired
+    private RememberMeHandler rememberMeHandler;
     private String loginView = null;
 
     private boolean rolesExists = false;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("j_username");
-        String domain   = request.getParameter("j_domain");
+        String domain = request.getParameter("j_domain");
         String password = request.getParameter("j_password");
         String redirect = request.getParameter("redirect");
+        String rememberMe = request.getParameter("remember_me");
 
         if (redirect == null || redirect.length() == 0) {
-            redirect =  Aksess.getContextPath();
+            redirect = Aksess.getContextPath();
         }
 
         // If login page is secure, redirect to secure page after logging in
@@ -82,12 +93,11 @@ public class LoginAction extends AbstractLoginAction {
             model.put("allowPasswordReset", true);
         }
 
-
         if (passwordManager == null) {
             throw new ConfigurationException("PasswordManager == null");
         }
 
-        if (username != null && password != null) {
+        if (username != null && password != null)  {
             DefaultIdentity identity = new DefaultIdentity();
             identity.setUserId(username);
             identity.setDomain(domain);
@@ -102,7 +112,7 @@ public class LoginAction extends AbstractLoginAction {
                     Log.info(this.getClass().getName(), "Too many attempts. User is blocked from login:" + username, null, null);
                 } else {
                     model.put("blockedIP", Boolean.TRUE);
-                    Log.info(this.getClass().getName(), "Too many attempts. IP-adress is blocked from login:" + request.getRemoteAddr(), null, null);
+                    Log.info(this.getClass().getName(), "Too many attempts. IP-address is blocked from login:" + request.getRemoteAddr(), null, null);
                 }
             } else {
                 if (passwordManager.verifyPassword(identity, password)) {
@@ -112,6 +122,10 @@ public class LoginAction extends AbstractLoginAction {
 
                     HttpSession session = request.getSession(true);
                     IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
+
+                    if (rememberMe != null && rememberMe.equals("on")) {
+                        response = rememberMeHandler.setRememberMe(response, username, domain);
+                    }
 
                     // Set session logon info
                     session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
@@ -130,8 +144,31 @@ public class LoginAction extends AbstractLoginAction {
                     model.put("loginfailed", Boolean.TRUE);
                 }
             }
+        } else {
+            boolean rememberMeEnabled = Aksess.getConfiguration().getBoolean("security.login.rememberme.enabled", false);
+            String[] usernameAndDomain = rememberMeHandler.hasRememberMe(request);
+            if (rememberMeEnabled && usernameAndDomain != null) {
+                username = usernameAndDomain[0];
+                domain = usernameAndDomain[1];
+
+                // Register successful login
+                userLoginRestrictor.registerLoginAttempt(username, true);
+                ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), true);
+
+                HttpSession session = request.getSession(true);
+                IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
+
+                // Set session logon info
+                session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
+                session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_DOMAIN, domain);
+
+                // Finish login by getting instance
+                SecuritySession.getInstance(request);
+
+                return new ModelAndView(new RedirectView(redirect));
+            }
         }
-       
+
         model.put("redirect", redirect);
         model.put("username", username);
         model.put("loginLayout", getLoginLayout());
@@ -156,7 +193,7 @@ public class LoginAction extends AbstractLoginAction {
         if (rolesExists) {
             return true;
         }
-        
+
         ApplicationContext context = RootContext.getInstance();
         Map managers = context.getBeansOfType(RoleManager.class);
         if (managers != null) {
