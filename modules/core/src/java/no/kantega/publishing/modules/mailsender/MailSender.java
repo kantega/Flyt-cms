@@ -190,7 +190,7 @@ public class MailSender {
      * @return The result of the merge.
      * @throws SystemException if template handling fails.
      */
-    public static String createStringFromVelocityTemplate(String templateFile, Map parameters) throws SystemException {
+    public static String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) throws SystemException {
         try {
             Velocity.init();
 
@@ -211,7 +211,7 @@ public class MailSender {
 
             return textWriter.toString();
         } catch (Exception e) {
-            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity", e);
+            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }
     }
 

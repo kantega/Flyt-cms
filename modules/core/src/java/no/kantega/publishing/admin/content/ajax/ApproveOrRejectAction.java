@@ -84,7 +84,7 @@ public class ApproveOrRejectAction implements Controller {
             title = LocaleLabels.getLabel("aksess.reject.notitle", Aksess.getDefaultLocale());
         }
 
-        Map<String, String> param = new HashMap<String, String>();
+        Map<String, Object> param = new HashMap<>();
         param.put("contenturl", contenturl);
         param.put("title", title);
         param.put("note", HtmlUtils.htmlEscape(note));
