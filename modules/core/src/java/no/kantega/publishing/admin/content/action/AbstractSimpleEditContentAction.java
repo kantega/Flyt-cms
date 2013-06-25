@@ -24,6 +24,8 @@ import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -33,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public abstract class AbstractSimpleEditContentAction implements Controller {
+    private static final Logger log = LoggerFactory.getLogger(AbstractSimpleEditContentAction.class);
 
     private String view;
 
@@ -70,14 +73,15 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         } else if (param.getInt("parentId") != -1) {
             return createNewPage(request);
         } else {
-            throw new InvalidParameterException("", "");
+            log.error("Missing thisId and parentId parameter");
+            throw new InvalidParameterException("Missing thisId and parentId parameter");
         }
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SecuritySession securitySession = getSecuritySession(request);
         if (securitySession == null || !securitySession.isLoggedIn()) {
-            throw new NotAuthorizedException("Not logged in", this.getClass().getName());
+            throw new NotAuthorizedException("Not logged in");
         }
         
         if (request.getMethod().equalsIgnoreCase("POST")) {
@@ -95,7 +99,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                 request.setAttribute(AdminRequestParameters.MINI_ADMIN_MODE, true);
                 return showEditForm(request, content);
             } else {
-                throw new NotAuthorizedException("Not authorized", this.getClass().getName());
+                throw new NotAuthorizedException("Not authorized");
             }
         }
     }
@@ -141,7 +145,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         return new ModelAndView(getView(), null);
     }
 
-    private ModelAndView handleSubmit(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
+    private ModelAndView handleSubmit(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, NotAuthorizedException, ObjectLockedException, ConfigurationException {
         HttpSession session = request.getSession();
         RequestParameters param = new RequestParameters(request);
         ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
@@ -206,7 +210,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         try {
             EditContentHelper.addRepeaterRow(content, addRepeaterRow, AttributeDataType.CONTENT_DATA);
         } catch (InvalidTemplateException e) {
-            throw new SystemException("Failed adding repeater rows", this.getClass().getName(), e);
+            throw new SystemException("Failed adding repeater rows", e);
         }
     }
 

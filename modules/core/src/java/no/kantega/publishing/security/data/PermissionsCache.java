@@ -24,14 +24,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PermissionsCache {
     private static final Logger log = LoggerFactory.getLogger(PermissionsCache.class);
     private static final String SOURCE = "aksess.PermissionsCache";
 
-    private static final HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
+    private static final Map<String, List<Permission>> permissions = new ConcurrentHashMap<>();
     private static Date lastUpdate = null;
 
     public static List<Permission> getPermissions(BaseObject object) throws SystemException {
@@ -48,7 +49,7 @@ public class PermissionsCache {
         synchronized (permissions) {
             lastUpdate  = new Date();
 
-            HashMap<String, List<Permission>> tmp = PermissionsAO.getPermissionMap();
+            Map<String, List<Permission>> tmp = PermissionsAO.getPermissionMap();
             permissions.clear();
             permissions.putAll(tmp);
         }

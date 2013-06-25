@@ -95,7 +95,7 @@ public class ContentRequestDispatcher {
 
             }
         } else {
-            throw new ContentNotFoundException("", this.getClass().getName());
+            throw new ContentNotFoundException(content.toString());
         }
     }
 
@@ -106,7 +106,7 @@ public class ContentRequestDispatcher {
 
         DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
         if (dt == null) {
-            throw new SystemException("DisplayTemplate not found. Check if displaytemplate with databaseid=" + content.getDisplayTemplateId() + " has been deleted from aksess-templateconfig.xml", getClass().getName(), null);
+            throw new SystemException("DisplayTemplate not found. Check if displaytemplate with databaseid=" + content.getDisplayTemplateId() + " has been deleted from aksess-templateconfig.xml", null);
         }
 
         DeviceCategory deviceCategory = deviceCategoryDetector.getUserAgentDeviceCategory(request);

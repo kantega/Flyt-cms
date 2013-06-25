@@ -105,7 +105,7 @@ public class MailSender {
             MimeBodyPart bp = createMimeBodyPartFromStringMessage(content);
             send(from, to, subject, new MimeBodyPart[]{bp});
         } catch (SystemException e) {
-            throw new SystemException("Feil ved utsending av epost", SOURCE, e);
+            throw new SystemException("Feil ved utsending av epost", e);
         }
 
     }
@@ -127,7 +127,7 @@ public class MailSender {
             Configuration config = Aksess.getConfiguration();
             String host = config.getString("mail.host");
             if (host == null) {
-                throw new ConfigurationException("mail.host", SOURCE);
+                throw new ConfigurationException("mail.host");
             }
 
             // I noen tilfeller ønsker vi at all epost skal gå til en testadresse
@@ -180,7 +180,7 @@ public class MailSender {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
             EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
             eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
-            throw new SystemException("Error sending email to : " + to + " with subject " + subject, SOURCE, e);
+            throw new SystemException("Error sending email to : " + to + " with subject " + subject, e);
         }
     }
 
@@ -213,7 +213,7 @@ public class MailSender {
 
             return textWriter.toString();
         } catch (Exception e) {
-            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
+            throw new SystemException("Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }
     }
 
@@ -235,7 +235,7 @@ public class MailSender {
             }
             return bp;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra string", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra string", e);
         }
     }
 
@@ -262,7 +262,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra binærfil", e);
         }
     }
 
@@ -288,7 +288,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra data[]", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra data[]", e);
         }
     }
 
@@ -314,7 +314,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra binærfil", e);
         }
     }
 }

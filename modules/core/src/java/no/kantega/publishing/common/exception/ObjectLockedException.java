@@ -20,7 +20,7 @@ package no.kantega.publishing.common.exception;
  *
  */
 public class ObjectLockedException extends no.kantega.commons.exception.KantegaException {
-    public ObjectLockedException(String message, String source) {
-        super(message, source, null);
+    public ObjectLockedException(String message) {
+        super(message, null);
     }
 }

@@ -65,7 +65,7 @@ public class EditContentHelper {
      */
     public static Content createContent(SecuritySession securitySession, ContentCreateParameters param) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException {
         if (securitySession == null || !securitySession.isLoggedIn()) {
-            throw new NotAuthorizedException("Not logged in", SOURCE);
+            throw new NotAuthorizedException("Not logged in");
         }
         ContentManagementService aksessService = new ContentManagementService(securitySession);
 
@@ -359,7 +359,7 @@ public class EditContentHelper {
             }
 
             if (titleField == null) {
-                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
+                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), null);
             }
         }
     }
@@ -411,9 +411,9 @@ public class EditContentHelper {
         try {
             attribute = attributeFactory.newAttribute(type);
         } catch (ClassNotFoundException e) {
-            throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
+            throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), null);
         } catch (Exception e) {
-            throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+            throw new SystemException("Feil ved oppretting av klasse for attributt" + type, e);
         }
 
         attribute.setName(name);

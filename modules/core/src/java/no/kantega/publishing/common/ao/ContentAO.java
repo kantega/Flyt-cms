@@ -119,7 +119,7 @@ public class ContentAO {
             st.execute();
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } 
         return parent;
     }
@@ -195,7 +195,7 @@ public class ContentAO {
 
 
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -212,7 +212,7 @@ public class ContentAO {
             }
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return contentVersions;
     }
@@ -331,7 +331,7 @@ public class ContentAO {
             return content;
 
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -356,7 +356,7 @@ public class ContentAO {
                 content = ContentAO.getContent(contentIdentifier, true);
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return content;
@@ -377,7 +377,7 @@ public class ContentAO {
                 title = rs.getString("title");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return title;
 
@@ -492,7 +492,7 @@ public class ContentAO {
             }
 
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return workList;
     }
@@ -516,7 +516,7 @@ public class ContentAO {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return contentList;
     }
@@ -591,7 +591,7 @@ public class ContentAO {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return contentList;
     }
@@ -632,7 +632,7 @@ public class ContentAO {
             rs.close();
 
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -646,7 +646,7 @@ public class ContentAO {
             parentCid.setLanguage(cid.getLanguage());
             return parentCid;
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -791,7 +791,7 @@ public class ContentAO {
                     log.error("Error rolling back transaction", e);
                 }
             }
-            throw new SystemException("Feil ved lagring", SOURCE, e);
+            throw new SystemException("Feil ved lagring", e);
         } finally {
             try {
                 if (c != null) {
@@ -978,7 +978,7 @@ public class ContentAO {
                 lockSt.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
                 lockSt.executeUpdate();
             } catch (SQLException e) {
-                throw new TransactionLockException(SOURCE, "Error locking contentId:" + contentId, e);
+                throw new TransactionLockException("Error locking contentId:" + contentId, e);
             }
         }
     }
@@ -1060,7 +1060,7 @@ public class ContentAO {
             st.close();
 
         } catch (SQLException e) {
-            throw new SystemException("Feil ved lagring", SOURCE, e);
+            throw new SystemException("Feil ved lagring", e);
         }
     }
 
@@ -1110,7 +1110,7 @@ public class ContentAO {
             }
 
         } catch (SQLException e) {
-            throw new SystemException("Feil ved lagring", SOURCE, e);
+            throw new SystemException("Feil ved lagring", e);
         }
 
         Content content = ContentAO.getContent(cid, false);
@@ -1128,7 +1128,7 @@ public class ContentAO {
                     attributeSaver.persistAttribute(c, content, attr);
                 } catch (SQLException e) {
                     log.error("Error persisting attribute " + attr, e);
-                    throw new SystemException("Error saving attribute", this.getClass().getName(), e);
+                    throw new SystemException("Error saving attribute", e);
                 }
             }
         });
@@ -1148,7 +1148,7 @@ public class ContentAO {
                 return rs.getInt("ContentId");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1166,7 +1166,7 @@ public class ContentAO {
                 return rs.getInt("ContentId");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1205,7 +1205,7 @@ public class ContentAO {
                 return rs.getInt("ContentId");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1221,7 +1221,7 @@ public class ContentAO {
             tmp.close();
 
         } catch (SQLException e) {
-            throw new SystemException("Feil ved setting av visningsstatus", SOURCE, e);
+            throw new SystemException("Feil ved setting av visningsstatus", e);
         }
     }
 
@@ -1234,7 +1234,7 @@ public class ContentAO {
             p.executeUpdate();
 
         } catch (SQLException e) {
-            throw new SystemException("Feil ved setting av NumberOfNotes", SOURCE, e);
+            throw new SystemException("Feil ved setting av NumberOfNotes", e);
         }
     }
 
@@ -1260,7 +1260,7 @@ public class ContentAO {
             }
             return ucclist;
         } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
+            throw new SystemException("SQL error",e);
         }
     }
 
@@ -1276,7 +1276,7 @@ public class ContentAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1292,7 +1292,7 @@ public class ContentAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1306,7 +1306,7 @@ public class ContentAO {
                 return rs.getInt("count");
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL exception: " +e.getMessage(), SOURCE, e);
+            throw new SystemException("SQL exception: " +e.getMessage(), e);
         }
     }
 
@@ -1394,7 +1394,7 @@ public class ContentAO {
                 p.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL error",SOURCE, e);
+            throw new SystemException("SQL error",e);
         }
     }
 

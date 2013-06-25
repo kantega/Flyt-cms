@@ -93,11 +93,11 @@ public abstract class Attribute {
         if (config != null) {
             name = config.getAttribute("name");
             if (name == null) {
-                throw new InvalidTemplateException("name mangler i mal fil", "", null);
+                throw new InvalidTemplateException("name mangler i mal fil", null);
             }
 
             if (name.contains("[") || name.contains("]")) {
-                throw new InvalidTemplateException("[ og ] er ikke tillatt i navn på attributter", "", null);
+                throw new InvalidTemplateException("[ og ] er ikke tillatt i navn på attributter", null);
             }
 
             editable = !(config.getAttribute("editable").equals("false"));
@@ -170,7 +170,7 @@ public abstract class Attribute {
                     try {
                         value = IOUtils.toString(resource.getInputStream());
                     } catch (IOException e) {
-                        throw new SystemException("", "Feil ved lesing av default fil:" + file, e);
+                        throw new SystemException("Feil ved lesing av default fil:" + file, e);
                     }
                 } else {
                     if (model != null && model.size() > 0) {
@@ -313,9 +313,9 @@ public abstract class Attribute {
         this.tabIndex = tabIndex;
     }
 
-    public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
-        if (mandatory && editable && (value == null || value.length() == 0)) {
-            Map<String, Object> objects = new HashMap<String, Object>();
+    public  void validate(ValidationErrors errors) {
+        if (mandatory && editable && isNotBlank(value)) {
+            Map<String, Object> objects = new HashMap<>();
             objects.put("field", title);
             errors.add(name, "aksess.feil.mandatoryfield", objects);
         }

@@ -33,7 +33,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -99,12 +98,8 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                 }
             } catch (IllegalStateException e) {
                 log.info( "Uploaded file was discarded, has been deleted");
-            } catch (FileNotFoundException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
-            } catch (IOException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
-            } catch (InvalidImageFormatException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
+            } catch (IOException | InvalidImageFormatException e) {
+                throw new SystemException("Feil ved filvedlegg", e);
             }
         }
 

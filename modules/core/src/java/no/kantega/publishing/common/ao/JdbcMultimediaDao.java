@@ -42,7 +42,7 @@ public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
         // Check if there are any children
         int noChildren = getJdbcTemplate().queryForInt("select COUNT(id) from multimedia where ParentId = ?", id);
         if (noChildren > 0) {
-            throw new ObjectInUseException(this.getClass().getSimpleName(), "");
+            throw new ObjectInUseException("Multimedia with id " + id + " is in use");
         }
 
         // Get parent id

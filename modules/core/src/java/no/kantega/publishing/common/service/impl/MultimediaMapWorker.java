@@ -82,7 +82,7 @@ public class MultimediaMapWorker {
             }
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {

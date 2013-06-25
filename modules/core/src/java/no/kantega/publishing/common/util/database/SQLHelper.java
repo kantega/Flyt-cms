@@ -16,9 +16,6 @@
 
 package no.kantega.publishing.common.util.database;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +26,6 @@ import java.util.Date;
  *
  */
 public class SQLHelper {
-    private static final Logger log = LoggerFactory.getLogger(SQLHelper.class);
     public static ResultSet getResultSet(Connection c, String query) throws SQLException {
         return getResultSet(c, query, null);
     }

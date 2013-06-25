@@ -104,7 +104,7 @@ public class PaginateCollectionTag extends TagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

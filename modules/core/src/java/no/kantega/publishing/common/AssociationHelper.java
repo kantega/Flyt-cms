@@ -134,7 +134,7 @@ public class AssociationHelper {
             st.close();
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return path;

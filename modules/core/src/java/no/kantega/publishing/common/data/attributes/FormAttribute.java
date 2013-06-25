@@ -33,7 +33,6 @@ import java.util.List;
 @Deprecated
 public class FormAttribute extends ListAttribute {
     private static final Logger log = LoggerFactory.getLogger(FormAttribute.class);
-    private static final String SOURCE = "aksess.FormAttribute";
 
     public String getRenderer() {
         return "form";

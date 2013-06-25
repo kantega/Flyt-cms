@@ -49,7 +49,7 @@ public class ScheduleLogAO {
             rs.close();
 
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
+            throw new SystemException("SQL feil", e);
         } finally {
 
             try {
@@ -89,7 +89,7 @@ public class ScheduleLogAO {
                 st.execute();
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
+            throw new SystemException("SQL feil", e);
         } finally {
 
             try {

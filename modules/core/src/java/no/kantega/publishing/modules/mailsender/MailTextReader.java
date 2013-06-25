@@ -18,10 +18,9 @@ package no.kantega.publishing.modules.mailsender;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.spring.RootContext;
-
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
 import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 
 /**
@@ -39,7 +38,7 @@ public class MailTextReader {
 
             String content = IOUtils.toString(resource.getInputStream());
 
-            StringBuffer result = new StringBuffer();
+            StringBuilder result = new StringBuilder();
             int count = 0;
             char[] chars = content.toCharArray();
             for (int j = 0; j < chars.length; j++) {
@@ -54,7 +53,7 @@ public class MailTextReader {
 
             return result.toString();
         } catch (Exception e) {
-            throw new SystemException("Feil ved lesing av " + filename, SOURCE, e);
+            throw new SystemException("Feil ved lesing av " + filename, e);
         }
     }
 }

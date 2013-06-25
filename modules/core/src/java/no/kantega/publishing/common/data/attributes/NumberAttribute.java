@@ -17,12 +17,12 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.util.RegExp;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Collections;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Attribute representing an number.
@@ -38,14 +38,14 @@ public class NumberAttribute extends Attribute {
         super(name, value.toString());
     }
 
-    public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+    public void validate(ValidationErrors errors) {
         super.validate(errors);
         if (errors.getLength() > 0) {
             return;
         }
 
-        if ((value != null) && (value.length() > 0) && (regexp != null) && (regexp.length() > 0)) {
-            if (!RegExp.matches(regexp, value)) {
+        if (isNotBlank(value) && isNotBlank(regexp)) {
+            if (!value.matches(regexp)) {
                 errors.add(name, "aksess.feil.invalidnumber", Collections.<String, Object>singletonMap("field", title));
             }
         }

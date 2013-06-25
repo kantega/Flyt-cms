@@ -73,7 +73,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
             sendEmail(formSubmission, from, to, param);
         } catch (Exception e) {
             eventLog.log("System", null, Event.FAILED_FORM_SUBMISSION, "Form Id: " + formSubmission.getForm().getId(), null);
-            log.error("", e);
+            log.error("Delivering form by email failed. Form Id: " + formSubmission.getForm().getId(), e);
         }
 
     }

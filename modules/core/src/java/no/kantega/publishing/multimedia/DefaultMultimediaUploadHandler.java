@@ -73,7 +73,7 @@ public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
                 try {
                     multimedia = imageEditor.resizeMultimedia(multimedia, Aksess.getMaxMediaWidth(), Aksess.getMaxMediaHeight());
                 } catch (IOException e) {
-                    throw new SystemException(this.getClass().getName(), "IOException", e);
+                    throw new SystemException("IOException", e);
                 }
             }
         }

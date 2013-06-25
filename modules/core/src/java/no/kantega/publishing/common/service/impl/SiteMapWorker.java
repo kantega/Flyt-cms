@@ -184,7 +184,7 @@ public class SiteMapWorker {
             }
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {
@@ -315,7 +315,7 @@ public class SiteMapWorker {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {

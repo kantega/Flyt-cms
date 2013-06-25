@@ -61,12 +61,12 @@ public class EditContentAction implements Controller {
                     // Database is empty, create homepage
                     int templateId = SQLHelper.getInt(c, "select DisplayTemplateId from displaytemplates where urlfullview = '" + Aksess.getStartPage() + "'", "DisplayTemplateId");
                     if (templateId == -1) {
-                        throw new MissingTemplateException(Aksess.getStartPage(), SOURCE);
+                        throw new MissingTemplateException(Aksess.getStartPage());
                     }
 
                     return new ModelAndView(new RedirectView("SelectTemplate.action?parentId=0&templateId=dt;" + templateId));
                 } else {
-                    throw new ContentNotFoundException("-1", SOURCE);
+                    throw new ContentNotFoundException("-1");
                 }
             } finally {
                 if (c != null) {

@@ -37,7 +37,6 @@ import java.util.*;
  */
 public class TemplateConfigurationCache {
     private static final Logger log = LoggerFactory.getLogger(TemplateConfigurationCache.class);
-    private static final String SOURCE = "aksess.TemplateConfigurationCache";
 
     private Date lastUpdate;
     private TemplateConfiguration configuration;

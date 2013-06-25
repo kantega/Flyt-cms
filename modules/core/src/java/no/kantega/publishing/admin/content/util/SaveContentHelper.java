@@ -19,7 +19,6 @@ package no.kantega.publishing.admin.content.util;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
@@ -48,7 +47,7 @@ public class SaveContentHelper {
     }
 
 
-    public ValidationErrors getHttpParameters(final ValidationErrors errors) throws RegExpSyntaxException {
+    public ValidationErrors getHttpParameters(final ValidationErrors errors){
         final RequestParameters param = new RequestParameters(request, "utf-8");
 
         content.doForEachAttribute(attributeType, new AttributeHandler() {
@@ -69,11 +68,8 @@ public class SaveContentHelper {
                         }
                     }
                 }
-                try {
-                    attr.validate(errors);
-                } catch (RegExpSyntaxException e) {
-                    log.error("", e);
-                }
+                attr.validate(errors);
+
             }
         });
 

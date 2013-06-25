@@ -16,13 +16,8 @@
 
 package no.kantega.publishing.common.exception;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Apr 29, 2008
- * Time: 3:57:38 PM
- */
 public class MultipleEditorInstancesException  extends no.kantega.commons.exception.KantegaException {
     public MultipleEditorInstancesException() {
-        super("Brukeren har flere vinduer med redigering åpne", "", null);
+        super("Brukeren har flere vinduer med redigering åpne", null);
     }
 }

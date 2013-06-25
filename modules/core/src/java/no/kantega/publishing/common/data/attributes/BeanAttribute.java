@@ -51,13 +51,13 @@ public class BeanAttribute extends ListAttribute {
         super.setConfig(config, model);
         String clazz = config.getAttribute("class");
         if(isBlank(clazz)) {
-            throw new InvalidTemplateException("Attributtet class må være satt for type=bean", "", null);
+            throw new InvalidTemplateException("Attributtet class må være satt for type=bean",null);
         }
 
         try {
             this.clazz = Class.forName(clazz);
         } catch (ClassNotFoundException e) {
-            throw new InvalidTemplateException("Finner ikke klassen " + clazz, "", null);
+            throw new InvalidTemplateException("Finner ikke klassen " + clazz, null);
         }
     }
 }

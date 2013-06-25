@@ -47,11 +47,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 27, 2009
- * Time: 12:38:50 PM
- */
 public class CreateInitialUserController extends AbstractController {
     public static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
     public static String CONFIRM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserconfirm.jsp";

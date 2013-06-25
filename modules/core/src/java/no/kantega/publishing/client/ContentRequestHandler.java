@@ -100,7 +100,7 @@ public class ContentRequestHandler extends AbstractController {
                 if (content != null) {
                     // Send NOT_FOUND if expired or not published
                     if(!isAdminMode && (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE && content.getVisibilityStatus() != ContentVisibilityStatus.ARCHIVED)) {
-                        throw new ContentNotFoundException("", SOURCE);
+                        throw new ContentNotFoundException(cid.toString());
                     }
                     if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
                         return null;
@@ -112,7 +112,7 @@ public class ContentRequestHandler extends AbstractController {
                     logTimeSpent(start, content);
                 } else {
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    throw new ContentNotFoundException(SOURCE, "");
+                    throw new ContentNotFoundException(cid.toString());
                 }
             } catch (NotAuthorizedException e) {
                 // Check if user is logged in

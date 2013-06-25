@@ -36,10 +36,7 @@ public class MultimediaImageMapAO {
      * @throws SystemException -
      */
     public static MultimediaImageMap loadImageMap(int multimediaId) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ResultSet rs = SQLHelper.getResultSet(c, "SELECT Coords, Url, AltName, NewWindow from multimediaimagemap WHERE MultimediaId = " + multimediaId + " ORDER BY Id");
 
             MultimediaImageMap mim = new MultimediaImageMap();
@@ -51,15 +48,7 @@ public class MultimediaImageMapAO {
             return mim;
         } catch (SQLException e) {
             log.error("", e);
-            throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL feil ved henting av imagemap", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                //
-            }
+            throw new SystemException("SQL feil ved henting av imagemap", e);
         }
     }
 
@@ -69,9 +58,7 @@ public class MultimediaImageMapAO {
      * @throws SystemException -
      */
     public static void storeImageMap(MultimediaImageMap mim) throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             Statement st = c.createStatement();
             // Delete old mappings
             st.execute("delete from multimediaimagemap where MultimediaId=" + mim.getMultimediaId());
@@ -95,14 +82,7 @@ public class MultimediaImageMapAO {
             hasImageMapSt.execute();
         } catch (SQLException e) {
             log.error("", e);
-            throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL error saving imagemap", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+            throw new SystemException("SQL error saving imagemap", e);
         }
     }
 

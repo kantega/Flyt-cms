@@ -46,7 +46,7 @@ public class PropertyReplacer implements BeanFactoryPostProcessor {
             cfg.postProcessBeanFactory(configurableListableBeanFactory);
 
         } catch (ConfigurationException e) {
-            log.error( "Error getting configuration");
+            log.error( "Error getting configuration", e);
         }
     }
 }

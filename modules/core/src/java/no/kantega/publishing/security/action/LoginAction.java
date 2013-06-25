@@ -17,11 +17,9 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
-import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;

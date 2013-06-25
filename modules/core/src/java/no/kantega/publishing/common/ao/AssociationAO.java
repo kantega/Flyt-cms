@@ -64,7 +64,7 @@ public class AssociationAO  {
                 a = getAssociationFromRS(rs);
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return a;
@@ -161,7 +161,7 @@ public class AssociationAO  {
         try (Connection c = dbConnectionFactory.getConnection()){
             addAssociation(c, association);
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -215,7 +215,7 @@ public class AssociationAO  {
 
             return copyAssociations(c, source, target, category, copyChildren);
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -232,7 +232,7 @@ public class AssociationAO  {
                 associations.add(getAssociationFromRS(rs));
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return associations;
     }
@@ -250,7 +250,7 @@ public class AssociationAO  {
                 associations.add(getAssociationFromRS(rs));
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return associations;
@@ -428,7 +428,7 @@ public class AssociationAO  {
             pathst.close();
             groupst.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -609,7 +609,7 @@ public class AssociationAO  {
 
             return deletedContent;
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -628,7 +628,7 @@ public class AssociationAO  {
                 }
                 st.close();
             } catch (SQLException e) {
-                throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+                throw new SystemException("SQL Feil ved databasekall", e);
             }
         }
     }
@@ -722,7 +722,7 @@ public class AssociationAO  {
             }
             DeletedItemsAO.purgeDeletedItem(deletedItemsId);
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return parentId;
     }
@@ -763,7 +763,7 @@ public class AssociationAO  {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return duplicates;

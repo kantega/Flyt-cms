@@ -50,7 +50,7 @@ public class EditTopicMapAction extends AbstractController {
         if (id != -1) {
             topicMap = topicService.getTopicMap(id);
             if (topicMap == null) {
-                throw new SystemException("Emnekart med id " + id  + " finnes ikke", SOURCE, null);
+                throw new SystemException("Emnekart med id " + id  + " finnes ikke", null);
             }
         } else {
             topicMap = new TopicMap();

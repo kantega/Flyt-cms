@@ -28,6 +28,7 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -45,7 +46,7 @@ import java.util.*;
  *
  */
 public class GoogleAnalyticsAction implements Controller {
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private String formView;
     private String resultsView;
 
@@ -72,16 +73,16 @@ public class GoogleAnalyticsAction implements Controller {
                 }
             } catch (AuthenticationException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                LoggerFactory.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
+                log.error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
             } catch (MalformedURLException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                LoggerFactory.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Malformed URL.", e);
+                log.error("Retrieving stats from Google Analytics failed: Malformed URL.", e);
             } catch (IOException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                LoggerFactory.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Network error trying to retrieve feed.", e);
+                log.error("Retrieving stats from Google Analytics failed: Network error trying to retrieve feed.", e);
             } catch (ServiceException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                LoggerFactory.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Analytics API responded with an error message.", e);
+                log.error("Retrieving stats from Google Analytics failed: Analytics API responded with an error message.", e);
             }
         }
         return new ModelAndView(view, model);

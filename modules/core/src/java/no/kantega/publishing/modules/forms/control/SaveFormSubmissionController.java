@@ -121,9 +121,7 @@ public class SaveFormSubmissionController implements AksessController {
 
             try {
                 MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
-            } catch (SystemException e) {
-                log.error("", e);
-            } catch (ConfigurationException e) {
+            } catch (SystemException | ConfigurationException e) {
                 log.error("", e);
             }
         }

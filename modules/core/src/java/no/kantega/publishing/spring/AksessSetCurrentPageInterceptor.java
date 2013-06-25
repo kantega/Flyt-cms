@@ -29,9 +29,7 @@ public class AksessSetCurrentPageInterceptor extends HandlerInterceptorAdapter {
             ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, aksessAlias);
             Content currentPage = cms.getContent(cid, true);
             RequestHelper.setRequestAttributes(request, currentPage);
-        } catch (NotAuthorizedException e) {
-            log.error("", e);
-        } catch (ContentNotFoundException e) {
+        } catch (NotAuthorizedException | ContentNotFoundException e) {
             log.error("", e);
         }
         return true;

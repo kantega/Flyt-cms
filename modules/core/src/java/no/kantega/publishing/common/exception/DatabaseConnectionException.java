@@ -19,7 +19,7 @@ package no.kantega.publishing.common.exception;
 import no.kantega.commons.exception.SystemException;
 
 public class DatabaseConnectionException extends SystemException {
-    public DatabaseConnectionException(String source, Throwable original) {
-        super("Unable to connect to database", source, original);
+    public DatabaseConnectionException(Throwable original) {
+        super("Unable to connect to database", original);
     }
 }

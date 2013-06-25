@@ -16,29 +16,30 @@
 
 package no.kantega.commons.util;
 
-import org.w3c.dom.*;
-import org.xml.sax.InputSource;
-import org.xml.sax.Attributes;
-import org.xml.sax.EntityResolver;
-import org.xml.sax.helpers.AttributesImpl;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.SystemException;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.w3c.dom.*;
+import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
+import org.xml.sax.InputSource;
+import org.xml.sax.helpers.AttributesImpl;
 
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.net.URL;
-import java.net.MalformedURLException;
-
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.InvalidFileException;
 
 
 /**
  *
  */
 public class XMLHelper {
+    private static final Logger log = LoggerFactory.getLogger(XMLHelper.class);
 
     private static final String SOURCE = "commons.XMLHelper";
 
@@ -49,7 +50,8 @@ public class XMLHelper {
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             doc = builder.parse(new InputSource(new StringReader(input)));
         } catch (Exception e) {
-            throw new SystemException("Error converting String to Document", SOURCE, e);
+            log.error("Error converting String to Document", e);
+            throw new SystemException("Error converting String to Document", e);
         }
 
         return doc;
@@ -63,7 +65,8 @@ public class XMLHelper {
             serial.asDOMSerializer();
             serial.serialize(element);
         } catch (IOException e) {
-            throw new SystemException("Error converting Document to String", SOURCE, e);
+            log.error("Error converting Document to String", e);
+            throw new SystemException("Error converting Document to String", e);
         }
 
         return stringOut.toString();
@@ -78,7 +81,8 @@ public class XMLHelper {
             serial.asDOMSerializer();
             serial.serialize(doc.getDocumentElement());
         } catch (IOException e) {
-            throw new SystemException("Error converting String to Document", SOURCE, e);
+            log.error("Error converting String to Document", e);
+            throw new SystemException("Error converting String to Document", e);
         }
 
         return stringOut.toString();
@@ -92,7 +96,8 @@ public class XMLHelper {
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             doc = builder.newDocument();
         } catch (Exception e) {
-            throw new SystemException("Error creating new XML document", SOURCE, e);
+            log.error("Error creating new XML document", e);
+            throw new SystemException("Error creating new XML document", e);
         }
 
         return doc;
@@ -104,15 +109,12 @@ public class XMLHelper {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = docFactory.newDocumentBuilder();
 
-            InputStream is = url.openStream();
-            doc = builder.parse(is);
-            try {
-                is.close();
-            } catch (Exception e) {
-
+            try (InputStream is = url.openStream()){
+                doc = builder.parse(is);
             }
         } catch (Exception e) {
-            throw new SystemException("Error opening XML document from URL", SOURCE, e);
+            log.error("Error opening XML document from URL", e);
+            throw new SystemException("Error opening XML document from URL", e);
         }
 
         return doc;
@@ -122,7 +124,7 @@ public class XMLHelper {
         try {
             return openDocument(resource.getInputStream());
         } catch (IOException e) {
-            throw new InvalidFileException("Error opening XML document from Resource", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from Resource", e);
         }
     }
 
@@ -130,7 +132,7 @@ public class XMLHelper {
         try {
             return openDocument(resource.getInputStream(), er);
         } catch (IOException e) {
-            throw new InvalidFileException("Error opening XML document from Resource", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from Resource", e);
         }
     }
 
@@ -138,7 +140,7 @@ public class XMLHelper {
         try {
             return openDocument(is, null);
         } catch (Exception e) {
-            throw new SystemException("Error opening XML document from InputStream", SOURCE, e);
+            throw new SystemException("Error opening XML document from InputStream", e);
         }
     }
 
@@ -152,7 +154,7 @@ public class XMLHelper {
             }
             doc = builder.parse(is);
         } catch (Exception e) {
-            throw new SystemException("Error opening XML document from InputStream", SOURCE, e);
+            throw new SystemException("Error opening XML document from InputStream", e);
         }
 
         return doc;
@@ -163,7 +165,7 @@ public class XMLHelper {
         try {
             return  openDocument(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            throw new InvalidFileException("Error opening XML document from File", SOURCE, e);
+            throw new InvalidFileException("Error opening XML document from File", e);
         }
     }
 
@@ -177,11 +179,11 @@ public class XMLHelper {
                 serial.asDOMSerializer();
                 serial.serialize(doc);
             } catch (IOException e) {
-                throw new SystemException("Error saving Document to File", SOURCE, e);
+                throw new SystemException("Error saving Document to File", e);
             }
 
         } catch (Exception e) {
-            throw new SystemException("Error saving Document to File", SOURCE, e);
+            throw new SystemException("Error saving Document to File", e);
         }
     }
 
@@ -263,7 +265,7 @@ public class XMLHelper {
     }
 
     public static String getText(Element element) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         NodeList children = element.getChildNodes();
         for(int i = 0; i < children.getLength(); i++) {
             if(children.item(i) instanceof Text) {

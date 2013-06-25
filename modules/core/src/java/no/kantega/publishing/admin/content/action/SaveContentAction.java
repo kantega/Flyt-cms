@@ -16,27 +16,25 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.content.util.SaveContentHelper;
-import no.kantega.publishing.admin.content.action.AbstractSaveContentAction;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SaveContentAction extends AbstractSaveContentAction {
     private String view;
 
-    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException{
         HttpServletRequest request = param.getRequest();
         ValidationErrors   errors  = new ValidationErrors();
 
@@ -54,7 +52,7 @@ public class SaveContentAction extends AbstractSaveContentAction {
         try {
             EditContentHelper.addRepeaterRow(content, addRepeaterRow, AttributeDataType.CONTENT_DATA);
         } catch (InvalidTemplateException e) {
-            throw new SystemException("Failed adding repeater rows", this.getClass().getName(), e);
+            throw new SystemException("Failed adding repeater rows", e);
         }
     }
 

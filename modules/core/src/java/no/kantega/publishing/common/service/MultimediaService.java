@@ -78,10 +78,10 @@ public class MultimediaService {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = ContentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
-                throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+                throw new NotAuthorizedException("Not authorized for id:" + id);
             }
         } else if (multimedia != null && !securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
-             throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+             throw new NotAuthorizedException("Not authorized for id:" + id);
         }
 
         return multimedia;
@@ -152,7 +152,7 @@ public class MultimediaService {
             newParent.setSecurityId(0);
         }
         if (!securitySession.isAuthorized(newParent, Privilege.UPDATE_CONTENT) || (!securitySession.isAuthorized(mm, Privilege.UPDATE_CONTENT))) {
-            throw new NotAuthorizedException("Kan ikke flytte multimedia", SOURCE);
+            throw new NotAuthorizedException("Kan ikke flytte multimedia");
         }
 
         multimediaDao.moveMultimedia(mmId, newParentId);
@@ -173,7 +173,7 @@ public class MultimediaService {
                     deleteMultimedia(child.getId());
                 } catch (ObjectInUseException e) {
                     // Should never occur, because MultimediaType is MEDIA. Can only occur with MultimediaType FOLDER.
-                    throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+                    throw new SystemException("Error deleting multimediafolder with id "+id+".", e);
                 }
             } else {
                 deleteMultimediaFolder(child.getId());
@@ -182,7 +182,7 @@ public class MultimediaService {
         try {
             deleteMultimedia(id);
         } catch (ObjectInUseException e) {
-            throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+            throw new SystemException("Error deleting multimediafolder with id "+id+".", e);
         }
     }
 
@@ -194,7 +194,7 @@ public class MultimediaService {
                 title = t.getName();
             }
             if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".", this.getClass().getName());
+                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".");
             }
         }
         multimediaDao.deleteMultimedia(id);

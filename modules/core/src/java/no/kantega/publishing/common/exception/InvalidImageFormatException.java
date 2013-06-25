@@ -16,7 +16,7 @@
 package no.kantega.publishing.common.exception;
 
 public class InvalidImageFormatException extends no.kantega.commons.exception.KantegaException {
-    public InvalidImageFormatException(String message, String source, Throwable original) {
-        super(message, source, original);
+    public InvalidImageFormatException(String message,  Throwable original) {
+        super(message, original);
     }
 }

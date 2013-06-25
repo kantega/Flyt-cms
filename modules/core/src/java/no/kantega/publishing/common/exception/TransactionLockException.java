@@ -5,7 +5,7 @@ import no.kantega.commons.exception.SystemException;
 
 
 public class TransactionLockException extends SystemException {
-    public TransactionLockException(String message, String source, Throwable original) {
-        super(message, source, original);
+    public TransactionLockException(String message, Throwable original) {
+        super(message, original);
     }
 }

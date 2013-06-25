@@ -39,15 +39,14 @@ import java.util.List;
 
 public class FilterPipeline extends XMLFilterImpl {
     private static final Logger log = LoggerFactory.getLogger(FilterPipeline.class);
-    private static final String SOURCE = "FilterPipeline";
 
-    List filters = new ArrayList();
+    List<XMLFilter> filters = new ArrayList<>();
 
     public void addFilter(XMLFilterImpl filter) {
         if (filters.size() == 0) {
             setContentHandler(filter);
         } else {
-            XMLFilter parent = (XMLFilter)filters.get(filters.size() - 1);
+            XMLFilter parent = filters.get(filters.size() - 1);
             parent.setContentHandler(filter);
             filter.setParent(parent);
         }
@@ -56,7 +55,7 @@ public class FilterPipeline extends XMLFilterImpl {
 
     public void setEnd(ContentHandler end) {
         if (filters.size() > 0) {
-            XMLFilter parent = (XMLFilter)filters.get(filters.size() - 1);
+            XMLFilter parent = filters.get(filters.size() - 1);
             parent.setContentHandler(end);
         }
     }
@@ -79,7 +78,7 @@ public class FilterPipeline extends XMLFilterImpl {
 
             URL resourceUrl = contextClassLoader.getResource("no/kantega/xml/serializer/XMLEntities.properties");
 
-            SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactoryImpl.newInstance();;
+            SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactoryImpl.newInstance();
 
             final TransformerHandler mainTransformer = factory.newTransformerHandler();
             mainTransformer.getTransformer().setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
@@ -97,11 +96,11 @@ public class FilterPipeline extends XMLFilterImpl {
             parser.parse(new InputSource(reader));
         } catch (Exception e) {
             log.error("Could not filter", e);
-            throw new SystemException("", SOURCE, e);
+            throw new SystemException("Could not filter", e);
         }
     }
 
     public void removeFilters() {
-        filters = new ArrayList();
+        filters = new ArrayList<>();
     }
 }

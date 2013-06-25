@@ -88,7 +88,7 @@ public abstract class AbstractUserAdminController extends AbstractController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         SecuritySession session = SecuritySession.getInstance(request);
         if (!session.isUserInRole(Aksess.getAdminRole())) {
-            throw new NotAuthorizedException("Need admin role", SOURCE);
+            throw new NotAuthorizedException("Need admin role");
         }
 
         return doHandleRequest(request, response);

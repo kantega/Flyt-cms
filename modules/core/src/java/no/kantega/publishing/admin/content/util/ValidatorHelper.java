@@ -17,9 +17,7 @@
 package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.util.RegExp;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.data.Association;
@@ -29,21 +27,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ValidatorHelper {
     private static final Logger log = LoggerFactory.getLogger(ValidatorHelper.class);
-    private static String SOURCE = "ValidatorHelper";
+
+    private static  final Pattern ALIAS_PATTERN = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
 
     public static void validateAlias(String alias, Content content, ValidationErrors errors) {
-        String regexp = "^[\\w\\.\\-\\+=/\\&]*$";
 
-        try {
-            if (!RegExp.matches(regexp, alias)) {
-                errors.add(null, "aksess.error.aliasisillegal");
-            }
-        } catch (RegExpSyntaxException e) {
-            log.error("", e);
-        }       
+        if (!ALIAS_PATTERN.matcher(alias).matches()) {
+            errors.add(null, "aksess.error.aliasisillegal");
+        }
 
         try {
             ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);

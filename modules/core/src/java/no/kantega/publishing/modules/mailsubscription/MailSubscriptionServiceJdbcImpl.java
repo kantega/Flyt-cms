@@ -25,7 +25,7 @@ public class MailSubscriptionServiceJdbcImpl extends NamedParameterJdbcDaoSuppor
     @Override
     public void addMailSubscription(MailSubscription subscription) {
         if (subscription.getEmail() == null || (subscription.getChannel() == -1 && subscription.getDocumenttype() == -1)) {
-            throw new InvalidParameterException("email/channel", "MailSubscriptionService");
+            throw new InvalidParameterException("email/channel");
         }
 
         HashMap<String, Object> paramMap = new HashMap<>();

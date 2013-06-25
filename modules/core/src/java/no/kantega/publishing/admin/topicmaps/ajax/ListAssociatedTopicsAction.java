@@ -23,8 +23,6 @@ import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +34,6 @@ import java.util.Map;
  *
  */
 public class ListAssociatedTopicsAction extends AbstractTopicInfoAction {
-    private static final Logger log = LoggerFactory.getLogger(ListAssociatedTopicsAction.class);
     @Override
     public ModelAndView handleTopicInfoRequest(HttpServletRequest request, HttpServletResponse response, Topic topic) {
         Map<String, Object> model = new HashMap<String, Object>();

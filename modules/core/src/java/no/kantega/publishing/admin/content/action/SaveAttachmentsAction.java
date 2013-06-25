@@ -3,7 +3,6 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Attachment;
@@ -22,7 +21,7 @@ import java.util.Map;
 public class SaveAttachmentsAction extends AbstractSaveContentAction {
     private String view;
 
-    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException{
         ValidationErrors errors  = new ValidationErrors();
         return errors;
 

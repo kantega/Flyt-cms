@@ -472,7 +472,7 @@ public class XTMImportWorker{
             log.info( "Antall associations:" + associations.getLength());
 
         } catch (TransformerException e) {
-            throw new SystemException("Uventet XML/XPath feil", SOURCE, e);
+            throw new SystemException("Uventet XML/XPath feil", e);
         }
     }
 }

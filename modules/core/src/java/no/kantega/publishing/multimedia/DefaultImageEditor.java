@@ -143,7 +143,7 @@ public class DefaultImageEditor implements ImageEditor {
                     image = ImageIO.read(new ByteArrayInputStream(multimedia.getData()));
                 } catch (IOException e) {
                     log.error( "Failed converting image, probably CMYK, install Java Advanced Imaging API on server");
-                    throw new InvalidImageFormatException(this.getClass().getName(), "", e);
+                    throw new InvalidImageFormatException("Failed converting image", e);
                 }
                 return image;
             }

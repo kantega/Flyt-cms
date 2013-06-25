@@ -58,7 +58,7 @@ public class SecurityRealm {
             }
 
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "searchUsers failed", e);
+            throw new SystemException("searchUsers failed", e);
         }
 
         return results;
@@ -88,7 +88,7 @@ public class SecurityRealm {
             }
 
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "getAllRoles failed", e);
+            throw new SystemException("getAllRoles failed", e);
         }
 
         return results;
@@ -108,7 +108,7 @@ public class SecurityRealm {
             Profile profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
             return SecurityHelper.createAksessUser(profile);
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException("Exception when retrieving profile for user " + userid, "SecurityRealm", e);
+            throw new SystemException("Exception when retrieving profile for user " + userid, e);
         }
     }
 
@@ -144,7 +144,7 @@ public class SecurityRealm {
 
             return roles;
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "lookupUser failed", e);
+            throw new SystemException("lookupUser failed", e);
         }
     }
 
@@ -162,7 +162,7 @@ public class SecurityRealm {
             }
             return userIds;
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "lookupUsersWithRole failed", e);
+            throw new SystemException("lookupUsersWithRole failed", e);
         }
     }
 
@@ -184,7 +184,7 @@ public class SecurityRealm {
                 return SecurityHelper.createAksessRole(role);
             }
         } catch (no.kantega.security.api.common.SystemException e) {
-             throw new SystemException(SOURCE, "lookupRole failed", e);
+             throw new SystemException("lookupRole failed", e);
         }
     }
 

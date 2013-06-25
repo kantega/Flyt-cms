@@ -18,15 +18,11 @@ package no.kantega.commons.exception;
 
 public class ConfigurationException extends KantegaException {
 
-    public ConfigurationException(String message, String source) {
-        super(message, source, null);
-    }
-
     public ConfigurationException(String message, Throwable original) {
-        super(message, "no.kantega.secure.configuration", original);
+        super(message, original);
     }
 
     public ConfigurationException(String message) {
-        super(message, "no.kantega.secure.configuration", null);
+        super(message, null);
     }
 }

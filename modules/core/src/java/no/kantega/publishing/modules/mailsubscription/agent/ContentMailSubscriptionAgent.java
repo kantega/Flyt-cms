@@ -45,7 +45,6 @@ import java.util.*;
  */
 public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
     private static final Logger log = LoggerFactory.getLogger(ContentMailSubscriptionAgent.class);
-    private static final String SOURCE = "aksess.MailSubscriptionAgent";
 
     private MailSubscriptionDeliveryService mailSubscriptionDeliveryService;
 

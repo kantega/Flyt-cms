@@ -226,7 +226,7 @@ public class dbConnectionFactory {
                     message +=".";
                 }
             }
-            throw new ConfigurationException(message, SOURCE);
+            throw new ConfigurationException(message);
         }
     }
 
@@ -280,7 +280,7 @@ public class dbConnectionFactory {
                 createTables(dataSource);
             }
         } catch (SQLException e) {
-            throw new SystemException("Can't connect to database, please check configuration", SOURCE, e);
+            throw new SystemException("Can't connect to database, please check configuration", e);
         }
     }
 
@@ -291,7 +291,7 @@ public class dbConnectionFactory {
             productName = c.getMetaData().getDatabaseProductName();
 
         } catch (SQLException e) {
-            throw new SystemException("Error creating tables for Aksess", SOURCE, e);
+            throw new SystemException("Error creating tables for Aksess", e);
         }
 
         String dbType = getDBVendor(productName);
@@ -305,7 +305,7 @@ public class dbConnectionFactory {
             try {
                 schema = resource.openStream();
             } catch (IOException e) {
-                throw new SystemException("Can't load schema resource " + resource, SOURCE, e);
+                throw new SystemException("Can't load schema resource " + resource, e);
             }
             try {
 
@@ -361,7 +361,7 @@ public class dbConnectionFactory {
             return c;
         } catch (SQLException se) {
             log.error( "Unable to connect to database: url=" + dbUrl, se);
-            throw new DatabaseConnectionException(SOURCE, se);
+            throw new DatabaseConnectionException(se);
         }
     }
 

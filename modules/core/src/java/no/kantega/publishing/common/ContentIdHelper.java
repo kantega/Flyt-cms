@@ -90,7 +90,7 @@ public class ContentIdHelper {
             String[] exprPathElements = expr.split("\\.\\.");
             int exprLength = exprPathElements.length - 1;
             if (exprLength > pathElements.length) {
-                throw new ContentNotFoundException(SOURCE, expr);
+                throw new ContentNotFoundException(expr);
             }
 
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(pathElements[pathElements.length - exprLength]);
@@ -174,7 +174,7 @@ public class ContentIdHelper {
         int language = Language.NORWEGIAN_BO;
 
         if (url == null) {
-            throw new ContentNotFoundException("", SOURCE);
+            throw new ContentNotFoundException("");
         }
 
         if (url.indexOf('#') > 0) {
@@ -386,7 +386,7 @@ public class ContentIdHelper {
         }
 
         if (cid == null) {
-            throw new ContentNotFoundException(url, SOURCE);
+            throw new ContentNotFoundException(url);
         }
         return cid;
     }
@@ -442,7 +442,7 @@ public class ContentIdHelper {
                 st.close();
             }
         } catch (SQLException e) {
-            throw new SystemException("Feil ved SQL kall", SOURCE, e);
+            throw new SystemException("Feil ved SQL kall", e);
         }
 
         return associationId;
@@ -462,7 +462,7 @@ public class ContentIdHelper {
             rs.close();
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("Feil ved SQL kall", SOURCE, e);
+            throw new SystemException("Feil ved SQL kall",e);
         }
 
         return contentId;
@@ -559,7 +559,7 @@ public class ContentIdHelper {
                 try {
                     contentIdentifier = ContentIdentifier.fromAssociationId(ServletRequestUtils.getIntParameter(request, "thisId"));
                 } catch (ServletRequestBindingException e) {
-                    throw new ContentNotFoundException(request.getParameter("thisId"), SOURCE);
+                    throw new ContentNotFoundException(request.getParameter("thisId"));
                 }
             }
 
@@ -572,7 +572,7 @@ public class ContentIdHelper {
                     contentIdentifier = ContentIdentifier.fromAssociationId(Integer.parseInt(path.substring(1, slashIndex)));
                 }
             } catch (NumberFormatException e) {
-                throw new ContentNotFoundException(path, SOURCE);
+                throw new ContentNotFoundException(path);
             }
         } else {
             String queryString = request.getQueryString();

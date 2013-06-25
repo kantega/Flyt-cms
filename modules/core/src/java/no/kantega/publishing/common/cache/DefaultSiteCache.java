@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -38,7 +37,7 @@ import static com.google.common.collect.Collections2.filter;
 
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static final Logger log = LoggerFactory.getLogger(DefaultSiteCache.class);
-    private static String SOURCE = "SiteCache";
+
     private List<Site> sites = null;
     private Map<String, Site> hostnames = null;
     private TemplateConfigurationCache templateConfigurationCache;
@@ -124,16 +123,16 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
                 site.setScheme(scheme);
             }
         } catch (ConfigurationException e) {
-            throw new SystemException("Configuration error", "", e);
+            throw new SystemException("Configuration error", e);
         }
 
     }
 
     @Override
     public no.kantega.publishing.api.model.Site getDefaultSite() {
-        Collection<Site> defaultSites = filter((Collection<Site>) sites, new Predicate<Site>() {
+        Collection<Site> defaultSites = filter(sites, new Predicate<Site>() {
             @Override
-            public boolean apply(@Nullable Site o) {
+            public boolean apply(Site o) {
                 return o.isDefault();
             }
         });

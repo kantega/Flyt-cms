@@ -43,7 +43,7 @@ public class UpdateFileAttributeFromRequestBehaviour implements UpdateAttributeF
                 }
             }
         } catch (IOException e) {
-            throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
+            throw new SystemException("Feil ved filvedlegg",e);
         }
     }
 }

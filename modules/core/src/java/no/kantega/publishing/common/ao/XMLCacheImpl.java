@@ -22,7 +22,8 @@ import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 
@@ -35,7 +36,7 @@ import java.util.Date;
 import java.util.List;
 
 public class XMLCacheImpl implements XmlCache {
-    private static final String SOURCE = "XMLCacheAO";
+    private static final Logger log = LoggerFactory.getLogger(XMLCacheImpl.class);
 
     @Cacheable("XMLCache")
     @Override
@@ -55,7 +56,8 @@ public class XMLCacheImpl implements XmlCache {
             }
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            log.error("SQL Feil ved databasekall", e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
         return cacheEntry;
@@ -91,7 +93,8 @@ public class XMLCacheImpl implements XmlCache {
             st.close();
 
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            log.error("SQL Feil ved databasekall", e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -108,7 +111,8 @@ public class XMLCacheImpl implements XmlCache {
             }
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            log.error("SQL Feil ved databasekall", e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
         return list;
     }

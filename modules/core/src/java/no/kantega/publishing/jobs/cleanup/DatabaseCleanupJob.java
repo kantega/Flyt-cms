@@ -40,7 +40,7 @@ import java.util.GregorianCalendar;
 
 public class DatabaseCleanupJob {
     private static final Logger log = LoggerFactory.getLogger(DatabaseCleanupJob.class);
-    private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
+
     @Autowired
     private EventLog eventLog;
 

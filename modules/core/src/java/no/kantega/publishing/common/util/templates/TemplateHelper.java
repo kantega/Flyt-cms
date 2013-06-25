@@ -54,7 +54,7 @@ public class TemplateHelper {
             int ctId = dt.getContentTemplate().getId();
             ContentTemplate ct = ContentTemplateCache.getTemplateById(ctId);
             if (ct == null) {
-                throw new InvalidTemplateReferenceException(ctId, SOURCE);
+                throw new InvalidTemplateReferenceException(ctId);
             }
             if (isAllowedChild(ct, parentContentTemplateId)) {
                 // Check is template is allowed for site

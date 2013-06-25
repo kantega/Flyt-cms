@@ -20,7 +20,7 @@ package no.kantega.publishing.common.exception;
  *
  */
 public class InvalidTemplateException extends no.kantega.commons.exception.KantegaException {
-    public InvalidTemplateException(String message, String source, Throwable original) {
-        super(message, source, original);
+    public InvalidTemplateException(String message, Throwable original) {
+        super(message, original);
     }
 }

@@ -16,13 +16,9 @@
 
 package no.kantega.publishing.common.exception;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Dec 18, 2008
- * Time: 9:38:06 AM
- */
+
 public class InvalidTemplateReferenceException  extends no.kantega.commons.exception.KantegaException {
-    public InvalidTemplateReferenceException (int templateId, String source) {
-        super("Reference to none existing template with id:" + templateId, source, null);
+    public InvalidTemplateReferenceException (int templateId) {
+        super("Reference to none existing template with id:" + templateId, null);
     }
 }

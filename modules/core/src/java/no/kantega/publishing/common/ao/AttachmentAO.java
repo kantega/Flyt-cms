@@ -38,10 +38,8 @@ public class AttachmentAO {
     private static final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
 
     public static int setAttachment(Attachment attachment) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection())
+        {
             byte[] data = attachment.getData();
 
             attachment.setLastModified(new Date());
@@ -91,14 +89,7 @@ public class AttachmentAO {
             }
             return attachment.getId();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
 
     }
@@ -117,35 +108,23 @@ public class AttachmentAO {
     }
 
     public static void deleteAttachment(int id) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement st = c.prepareStatement("delete from attachments where Id = ?");
             st.setInt(1, id);
             st.execute();
             st.close();
 
         } catch (SQLException e) {
-            throw new SystemException(SOURCE, "SQL feil ved sletting av vedlegg", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+            throw new SystemException("SQL feil ved sletting av vedlegg", e);
         }
     }
 
 
     public static Attachment getAttachment(int id) throws SystemException {
-        Connection c = null;
 
         String query = "select " + DB_COLS + " from attachments where Id = " + id;
 
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ResultSet rs = SQLHelper.getResultSet(c, query);
             if (!rs.next()) {
                 return null;
@@ -154,24 +133,13 @@ public class AttachmentAO {
             rs.close();
             return file;
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
     public static void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        Connection c = null;
-
         String query = "select Data from attachments where Id = " + id;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ResultSet rs = SQLHelper.getResultSet(c, query);
             if (!rs.next()) {
                 return;
@@ -179,28 +147,16 @@ public class AttachmentAO {
             Blob blob = rs.getBlob("Data");
             ish.handleInputStream(blob.getBinaryStream());
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } catch (IOException e) {
             // Connection to browser was interrupted
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
 
     public static List<Attachment> getAttachmentList(ContentIdentifier cid) throws SystemException {
         List<Attachment> list = new ArrayList<Attachment>();
-
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
             ResultSet rs = SQLHelper.getResultSet(c, "select " + DB_COLS + " from attachments where ContentId = " + cid.getContentId());
             while(rs.next()) {
@@ -210,15 +166,7 @@ public class AttachmentAO {
             rs.close();
             return list;
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                //
-            }
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -241,10 +189,7 @@ public class AttachmentAO {
      * @param newNontentId, if of the new attachment.
      */
     public static void copyAttachment(int contentId, int newNontentId) {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
                     "select " + newNontentId +", Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = " + contentId);
@@ -252,14 +197,7 @@ public class AttachmentAO {
 
             st.close();
         } catch (SQLException e) {
-            throw new SystemException(SOURCE, "SQL feil ved kopiering av vedlegg", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+            throw new SystemException("SQL feil ved kopiering av vedlegg", e);
         }
     }
 }

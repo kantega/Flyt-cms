@@ -17,7 +17,7 @@
 package no.kantega.publishing.common.exception;
 
 public class RootExistsException  extends no.kantega.commons.exception.KantegaException {
-    public RootExistsException(String message, String source) {
-        super(message, source, null);
+    public RootExistsException(String message) {
+        super(message, null);
     }
 }

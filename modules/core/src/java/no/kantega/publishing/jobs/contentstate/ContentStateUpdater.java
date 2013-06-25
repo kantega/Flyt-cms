@@ -83,9 +83,7 @@ public class ContentStateUpdater {
                 }
             }
 
-        } catch (SystemException e) {
-            log.error("", e);
-        } catch (NotAuthorizedException e) {
+        } catch (SystemException | NotAuthorizedException e) {
             log.error("", e);
         }
     }

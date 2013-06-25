@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 public class PostLoginHandlerFactory {
     private static final Logger log = LoggerFactory.getLogger(PostLoginHandlerFactory.class);
-    private static final String SOURCE = "aksess.PostLoginHandlerFactory";
 
 
     public static PostLoginHandler newInstance () throws SystemException, ConfigurationException {

@@ -43,11 +43,11 @@ public class DeletedItemsAO {
             if(rs.next()) {
                 return rs.getInt(1);
             } else {
-                throw new SystemException("Could get the generated key", SOURCE, null);
+                throw new SystemException("Could get the generated key", null);
             }
 
         } catch (SQLException e) {
-          throw new SystemException("SQL exception while adding deleteditem", SOURCE, e);
+          throw new SystemException("SQL exception while adding deleteditem", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class DeletedItemsAO {
             p.setInt(1, id);
             p.executeUpdate();
         } catch (SQLException e) {
-            throw new SystemException("SQL Exception while purging deleteditem", SOURCE, e);
+            throw new SystemException("SQL Exception while purging deleteditem", e);
         }
     }
 
@@ -85,7 +85,7 @@ public class DeletedItemsAO {
                 items.add(getDeletedItemFromResultSet(rs));
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Exception while getting deleteditems", SOURCE, e);
+            throw new SystemException("SQL Exception while getting deleteditems", e);
         }
         return items;
     }

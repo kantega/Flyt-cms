@@ -92,7 +92,7 @@ public class SecuritySession {
                 identity = resolver.getIdentity(request);
             }
         } catch (IdentificationFailedException e) {
-            throw new SystemException(SOURCE, "IdentificationFailedException", e);
+            throw new SystemException("IdentificationFailedException", e);
         }
         Identity currentIdentity = session.identity;
 
@@ -102,7 +102,7 @@ public class SecuritySession {
                 try {
                     session.handlePostLogin(request);
                 } catch (ConfigurationException e) {
-                    throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
+                    throw new SystemException("Konfigurasjonsfeil", e);
                 }
                 // Innloggede brukere har lengre sesjonstimeout
                 if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
@@ -147,7 +147,7 @@ public class SecuritySession {
         try {
             p = manager.getProfileForUser(identity);
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "Feil ved henting av profil", e);
+            throw new SystemException("Feil ved henting av profil", e);
         }
 
         User user = new User();
@@ -296,7 +296,7 @@ public class SecuritySession {
         } catch (URISyntaxException e) {
             log.error("Error in url " + redirect, e);
         }
-        log.debug( String.format("Initiating login in authentication context: %s", resolver.getAuthenticationContext()));
+        log.debug( "Initiating login in authentication context: {}", resolver.getAuthenticationContext());
         resolver.initateLogin(loginContext);
     }
 

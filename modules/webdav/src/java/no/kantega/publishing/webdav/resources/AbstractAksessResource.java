@@ -15,7 +15,7 @@ import java.util.Map;
  */
 public abstract class AbstractAksessResource implements Resource, PropFindableResource, LockableResource {
     private static final Logger log = LoggerFactory.getLogger(AbstractAksessResource.class);
-    private static Map<String, LockToken> locks = new HashMap<String, LockToken>();
+    private static Map<String, LockToken> locks = new HashMap<>();
 
     WebDavSecurityHelper webDavSecurityHelper;
     SecuritySession securitySession;

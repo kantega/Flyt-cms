@@ -56,9 +56,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             start = calendar.getTime();
         }
 
-        Connection c = null;
-        try {
-            c = getConnection();
+        try (Connection c = getConnection()) {
             String originClause = createOriginClause(query.getTrafficOrigin());
             String contentIdClause = createContentIdClause(query);
 
@@ -76,15 +74,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             rs.close();
             st.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil", this.getClass().getName(), e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
+            throw new SystemException("SQL Feil", e);
         }
 
         return visits;
@@ -151,15 +141,13 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
     public List<ContentViewStatistics> getMostVisitedContentStatistics(TrafficLogQuery trafficQuery, int limit) throws SystemException {
         List<ContentViewStatistics> stats = new ArrayList<ContentViewStatistics>();
-        Connection c = null;
 
         Calendar calendar = new GregorianCalendar();
         Date end = calendar.getTime();
         calendar.add(Calendar.MONTH, -1);
         Date start = calendar.getTime();
 
-        try {
-            c = getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             String query = "select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?";
             query += createOriginClause(trafficQuery.getTrafficOrigin());
             query += createContentIdClause(trafficQuery);
@@ -176,21 +164,12 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             }
             return stats;
         } catch (SQLException e) {
-            throw new SystemException("SQL error", this.getClass().getName(), e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    log.error("", e);
-                }
-            }
+            throw new SystemException("SQL error", e);
         }
     }
 
     public List<PeriodViewStatistics> getPeriodViewStatistics(TrafficLogQuery trafficQuery, int period) throws SystemException {
         List<PeriodViewStatistics> stats = new ArrayList<PeriodViewStatistics>();
-        Connection c = null;
 
         Calendar calendar = new GregorianCalendar();
         Date end = calendar.getTime();
@@ -202,8 +181,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         String originClause = createOriginClause(trafficQuery.getTrafficOrigin());
         String contentIdClause = createContentIdClause(trafficQuery);
 
-        try {
-            c = getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             String query = "";
             String driver = dbConnectionFactory.getDriverName();
             if ((driver.contains("oracle")) || (driver.contains("postgresql"))) {
@@ -241,15 +219,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             }
             return stats;
         } catch (SQLException e) {
-            throw new SystemException("SQL error", this.getClass().getName(), e);
-        } finally {
-            if(c != null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    log.error("", e);
-                }
-            }
+            throw new SystemException("SQL error", e);
         }
     }
 

@@ -20,7 +20,6 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
@@ -50,7 +49,7 @@ import java.util.Map;
 public abstract class AbstractSaveContentAction extends AbstractContentAction {
     private static final Logger log = LoggerFactory.getLogger(AbstractSaveContentAction.class);
 
-    abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
+    abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException;
     abstract String getView();
     abstract Map<String, Object> getModel(Content content, HttpServletRequest request);
     private boolean updatePublishProperties = true;
@@ -115,7 +114,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     }
 
 
-    private ValidationErrors updateSubmittedValues(ContentManagementService aksessService, Content content, RequestParameters param) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+    private ValidationErrors updateSubmittedValues(ContentManagementService aksessService, Content content, RequestParameters param) throws InvalidFileException, InvalidTemplateException{
         ValidationErrors errors = new ValidationErrors();
 
         if (updatePublishProperties) {

@@ -68,7 +68,7 @@ public class PathWorker {
                 pathEntries.add(entry);
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {
@@ -131,7 +131,7 @@ public class PathWorker {
                 pathEntries.add(new PathEntry(id, title));
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {
@@ -166,7 +166,7 @@ public class PathWorker {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {

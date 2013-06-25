@@ -77,7 +77,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
         if (from == null) {
             from = config.getString("mail.from");
             if (from == null) {
-                throw new ConfigurationException("mail.from", this.getClass().getName());
+                throw new ConfigurationException("mail.from");
             }
         }
         return from;
@@ -85,7 +85,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
 
 
     private List<MimeBodyPart> createBodyParts(Configuration config, String alias, Map<String, Object> param) throws ConfigurationException, MessagingException {
-        List<MimeBodyPart> bodyParts = new ArrayList();
+        List<MimeBodyPart> bodyParts = new ArrayList<>();
 
         String template = config.getString("mail" + alias + "subscription.template", null);
         if (template == null) {

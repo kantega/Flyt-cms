@@ -57,7 +57,7 @@ public class AssociationAOHelper {
                 rs = null;
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -86,7 +86,7 @@ public class AssociationAOHelper {
                 st.close();
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 }

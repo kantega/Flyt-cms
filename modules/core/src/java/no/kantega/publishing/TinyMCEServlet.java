@@ -151,7 +151,7 @@ public class TinyMCEServlet extends HttpServlet {
                     fout.write(bos.toByteArray());
                     fout.close();
                 } catch (IOException e) {
-                    log.error( "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.");
+                    log.error( "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", e);
                 }
 
                 // Write to stream
@@ -249,7 +249,7 @@ public class TinyMCEServlet extends HttpServlet {
                 is.read(basdas);
                 retVal = new String(basdas);
             } catch (IOException e) {
-                log.info( e.getMessage());
+                log.error( e.getMessage(), e);
             }
         }
         return retVal;
@@ -269,7 +269,7 @@ public class TinyMCEServlet extends HttpServlet {
         try {
             url = request.getSession().getServletContext().getResource(relPath);
         } catch (MalformedURLException e) {
-            log.info( e.getMessage());
+            log.error( e.getMessage(), e);
         }
         return url;
     }

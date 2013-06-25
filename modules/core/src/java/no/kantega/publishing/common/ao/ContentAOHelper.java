@@ -149,7 +149,7 @@ public class ContentAOHelper {
                     attribute = factory.newAttribute(attributeType);
                 } catch (Exception e) {
                     log.error("Error instantiating attribute " + attributeType, e);
-                    throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, ContentAOHelper.class.getName(), e);
+                    throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, e);
                 }
                 attribute.setParent(parentAttribute);
 
