@@ -32,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class DeleteTopicMapAction extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(DeleteTopicMapAction.class);
-    private static String SOURCE = "aksess.DeleteTopicMapAction";
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);

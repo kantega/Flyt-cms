@@ -35,7 +35,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class SetVariableTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(SetVariableTag.class);
-    private static final String SOURCE = "aksess.SetVariableTag";
 
     private String name = null;
     private String attribute = null;
@@ -137,7 +136,7 @@ public class SetVariableTag extends TagSupport {
             request.setAttribute(name, result);
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

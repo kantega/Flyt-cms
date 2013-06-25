@@ -25,7 +25,6 @@ import java.util.StringTokenizer;
 
 public class MultimediaImageMap {
     private static final Logger log = LoggerFactory.getLogger(MultimediaImageMap.class);
-    private static final String SOURCE = "aksess.MultimediaImageMap";
     private List<CoordUrlMap> coordUrlMap = new ArrayList<CoordUrlMap>();
     private int multimediaId;
 
@@ -45,7 +44,7 @@ public class MultimediaImageMap {
     }
 
     public CoordUrlMap[] getCoordUrlMap(){
-        return coordUrlMap.toArray(new CoordUrlMap[0]);
+        return coordUrlMap.toArray(new CoordUrlMap[coordUrlMap.size()]);
     }
 
     public class CoordUrlMap {

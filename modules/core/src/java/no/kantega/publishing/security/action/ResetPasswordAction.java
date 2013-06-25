@@ -20,7 +20,6 @@ import java.util.Map;
 
 public class ResetPasswordAction extends AbstractLoginAction {
     private static final Logger log = LoggerFactory.getLogger(ResetPasswordAction.class);
-    private static final String SOURCE = "aksess.ResetPassordAction";
 
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;

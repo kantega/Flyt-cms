@@ -34,7 +34,6 @@ import java.util.Properties;
  */
 public class Aksess {
     private static final Logger log = LoggerFactory.getLogger(Aksess.class);
-    private static final String SOURCE = "aksess.common.Aksess";
 
     public static final String PROPERTY_FILE = "aksess.conf";
     public static final String VAR_WEB = "<@WEB@>";

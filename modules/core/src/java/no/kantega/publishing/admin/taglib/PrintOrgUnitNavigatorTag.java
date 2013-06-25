@@ -18,7 +18,6 @@ import java.util.*;
 public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
     private static final Logger log = LoggerFactory.getLogger(PrintOrgUnitNavigatorTag.class);
 
-    private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintOrgUnitNavigatorTag";
 
     private Set openUnits;
     private String cssClass;
@@ -91,7 +90,7 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
             printUnit(null, manager);
         } catch (Exception e) {
             log.error("Could not print org unit", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
         openUnits = null;
     }

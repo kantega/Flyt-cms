@@ -31,7 +31,6 @@ import java.util.List;
  */
 public class GetCollectionTag extends AbstractGetCollectionTag {
     private static final Logger log = LoggerFactory.getLogger(GetCollectionTag.class);
-    private static final String SOURCE = "aksess.GetCollectionTag";
 
     protected CollectionLoopTagStatus status = null;
 
@@ -57,7 +56,7 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
 
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
         return doIter();
     }

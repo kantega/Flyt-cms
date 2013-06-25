@@ -39,7 +39,6 @@ import java.util.List;
 
 public class HearingAO {
     private static final Logger log = LoggerFactory.getLogger(HearingAO.class);
-    private static final String SOURCE = "aksess.HearingAO";
 
 
     public static Hearing getHearing(int id) throws SystemException {

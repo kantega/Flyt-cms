@@ -37,8 +37,7 @@ import java.util.*;
 public class UpdateProfileController implements AksessController {
     private static final Logger log = LoggerFactory.getLogger(UpdateProfileController.class);
 
-    private static final String SOURCE = "aksess.UpdateProfileController";
-    private int topicMapId = 1;
+        private int topicMapId = 1;
 
     /**
      * @see no.kantega.publishing.controls.AksessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)

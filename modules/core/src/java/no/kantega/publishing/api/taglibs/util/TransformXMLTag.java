@@ -38,8 +38,7 @@ import java.io.StringWriter;
 
 public class TransformXMLTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(TransformXMLTag.class);
-    private static final String SOURCE = "aksess.TransformXMLTag";
-    
+
     private String cacheId = null;
     private String xslt = null;
     private XmlCache xmlCache;

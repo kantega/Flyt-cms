@@ -13,7 +13,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsHiddenTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsHiddenTag.class);
-    private static final String SOURCE = "aksess.IsHiddenTag";
 
     private String attribute = null;
     private String contentId = null;

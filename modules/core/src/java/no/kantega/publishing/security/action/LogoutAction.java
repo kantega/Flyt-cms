@@ -29,7 +29,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LogoutAction extends HttpServlet {
-    private static String SOURCE = "aksess.LogoutAction";
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);

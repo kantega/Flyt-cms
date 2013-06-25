@@ -42,7 +42,6 @@ import java.util.Map;
 
 public class PermissionsAO {
     private static final Logger log = LoggerFactory.getLogger(PermissionsAO.class);
-    private static final String SOURCE = "aksess.PermissionsAO";
 
     public static Map<String, List<Permission>> getPermissionMap() throws SystemException {
         Map<String, List<Permission>> permissionSets = new HashMap<String, List<Permission>>();

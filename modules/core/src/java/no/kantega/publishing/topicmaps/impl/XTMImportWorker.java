@@ -40,7 +40,6 @@ import java.util.List;
 
 public class XTMImportWorker{
     private static final Logger log = LoggerFactory.getLogger(XTMImportWorker.class);
-    private static final String SOURCE = "aksess.XTMImportWorker";
 
     //In xtm 1.0 attribute xlink:href is used, in xtm 2.0 attribute href is used.
     private static final String[] ATTRIBUTE_HREF = {"xlink:href","href"};

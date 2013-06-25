@@ -48,7 +48,6 @@ import java.util.List;
 
 public abstract class AbstractMenuTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractMenuTag.class);
-    private static final String SOURCE = "aksess.AbstractMenuTag";
 
     protected String name = "menu";
     protected int siteId = -1;
@@ -305,7 +304,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
 
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return doIter();

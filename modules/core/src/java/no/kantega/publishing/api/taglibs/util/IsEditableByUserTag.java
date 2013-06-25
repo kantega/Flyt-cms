@@ -33,7 +33,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsEditableByUserTag.class);
-    private static final String SOURCE = "aksess.IsEditableByUserTag";
     private Content contentObject = null;
 
     protected boolean condition() {

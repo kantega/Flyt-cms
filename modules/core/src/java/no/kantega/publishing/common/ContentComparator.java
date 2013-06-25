@@ -40,7 +40,6 @@ import java.util.Map;
  */
 public class ContentComparator implements Comparator<Content> {
     private static final Logger log = LoggerFactory.getLogger(ContentComparator.class);
-    private static final String SOURCE = "aksess.ContentComparator";
 
     Map contentPages = new HashMap();
 

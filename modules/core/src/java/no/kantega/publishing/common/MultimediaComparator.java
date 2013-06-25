@@ -16,7 +16,6 @@ import java.util.Map;
  */
 
 public class MultimediaComparator  implements Comparator {
-    private static final String SOURCE = "aksess.ContentComparator";
 
     Map contentPages = new HashMap();
 

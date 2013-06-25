@@ -54,7 +54,6 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  */
 public class ContentRequestHandler extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
-    private static String SOURCE = "ContentRequestHandler";
 
     private SiteCache siteCache;
     private ContentRequestDispatcher contentRequestDispatcher;

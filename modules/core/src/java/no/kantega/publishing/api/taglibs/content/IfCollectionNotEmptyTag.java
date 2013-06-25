@@ -34,7 +34,6 @@ import java.util.List;
 
 public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {
     private static final Logger log = LoggerFactory.getLogger(IfCollectionNotEmptyTag.class);
-    private static final String SOURCE = "aksess.IfCollectionNotEmptyTag";
 
     public int doStartTag() throws JspException {
         try {
@@ -46,7 +45,7 @@ public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return EVAL_BODY_TAG;

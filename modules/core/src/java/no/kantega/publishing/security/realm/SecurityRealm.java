@@ -38,7 +38,6 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class SecurityRealm {
-    private static final String SOURCE = "aksess.SecurityRealm";
 
     ProfileManager profileManager;
     RoleManager roleManager;

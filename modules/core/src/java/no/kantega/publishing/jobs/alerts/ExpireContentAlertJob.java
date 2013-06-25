@@ -46,7 +46,6 @@ public class ExpireContentAlertJob {
     private static final Logger log = LoggerFactory.getLogger(ExpireContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 14;
-    private static String SOURCE = "ExpireContentAlertJob";
 
     @Autowired
     private SiteCache siteCache;

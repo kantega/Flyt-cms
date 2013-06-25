@@ -54,7 +54,6 @@ import java.util.Properties;
  */
 public class MailSender {
     private static final Logger log = LoggerFactory.getLogger(MailSender.class);
-    private static final String SOURCE = "Aksess.MailSender";
 
     /**
      * Sends a mail message. The message body is created by using a simple template mechanism. See MailTextReader.

@@ -22,15 +22,15 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.topicmaps.ao.rowmapper.TopicMapRowMapper;
 import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.jdbc.support.KeyHolder;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class JdbcTopicMapDao extends JdbcDaoSupport implements TopicMapDao {
+public class JdbcTopicMapDao extends NamedParameterJdbcDaoSupport implements TopicMapDao {
     private TopicMapRowMapper rowMapper = new TopicMapRowMapper();
 
     public List<TopicMap> getTopicMaps() {
@@ -43,7 +43,7 @@ public class JdbcTopicMapDao extends JdbcDaoSupport implements TopicMapDao {
 
     public TopicMap saveOrUpdateTopicMap(final TopicMap topicMap) {
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("Name", topicMap.getName());
         params.put("Url", topicMap.getUrl());
         params.put("IsEditable", topicMap.isEditable() ? 1 : 0);
@@ -60,7 +60,7 @@ public class JdbcTopicMapDao extends JdbcDaoSupport implements TopicMapDao {
         }else{
              params.put("id", topicMap.getId());
             String sql = "UPDATE tmmaps SET Name=:Name, Url=:Url, IsEditable=:IsEditable, WSOperation=:WSOperation, WSSoapAction=:WSSoapAction, WSEndPoint=:WSEndPoint WHERE id=:id";
-            getJdbcTemplate().update(sql, params);
+            getNamedParameterJdbcTemplate().update(sql, params);
         }
         return topicMap;
     }

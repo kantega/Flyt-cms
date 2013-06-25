@@ -34,7 +34,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsInPathTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsInPathTag.class);
-    private static final String SOURCE = "aksess.IsInPathTag";
 
     private String contentId = null;
     private Content contentObject = null;

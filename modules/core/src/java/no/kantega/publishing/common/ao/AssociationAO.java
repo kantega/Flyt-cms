@@ -33,7 +33,6 @@ import java.util.List;
 
 public class AssociationAO  {
     private static final Logger log = LoggerFactory.getLogger(AssociationAO.class);
-    private static final String SOURCE = "aksess.AssociationAO";
 
     public static Association getAssociationFromRS(ResultSet rs) throws SQLException {
         Association association = new Association();

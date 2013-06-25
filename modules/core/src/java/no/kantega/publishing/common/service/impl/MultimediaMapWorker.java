@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MultimediaMapWorker {
-    private static final String SOURCE = "aksess.MultimediaMapWorker";
 
     private static MultimediaMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {

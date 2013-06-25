@@ -18,7 +18,6 @@ package no.kantega.publishing.jobs.contentstate;
 
 
 public class ContentStateChangeJob  {
-    private static String SOURCE = "ContentStateChangeJob";
 
     public void execute() {
         ContentStateUpdater stateUpdater = new ContentStateUpdater();

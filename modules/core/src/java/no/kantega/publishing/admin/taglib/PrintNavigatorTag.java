@@ -38,7 +38,6 @@ import java.util.List;
 public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
     private static final Logger log = LoggerFactory.getLogger(PrintNavigatorTag.class);
-    private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintNavigatorTag";
 
     private NavigationMapEntry site;
     private int currentId;
@@ -126,7 +125,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
         currentId = -1;
         highlightCurrent = true;

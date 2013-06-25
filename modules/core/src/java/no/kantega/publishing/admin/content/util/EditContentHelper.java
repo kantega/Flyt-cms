@@ -51,7 +51,6 @@ import java.util.*;
 
 public class EditContentHelper {
     private static final Logger log = LoggerFactory.getLogger(EditContentHelper.class);
-    private static final String SOURCE = "aksess.admin.EditContentHelper";
 
     /**
      * Create a new Content object

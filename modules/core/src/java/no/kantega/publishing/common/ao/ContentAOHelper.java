@@ -40,7 +40,6 @@ import java.util.List;
  */
 public class ContentAOHelper {
     private static final Logger log = LoggerFactory.getLogger(ContentAOHelper.class);
-    private static final String SOURCE = "aksess.ContentAOHelper";
 
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
         Content content = new Content();

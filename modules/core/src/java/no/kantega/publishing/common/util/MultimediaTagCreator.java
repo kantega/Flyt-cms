@@ -35,7 +35,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class MultimediaTagCreator {
     private static final Logger log = LoggerFactory.getLogger(MultimediaTagCreator.class);
-    private static final String SOURCE = "aksess.MultimediaHelper";
 
     public static String mm2HtmlTag(Multimedia mm, String cssClass) {
         return mm2HtmlTag(Aksess.getContextPath(), mm, null, -1, -1, cssClass, false);

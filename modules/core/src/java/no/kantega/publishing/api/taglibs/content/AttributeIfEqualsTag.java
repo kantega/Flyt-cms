@@ -29,7 +29,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class AttributeIfEqualsTag  extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AttributeIfEqualsTag.class);
-    private static final String SOURCE = "aksess.AttributeIfEqualsTag";
 
     private String name = null;
     private String value = null;

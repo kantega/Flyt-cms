@@ -31,7 +31,6 @@ import java.util.List;
 
 public class PhotoAlbumHelper {
     private static final Logger log = LoggerFactory.getLogger(PhotoAlbumHelper.class);
-    private static final String SOURCE = "aksess.PhotoAlbumHelper";
 
     public static List getPhotos(PageContext pageContext, int albumId) {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -50,7 +49,7 @@ public class PhotoAlbumHelper {
 
         List<Multimedia> photos = (List)request.getAttribute("aksess_photos_" + albumId);
         if (photos == null) {
-            photos = new ArrayList<Multimedia>();
+            photos = new ArrayList<>();
 
             try {
                 MultimediaService mediaService = new MultimediaService(request);

@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class PhotoImageTag extends TagSupport {
-    private static final String SOURCE = "aksess.PhotoImageTag";
 
     private int offset = -1;
     private String settorequest = null;
@@ -140,7 +139,7 @@ public class PhotoImageTag extends TagSupport {
                     }
                 } else {
                     if (url != null) {
-                        if (url.indexOf("?") == -1) {
+                        if (!url.contains("?")) {
                             url = url + "?id=" + mm.getId();
                         } else {
                             url = url + "&amp;id=" + mm.getId();
@@ -158,7 +157,7 @@ public class PhotoImageTag extends TagSupport {
 
                 }
             } catch (IOException e) {
-                throw new JspTagException(SOURCE, e);
+                throw new JspTagException(e);
             }
         }
 

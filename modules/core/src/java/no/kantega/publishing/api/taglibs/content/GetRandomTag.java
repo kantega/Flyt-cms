@@ -38,7 +38,6 @@ import java.util.List;
 
 public class GetRandomTag  extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetRandomTag.class);
-    private static final String SOURCE = "aksess.GetRandomTag";
 
     private String name = null;
     private String associationCategory = null;
@@ -194,7 +193,7 @@ public class GetRandomTag  extends BodyTagSupport {
 
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
         if (tmpcollection != null && tmpcollection.size() > 0) {
             max = Math.min(max, tmpcollection.size());

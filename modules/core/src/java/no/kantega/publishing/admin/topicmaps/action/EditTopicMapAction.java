@@ -33,8 +33,7 @@ import java.util.Map;
 /**
  */
 public class EditTopicMapAction extends AbstractController {
-    private static String SOURCE = "aksess.EditTopicMapAction";
-    private String view;
+        private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

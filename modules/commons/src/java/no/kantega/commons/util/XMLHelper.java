@@ -41,7 +41,6 @@ import java.net.URL;
 public class XMLHelper {
     private static final Logger log = LoggerFactory.getLogger(XMLHelper.class);
 
-    private static final String SOURCE = "commons.XMLHelper";
 
     public static Document getDocument(String input) throws SystemException {
         Document doc = null;

@@ -34,7 +34,6 @@ import java.util.List;
 
 public class PrintSiteMapTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(PrintSiteMapTag.class);
-    private static final String SOURCE = "aksess.PrintSiteMapTag";
 
     private DateFormat dateFormat;
 

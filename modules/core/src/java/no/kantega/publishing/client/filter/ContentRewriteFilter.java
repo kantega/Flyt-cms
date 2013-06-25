@@ -17,16 +17,15 @@
 package no.kantega.publishing.client.filter;
 
 import no.kantega.publishing.common.util.CharResponseWrapper;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
-
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.context.WebApplicationContext;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -34,7 +33,6 @@ import org.springframework.web.context.WebApplicationContext;
  * Time: 11:13:54 AM
  */
 public class ContentRewriteFilter implements Filter {
-    private static String SOURCE = "aksess.ContentRewriteFilter";
     private ServletContext servletContext;
 
 

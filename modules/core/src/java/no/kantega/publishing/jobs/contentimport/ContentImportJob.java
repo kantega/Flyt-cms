@@ -47,7 +47,6 @@ import java.util.Map;
 public class ContentImportJob {
     private static final Logger log = LoggerFactory.getLogger(ContentImportJob.class);
 
-    private static final String SOURCE = "aksess.ContentImportJob";
 
 
     public void execute() {

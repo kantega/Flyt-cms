@@ -37,7 +37,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class GetMetaDataTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetMetaDataTag.class);
-    private static final String SOURCE = "aksess.GetMetaDataTag";
 
     private String name = null;
     private String contentId = null;

@@ -38,7 +38,6 @@ import java.util.Properties;
 public class ViewProfileController implements AksessController {
     private static final Logger log = LoggerFactory.getLogger(ViewProfileController.class);
 
-    private static String SOURCE = "aksess.ViewProfileController";
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         User user = null;

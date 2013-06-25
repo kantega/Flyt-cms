@@ -28,7 +28,6 @@ import java.util.Map;
 
 public class DisplayTemplateCache {
     private static final Logger log = LoggerFactory.getLogger(DisplayTemplateCache.class);
-    private static final String SOURCE = "aksess.DisplayTemplateCache";
 
     private static final HashMap<Integer, DisplayTemplate> displaytemplates = new HashMap<Integer, DisplayTemplate>();
     private static Date lastUpdate = null;

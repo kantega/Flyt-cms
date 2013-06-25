@@ -16,15 +16,11 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.ContentType;
-
-import java.util.*;
-import java.text.SimpleDateFormat;
-import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 public class Hearing {
-    private static final String SOURCE = "aksess.Hearing";
 
     private int id = -1;
 

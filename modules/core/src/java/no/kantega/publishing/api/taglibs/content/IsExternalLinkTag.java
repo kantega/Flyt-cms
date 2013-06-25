@@ -26,7 +26,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsExternalLinkTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsExternalLinkTag.class);
-    private static final String SOURCE = "aksess.IsExternalLinkTag";
 
     private String contentId = null;
     private String collection = null;

@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class SaveHearingHelper  {
-    private static final String SOURCE = "aksess.admin.SaveHearingHelper";
 
     private HttpServletRequest request = null;
     private Content content = null;

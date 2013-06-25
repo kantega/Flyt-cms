@@ -34,7 +34,6 @@ import java.util.List;
 
 public class PathWorker {
 
-    private static final String SOURCE = "aksess.PathWorker";
 
     public static List<PathEntry> getPathByAssociation(Association association) throws SystemException {
         List<PathEntry> pathEntries = new ArrayList<PathEntry>();

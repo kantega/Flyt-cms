@@ -38,7 +38,6 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class ContentlistAttribute extends ListAttribute {
     private static final Logger log = LoggerFactory.getLogger(ContentlistAttribute.class);
-    private static String SOURCE = "aksess.ContentlistAttribute";
 
     protected String contentTemplateId = null;
     protected int documentTypeId = -1;

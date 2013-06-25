@@ -40,7 +40,6 @@ import java.util.List;
 
 
 public class SiteMapWorker {
-    private static final String SOURCE = "aksess.SiteMapWorker";
 
     private static SiteMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {

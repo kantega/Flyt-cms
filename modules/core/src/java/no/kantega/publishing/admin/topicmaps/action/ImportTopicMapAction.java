@@ -16,8 +16,7 @@ import java.util.Map;
 
 public class ImportTopicMapAction extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(ImportTopicMapAction.class);
-    private static String SOURCE = "aksess.ImportTopicMapAction";
-    public final static String IMPORETED_TOPICMAP_SESSION_KEY = "importedTopicMapKey";
+        public final static String IMPORETED_TOPICMAP_SESSION_KEY = "importedTopicMapKey";
     private String view;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

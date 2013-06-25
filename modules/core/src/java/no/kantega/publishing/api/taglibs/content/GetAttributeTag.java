@@ -38,7 +38,6 @@ import javax.servlet.jsp.tagext.TagSupport;
  */
 public class GetAttributeTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetAttributeTag.class);
-    private static final String SOURCE = "aksess.GetAttributeTag";
 
     private String name = null;
     private String contentId = null;
@@ -185,7 +184,7 @@ public class GetAttributeTag extends TagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

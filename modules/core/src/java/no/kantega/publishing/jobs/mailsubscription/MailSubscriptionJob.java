@@ -17,7 +17,6 @@
 package no.kantega.publishing.jobs.mailsubscription;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.common.Aksess;
@@ -40,8 +39,6 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     private MailSubscriptionInterval interval = MailSubscriptionInterval.immediate;
 
     private List<MailSubscriptionAgent> mailSubscriptionAgents;
-
-    private SiteCache siteCache;
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
@@ -79,9 +76,5 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
     public void setMailSubscriptionAgents(List<MailSubscriptionAgent> mailSubscriptionAgents) {
         this.mailSubscriptionAgents = mailSubscriptionAgents;
-    }
-
-    public void setSiteCache(SiteCache siteCache) {
-        this.siteCache = siteCache;
     }
 }

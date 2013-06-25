@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.List;
 
 public class DeletedItemsAO {
-    private static final String SOURCE = "aksess.DeletedItemsAO";
 
     public static int addDeletedItem(DeletedItem item) throws SystemException {
         try (Connection c = dbConnectionFactory.getConnection()){

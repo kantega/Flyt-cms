@@ -41,7 +41,6 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class LinkExtractor {
     private static final Logger log = LoggerFactory.getLogger(LinkExtractor.class);
-    private static final String SOURCE = "aksess.LinkExtractor";
 
     private SAXParser parser;
     private final EventLog eventLog;
@@ -53,9 +52,7 @@ public class LinkExtractor {
         try {
             parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
             parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-        } catch (SAXNotSupportedException e) {
-            throw new RuntimeException(e);
-        } catch (SAXNotRecognizedException e) {
+        } catch (SAXNotSupportedException | SAXNotRecognizedException e) {
             throw new RuntimeException(e);
         }
 

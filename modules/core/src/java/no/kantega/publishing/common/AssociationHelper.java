@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssociationHelper {
-    private static final String SOURCE = "aksess.AssociationHelper";
 
     public static List<Association> createAssociationsFromParentIds(int[] parentIds) throws SystemException {
         List<Association> associations = new ArrayList<Association>();

@@ -30,7 +30,6 @@ import java.util.List;
 
 public class PaginateCollectionTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(PaginateCollectionTag.class);
-    private static final String SOURCE = "aksess.PaginateCollectionTag";
 
     private String collection = null;
     private String prevlabel = "previous";

@@ -76,7 +76,6 @@ import java.util.*;
  */
 public class ContentManagementService {
     private static final Logger log = LoggerFactory.getLogger(ContentManagementService.class);
-    private static final String SOURCE = "aksess.ContentManagementService";
 
     HttpServletRequest request = null;
     SecuritySession securitySession = null;

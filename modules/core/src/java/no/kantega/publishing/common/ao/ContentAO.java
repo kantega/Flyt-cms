@@ -48,7 +48,6 @@ import java.util.Date;
  *
  */
 public class ContentAO {
-    private static final String SOURCE = "aksess.ContentAO";
     private static final Logger log = LoggerFactory.getLogger(ContentAO.class);
 
     public static ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {

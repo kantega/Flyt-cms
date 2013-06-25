@@ -37,7 +37,6 @@ import java.util.List;
 
 public class GetNavigationPathTag  extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetNavigationPathTag.class);
-    private static final String SOURCE = "aksess.GetNavigationPathTag";
 
     private String name = "menu";
     private int defaultId = -1;
@@ -119,7 +118,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return doIter();

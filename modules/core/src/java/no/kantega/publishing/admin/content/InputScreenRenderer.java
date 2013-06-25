@@ -51,7 +51,6 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class InputScreenRenderer {
     private static final Logger log = LoggerFactory.getLogger(InputScreenRenderer.class);
-    private static final String SOURCE = "aksess.admin.InputScreenRenderer";
 
     private PageContext pageContext = null;
     private Content content = null;

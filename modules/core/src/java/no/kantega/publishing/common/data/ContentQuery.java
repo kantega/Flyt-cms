@@ -46,7 +46,6 @@ import java.util.Map;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
-    private static final String SOURCE = "aksess.ContentQuery";
 
     private ContentIdentifier associatedId = null;
     private AssociationCategory associationCategory = null;

@@ -37,7 +37,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetSiteMapTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetSiteMapTag.class);
-    private static final String SOURCE = "aksess.GetSiteMapTag";
 
     private String name = "sitemap";
     private int siteId = -1;
@@ -160,7 +159,7 @@ public class GetSiteMapTag  extends TagSupport {
 
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

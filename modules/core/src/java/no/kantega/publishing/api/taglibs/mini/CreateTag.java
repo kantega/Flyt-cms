@@ -43,7 +43,6 @@ import java.io.IOException;
 public class CreateTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(CreateTag.class);
 
-    private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
     private int displayTemplateId = -1;
     private int contentTemplateId = -1;
     private String parentId = null;
@@ -124,7 +123,7 @@ public class CreateTag extends AbstractSimpleEditTag {
                 //
         } catch (IOException e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

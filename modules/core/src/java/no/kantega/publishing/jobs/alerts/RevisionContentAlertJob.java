@@ -36,7 +36,6 @@ public class RevisionContentAlertJob {
     private static final Logger log = LoggerFactory.getLogger(RevisionContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 30;
-    private static String SOURCE = "RevisionContentAlertJob";
 
     public void execute() {
 

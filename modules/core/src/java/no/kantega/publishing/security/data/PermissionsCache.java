@@ -30,7 +30,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class PermissionsCache {
     private static final Logger log = LoggerFactory.getLogger(PermissionsCache.class);
-    private static final String SOURCE = "aksess.PermissionsCache";
 
     private static final Map<String, List<Permission>> permissions = new ConcurrentHashMap<>();
     private static Date lastUpdate = null;

@@ -39,7 +39,6 @@ import java.io.IOException;
 public class EditTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(EditTag.class);
 
-    private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.EditTag";
     private String associationId = null;
     private String action;
 
@@ -89,12 +88,9 @@ public class EditTag extends AbstractSimpleEditTag {
 
                 out.print(link.toString());                
             }
-        } catch (IOException e) {
+        } catch (IOException | SystemException e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
-        } catch (SystemException e) {
-            log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } catch (NotAuthorizedException e) {
             //
         } finally {

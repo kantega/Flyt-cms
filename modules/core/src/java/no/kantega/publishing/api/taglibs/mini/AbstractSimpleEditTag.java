@@ -26,7 +26,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Time: 1:28:25 PM
  */
 public class AbstractSimpleEditTag extends BodyTagSupport {
-    protected String SOURCE = "aksess.AbstractSimpleEditTag";
     protected String linkId = null;
     protected String cssclass = null;
     protected String redirectUrl = null;

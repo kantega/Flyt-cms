@@ -27,7 +27,6 @@ import java.sql.*;
 
 public class MultimediaImageMapAO {
     private static final Logger log = LoggerFactory.getLogger(MultimediaImageMapAO.class);
-    private static final String SOURCE = "aksess.MultimediaImageMapAO";
 
     /**
      * Get MultimediaImageMap for multimedia object

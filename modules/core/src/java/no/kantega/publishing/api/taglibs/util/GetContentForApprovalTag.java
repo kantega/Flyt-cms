@@ -28,7 +28,6 @@ import java.util.List;
 
 public class GetContentForApprovalTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetContentForApprovalTag.class);
-    private static final String SOURCE = "aksess.GetContentForApprovalTag";
 
     private String name = null;
 
@@ -44,7 +43,7 @@ public class GetContentForApprovalTag extends TagSupport {
             request.setAttribute(name, content);
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

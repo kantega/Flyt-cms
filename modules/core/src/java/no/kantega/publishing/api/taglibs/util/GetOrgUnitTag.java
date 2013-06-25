@@ -31,7 +31,6 @@ import java.util.Map;
 public class GetOrgUnitTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetOrgUnitTag.class);
 
-    private static final String SOURCE = "aksess.GetOrgUnitTag";
     private String name = "currentorgunit";
     private String orgUnitId = null;
 
@@ -61,7 +60,7 @@ public class GetOrgUnitTag extends TagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

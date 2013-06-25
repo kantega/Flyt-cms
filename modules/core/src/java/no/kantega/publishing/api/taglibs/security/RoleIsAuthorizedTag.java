@@ -15,7 +15,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class RoleIsAuthorizedTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(RoleIsAuthorizedTag.class);
-    private static final String SOURCE = "aksess.HasRoleTag";
 
     private String role;
     private String collection;

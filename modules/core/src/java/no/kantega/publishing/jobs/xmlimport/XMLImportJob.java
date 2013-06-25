@@ -33,7 +33,6 @@ import java.net.URL;
 
 public class XMLImportJob  extends QuartzJobBean {
     private static final Logger log = LoggerFactory.getLogger(XMLImportJob.class);
-    private static final String SOURCE = "aksess.jobs.XMLImportJob";
     private String id  = null;
     private String url = null;
     private XMLImportValidator validator = new DefaultXMLImportValidator();

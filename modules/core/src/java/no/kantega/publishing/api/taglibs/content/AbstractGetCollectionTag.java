@@ -51,7 +51,6 @@ import java.util.*;
  */
 public class AbstractGetCollectionTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractGetCollectionTag.class);
-    private static final String SOURCE = "aksess.AbstractGetCollectionTag";
 
     protected String name = null;
     protected String orderBy = null;

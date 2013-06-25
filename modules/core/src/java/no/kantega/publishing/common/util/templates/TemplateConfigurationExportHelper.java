@@ -46,7 +46,6 @@ import java.util.*;
  */
 public class TemplateConfigurationExportHelper {
     private static final Logger log = LoggerFactory.getLogger(TemplateConfigurationExportHelper.class);
-    private static String SOURCE = "aksess.TemplateConfigurationExportHelper";
 
     /**
      * Returns a templateconfiguration from database - used to export old versions to XML

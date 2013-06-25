@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class PhotoIndexTag extends TagSupport {
-    private static final String SOURCE = "aksess.PhotoImageTag";
 
     private int cols   = -1;
     private int max    = -1;
@@ -160,7 +159,7 @@ public class PhotoIndexTag extends TagSupport {
                 }
             }
         } catch (IOException e) {
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

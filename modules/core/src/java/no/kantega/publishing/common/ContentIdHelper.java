@@ -51,7 +51,6 @@ import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelper {
     private static final Logger log = LoggerFactory.getLogger(ContentIdHelper.class);
-    private static final String SOURCE = "aksess.ContentIdHelper";
 
     private static final int defaultContentID = -1;
     private static final int defaultSiteId = -1;

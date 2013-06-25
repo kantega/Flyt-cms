@@ -34,7 +34,6 @@ import java.util.Map;
 
 public class SystemStatusJob extends QuartzJobBean {
     private static final Logger log = LoggerFactory.getLogger(SystemStatusJob.class);
-    private static final String SOURCE = "aksess.jobs.SystemStatusJob";
 
 
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {

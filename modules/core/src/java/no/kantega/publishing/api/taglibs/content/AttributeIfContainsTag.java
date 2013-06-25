@@ -31,7 +31,6 @@ import java.util.StringTokenizer;
 
 public class AttributeIfContainsTag  extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AttributeIfContainsTag.class);
-    private static final String SOURCE = "aksess.AttributeContainsEqualsTag";
 
     private String name = null;
     private String value = null;

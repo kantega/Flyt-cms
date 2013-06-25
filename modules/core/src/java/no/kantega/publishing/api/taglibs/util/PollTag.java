@@ -47,7 +47,6 @@ import java.util.List;
 public class PollTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(PollTag.class);
 
-    private static String SOURCE = "aksess.PollTag";
     private JdbcTemplate jdbcTemplate;
     private Content containingPage;
     /**
@@ -66,10 +65,10 @@ public class PollTag  extends TagSupport {
             containingPage = new ContentManagementService(request).getContent(cid);
         } catch (SystemException e) {
             log.error("Error getting content", e);
-            throw new JspException(SOURCE, e);
+            throw new JspException(e);
         } catch (NotAuthorizedException e) {
             log.error("User not authorized", e);
-            throw new JspException(SOURCE, e);
+            throw new JspException(e);
         }
 
         jdbcTemplate = new JdbcTemplate((DataSource) RootContext.getInstance().getBean("aksessDataSource"));

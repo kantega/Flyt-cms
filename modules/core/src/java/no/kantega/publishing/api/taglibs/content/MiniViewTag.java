@@ -39,7 +39,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class MiniViewTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(MiniViewTag.class);
-    private static final String SOURCE = "aksess.MiniViewTag";
 
     private String collection = null;
 

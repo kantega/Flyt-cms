@@ -32,7 +32,6 @@ import java.io.InputStream;
  */
 public class XStreamTemplateConfigurationFactory implements TemplateConfigurationFactory {
     private static final Logger log = LoggerFactory.getLogger(XStreamTemplateConfigurationFactory.class);
-    private static String SOURCE = "aksess.XStreamTemplateConfigurationFactory";
 
     private InputStreamSource inputStreamSource;
 

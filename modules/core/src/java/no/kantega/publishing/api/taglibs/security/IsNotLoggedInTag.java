@@ -27,7 +27,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class IsNotLoggedInTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsNotLoggedInTag.class);
-    private static final String SOURCE = "aksess.IsLoggedInTag";
 
     public int doStartTag() throws JspException {
         return EVAL_BODY_TAG;
@@ -44,7 +43,7 @@ public class IsNotLoggedInTag extends BodyTagSupport {
             }
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

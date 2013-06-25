@@ -27,7 +27,6 @@ import java.util.Iterator;
 
 public class GetOptionsTag  extends LoopTagSupport {
 
-    private static final String SOURCE = "aksess.GetOptionsTag";
     private Iterator i;
     private String key;
     private int language = Language.NORWEGIAN_BO;

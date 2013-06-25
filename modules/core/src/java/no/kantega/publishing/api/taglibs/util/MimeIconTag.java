@@ -29,7 +29,6 @@ import java.io.IOException;
  */
 @Deprecated
 public class MimeIconTag extends TagSupport {
-    private static String SOURCE = "no.kantega.publishing.api.taglibs.util.MimeIconTag";
     private String mimetype = null;
     private String cssclass = null;
     private String alt = "";

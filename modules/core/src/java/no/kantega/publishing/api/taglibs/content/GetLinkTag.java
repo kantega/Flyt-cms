@@ -43,7 +43,6 @@ import static no.kantega.commons.util.URLHelper.getValidUrl;
 
 public class GetLinkTag extends BodyTagSupport{
     private static final Logger log = LoggerFactory.getLogger(GetLinkTag.class);
-    private static final String SOURCE = "aksess.GetLinkTag";
 
     private String collection = null;
     private String contentId  = null;

@@ -27,7 +27,6 @@ import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsLoggedInTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsLoggedInTag.class);
-    private static final String SOURCE = "aksess.IsLoggedInTag";
 
     protected boolean condition()  {
         HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();

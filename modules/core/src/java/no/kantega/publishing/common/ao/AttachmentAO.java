@@ -33,7 +33,6 @@ import java.util.List;
 
 
 public class AttachmentAO {
-    private static final String SOURCE = "aksess.AttachmentAO";
 
     private static final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
 

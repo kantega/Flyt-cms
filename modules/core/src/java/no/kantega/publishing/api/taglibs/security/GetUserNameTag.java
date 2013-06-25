@@ -32,7 +32,6 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetUserNameTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserNameTag.class);
-    private static final String SOURCE = "aksess.GetUserNameTag";
 
     private String userid;
     private boolean useCache;

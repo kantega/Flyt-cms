@@ -40,8 +40,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditContentAction implements Controller {
-    private static String SOURCE = "aksess.EditContentAction";
-    private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
+        private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);

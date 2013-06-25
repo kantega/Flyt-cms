@@ -54,7 +54,6 @@ import java.util.Map;
 
 public class SecuritySession {
     private static final Logger log = LoggerFactory.getLogger(SecuritySession.class);
-    private static String SOURCE = "SecuritySession";
 
     private User user = null;
     private Identity identity = null;

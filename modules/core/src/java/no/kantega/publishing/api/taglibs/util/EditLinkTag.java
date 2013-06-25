@@ -35,7 +35,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class EditLinkTag  extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(EditLinkTag.class);
-    private static final String SOURCE = "aksess.EditLinkTag";
 
     private String cssStyle = null;
     private String cssClass = null;
@@ -91,7 +90,7 @@ public class EditLinkTag  extends BodyTagSupport {
             // Gjør ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
             log.error("", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

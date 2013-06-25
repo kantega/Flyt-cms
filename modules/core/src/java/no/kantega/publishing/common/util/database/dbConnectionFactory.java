@@ -48,7 +48,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class dbConnectionFactory {
-    private static final String SOURCE = "aksess.DataBaseConnectionFactory";
 
     private static String dbDriver = null;
     private static String dbUsername = null;

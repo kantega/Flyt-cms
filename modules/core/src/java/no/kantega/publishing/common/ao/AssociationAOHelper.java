@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class AssociationAOHelper {
-    private static final String SOURCE = "aksess.AssociationAOHelper";
 
     public static void fixDefaultPostings() throws SystemException {
         try (Connection c = dbConnectionFactory.getConnection()) {

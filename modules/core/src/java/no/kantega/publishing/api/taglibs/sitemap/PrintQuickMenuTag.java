@@ -34,7 +34,6 @@ import java.util.List;
  */
 public class PrintQuickMenuTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(PrintQuickMenuTag.class);
-    private static final String SOURCE = "aksess.PrintQuickMenuTag";
 
     private String name = "sitemap";
     private String hasChildrenCssClass = "";
@@ -47,9 +46,9 @@ public class PrintQuickMenuTag extends TagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         SiteMapEntry sitemap = (SiteMapEntry) request.getAttribute(name);
         JspWriter out = pageContext.getOut();
-        currentPageId = sitemap.getContentId();
 
         if(sitemap != null){
+            currentPageId = sitemap.getContentId();
             try {
                 printQuickMenu(sitemap, 0, out);
             } catch (IOException e) {

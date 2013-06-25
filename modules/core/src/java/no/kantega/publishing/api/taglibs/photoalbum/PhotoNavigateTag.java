@@ -29,7 +29,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
 public class PhotoNavigateTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.PhotoImageTag";
 
     private String cssClass = null;
     private int offset = 0;
@@ -97,7 +96,7 @@ public class PhotoNavigateTag extends BodyTagSupport {
                 }
             }
         } catch (Exception e) {
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

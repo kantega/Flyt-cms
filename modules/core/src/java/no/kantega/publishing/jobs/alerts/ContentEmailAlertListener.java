@@ -30,7 +30,6 @@ import java.util.Map;
 
 public class ContentEmailAlertListener implements ContentAlertListener {
     private static final Logger log = LoggerFactory.getLogger(ContentEmailAlertListener.class);
-    private static String SOURCE = "ContentEmailAlertListener";
 
     private String mailSubject = "Aksess Publisering";
     private String mailTemplate = "expirecontent.vm";

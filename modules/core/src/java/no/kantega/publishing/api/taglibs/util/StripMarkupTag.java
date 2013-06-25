@@ -4,7 +4,6 @@ import no.kantega.publishing.common.StripHTML;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.BodyContent;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
@@ -14,7 +13,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Time: 3:46:57 PM
  */
 public class StripMarkupTag extends BodyTagSupport {
-    private String SOURCE = "aksess.StripMarkupTag";
     private String tags = null;
     private boolean all = false;
     private boolean skipTags = true;
@@ -42,7 +40,7 @@ public class StripMarkupTag extends BodyTagSupport {
             }
             out.write(newBody);
         } catch (Exception e) {
-            throw new JspException(SOURCE + " : " + e.getMessage());
+            throw new JspException(e);
         } finally {
             bodyContent.clearBody();
         }

@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 
 public class PrettyURLEncoder {
     private static final Logger log = LoggerFactory.getLogger(PrettyURLEncoder.class);
-    private static final String SOURCE = "aksess.PrettyURLEncoder";
 
     private static char[] space = {' ', '-'};
     private static char[] slash = {'/', '-'};

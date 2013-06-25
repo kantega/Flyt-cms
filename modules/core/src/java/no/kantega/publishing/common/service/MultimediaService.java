@@ -38,13 +38,13 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultimediaService {
-    private static final String SOURCE = "aksess.ContentManagementService";
 
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
@@ -54,9 +54,10 @@ public class MultimediaService {
     private EventLog eventLog;
 
     public MultimediaService() {
-        multimediaUsageDao = RootContext.getInstance().getBean(MultimediaUsageDao.class);
-        multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
-        eventLog = RootContext.getInstance().getBean(EventLog.class);
+        ApplicationContext ctx = RootContext.getInstance();
+        multimediaUsageDao = ctx.getBean(MultimediaUsageDao.class);
+        multimediaDao = ctx.getBean(MultimediaDao.class);
+        eventLog = ctx.getBean(EventLog.class);
 
     }
 

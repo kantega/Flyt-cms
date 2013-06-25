@@ -35,7 +35,6 @@ public class GetHtmlTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetHtmlTag.class);
 
     private String url;
-    private static String SOURCE = "aksess.GetHtmlTag";
 
 
     public int doStartTag() throws JspException {

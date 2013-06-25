@@ -31,14 +31,11 @@ import java.util.Date;
  * Time: 10:29:20 AM
  */
 public class ScheduleLogAO {
-    private static String SOURCE = "ScheduleLogAO";
 
     public static Date getLastRun(String service) throws SystemException {
         Date lastRun = null;
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             PreparedStatement st = c.prepareStatement("select * from schedulelog where Service = ?");
             st.setString(1, service);
@@ -50,15 +47,6 @@ public class ScheduleLogAO {
 
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
-        } finally {
-
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         return lastRun;
@@ -69,9 +57,7 @@ public class ScheduleLogAO {
 
         if (lastRun == null) lastRun = new Date();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             PreparedStatement st;
 
@@ -90,15 +76,6 @@ public class ScheduleLogAO {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
-        } finally {
-
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
     }

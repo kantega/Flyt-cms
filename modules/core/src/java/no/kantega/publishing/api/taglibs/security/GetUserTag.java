@@ -38,7 +38,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetUserTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserTag.class);
-    private static final String SOURCE = "aksess.GetUserTag";
 
     private String name = "currentuser";
     private String userid = null;
@@ -93,7 +92,7 @@ public class GetUserTag  extends TagSupport {
             }
         } catch (Exception e) {
             log.error("Error setting user", e);
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;
