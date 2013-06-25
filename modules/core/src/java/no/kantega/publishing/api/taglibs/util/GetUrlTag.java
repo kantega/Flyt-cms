@@ -16,12 +16,13 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -34,6 +35,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.taglibs.standard.tag.common.core.ImportSupport.isAbsoluteUrl;
 
 public class GetUrlTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetUrlTag.class);
 
     String url = null;
     String queryParams = null;
@@ -94,7 +96,7 @@ public class GetUrlTag extends TagSupport {
             }
 
         } catch (Exception e){
-            Log.error("aksess.GetUrlTag", e);
+            log.error("", e);
             throw new JspException(e);
         }
 

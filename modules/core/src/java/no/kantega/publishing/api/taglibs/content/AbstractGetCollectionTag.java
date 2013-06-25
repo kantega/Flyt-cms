@@ -19,7 +19,6 @@ package no.kantega.publishing.api.taglibs.content;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
@@ -32,6 +31,8 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ import java.util.*;
  * Time: 2:28:40 PM
  */
 public class AbstractGetCollectionTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(AbstractGetCollectionTag.class);
     private static final String SOURCE = "aksess.AbstractGetCollectionTag";
 
     protected String name = null;
@@ -422,7 +424,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         } catch (NumberFormatException e) {
             // Do nothing, name of displaytemplate was supplied instead of id
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error setting displaytemplate " + displayTemplate, e);
         }
 
         this.displayTemplate = displayTemplate;
@@ -444,7 +446,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                         this.siteId = site.getId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e1, null, null);
+                    log.error("Could not set site " + siteId, e1);
                 }
             }
         }
@@ -544,7 +546,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 try {
                     date = df.parse((String)dateObj);
                 } catch (ParseException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Could not parse " + date, e);
                 }
             }
         }
@@ -579,7 +581,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                         }
                         pathElementIds[i] = pathElementId;
                     } catch (NumberFormatException e) {
-                        Log.error(SOURCE, e, null, null);
+                        log.error("Could not parse " + elementId, e);
                     }
                 }
             }

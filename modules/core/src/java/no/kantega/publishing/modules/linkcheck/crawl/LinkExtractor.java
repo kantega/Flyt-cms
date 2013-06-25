@@ -17,7 +17,6 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -29,6 +28,8 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import org.cyberneko.html.parsers.SAXParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -39,6 +40,7 @@ import java.util.List;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class LinkExtractor {
+    private static final Logger log = LoggerFactory.getLogger(LinkExtractor.class);
     private static final String SOURCE = "aksess.LinkExtractor";
 
     private SAXParser parser;
@@ -80,9 +82,8 @@ public class LinkExtractor {
                         }
                     } catch (Throwable e) {
                         eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
-                        Log.error(SOURCE, String.format("contentId: %s, associationid: %s, attribute: %s \n %s",
-                                content.getId(), content.getAssociation().getId(), attrName, html), null, null);
-                        Log.error(SOURCE, e, null, null);
+                        log.error("contentId: {}, associationid: {}, attribute: {} {}",
+                                content.getId(), content.getAssociation().getId(), attrName, html);
                     }
                 } else if (attribute instanceof UrlAttribute) {
                     String link = attribute.getValue();

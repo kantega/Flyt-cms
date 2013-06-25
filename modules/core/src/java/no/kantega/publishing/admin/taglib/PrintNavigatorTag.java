@@ -16,9 +16,10 @@
 
 package no.kantega.publishing.admin.taglib;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.data.NavigationMapEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -36,6 +37,7 @@ import java.util.List;
  */
 public abstract class PrintNavigatorTag extends SimpleTagSupport {
 
+    private static final Logger log = LoggerFactory.getLogger(PrintNavigatorTag.class);
     private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintNavigatorTag";
 
     private NavigationMapEntry site;
@@ -123,7 +125,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
                 status.incrementIndex();
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
         currentId = -1;

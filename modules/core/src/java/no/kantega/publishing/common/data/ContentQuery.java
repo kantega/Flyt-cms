@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -33,6 +32,8 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,6 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ContentQuery {
+    private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
     private static final String SOURCE = "aksess.ContentQuery";
 
     private ContentIdentifier associatedId = null;
@@ -102,11 +104,9 @@ public class ContentQuery {
         String query = qp.getQuery();
         List<Object> parameters= qp.getParams();
 
-        //Log.debug(SOURCE, "Query:" + query, null, null);
         PreparedStatement st = c.prepareStatement(query);
         for (int i = 0; i < parameters.size(); i++) {
             Object o = parameters.get(i);
-            //Log.debug(SOURCE, "Parameter:" + (i+1) + ":" + o, null, null);
             if (o instanceof Date) {
                 Date d = (Date)o;
                 st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
@@ -391,7 +391,7 @@ public class ContentQuery {
             if (intersectingTopics) {
                 // Cannot be done via join, potensially slow method
                 if (driver.contains("mysql")) {
-                    Log.info(SOURCE, "Using query with intersectingTopics is slow on MySQL", null, null);
+                    log.info( "Using query with intersectingTopics is slow on MySQL");
                 }
 
                 query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where ");
@@ -472,10 +472,8 @@ public class ContentQuery {
 
         if (attributes != null) {
             try {
-                // Mø gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
-                Connection c = null;
-                try {
-                    c = dbConnectionFactory.getConnection();
+                // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
+                try (Connection c = dbConnectionFactory.getConnection()){
                     PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
                     for (Attribute a : attributes) {
                         st.setString(1, a.getName());
@@ -499,13 +497,9 @@ public class ContentQuery {
                         }
                     }
                     st.close();
-                } finally {
-                    if(c != null) {
-                        c.close();
-                    }
                 }
             } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("Error when getting contentid", e);
             }
         }
 
@@ -610,7 +604,7 @@ public class ContentQuery {
                 if (ct != null) {
                     id = ct.getId();
                 } else {
-                    Log.info(SOURCE, "Reference to contenttemplate which does not exists:" + template, null, null);
+                    log.info( "Reference to contenttemplate which does not exists:" + template);
                 }
             }
             this.contentTemplate[i] = id;
@@ -699,7 +693,7 @@ public class ContentQuery {
                 if (dt != null) {
                     id = dt.getId();
                 } else {
-                    Log.info(SOURCE, "Reference to displaytemplate which does not exists:" + template, null, null);
+                    log.info( "Reference to displaytemplate which does not exists:" + template);
                 }
             }
             this.displayTemplate[i] = id;

@@ -19,7 +19,6 @@ package no.kantega.publishing.client;
 import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
@@ -28,6 +27,8 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -45,7 +46,8 @@ import java.util.regex.Pattern;
  * - /attachment/${id}/filename
  */
 public class AttachmentRequestHandler extends HttpServlet {
-    private static String SOURCE = "aksess.AttachmentRequestHandler";
+    private static final Logger log = LoggerFactory.getLogger(AttachmentRequestHandler.class);
+
     private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
 
     private SiteCache siteCache;
@@ -67,7 +69,7 @@ public class AttachmentRequestHandler extends HttpServlet {
                 try {
                     attachmentId = Integer.parseInt(id);
                 } catch (NumberFormatException e) {
-                    Log.error(SOURCE, "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
+                    log.error( "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
                 }
             } else {
                 attachmentId = param.getInt("id");
@@ -79,7 +81,7 @@ public class AttachmentRequestHandler extends HttpServlet {
                             attachmentId = Integer.parseInt(matcher.group(1));
                         }
                     } catch (NumberFormatException e) {
-                        Log.error(SOURCE, "Invalid attachment request " + info);
+                        log.error( "Invalid attachment request " + info);
                     }
                 }
             }
@@ -100,7 +102,7 @@ public class AttachmentRequestHandler extends HttpServlet {
             Attachment attachment = cs.getAttachment(attachmentId, siteId);
             if (attachment == null) {
                 // Attachment not found
-                Log.error(SOURCE, "Attachment not found. Attachment id requested: " + attachmentId + " on siteId: " + siteId, null, null);
+                log.error( "Attachment not found. Attachment id requested: " + attachmentId + " on siteId: " + siteId);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
@@ -131,13 +133,14 @@ public class AttachmentRequestHandler extends HttpServlet {
                 if (attachment.getSize() > 0) {
  	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
                 }
+                log.info("Sending attachment {}", attachmentId);
                 cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
                 out.flush();
             } catch (Exception e) {
                 // Client has aborted / connection closed
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error streaming attachment", e);
         }
     }
 

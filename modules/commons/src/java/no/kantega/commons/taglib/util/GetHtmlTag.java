@@ -16,9 +16,10 @@
 
 package no.kantega.commons.taglib.util;
 
-import no.kantega.commons.log.Log;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -31,6 +32,7 @@ import java.io.IOException;
  * Time: 13:20:17
  */
 public class GetHtmlTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetHtmlTag.class);
 
     private String url;
     private static String SOURCE = "aksess.GetHtmlTag";
@@ -47,10 +49,7 @@ public class GetHtmlTag extends TagSupport {
             String html = m.getResponseBodyAsString();
             pageContext.getOut().write(html);
         } catch (IOException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (IllegalArgumentException e) {
-            // failure to parse url, shouldn't take down the page
-            Log.error(SOURCE, e, null, null);
+            log.error("Error writing to stream", e);
         }
 
         return SKIP_BODY;

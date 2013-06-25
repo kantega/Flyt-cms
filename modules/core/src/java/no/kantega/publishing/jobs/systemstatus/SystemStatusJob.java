@@ -17,9 +17,10 @@
 package no.kantega.publishing.jobs.systemstatus;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.lang.management.ManagementFactory;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SystemStatusJob extends QuartzJobBean {
+    private static final Logger log = LoggerFactory.getLogger(SystemStatusJob.class);
     private static final String SOURCE = "aksess.jobs.SystemStatusJob";
 
 
@@ -60,8 +62,8 @@ public class SystemStatusJob extends QuartzJobBean {
         try {
             debugConnectionsLogThreshold = Aksess.getConfiguration().getInt("database.debugconnections.logthreshold", 10);
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
-            Log.error(SOURCE, e);
+            log.debug( "********* Klarte ikke å lese aksess.conf **********");
+            log.error("", e);
         }
 
         if (dbConnectionFactory.isDebugConnections() && dbConnectionFactory.getActiveConnections() >= debugConnectionsLogThreshold) {
@@ -77,6 +79,6 @@ public class SystemStatusJob extends QuartzJobBean {
                 }
             }
         }
-        Log.info(SOURCE, msg.toString(), null, null);
+        log.info( msg.toString());
     }
 }

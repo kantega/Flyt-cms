@@ -17,12 +17,13 @@
 package no.kantega.publishing.api.taglibs.mini;
 
 import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.InputScreenRenderer;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import java.io.IOException;
  * Time: 12:22:03
  */
 public class InputScreenTag extends SimpleTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(InputScreenTag.class);
 
     @Override
     public void doTag() throws JspException, IOException {
@@ -54,11 +56,11 @@ public class InputScreenTag extends SimpleTagSupport {
                 pageContext.include("/WEB-INF/jsp/admin/layout/fragments/addattributebutton.jsp");
             }
         } catch (InvalidFileException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         } catch (InvalidTemplateException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         } catch (ServletException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         }
     }
 }

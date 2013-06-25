@@ -17,20 +17,13 @@
 package no.kantega.commons.configuration;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.apache.log4j.BasicConfigurator;
 
 import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: May 29, 2009
- * Time: 12:57:56 PM
- * To change this template use File | Settings | File Templates.
- */
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 public class DefaultConfigurationLoaderTest {
 
 

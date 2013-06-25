@@ -18,10 +18,10 @@ package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.log.Log;
-import no.kantega.commons.util.Base64;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
@@ -33,23 +33,21 @@ import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.role.RoleManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LoginAction extends AbstractLoginAction {
+    private static final Logger log = LoggerFactory.getLogger(LoginAction.class);
 
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
@@ -93,6 +91,7 @@ public class LoginAction extends AbstractLoginAction {
             model.put("allowPasswordReset", true);
         }
 
+
         if (passwordManager == null) {
             throw new ConfigurationException("PasswordManager == null");
         }
@@ -109,10 +108,10 @@ public class LoginAction extends AbstractLoginAction {
                 // User or ip should be blocked, to many login attempts
                 if (blockedUser) {
                     model.put("blockedUser", Boolean.TRUE);
-                    Log.info(this.getClass().getName(), "Too many attempts. User is blocked from login:" + username, null, null);
+                    log.info( "Too many attempts. User is blocked from login:" + username);
                 } else {
                     model.put("blockedIP", Boolean.TRUE);
-                    Log.info(this.getClass().getName(), "Too many attempts. IP-address is blocked from login:" + request.getRemoteAddr(), null, null);
+                    log.info( "Too many attempts. IP-adress is blocked from login:" + request.getRemoteAddr());
                 }
             } else {
                 if (passwordManager.verifyPassword(identity, password)) {

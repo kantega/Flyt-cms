@@ -19,12 +19,13 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletRequest;
  * Time: 11:06:12 AM
  */
 public class MapUserAttributeValueToContentPropertyBehaviour implements MapAttributeValueToContentPropertyBehaviour {
+    private static final Logger log = LoggerFactory.getLogger(MapUserAttributeValueToContentPropertyBehaviour.class);
     private final static String SOURCE = "aksess.MapUserAttributeValueToContentPropertyBehaviour";
 
     public void mapAttributeValue(RequestParameters param, Content content, Attribute attribute, String field, ValidationErrors errors) {
@@ -51,7 +53,7 @@ public class MapUserAttributeValueToContentPropertyBehaviour implements MapAttri
                 }
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error getting user", e);
         }
 
         if (field != null) {

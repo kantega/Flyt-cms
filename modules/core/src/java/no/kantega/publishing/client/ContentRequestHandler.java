@@ -20,7 +20,6 @@ import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -34,6 +33,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.MultipartFilter;
@@ -52,6 +53,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
 public class ContentRequestHandler extends AbstractController {
+    private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
     private static String SOURCE = "ContentRequestHandler";
 
     private SiteCache siteCache;
@@ -86,7 +88,7 @@ public class ContentRequestHandler extends AbstractController {
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 if (request.getMethod().toLowerCase().equals("post") && (request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {
-                    Log.error(SOURCE, "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action");
+                    log.error( "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action");
                 }
             }
 
@@ -129,7 +131,7 @@ public class ContentRequestHandler extends AbstractController {
             try {
                 RequestHelper.setRequestAttributes(request, null);
             } catch (SystemException e1) {
-                Log.error(SOURCE, e1, null, null);
+                log.error("Could not set request attributes", e1);
             }
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         } catch (Throwable e) {
@@ -139,8 +141,8 @@ public class ContentRequestHandler extends AbstractController {
                     e = sex.getRootCause();
                 }
             }
-            Log.error(SOURCE, request.getRequestURI());
-            Log.error(SOURCE, e, null, null);
+            log.error( request.getRequestURI());
+            log.error("", e);
             throw new ServletException(e);
         }
         return null;
@@ -157,7 +159,7 @@ public class ContentRequestHandler extends AbstractController {
         message.append(", template:");
         message.append(content.getDisplayTemplateId());
         message.append(")");
-        Log.info(SOURCE, message.toString());
+        log.info( message.toString());
     }
 
     private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {

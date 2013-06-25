@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
@@ -45,6 +44,8 @@ import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,6 +60,7 @@ import java.util.*;
  */
 @Controller
 public class ContentPropertiesAction {
+    private static final Logger log = LoggerFactory.getLogger(ContentPropertiesAction.class);
 
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
@@ -174,7 +176,7 @@ public class ContentPropertiesAction {
                             owner = ownerUnit.getName();
                         }
                     } catch (Exception e) {
-                        Log.info(this.getClass().getName(), "Unable to resolve OrgUnit for orgUnitId: " + owner);
+                        log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
                     }
                 }
             }
@@ -193,7 +195,7 @@ public class ContentPropertiesAction {
 
 
         } catch (SystemException | NotAuthorizedException | ContentNotFoundException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
             return null;
         }
     }
@@ -211,7 +213,7 @@ public class ContentPropertiesAction {
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             return sdf.format(date);
         } catch (Exception e) {
-            Log.info(this.getClass().getName(), "Unparseable date: " + date, null, null);
+            log.info( "Unparseable date: " + date);
             return "";
         }
     }

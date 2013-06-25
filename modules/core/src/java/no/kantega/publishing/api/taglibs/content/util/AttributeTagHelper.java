@@ -19,7 +19,6 @@ package no.kantega.publishing.api.taglibs.content.util;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -41,6 +40,8 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -56,6 +57,7 @@ import static no.kantega.commons.util.URLHelper.getValidUrl;
  *
  */
 public final class AttributeTagHelper {
+    private static final Logger log = LoggerFactory.getLogger(AttributeTagHelper.class);
     public final static String COLLECTION_PAGE_VAR = "aksess_collection_";
     public final static String REPEATER_CONTENT_OBJ_PAGE_VAR = "aksess_repeater_contentObj_";
     public final static String REPEATER_OFFSET_PAGE_VAR = "aksess_repeater_offset_";
@@ -441,7 +443,7 @@ public final class AttributeTagHelper {
                 try{
                     associationId = Integer.parseInt(id);
                 } catch(NumberFormatException e){
-                    Log.error("AttributeTagHelper", e, null, null);
+                    log.error("", e);
                 }
             } else {
                 //Alias
@@ -449,7 +451,7 @@ public final class AttributeTagHelper {
                     ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
                     associationId = contentIdentifier.getAssociationId();
                 } catch (Exception e) {
-                    Log.error("AttributeTagHelper", e);
+                    log.error("", e);
                 }
             }
         }
@@ -501,7 +503,7 @@ public final class AttributeTagHelper {
         if (repeaterName != null) {
             Integer offset = (Integer)pageContext.getAttribute(REPEATER_OFFSET_PAGE_VAR + repeaterName);
             if (offset == null) {
-                Log.error("AttributeTagHelper", "Returning first element - <aksess:getattribute repeater=" + repeaterName + "> must be used inside a <aksess:repeatattributes name=" + repeaterName + "> tag");
+                log.error( "Returning first element - <aksess:getattribute repeater=" + repeaterName + "> must be used inside a <aksess:repeatattributes name=" + repeaterName + "> tag");
                 name = repeaterName + "[0]." + attributeName;
             } else {
                 name = repeaterName + "[" + offset + "]." + attributeName;

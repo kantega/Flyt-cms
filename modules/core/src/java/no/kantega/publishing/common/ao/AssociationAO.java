@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
@@ -25,12 +24,15 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.ao.PermissionsAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssociationAO  {
+    private static final Logger log = LoggerFactory.getLogger(AssociationAO.class);
     private static final String SOURCE = "aksess.AssociationAO";
 
     public static Association getAssociationFromRS(ResultSet rs) throws SQLException {
@@ -121,7 +123,7 @@ public class AssociationAO  {
         if (rs.next()) {
             a.setId(rs.getInt(1));
         } else {
-            Log.error(SOURCE, "Feilet ved uthenting av nøkkel - id", null, null);
+            log.error( "Feilet ved uthenting av nøkkel - id");
         }
         rs.close();
         st.close();

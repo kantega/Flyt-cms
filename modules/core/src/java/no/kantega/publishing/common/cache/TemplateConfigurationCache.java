@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.common.cache;
 
-import no.kantega.publishing.common.data.*;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.util.templates.ContentTemplateReader;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationFactory;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.util.LocaleLabels;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import java.util.*;
-
-import org.springframework.context.ApplicationContext;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -36,6 +36,7 @@ import org.springframework.context.ApplicationContext;
  * Time: 1:41:53 PM
  */
 public class TemplateConfigurationCache {
+    private static final Logger log = LoggerFactory.getLogger(TemplateConfigurationCache.class);
     private static final String SOURCE = "aksess.TemplateConfigurationCache";
 
     private Date lastUpdate;
@@ -66,7 +67,7 @@ public class TemplateConfigurationCache {
     }
 
     public synchronized void updateCache() {
-        Log.debug(SOURCE, "Updating template configuration cache", null, null);
+        log.debug( "Updating template configuration cache");
         configuration = configurationFactory.getConfiguration();
 
         // Sort lists
@@ -91,7 +92,7 @@ public class TemplateConfigurationCache {
             List<TemplateConfigurationValidationError> templateErrors = contentTemplateReader.updateContentTemplateFromTemplateFile(contentTemplate);
             for (TemplateConfigurationValidationError error : templateErrors) {
                 String msg = LocaleLabels.getLabel(error.getMessage(), new Locale("en", "EN"));
-                Log.error(SOURCE, "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData(), null, null);
+                log.error( "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData());
             }
         }
 
@@ -99,23 +100,23 @@ public class TemplateConfigurationCache {
         List <TemplateConfigurationValidationError> errors = configurationValidator.validate(configuration);
         for (TemplateConfigurationValidationError error : errors) {
             String msg = LocaleLabels.getLabel(error.getMessage(), new Locale("en", "EN"));
-            Log.error(SOURCE, "Error in templateconfig: " + error.getObject() + ":" + msg + ":" + error.getData(), null, null);
+            log.error( "Error in templateconfig: " + error.getObject() + ":" + msg + ":" + error.getData());
         }
 
         if (configuration.getSites().size() == 0) {
-            Log.error(SOURCE, "No sites defined in aksess-templateconfig.xml", null, null);
+            log.error( "No sites defined in aksess-templateconfig.xml");
         }
 
         if (configuration.getAssociationCategories().size() == 0) {
-            Log.error(SOURCE, "No association categories defined in aksess-templateconfig.xml", null, null);
+            log.error( "No association categories defined in aksess-templateconfig.xml");
         }
 
         if (configuration.getContentTemplates().size() == 0) {
-            Log.error(SOURCE, "No content templates defined in aksess-templateconfig.xml", null, null);
+            log.error( "No content templates defined in aksess-templateconfig.xml");
         }
 
         if (configuration.getDisplayTemplates().size() == 0) {
-            Log.error(SOURCE, "No display templates defined in aksess-templateconfig.xml", null, null);
+            log.error( "No display templates defined in aksess-templateconfig.xml");
         }
 
         lastUpdate = new Date();
@@ -125,7 +126,7 @@ public class TemplateConfigurationCache {
         List<TemplateConfigurationValidationError> templateErrors = contentTemplateReader.updateContentTemplateFromTemplateFile(contentTemplate);
         for (TemplateConfigurationValidationError error : templateErrors) {
             String msg = LocaleLabels.getLabel(error.getMessage(), new Locale("en", "EN"));
-            Log.error(SOURCE, "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData(), null, null);
+            log.error( "Error in template: " + error.getObject() + ":" + msg + ":" + error.getData());
         }
     }
 

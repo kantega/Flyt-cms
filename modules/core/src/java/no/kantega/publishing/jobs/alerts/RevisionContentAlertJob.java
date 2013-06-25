@@ -16,22 +16,24 @@
 
 package no.kantega.publishing.jobs.alerts;
 
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
 public class RevisionContentAlertJob {
+    private static final Logger log = LoggerFactory.getLogger(RevisionContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 30;
     private static String SOURCE = "RevisionContentAlertJob";
@@ -39,12 +41,12 @@ public class RevisionContentAlertJob {
     public void execute() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         
         try {
-            Log.debug(SOURCE, "Looking for content revision in " + daysBeforeWarning + " days", null, null);
+            log.debug( "Looking for content revision in " + daysBeforeWarning + " days");
 
             Map users = new HashMap();
 
@@ -90,18 +92,18 @@ public class RevisionContentAlertJob {
 
                 // Send message using listeners
                 if (ownerPerson != null) {
-                    Log.debug(SOURCE, "Sending alert to user " + ownerPerson.getId() + " - " + userContentList.size() + " docs for revision", null, null);
+                    log.debug( "Sending alert to user " + ownerPerson.getId() + " - " + userContentList.size() + " docs for revision");
                     for (int j = 0; j < listeners.length; j++) {
                         ContentAlertListener listener = listeners[j];
                         listener.sendContentAlert(ownerPerson, userContentList);
                     }
                 } else {
-                    Log.debug(SOURCE, "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs for revision", null, null);
+                    log.debug( "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs for revision");
                 }
             }
 
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error when seding revision alert", e);
         }
 
     }

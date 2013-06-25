@@ -751,6 +751,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
     <!-- Various -->
+    <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">

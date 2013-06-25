@@ -1,10 +1,11 @@
 package no.kantega.publishing.admin.taglib;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.jsp.JspException;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(PrintOrgUnitNavigatorTag.class);
 
     private static final String SOURCE = "no.kantega.publishing.admin.taglib.PrintOrgUnitNavigatorTag";
 
@@ -88,7 +90,7 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
             }
             printUnit(null, manager);
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Could not print org unit", e);
             throw new JspTagException(SOURCE, e);
         }
         openUnits = null;

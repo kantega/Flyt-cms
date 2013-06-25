@@ -17,7 +17,6 @@
 package no.kantega.publishing.common;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.data.attributes.DateAttribute;
 import no.kantega.publishing.common.data.attributes.NumberAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.Collator;
 import java.util.Comparator;
@@ -38,6 +39,7 @@ import java.util.Map;
  * Compare content objects based on a given fieldname.
  */
 public class ContentComparator implements Comparator<Content> {
+    private static final Logger log = LoggerFactory.getLogger(ContentComparator.class);
     private static final String SOURCE = "aksess.ContentComparator";
 
     Map contentPages = new HashMap();
@@ -102,9 +104,9 @@ public class ContentComparator implements Comparator<Content> {
                 cp = ContentAO.getContent(cid, false);
                 contentPages.put(id, cp);
             } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             } catch (NumberFormatException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
 

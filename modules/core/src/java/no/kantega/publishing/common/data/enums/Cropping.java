@@ -1,6 +1,7 @@
 package no.kantega.publishing.common.data.enums;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public enum Cropping {
     CONTAIN("contain"),
@@ -8,7 +9,7 @@ public enum Cropping {
     CENTERED("centered");
 
     private String typeAsString;
-    private static final String objectName = "no.kantega.publishing.common.data.enums.Cropping";
+    private static final Logger log = LoggerFactory.getLogger(Cropping.class);
 
     Cropping(String type) {
         this.typeAsString = type;
@@ -26,7 +27,7 @@ public enum Cropping {
                 }
             }
         } catch (Exception e){
-            Log.error(objectName, "Type cannot be translated to valid enumeration.");
+            log.error( "Type cannot be translated to valid enumeration.", e);
         }
         return Cropping.CONTAIN;
     }

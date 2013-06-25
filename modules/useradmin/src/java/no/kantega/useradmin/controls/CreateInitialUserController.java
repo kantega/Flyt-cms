@@ -30,7 +30,8 @@ import no.kantega.useradmin.model.ProfileManagementConfiguration;
 import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -64,7 +65,7 @@ public class CreateInitialUserController extends AbstractController {
     private File tokenFile;
 
     private SecureRandom random = new SecureRandom();
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(CreateInitialUserController.class);
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map model = new HashMap();

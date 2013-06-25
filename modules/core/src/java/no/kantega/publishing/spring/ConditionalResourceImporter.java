@@ -2,7 +2,8 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -17,7 +18,7 @@ import org.springframework.core.io.ResourceLoader;
  */
 public class ConditionalResourceImporter implements BeanFactoryPostProcessor, ResourceLoaderAware {
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(ConditionalResourceImporter.class);
 
     private ResourceLoader resourceLoader;
     private String propertyName;

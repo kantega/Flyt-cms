@@ -25,7 +25,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.eventlog.EventLog;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
@@ -33,7 +34,7 @@ import javax.annotation.PostConstruct;
 public class LinkEmitter {
     private LinkExtractor linkExtractor;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(LinkEmitter.class);
 
     @Autowired
     private LinkDao linkDao;

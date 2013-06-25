@@ -20,7 +20,8 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
@@ -37,7 +38,7 @@ public class SendMailTag extends BodyTagSupport {
 
     private String subject;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(SendMailTag.class);
 
 
     public int doEndTag() throws JspException {

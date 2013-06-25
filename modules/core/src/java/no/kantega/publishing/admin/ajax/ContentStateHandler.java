@@ -17,13 +17,14 @@
 package no.kantega.publishing.admin.ajax;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ import javax.servlet.http.HttpSession;
 @Controller
 @RequestMapping("/admin/publish/ContentState")
 public class ContentStateHandler {
+    private static final Logger log = LoggerFactory.getLogger(ContentStateHandler.class);
 
     /**
      * Updates the user's session with the currently viewed content.
@@ -58,7 +60,7 @@ public class ContentStateHandler {
             } catch (ContentNotFoundException e) {
                 // Do nothing
             } catch (NotAuthorizedException e) {
-                Log.error(this.getClass().getName(), e, null, null);
+                log.error("", e);
             }
         }
         return new ResponseEntity(HttpStatus.OK);

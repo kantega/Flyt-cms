@@ -16,13 +16,16 @@
 
 package no.kantega.publishing.admin.taglib;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class BoxTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(BoxTag.class);
     public int doStartTag()  throws JspException {
         return EVAL_BODY_TAG;
     }
@@ -39,7 +42,7 @@ public class BoxTag extends BodyTagSupport {
             out.print("</div></div></div><div class=\"bottom\"><div class=\"corner\"></div></div></div>");
 
         } catch (Exception e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
             throw new JspTagException(this.getClass().getName() + ":" + e.getMessage());
         } finally {
             bodyContent.clearBody();

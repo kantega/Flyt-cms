@@ -1,28 +1,28 @@
 package no.kantega.publishing.webdav.resourcehandlers.util;
 
-import no.kantega.publishing.common.exception.InvalidImageFormatException;
-import no.kantega.publishing.multimedia.ImageEditor;
-import no.kantega.publishing.common.util.MultimediaHelper;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.enums.MultimediaType;
+import com.bradmcevoy.http.CollectionResource;
+import com.bradmcevoy.http.Resource;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.exception.InvalidImageFormatException;
+import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import no.kantega.publishing.webdav.resources.AksessMediaFileResource;
 import no.kantega.publishing.webdav.resources.AksessMediaFolderResource;
-import no.kantega.commons.log.Log;
-import com.bradmcevoy.http.Resource;
-import com.bradmcevoy.http.CollectionResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 /**
  *
  */
 public class WebDavMultimediaHelper {
+    private static final Logger log = LoggerFactory.getLogger(WebDavMultimediaHelper.class);
     private WebDavSecurityHelper webDavSecurityHelper;
     private ImageEditor imageEditor;
     private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
@@ -86,7 +86,7 @@ public class WebDavMultimediaHelper {
         }
 
         // Save new file
-        Log.debug(this.getClass().getName(), "Saved new file:" + fileName + ", size:" + file.getSize());
+        log.debug( "Saved new file:" + fileName + ", size:" + file.getSize());
 
         int id = MultimediaAO.setMultimedia(file);
         file = MultimediaAO.getMultimedia(id);
@@ -146,7 +146,7 @@ public class WebDavMultimediaHelper {
             bytesRead += result;
         }
         if (bytesRead != length) {
-            Log.error(this.getClass().getName(), "read bytes != length", null, null);
+            log.error( "read bytes != length");
             return null;
         }
         return data;

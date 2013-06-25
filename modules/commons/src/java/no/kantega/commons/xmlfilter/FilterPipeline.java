@@ -17,10 +17,11 @@
 package no.kantega.commons.xmlfilter;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import org.apache.xalan.processor.TransformerFactoryImpl;
 import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLFilter;
@@ -32,12 +33,12 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import java.io.Reader;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FilterPipeline extends XMLFilterImpl {
+    private static final Logger log = LoggerFactory.getLogger(FilterPipeline.class);
     private static final String SOURCE = "FilterPipeline";
 
     List filters = new ArrayList();
@@ -95,12 +96,7 @@ public class FilterPipeline extends XMLFilterImpl {
             parser.setContentHandler(this);
             parser.parse(new InputSource(reader));
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            if (e instanceof InvocationTargetException) {
-                e.getCause().printStackTrace();
-            } else {
-                e.printStackTrace();
-            }
+            log.error("Could not filter", e);
             throw new SystemException("", SOURCE, e);
         }
     }

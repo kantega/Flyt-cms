@@ -16,28 +16,23 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.apache.xpath.XPathAPI;
-import no.kantega.commons.util.XMLHelper;
-import no.kantega.commons.util.XPathHelper;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateFormAttributeFromRequestBehaviour;
+import no.kantega.publishing.common.data.ListOption;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.xml.transform.TransformerException;
-import java.sql.ResultSet;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
 @Deprecated
 public class FormAttribute extends ListAttribute {
+    private static final Logger log = LoggerFactory.getLogger(FormAttribute.class);
     private static final String SOURCE = "aksess.FormAttribute";
 
     public String getRenderer() {
@@ -56,10 +51,10 @@ public class FormAttribute extends ListAttribute {
                 options.add(option);
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             return options;
         } catch (SQLException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             return options;
         } finally {
             if (c != null) {

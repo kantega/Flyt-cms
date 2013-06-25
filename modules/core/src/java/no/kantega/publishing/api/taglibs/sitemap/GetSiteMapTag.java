@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.sitemap;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetSiteMapTag  extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetSiteMapTag.class);
     private static final String SOURCE = "aksess.GetSiteMapTag";
 
     private String name = "sitemap";
@@ -67,7 +69,7 @@ public class GetSiteMapTag  extends TagSupport {
                     ContentIdentifier cid = ContentIdHelper.fromUrl(rootId);
                     this.rootId = cid.getAssociationId();
                 } catch (ContentNotFoundException | SystemException e1) {
-                    Log.error(SOURCE, e);
+                    log.error("", e);
                 }
             }
         }
@@ -157,7 +159,7 @@ public class GetSiteMapTag  extends TagSupport {
             request.setAttribute(name, sitemap);
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

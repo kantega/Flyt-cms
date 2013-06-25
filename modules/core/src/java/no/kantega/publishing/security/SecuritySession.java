@@ -18,7 +18,6 @@ package no.kantega.publishing.security;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
@@ -41,6 +40,8 @@ import no.kantega.security.api.identity.*;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SecuritySession {
+    private static final Logger log = LoggerFactory.getLogger(SecuritySession.class);
     private static String SOURCE = "SecuritySession";
 
     private User user = null;
@@ -292,9 +294,9 @@ public class SecuritySession {
         try {
             loginContext.setTargetUri(new URI(redirect));
         } catch (URISyntaxException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error in url " + redirect, e);
         }
-        Log.debug(SOURCE, String.format("Initiating login in authentication context: %s", resolver.getAuthenticationContext()));
+        log.debug( String.format("Initiating login in authentication context: %s", resolver.getAuthenticationContext()));
         resolver.initateLogin(loginContext);
     }
 
@@ -312,7 +314,7 @@ public class SecuritySession {
         try {
             logoutContext.setTargetUri(new URI(redirect));
         } catch (URISyntaxException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error in url " + redirect, e);
         }
 
         try {

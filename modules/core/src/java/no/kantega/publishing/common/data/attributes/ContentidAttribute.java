@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.ContentidAttributeValueXMLExporter;
 import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -25,6 +24,8 @@ import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class ContentidAttribute extends Attribute {
+    private static final Logger log = LoggerFactory.getLogger(ContentidAttribute.class);
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
     protected String startId = "";
@@ -81,7 +83,7 @@ public class ContentidAttribute extends Attribute {
                     ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, startId);
                     start = cid.getAssociationId();
                 } catch (ContentNotFoundException e1) {
-                    Log.error(this.getClass().getName(), e, null, null);
+                    log.error("", e);
                 }
             }
 

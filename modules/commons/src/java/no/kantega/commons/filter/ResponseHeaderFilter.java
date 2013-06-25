@@ -16,33 +16,22 @@
 
 package no.kantega.commons.filter;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  *
  */
 public class ResponseHeaderFilter implements Filter {
+    private static final Logger log = LoggerFactory.getLogger(ResponseHeaderFilter.class);
 
     public static final String HEADER_PARAM_PREFIX = "H_";
     private Set<String> extensions;
@@ -82,7 +71,7 @@ public class ResponseHeaderFilter implements Filter {
                 dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
                 headers.put("Expires", dateFormat.format(d));
             } catch (NumberFormatException e) {
-                Log.error(getClass().getSimpleName(), e, null, null);
+                log.error("Could not format expire date", e);
             }
         }
     }

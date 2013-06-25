@@ -16,17 +16,19 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class AttributeIfEqualsTag  extends ConditionalTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(AttributeIfEqualsTag.class);
     private static final String SOURCE = "aksess.AttributeIfEqualsTag";
 
     private String name = null;
@@ -74,7 +76,7 @@ public class AttributeIfEqualsTag  extends ConditionalTagSupport {
                 return (!negate);
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return negate;

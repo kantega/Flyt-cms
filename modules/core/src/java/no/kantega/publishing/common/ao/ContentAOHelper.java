@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
@@ -28,6 +27,8 @@ import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,6 +39,7 @@ import java.util.List;
  *
  */
 public class ContentAOHelper {
+    private static final Logger log = LoggerFactory.getLogger(ContentAOHelper.class);
     private static final String SOURCE = "aksess.ContentAOHelper";
 
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
@@ -146,7 +148,7 @@ public class ContentAOHelper {
                 try {
                     attribute = factory.newAttribute(attributeType);
                 } catch (Exception e) {
-                    Log.error(ContentAOHelper.class.getName(), e);
+                    log.error("Error instantiating attribute " + attributeType, e);
                     throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, ContentAOHelper.class.getName(), e);
                 }
                 attribute.setParent(parentAttribute);

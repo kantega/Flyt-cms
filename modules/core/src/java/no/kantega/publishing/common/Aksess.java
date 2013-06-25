@@ -19,9 +19,10 @@ package no.kantega.publishing.common;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.ServerType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,6 +33,7 @@ import java.util.Properties;
  *
  */
 public class Aksess {
+    private static final Logger log = LoggerFactory.getLogger(Aksess.class);
     private static final String SOURCE = "aksess.common.Aksess";
 
     public static final String PROPERTY_FILE = "aksess.conf";
@@ -175,10 +177,10 @@ public class Aksess {
             securityAllowPasswordReset = c.getBoolean("security.allowpasswordreset", true);
 
             defaultSecurityDomain = c.getString("security.defaultdomain", "ldap");
-            Log.info(SOURCE, "Using default security domain:" + defaultSecurityDomain, null, null);
+            log.info( "Using default security domain:" + defaultSecurityDomain);
 
             securityRealm = c.getString("security.realm", defaultSecurityDomain + "Realm");
-            Log.info(SOURCE, "Using security realm:" + securityRealm, null, null);
+            log.info( "Using security realm:" + securityRealm);
 
             securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
 
@@ -197,7 +199,7 @@ public class Aksess {
             // Tilleggsmoduler
             trafficLogEnabled = c.getBoolean("trafficlog.enabled", false);
             if (trafficLogEnabled) {
-                Log.info(SOURCE, "Module enabled: Traffic log");
+                log.info( "Module enabled: Traffic log");
             }
             trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
             deletedItemsMaxAge = c.getInt("deleteditems.maxage", deletedItemsMaxAge);
@@ -207,23 +209,23 @@ public class Aksess {
 
             eventLogEnabled = c.getBoolean("eventlog.enabled", false);
             if (eventLogEnabled) {
-                Log.info(SOURCE, "Module enabled: Event log");
+                log.info( "Module enabled: Event log");
             }
             searchLogEnabled = c.getBoolean("searchlog.enabled", false);
             if (searchLogEnabled) {
-                Log.info(SOURCE, "Module enabled: searchlog", null, null);
+                log.info( "Module enabled: searchlog");
             }
 
             eventLogMaxAge = c.getInt("eventlog.maxage", eventLogMaxAge);
 
             topicMapsEnabled = c.getBoolean("topicmaps.enabled", false);
             if (topicMapsEnabled) {
-                Log.info(SOURCE, "Module enabled: Topic maps");
+                log.info( "Module enabled: Topic maps");
             }
 
             linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
             if (linkCheckerEnabled) {
-                Log.info(SOURCE, "Module enabled: Link checker");
+                log.info( "Module enabled: Link checker");
             }
 
             // Roller
@@ -254,7 +256,7 @@ public class Aksess {
             csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
 
             serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.name()).toUpperCase());
-            Log.info(SOURCE, "Server type:" + serverType);
+            log.info( "Server type:" + serverType);
 
             if (serverType == ServerType.SLAVE) {
                 // Caching of database only lasts 15 minutes for slave servers
@@ -264,7 +266,7 @@ public class Aksess {
 
 
             queryStringEncoding = c.getString("querystring.encoding", "iso-8859-1");
-            Log.info(SOURCE, "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
+            log.info( "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
 
             // Load version from file in classpath
             {
@@ -292,12 +294,12 @@ public class Aksess {
             }
 
         } catch (ConfigurationException e) {
-            Log.debug(SOURCE, "********* Couldn't read aksess.conf **********", null, null);
-            Log.error(SOURCE, e, null, null);
+            log.debug( "********* Couldn't read aksess.conf **********");
+            log.error("", e);
             System.out.println("********* Couldn't read aksess.conf **********" + e);
         }
 
-        Log.info(SOURCE, "location.contextpath=" + contextPath);
+        log.info( "location.contextpath=" + contextPath);
     }
 
     public static String getVersion() {

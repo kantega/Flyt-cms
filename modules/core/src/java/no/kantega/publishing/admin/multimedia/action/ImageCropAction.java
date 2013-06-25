@@ -17,13 +17,14 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -37,6 +38,7 @@ import java.util.Map;
  * Crop image
  */
 public class ImageCropAction extends AbstractEditMultimediaAction {
+    private static final Logger log = LoggerFactory.getLogger(ImageCropAction.class);
     private String view;
     private ImageEditor imageEditor;
 
@@ -81,7 +83,7 @@ public class ImageCropAction extends AbstractEditMultimediaAction {
                 mm.setId(mediaService.setMultimedia(mm));
             }
         } catch (Exception e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         }
 
         Map<String, Integer> model = new HashMap<String, Integer>();

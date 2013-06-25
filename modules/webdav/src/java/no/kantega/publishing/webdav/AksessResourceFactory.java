@@ -4,10 +4,11 @@ import com.bradmcevoy.http.Resource;
 import com.bradmcevoy.http.ResourceFactory;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.webdav.resourcehandlers.AksessWebDavResourceHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 
@@ -15,6 +16,7 @@ import java.util.Collection;
  *
  */
 public class AksessResourceFactory implements ResourceFactory {
+    private static final Logger log = LoggerFactory.getLogger(AksessResourceFactory.class);
     private final static String ROOT = "/webdav";
 
     private Collection<AksessWebDavResourceHandler> resourceHandlers = null;
@@ -35,7 +37,7 @@ public class AksessResourceFactory implements ResourceFactory {
                         }
                     }
                 }
-                Log.debug(this.getClass().getName(), "Get resource: " + path);
+                log.debug( "Get resource: " + path);
 
                 path = path.substring(path.indexOf(ROOT) +  + ROOT.length(), path.length());
 
@@ -52,7 +54,7 @@ public class AksessResourceFactory implements ResourceFactory {
             }
 
         } catch (ConfigurationException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         }
 
         return null;

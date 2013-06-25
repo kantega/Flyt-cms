@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class ContentlistAttribute extends ListAttribute {
+    private static final Logger log = LoggerFactory.getLogger(ContentlistAttribute.class);
     private static String SOURCE = "aksess.ContentlistAttribute";
 
     protected String contentTemplateId = null;
@@ -99,7 +101,7 @@ public class ContentlistAttribute extends ListAttribute {
                 options.add(option);
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return options;

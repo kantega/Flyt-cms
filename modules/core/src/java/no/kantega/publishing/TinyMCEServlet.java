@@ -1,6 +1,7 @@
 package no.kantega.publishing;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -28,6 +29,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  *
  */
 public class TinyMCEServlet extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(TinyMCEServlet.class);
     private final long MAX_DISK_CACHE_AGE = 1000*60*60*24;
 
     private boolean shouldRecreateDiskCache = true;
@@ -143,13 +145,13 @@ public class TinyMCEServlet extends HttpServlet {
 
                 // Write to file
                 try {
-                    Log.info(this.getClass().getName(), "Creating diskcache:" + cacheFile);
+                    log.info( "Creating diskcache:" + cacheFile);
 
                     FileOutputStream fout = new FileOutputStream(cacheFile);
                     fout.write(bos.toByteArray());
                     fout.close();
                 } catch (IOException e) {
-                    Log.error(getClass().getName(), "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", null, null);
+                    log.error( "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.");
                 }
 
                 // Write to stream
@@ -158,13 +160,13 @@ public class TinyMCEServlet extends HttpServlet {
 
                 shouldRecreateDiskCache = false;
             } else {
-                Log.info(this.getClass().getName(), "Sending content without using diskcache");
+                log.info( "Sending content without using diskcache");
                 GZIPOutputStream gzipStream = new GZIPOutputStream(outputStream);
                 gzipStream.write(content.getBytes("iso-8859-1"));
                 gzipStream.close();
             }
         } else {
-            Log.info(this.getClass().getName(), "Sending content without using diskcache and without zip compression");
+            log.info( "Sending content without using diskcache and without zip compression");
             outputStream.write(content.getBytes());
         }
     }
@@ -173,7 +175,7 @@ public class TinyMCEServlet extends HttpServlet {
         FileInputStream fin;
         byte[] buffer;
         int bytes;
-        Log.info(this.getClass().getName(), "Writing content from cache:" + cacheFile);
+        log.info( "Writing content from cache:" + cacheFile);
 
         fin = new FileInputStream(cacheFile);
         buffer = new byte[1024];
@@ -247,7 +249,7 @@ public class TinyMCEServlet extends HttpServlet {
                 is.read(basdas);
                 retVal = new String(basdas);
             } catch (IOException e) {
-                Log.info(getClass().getName(), e.getMessage());
+                log.info( e.getMessage());
             }
         }
         return retVal;
@@ -267,7 +269,7 @@ public class TinyMCEServlet extends HttpServlet {
         try {
             url = request.getSession().getServletContext().getResource(relPath);
         } catch (MalformedURLException e) {
-            Log.info(getClass().getName(), e.getMessage());
+            log.info( e.getMessage());
         }
         return url;
     }

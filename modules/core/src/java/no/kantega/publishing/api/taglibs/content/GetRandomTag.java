@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.AssociationCategory;
@@ -26,6 +25,8 @@ import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetRandomTag  extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetRandomTag.class);
     private static final String SOURCE = "aksess.GetRandomTag";
 
     private String name = null;
@@ -191,7 +193,7 @@ public class GetRandomTag  extends BodyTagSupport {
             tmpcollection = cs.getContentList(query, -1, new SortOrder(orderBy, true));
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
         if (tmpcollection != null && tmpcollection.size() > 0) {

@@ -21,7 +21,6 @@ import com.google.common.collect.Multimap;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
@@ -35,6 +34,8 @@ import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -42,6 +43,7 @@ import java.util.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ExpireContentAlertJob {
+    private static final Logger log = LoggerFactory.getLogger(ExpireContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 14;
     private static String SOURCE = "ExpireContentAlertJob";
@@ -52,12 +54,12 @@ public class ExpireContentAlertJob {
     public void execute() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         
         try {
-            Log.info(SOURCE, "Looking for content will expire in less than " + daysBeforeWarning + " days", null, null);
+            log.info( "Looking for content will expire in less than " + daysBeforeWarning + " days");
 
 
             List<Site> sites = siteCache.getSites();
@@ -87,7 +89,7 @@ public class ExpireContentAlertJob {
                     Configuration config = Aksess.getConfiguration();
                     defaultUserEmail = config.getString("mail" + alias + "contentexpire.recipient");
                 } catch (ConfigurationException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 }
 
                 Multimap<String, Content> users = ArrayListMultimap.create();
@@ -121,12 +123,12 @@ public class ExpireContentAlertJob {
                     // Send message using listeners
                     List<Content> userContentList = new ArrayList<>(entry.getValue());
                     if (user != null) {
-                        Log.info(SOURCE, "Sending alert to user " + user.getId() + " - " + userContentList.size() + " docs about to expire", null, null);
+                        log.info( "Sending alert to user " + user.getId() + " - " + userContentList.size() + " docs about to expire");
                         for (ContentAlertListener listener : listeners) {
                             listener.sendContentAlert(user, userContentList);
                         }
                     } else {
-                        Log.info(SOURCE, "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs about to expire", null, null);
+                        log.info( "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs about to expire");
                     }
                 }
 
@@ -134,7 +136,7 @@ public class ExpireContentAlertJob {
             }
 
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
     }

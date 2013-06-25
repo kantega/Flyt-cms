@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.api.taglibs.sitemap;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.URLHelper;
-import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.SiteMapEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -28,10 +29,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 public class PrintSiteMapTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(PrintSiteMapTag.class);
     private static final String SOURCE = "aksess.PrintSiteMapTag";
 
     private DateFormat dateFormat;
@@ -54,7 +56,7 @@ public class PrintSiteMapTag extends TagSupport {
                     printSiteMap(sitemap, 0, out);
                 }
             } catch (IOException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
 

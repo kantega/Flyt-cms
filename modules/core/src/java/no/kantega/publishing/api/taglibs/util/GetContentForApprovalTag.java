@@ -16,8 +16,9 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -26,6 +27,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
 
 public class GetContentForApprovalTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetContentForApprovalTag.class);
     private static final String SOURCE = "aksess.GetContentForApprovalTag";
 
     private String name = null;
@@ -41,7 +43,7 @@ public class GetContentForApprovalTag extends TagSupport {
             List content = cms.getContentListForApproval();
             request.setAttribute(name, content);
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

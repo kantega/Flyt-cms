@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.util;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
@@ -25,6 +24,8 @@ import no.kantega.publishing.common.ao.MultimediaImageMapAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaImageMap;
 import no.kantega.publishing.common.data.enums.Cropping;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,6 +34,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class MultimediaTagCreator {
+    private static final Logger log = LoggerFactory.getLogger(MultimediaTagCreator.class);
     private static final String SOURCE = "aksess.MultimediaHelper";
 
     public static String mm2HtmlTag(Multimedia mm, String cssClass) {
@@ -175,7 +177,7 @@ public class MultimediaTagCreator {
                         tag.append("</map>");
                     }
                 } catch(SystemException e){
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Error creating image map", e);
                 }
             }
             // Legg til > på slutten hvis ikke avsluttet

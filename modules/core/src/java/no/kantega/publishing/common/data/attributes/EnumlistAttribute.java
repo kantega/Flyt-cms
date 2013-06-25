@@ -17,9 +17,10 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ import java.util.Map;
  *
  */
 public class EnumlistAttribute extends ListAttribute {
+    private static final Logger log = LoggerFactory.getLogger(EnumlistAttribute.class);
 
 	protected List<ListOption> options = null;
 
@@ -51,7 +53,7 @@ public class EnumlistAttribute extends ListAttribute {
 					options.add(asListOption(enumValue));
 				}
 			} catch (ClassNotFoundException e) {
-                Log.error(getClass().getName(), e);
+                log.error("Could not create class " + enumclassName, e);
 			}
 		}
 	}

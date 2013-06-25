@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentStatus;
@@ -24,6 +23,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -38,6 +39,7 @@ import java.util.Locale;
  * Time: 09:22:16
  */
 public class FormTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(FormTag.class);
 
     private boolean allowDraft = false;
     private boolean hideInfoMessages = false;
@@ -131,7 +133,7 @@ public class FormTag extends BodyTagSupport {
             allowDraft = false;
 
         } catch (IOException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
         }
 
         return SKIP_BODY;

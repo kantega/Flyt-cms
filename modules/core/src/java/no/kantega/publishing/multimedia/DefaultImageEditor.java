@@ -1,6 +1,5 @@
 package no.kantega.publishing.multimedia;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
@@ -8,6 +7,8 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.resizers.ImageResizeAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -25,6 +26,7 @@ import java.util.Locale;
 
 
 public class DefaultImageEditor implements ImageEditor {
+    private static final Logger log = LoggerFactory.getLogger(DefaultImageEditor.class);
     ImageResizeAlgorithm imageResizeAlgorithm;
 
     private String defaultImageFormat = "png";
@@ -140,7 +142,7 @@ public class DefaultImageEditor implements ImageEditor {
                 try {
                     image = ImageIO.read(new ByteArrayInputStream(multimedia.getData()));
                 } catch (IOException e) {
-                    Log.error(this.getClass().getName(), "Failed converting image, probably CMYK, install Java Advanced Imaging API on server");
+                    log.error( "Failed converting image, probably CMYK, install Java Advanced Imaging API on server");
                     throw new InvalidImageFormatException(this.getClass().getName(), "", e);
                 }
                 return image;
@@ -249,7 +251,7 @@ public class DefaultImageEditor implements ImageEditor {
         int targetHeight = resizeParameters.getMaxHeight();
 
         if ((targetWidth < 3 && targetHeight < 3)) {
-            Log.error(this.getClass().getSimpleName(), "Minimum resize dimensions are 3x3. Values below threshold will be adjusted");
+            log.error( "Minimum resize dimensions are 3x3. Values below threshold will be adjusted");
             if (targetWidth < 3 && targetWidth != -1) targetWidth = 3;
             if (targetHeight < 3 && targetHeight != -1) targetHeight = 3;
         }

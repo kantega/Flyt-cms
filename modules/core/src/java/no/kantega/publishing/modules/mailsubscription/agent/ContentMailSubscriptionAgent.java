@@ -18,7 +18,6 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.mailsubscription.MailSubscription;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
@@ -35,6 +34,8 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -43,6 +44,7 @@ import java.util.*;
  * Class for sending mail subscriptions notifying users about new content (for newsletters etc)
  */
 public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
+    private static final Logger log = LoggerFactory.getLogger(ContentMailSubscriptionAgent.class);
     private static final String SOURCE = "aksess.MailSubscriptionAgent";
 
     private MailSubscriptionDeliveryService mailSubscriptionDeliveryService;
@@ -61,18 +63,18 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
             try {
                 groupEmails = Aksess.getConfiguration().getBoolean("mail.subscription.groupemails", false);
             } catch (ConfigurationException e) {
-                Log.info(SOURCE, "Unable to read configuration value for 'mail.subscription.groupemails'");
+                log.info( "Unable to read configuration value for 'mail.subscription.groupemails'");
             }
 
             if (groupEmails) {
                 // Send en epost for alle sites
-                Log.debug(SOURCE, "Sending mailsubscriptions for all sites", null, null);
+                log.debug( "Sending mailsubscriptions for all sites");
                 emailNewContentForSite(previousRun, interval, null);
             } else {
                 // Send en epost for hver site
                 List<Site> sites = siteCache.getSites();
                 for (Site site : sites) {
-                    Log.debug(SOURCE, "Sending mailsubscriptions for site:  " + site.getName(), null, null);
+                    log.debug( "Sending mailsubscriptions for site:  " + site.getName());
                     emailNewContentForSite(previousRun, interval, site);
                 }
             }
@@ -98,15 +100,15 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
         try {
             sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
         } catch (ConfigurationException e) {
-            Log.info(SOURCE, "Unable to read configuration value for 'mail.subscription.sendprotectedcontent'");
+            log.info( "Unable to read configuration value for 'mail.subscription.sendprotectedcontent'");
         }
 
         for (Content content : allContentList) {
             if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
                 contentList.add(content);
-                Log.debug(SOURCE, "New content:" + content.getTitle());
+                log.debug( "New content:" + content.getTitle());
             } else {
-                Log.info(SOURCE, "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
+                log.info( "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
             }
         }
 
@@ -166,7 +168,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
                 try {
                     mailSubscriptionDeliveryService.sendEmail(email, subscriberContent, site);
                 } catch (Exception e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 }
             }
         }

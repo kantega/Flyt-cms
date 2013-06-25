@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.jobs.cleanup;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentAO;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -38,6 +39,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class DatabaseCleanupJob {
+    private static final Logger log = LoggerFactory.getLogger(DatabaseCleanupJob.class);
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
     @Autowired
     private EventLog eventLog;
@@ -46,7 +48,7 @@ public class DatabaseCleanupJob {
     public void executeInternal() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         try (Connection c = dbConnectionFactory.getConnection()){
@@ -64,7 +66,7 @@ public class DatabaseCleanupJob {
             removeLinksFromLinkChecker(c);
             deleteOldXmlCacheEntries(c);
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
     }
 
@@ -91,7 +93,7 @@ public class DatabaseCleanupJob {
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getTrafficLogMaxAge());
 
-        Log.info(SOURCE, "Deleting trafficlog older than " + Aksess.getTrafficLogMaxAge() + " months");
+        log.info( "Deleting trafficlog older than " + Aksess.getTrafficLogMaxAge() + " months");
 
         PreparedStatement st = c.prepareStatement("delete from trafficlog where Time < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -102,7 +104,7 @@ public class DatabaseCleanupJob {
         Calendar cal;
         cal = new GregorianCalendar();
         cal.add(Calendar.DATE, -7);
-        Log.info(SOURCE, "Deleting transactionlocks older than 7 days");
+        log.info( "Deleting transactionlocks older than 7 days");
 
         PreparedStatement st = c.prepareStatement("delete from transactionlocks where TransactionTime < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -110,7 +112,7 @@ public class DatabaseCleanupJob {
     }
 
     private void updateNumberOfViews(Connection c) throws SQLException {
-        Log.info(SOURCE, "Updating number of views based on trafficlog");
+        log.info( "Updating number of views based on trafficlog");
 
         PreparedStatement st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId and trafficlog.IsSpider=0)");
         st.execute();
@@ -121,7 +123,7 @@ public class DatabaseCleanupJob {
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getEventLogMaxAge());
 
-        Log.info(SOURCE, "Deleting event log entries older than " + Aksess.getEventLogMaxAge() + " months");
+        log.info( "Deleting event log entries older than " + Aksess.getEventLogMaxAge() + " months");
 
         PreparedStatement st = c.prepareStatement("delete from eventlog where Time < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -133,7 +135,7 @@ public class DatabaseCleanupJob {
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -1);
 
-        Log.info(SOURCE, "Deleting search log entries older than 1 month");
+        log.info( "Deleting search log entries older than 1 month");
 
         PreparedStatement st = c.prepareStatement("delete from searchlog where Time < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -145,7 +147,7 @@ public class DatabaseCleanupJob {
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getDeletedItemsMaxAge());
 
-        Log.info(SOURCE, "Deleting deleted items older than " + Aksess.getDeletedItemsMaxAge() + " months");
+        log.info( "Deleting deleted items older than " + Aksess.getDeletedItemsMaxAge() + " months");
 
         PreparedStatement st = c.prepareStatement("delete from deleteditems where DeletedDate < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
@@ -163,7 +165,7 @@ public class DatabaseCleanupJob {
         while (rs.next()) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(rs.getInt("ContentId"));
             String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
-            Log.info(SOURCE, "Deleting page " + title + " because it has been in the trash can for over 1 month");
+            log.info( "Deleting page " + title + " because it has been in the trash can for over 1 month");
             eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
             ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
@@ -186,7 +188,7 @@ public class DatabaseCleanupJob {
         cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, - Aksess.getXmlCacheMaxAge());
 
-        Log.info(SOURCE, "Deleting Xmlcache entries older than " + Aksess.getXmlCacheMaxAge() + " months");
+        log.info( "Deleting Xmlcache entries older than " + Aksess.getXmlCacheMaxAge() + " months");
 
         PreparedStatement st = c.prepareStatement("delete from xmlcache where LastUpdated < ?");
         st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));

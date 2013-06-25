@@ -16,17 +16,19 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
+import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.util.RegExp;
 import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
 public class HTMLEditorHelper {
+    private static final Logger log = LoggerFactory.getLogger(HTMLEditorHelper.class);
     private static String BODY_START = "<BODY>";
     private static String BODY_END   = "</BODY>";
 
@@ -106,7 +108,7 @@ public class HTMLEditorHelper {
             value = value.substring(start + BODY_START.length(), end);
         } catch (Exception e) {
             value = origVal;
-            Log.error("", e, null, null);
+            log.error("", e);
         }
 
         // Remove empty B, SPAN etc tags
@@ -173,7 +175,7 @@ public class HTMLEditorHelper {
             value = value.substring(start + BODY_START.length(), end);
         } catch (Exception e) {
             value = origVal;
-            Log.error("", e, null, null);
+            log.error("", e);
         }
 
         // Some versions of Xerces creates XHTML tags

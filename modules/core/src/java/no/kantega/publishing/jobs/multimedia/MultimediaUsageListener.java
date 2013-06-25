@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.MultimediaDao;
@@ -31,6 +30,8 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -38,6 +39,7 @@ import java.util.List;
  *
  */
 public class MultimediaUsageListener extends ContentEventListenerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(MultimediaUsageListener.class);
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
 
@@ -74,7 +76,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
             try {
                 multimediaDao.deleteMultimedia(m.getId());
             } catch (ObjectInUseException e) {
-                Log.error(this.getClass().getName(), e);
+                log.error("", e);
             }
         }
     }

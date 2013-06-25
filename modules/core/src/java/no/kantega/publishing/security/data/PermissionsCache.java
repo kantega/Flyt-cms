@@ -17,16 +17,18 @@
 package no.kantega.publishing.security.data;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.security.ao.PermissionsAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
 public class PermissionsCache {
+    private static final Logger log = LoggerFactory.getLogger(PermissionsCache.class);
     private static final String SOURCE = "aksess.PermissionsCache";
 
     private static final HashMap<String, List<Permission>> permissions = new HashMap<String, List<Permission>>();
@@ -41,7 +43,7 @@ public class PermissionsCache {
     }
 
     public static void reloadCache() throws SystemException {
-        Log.debug(SOURCE, "Loading cache", null, null);
+        log.debug( "Loading cache");
 
         synchronized (permissions) {
             lastUpdate  = new Date();

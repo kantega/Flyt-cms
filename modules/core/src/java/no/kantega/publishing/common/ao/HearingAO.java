@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Hearing;
 import no.kantega.publishing.common.data.HearingComment;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -37,6 +38,7 @@ import java.util.List;
 
 
 public class HearingAO {
+    private static final Logger log = LoggerFactory.getLogger(HearingAO.class);
     private static final String SOURCE = "aksess.HearingAO";
 
 
@@ -246,14 +248,14 @@ public class HearingAO {
             }
             return SQLHelper.getInt(c, "select ContentVersionId from contentversion where ContentId = " + contentId +  " AND Status = " + ContentStatus.HEARING.getTypeAsInt() +" AND Version > " +activeversion +" order by Version desc" , "ContentVersionId");
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Could not get contentversionid", e);
             return -1;
         } finally {
             if(c!= null) {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Sqlerror",  e);
                 }
             }
         }

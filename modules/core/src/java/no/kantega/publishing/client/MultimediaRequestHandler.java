@@ -19,13 +19,14 @@ package no.kantega.publishing.client;
 import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -35,7 +36,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class MultimediaRequestHandler implements Controller {
-    private static String SOURCE = "MultimediaRequestHandler";
+    private static final Logger log = LoggerFactory.getLogger(MultimediaRequestHandler.class);
 
     private MultimediaRequestHandlerHelper helper;
 
@@ -62,24 +63,25 @@ public class MultimediaRequestHandler implements Controller {
                     }
 
                 } catch (Exception e) {
-                    Log.error(SOURCE, e);
+                    log.error("Error parsing multimedia id", e);
                 }
             }
 
 
             if (mmId == -1) {
+                log.error("Multimedia id was -1");
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST);
                 return null;
             }
 
             Multimedia mm = mediaService.getMultimediaCheckAuthorization(mmId);
             if (mm == null) {
-                // Multimedia object not found
+                log.error("Multimedia with id {} not found", mmId);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return null;
             }
 
-            Log.debug(this.getClass().getSimpleName(), "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")");
+            log.info( "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")");
 
             String contentDisposition = param.getString("contentdisposition");
             if (!"attachment".equals(contentDisposition)) {
@@ -126,7 +128,7 @@ public class MultimediaRequestHandler implements Controller {
             out.flush();
             out.close();
         } catch (Exception e) {
-            Log.error(SOURCE, e);
+            log.error("", e);
         }
         return null;
     }

@@ -1,18 +1,20 @@
 package no.kantega.publishing.webdav.resourcehandlers;
 
 import com.bradmcevoy.http.Resource;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.webdav.resources.AksessMediaFileResource;
-import no.kantega.publishing.webdav.resources.AksessMediaFolderResource;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
-import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.webdav.resources.AksessMediaFileResource;
+import no.kantega.publishing.webdav.resources.AksessMediaFolderResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  *
  */
 public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResourceHandler {
+    private static final Logger log = LoggerFactory.getLogger(AksessWebDavMultimediaResourceHandler.class);
     private final String MULTIMEDIA_PATH = "/multimedia";
     protected WebDavSecurityHelper webDavSecurityHelper;
     protected WebDavMultimediaHelper webDavMultimediaHelper;
@@ -23,7 +25,7 @@ public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResour
 
     public Resource getResourceFromPath(String path) {
         path = path.substring(path.indexOf(MULTIMEDIA_PATH) +  + MULTIMEDIA_PATH.length(), path.length());
-        Log.debug(this.getClass().getName(), "Get multimedia resource:" + path);
+        log.debug( "Get multimedia resource:" + path);
         if (path.equals("/") || path.equals("")) {
             return webDavMultimediaHelper.getRootFolder();
         } else {
@@ -31,14 +33,14 @@ public class AksessWebDavMultimediaResourceHandler implements AksessWebDavResour
             Multimedia media = webDavMultimediaHelper.getMultimediaByPath(path);
             
             if (media != null) {
-                Log.debug(this.getClass().getName(), "Found media object:" + media.getId() + " for path:" + path);
+                log.debug( "Found media object:" + media.getId() + " for path:" + path);
                 if (media.getType() == MultimediaType.FOLDER) {
                     return new AksessMediaFolderResource(media, webDavSecurityHelper, webDavMultimediaHelper);
                 } else {
                     return new AksessMediaFileResource(media, webDavSecurityHelper, webDavMultimediaHelper);
                 }
             } else {
-                Log.debug(this.getClass().getName(), "No media object found for path:" + path);
+                log.debug( "No media object found for path:" + path);
             }
             return resource;
         }

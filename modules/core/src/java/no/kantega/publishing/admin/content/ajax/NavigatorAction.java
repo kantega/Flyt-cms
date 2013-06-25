@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
@@ -34,6 +33,8 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 public class NavigatorAction implements Controller {
+    private static final Logger log = LoggerFactory.getLogger(NavigatorAction.class);
 
     @Autowired
     private SiteCache siteCache;
@@ -116,7 +118,7 @@ public class NavigatorAction implements Controller {
                         Content startContent = cms.getContent(cid);
                         openFoldersList += startContent.getAssociation().getPath().replaceAll("/", ",") + startId;
                     } catch (Exception e) {
-                        Log.error(getClass().getSimpleName(), e, null, null);
+                        log.error("", e);
                     }
                 }
             }

@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.content;
 
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -29,6 +28,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import java.util.List;
 import static no.kantega.commons.util.URLHelper.getValidUrl;
 
 public class GetLinkTag extends BodyTagSupport{
+    private static final Logger log = LoggerFactory.getLogger(GetLinkTag.class);
     private static final String SOURCE = "aksess.GetLinkTag";
 
     private String collection = null;
@@ -222,8 +224,8 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
         } catch (Exception e) {
-            Log.error(SOURCE, e);
-            throw new JspTagException(SOURCE, e);
+            log.error("Error writing content", e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

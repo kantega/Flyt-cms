@@ -22,7 +22,6 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
@@ -36,6 +35,8 @@ import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -47,6 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractSaveContentAction extends AbstractContentAction {
+    private static final Logger log = LoggerFactory.getLogger(AbstractSaveContentAction.class);
 
     abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
     abstract String getView();
@@ -320,7 +322,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                             try {
                                 parent = aksessService.getContent(parentCid);
                             } catch (NotAuthorizedException e) {
-                                Log.error(getClass().getName(), "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")", null, null);
+                                log.error( "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")");
                             }
                             if (parent != null) {
                                 content.setGroupId(parent.getGroupId());

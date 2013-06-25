@@ -1,13 +1,14 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * a published page
  */
 public class AksessSetCurrentPageInterceptor extends HandlerInterceptorAdapter {
+    private static final Logger log = LoggerFactory.getLogger(AksessSetCurrentPageInterceptor.class);
     private String aksessAlias;
 
     @Override
@@ -28,9 +30,9 @@ public class AksessSetCurrentPageInterceptor extends HandlerInterceptorAdapter {
             Content currentPage = cms.getContent(cid, true);
             RequestHelper.setRequestAttributes(request, currentPage);
         } catch (NotAuthorizedException e) {
-            Log.error(this.getClass().getName(), e);
+            log.error("", e);
         } catch (ContentNotFoundException e) {
-            Log.error(this.getClass().getName(), e);
+            log.error("", e);
         }
         return true;
     }

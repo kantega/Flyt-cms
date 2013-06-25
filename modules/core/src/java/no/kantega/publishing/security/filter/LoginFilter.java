@@ -16,17 +16,14 @@
 
 package no.kantega.publishing.security.filter;
 
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
-
-import org.apache.log4j.Logger;
+import java.util.regex.Pattern;
 
 /**
  *

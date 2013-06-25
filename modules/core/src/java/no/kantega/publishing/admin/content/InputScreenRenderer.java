@@ -20,7 +20,6 @@ import no.kantega.commons.client.util.ValidationError;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.Aksess;
@@ -34,6 +33,8 @@ import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -49,6 +50,7 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class InputScreenRenderer {
+    private static final Logger log = LoggerFactory.getLogger(InputScreenRenderer.class);
     private static final String SOURCE = "aksess.admin.InputScreenRenderer";
 
     private PageContext pageContext = null;
@@ -160,7 +162,7 @@ public class InputScreenRenderer {
             pageContext.include("/admin/publish/attributes/repeater_end.jsp");
             out.print("</div>");
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
             out.print("<div class=\"errorText\">" + errorMessage + ":" + repeaterAttribute.getTitle() + "</div>\n");
         }
@@ -206,7 +208,7 @@ public class InputScreenRenderer {
             out.print("</div>\n");
         } catch (Exception e) {
             out.print("</div>\n");
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
             out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
         }

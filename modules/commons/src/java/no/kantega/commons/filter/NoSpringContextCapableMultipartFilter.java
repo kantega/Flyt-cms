@@ -16,13 +16,11 @@
 
 package no.kantega.commons.filter;
 
-import org.springframework.web.multipart.support.MultipartFilter;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.springframework.web.context.WebApplicationContext;
-import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
+import org.springframework.web.multipart.support.MultipartFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -35,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 public class NoSpringContextCapableMultipartFilter extends MultipartFilter {
     public NoSpringContextCapableMultipartFilter() {
         super();
-        Logger.getLogger(getClass()).setLevel(Level.INFO);
     }
 
     @Override

@@ -16,28 +16,29 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.service.TopicMapService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 
 /**
  *
  */
 public class DeleteTopicMapAction extends AbstractController {
+    private static final Logger log = LoggerFactory.getLogger(DeleteTopicMapAction.class);
     private static String SOURCE = "aksess.DeleteTopicMapAction";
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
         int id =  param.getInt("id");
         if (id != -1) {
-            Log.info(SOURCE, "Delete topicmap:" + id, null, null);
+            log.info( "Delete topicmap:" + id);
 
             TopicMapService topicService = new TopicMapService(request);
             topicService.deleteTopicMap(id);

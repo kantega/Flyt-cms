@@ -18,7 +18,6 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.api.cache.SiteCache;
@@ -32,6 +31,8 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -46,6 +47,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * Representing a single attribute in a Content object.
  */
 public abstract class Attribute {
+    private static final Logger log = LoggerFactory.getLogger(Attribute.class);
+
     private final String FILE_TOKEN = "file:";
 
     protected Attribute parent = null;
@@ -413,7 +416,7 @@ public abstract class Attribute {
             }
 
         } catch (SystemException e) {
-            Log.error("Attribute:" + name, e, null, null);
+            log.error("Could not determine hidden status", e);
         }
         return isHidden;
     }

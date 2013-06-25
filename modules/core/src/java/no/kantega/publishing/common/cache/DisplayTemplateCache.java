@@ -16,13 +16,18 @@
 
 package no.kantega.publishing.common.cache;
 
-import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DisplayTemplateCache {
+    private static final Logger log = LoggerFactory.getLogger(DisplayTemplateCache.class);
     private static final String SOURCE = "aksess.DisplayTemplateCache";
 
     private static final HashMap<Integer, DisplayTemplate> displaytemplates = new HashMap<Integer, DisplayTemplate>();
@@ -53,7 +58,7 @@ public class DisplayTemplateCache {
     }
 
     public static synchronized void reloadCache() throws SystemException {
-        Log.debug(SOURCE, "Loading cache", null, null);
+        log.debug( "Loading cache");
 
         List dtlist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates();
 

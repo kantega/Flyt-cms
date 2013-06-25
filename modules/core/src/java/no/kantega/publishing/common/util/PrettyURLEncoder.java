@@ -16,12 +16,14 @@
 
 package no.kantega.publishing.common.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
 public class PrettyURLEncoder {
+    private static final Logger log = LoggerFactory.getLogger(PrettyURLEncoder.class);
     private static final String SOURCE = "aksess.PrettyURLEncoder";
 
     private static char[] space = {' ', '-'};
@@ -55,7 +57,7 @@ public class PrettyURLEncoder {
         try {
             prettyUrl = pattern.matcher(prettyUrl).replaceAll("");
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("error replacing illegal chars", e);
         }
 
         return prettyUrl;

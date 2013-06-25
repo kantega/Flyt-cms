@@ -16,9 +16,10 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.w3c.dom.Document;
@@ -36,6 +37,7 @@ import javax.xml.transform.stream.StreamSource;
 import java.io.StringWriter;
 
 public class TransformXMLTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(TransformXMLTag.class);
     private static final String SOURCE = "aksess.TransformXMLTag";
     
     private String cacheId = null;
@@ -72,7 +74,7 @@ public class TransformXMLTag extends TagSupport {
                             transformer.transform(new DOMSource(xml), new StreamResult(sw));
                             out.write(sw.toString());
                         } catch (TransformerException e) {
-                            Log.error(SOURCE, e, null, null);
+                            log.error("", e);
                         }
                     }
                 }

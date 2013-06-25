@@ -16,7 +16,6 @@
 
 package no.kantega.openaksess.forms.email.delivery;
 
-import no.kantega.commons.log.Log;
 import no.kantega.openaksess.forms.pdf.PDFGenerator;
 import no.kantega.openaksess.forms.xml.XMLFormsubmissionConverter;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
@@ -25,6 +24,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.DataHandler;
@@ -38,6 +39,7 @@ import java.util.*;
  *  Send form submission via email
  */
 public class EmailFormDeliveryService implements FormDeliveryService {
+    private static final Logger log = LoggerFactory.getLogger(EmailFormDeliveryService.class);
     private String mailTemplate = null;
     private String xslFoDocumentPath = null;
     private String pdfFilename = "kvittering.pdf";
@@ -53,7 +55,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
 
     public void deliverForm(FormSubmission formSubmission) {
         if (formSubmission.getForm().getEmail() == null || formSubmission.getForm().getEmail().length() == 0) {
-            Log.debug(getClass().getName(), "Email was blank, form not sent via email", null, null);
+            log.debug( "Email was blank, form not sent via email");
             return;
         }
         try {
@@ -71,7 +73,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
             sendEmail(formSubmission, from, to, param);
         } catch (Exception e) {
             eventLog.log("System", null, Event.FAILED_FORM_SUBMISSION, "Form Id: " + formSubmission.getForm().getId(), null);
-            Log.error("Delivering form by email failed. Form Id: " + formSubmission.getForm().getId(), e, null, null);
+            log.error("", e);
         }
 
     }

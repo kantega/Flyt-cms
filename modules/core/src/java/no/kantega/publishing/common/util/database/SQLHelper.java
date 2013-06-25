@@ -16,12 +16,12 @@
 
 package no.kantega.publishing.common.util.database;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
@@ -29,6 +29,7 @@ import java.util.Date;
  *
  */
 public class SQLHelper {
+    private static final Logger log = LoggerFactory.getLogger(SQLHelper.class);
     public static ResultSet getResultSet(Connection c, String query) throws SQLException {
         return getResultSet(c, query, null);
     }

@@ -16,20 +16,22 @@
 
 package no.kantega.publishing.admin.content.spellcheck;
 
-import no.kantega.commons.log.Log;
 import org.dts.spell.SpellChecker;
 import org.dts.spell.dictionary.OpenOfficeSpellDictionary;
 import org.dts.spell.dictionary.SpellDictionary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.net.URL;
+import java.util.*;
 
 /**
  *
  */
 public class SpellcheckerServiceImpl implements SpellcheckerService {
+    private static final Logger log = LoggerFactory.getLogger(SpellcheckerServiceImpl.class);
 
     private static final String PROPERTIES_RESOURCE_NAME = "META-INF/openaksess/dictionaries/dictionary.properties";
     private static final String DICTIONARY_RESOURCE_NAME_PREFIX = "META-INF/openaksess/dictionaries/";
@@ -47,7 +49,7 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         if (c != null) {
             retVal = doSpellcheck(words, c);
         } else {
-            Log.error(getClass().getSimpleName(), "No SpellChecker found for language '" + lang + "'.", null, null);
+            log.error( "No SpellChecker found for language '" + lang + "'.");
         }
         return retVal;
     }
@@ -61,7 +63,7 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
         if (c != null) {
             retVal = c.getDictionary().getSuggestions(word, 5);
         } else {
-            Log.error(getClass().getSimpleName(), "No SpellChecker found for language '" + lang + "'.", null, null);
+            log.error( "No SpellChecker found for language '" + lang + "'.");
         }
         return retVal;
     }
@@ -112,11 +114,11 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
                             spellCheckers.put(dict, c);
                         }
                     } else {
-                        Log.error(getClass().getSimpleName(), "Missing property in '" + url + "'.", null, null);
+                        log.error( "Missing property in '" + url + "'.");
                     }
 
                 } catch (IOException e) {
-                    Log.error(getClass().getName(), e, "getSpellChecker", null);
+                    log.error("getSpellChecker", e);
                 }
             }
             StringBuilder builder = new StringBuilder();
@@ -124,9 +126,9 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
                 builder.append(d).append(", ");
             }
             String loadedDicts = builder.length() > 2 ? builder.toString().substring(0, builder.length() - 2) : builder.toString();
-            Log.info(getClass().getSimpleName(), "Successfully loaded dictionaries for: " + loadedDicts, null, null);
+            log.info( "Successfully loaded dictionaries for: " + loadedDicts);
         } catch (IOException e) {
-            Log.error(getClass().getName(), e, "getSpellChecker", null);
+            log.error("getSpellChecker", e);
         }
     }
 
@@ -141,7 +143,7 @@ public class SpellcheckerServiceImpl implements SpellcheckerService {
             c.setCaseSensitive(false);
             c.setIgnoreUpperCaseWords(true);
         } else {
-            Log.error(getClass().getSimpleName(), "Could not find resource '" + resource + "'.", null, null);
+            log.error( "Could not find resource '" + resource + "'.");
         }
         return c;
     }

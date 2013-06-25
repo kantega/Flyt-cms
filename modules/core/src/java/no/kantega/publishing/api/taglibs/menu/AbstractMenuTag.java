@@ -18,7 +18,6 @@ package no.kantega.publishing.api.taglibs.menu;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -34,6 +33,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,7 @@ import java.util.List;
 
 
 public abstract class AbstractMenuTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(AbstractMenuTag.class);
     private static final String SOURCE = "aksess.AbstractMenuTag";
 
     protected String name = "menu";
@@ -96,7 +98,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.siteId = site.getId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e1, null, null);
+                    log.error("Could not set siteid " + siteId, e1);
                 }
             }
         }
@@ -120,7 +122,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.rootId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // User not authorized, do nothing
                 }
@@ -163,7 +165,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.defaultId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // Do nothing
                 }
@@ -183,7 +185,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.defaultOpenId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // Do nothing
                 }
@@ -265,7 +267,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         try {
                             isAuthorized = securitySession.isAuthorized(child, Privilege.VIEW_CONTENT);
                         } catch (SystemException e) {
-                            Log.error(SOURCE, e, null, null);
+                            log.error("", e);
                         }
                     }
                     if (isAuthorized || !checkAuthorization) {
@@ -302,7 +304,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             status = new CollectionLoopTagStatus(menuitems);
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

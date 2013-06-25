@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ContentIdHelper;
@@ -28,6 +27,8 @@ import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -37,6 +38,7 @@ import java.util.*;
 import java.util.Date;
 
 public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
+    private static final Logger log = LoggerFactory.getLogger(JdbcTrafficLogDao.class);
 
     public int getNumberOfHitsOrSessionsInPeriod(TrafficLogQuery query, boolean sessions) throws SystemException {
         int visits = 0;
@@ -180,7 +182,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    Log.error(this.getClass().getName(), e, null, null);
+                    log.error("", e);
                 }
             }
         }
@@ -245,7 +247,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
                 try {
                     c.close();
                 } catch (SQLException e) {
-                    Log.error(this.getClass().getName(), e, null, null);
+                    log.error("", e);
                 }
             }
         }

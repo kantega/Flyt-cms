@@ -3,7 +3,8 @@ package no.kantega.publishing.cache;
 import net.sf.ehcache.CacheException;
 import net.sf.ehcache.management.ManagementService;
 import no.kantega.publishing.wro.xmlmerge.XmlMerger;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.web.context.ServletContextAware;
@@ -19,7 +20,7 @@ public class CacheManagerFactory extends EhCacheManagerFactoryBean implements Se
     private ServletContext servletContext;
 
     public enum CacheNames {ContentCache, ContentListCache, SiteMapCache, XmlCache, FacetLabelCache, ContentUrlCache, ContentIdentifierCache, ImageCache, UserCache}
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(CacheManagerFactory.class);
 
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/ehcache-oa.xml";
     private static final String PROJECT_XML_CONFIG_FILE = "/WEB-INF/ehcache-project.xml";

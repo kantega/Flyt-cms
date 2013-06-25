@@ -17,7 +17,6 @@
 package no.kantega.publishing.security.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
@@ -29,6 +28,8 @@ import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,6 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class PermissionsAO {
+    private static final Logger log = LoggerFactory.getLogger(PermissionsAO.class);
     private static final String SOURCE = "aksess.PermissionsAO";
 
     public static HashMap<String, List<Permission>> getPermissionMap() throws SystemException {
@@ -99,7 +101,7 @@ public class PermissionsAO {
                     c.close();
                 }
             } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
 
@@ -115,7 +117,7 @@ public class PermissionsAO {
             c = dbConnectionFactory.getConnection();
             PreparedStatement st;
 
-            Log.debug(SOURCE, "Setter rettigheter for id:" + object.getId() + ", secid:" + securityId, null, null);
+            log.debug( "Setter rettigheter for id:" + object.getId() + ", secid:" + securityId);
 
             boolean setPermissionsFromParent = false;
             if (permissions != null && permissions.size() == 0) {
@@ -183,7 +185,7 @@ public class PermissionsAO {
                     c.close();
                 }
             } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
     }

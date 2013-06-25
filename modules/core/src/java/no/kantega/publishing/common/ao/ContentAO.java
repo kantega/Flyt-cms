@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
@@ -37,7 +36,8 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.sql.*;
@@ -49,7 +49,7 @@ import java.util.Date;
  */
 public class ContentAO {
     private static final String SOURCE = "aksess.ContentAO";
-    private static Logger log = Logger.getLogger(ContentAO.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentAO.class);
 
     public static ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
         ContentIdentifier parent = getParent(cid);
@@ -138,7 +138,7 @@ public class ContentAO {
                 try {
                     content = ContentAO.getContent(contentIdentifier, false);
                 } catch (Exception ex) {
-                    log.error(ex);
+                    log.error("Error getting content", ex);
                 }
 
                 if (content != null) {
@@ -147,7 +147,7 @@ public class ContentAO {
             }
 
         } catch (SystemException | SQLException e) {
-            log.error(e);
+            log.error("Error iterating over all content", e);
             throw new RuntimeException(e);
         }
     }
@@ -309,7 +309,7 @@ public class ContentAO {
                 if (!foundCurrentAssociation && associations.size() > 0) {
                     Association a = associations.get(0);
                     a.setCurrent(true);
-                    Log.debug(SOURCE, "Fant ingen defaultknytning:" + contentId, null, null);
+                    log.debug( "Fant ingen defaultknytning:" + contentId);
                 }
             }
 
@@ -777,7 +777,7 @@ public class ContentAO {
                         c.rollback();
                     }
                 } catch (SQLException e1) {
-                    Log.error(SOURCE, e1);
+                    log.error("Error rolling back transaction", e1);
                 }
             }
             throw tle;
@@ -788,7 +788,7 @@ public class ContentAO {
                         c.rollback();
                     }
                 } catch (SQLException e1) {
-                    Log.error(SOURCE, e);
+                    log.error("Error rolling back transaction", e);
                 }
             }
             throw new SystemException("Feil ved lagring", SOURCE, e);
@@ -1127,7 +1127,7 @@ public class ContentAO {
                 try {
                     attributeSaver.persistAttribute(c, content, attr);
                 } catch (SQLException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Error persisting attribute " + attr, e);
                     throw new SystemException("Error saving attribute", this.getClass().getName(), e);
                 }
             }

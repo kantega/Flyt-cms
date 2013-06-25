@@ -19,8 +19,9 @@ package no.kantega.publishing.common.service.lock;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LockManager {
+    private static final Logger log = LoggerFactory.getLogger(LockManager.class);
     private final static String SOURCE = "aksess.LockManager";
 
     private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<>();
@@ -40,7 +42,7 @@ public class LockManager {
      * @return the ContentLock for the Content with contentId if it exists. Null if not locked or lock is expired.
      */
     public static ContentLock peekAtLock(int contentId) {
-        Log.info(SOURCE, "Peeking at lock for content " + contentId);
+        log.info( "Peeking at lock for content " + contentId);
         ContentLock lock = locks.get(contentId);
         // No lock
         if(lock == null) {
@@ -52,7 +54,7 @@ public class LockManager {
             boolean expired = age > lockTimeToLive;
 
             if(expired) {
-                Log.info(SOURCE, "Expired lock for content " + contentId);
+                log.info( "Expired lock for content " + contentId);
                 // Remove lock and return false (not locked anymore)
                 locks.remove(contentId);
                 return null;
@@ -69,7 +71,7 @@ public class LockManager {
      * @return true if a new lock is created. false if a lock for the Content with contentId already exists.
      */
     public static boolean lockContent(String owner, int contentId) {
-        Log.info(SOURCE, "Locking content " + contentId + " for owner " + owner);
+        log.info( "Locking content " + contentId + " for owner " + owner);
         ContentLock contentLock = peekAtLock(contentId);
         if(contentLock != null) {
             // Content already locked
@@ -89,7 +91,7 @@ public class LockManager {
      * @param contentId of the Content to release locks for
      */
     public static void releaseLock(int contentId) {
-        Log.info(SOURCE, "Releasing lock for content " + contentId);
+        log.info( "Releasing lock for content " + contentId);
         locks.remove(contentId);
     }
 
@@ -98,7 +100,7 @@ public class LockManager {
      * @param owner - user owning the locks.
      */
     public static void releaseLocksForOwner(final String owner) {
-        Log.info(SOURCE, "Releasing lock for owner " + owner);
+        log.info( "Releasing lock for owner " + owner);
         Map<Integer, ContentLock> locks = getLocks();
         Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
         Collection<Map.Entry<Integer, ContentLock>> contentLocksWithOwner = Collections2.filter(lockEntries, new Predicate<Map.Entry<Integer, ContentLock>>() {
@@ -122,7 +124,7 @@ public class LockManager {
      * Go though all locks and remove expired locks
      */
     public static void cleanup() {
-        Log.info(SOURCE, "Cleaning locks");
+        log.info( "Cleaning locks");
         for (Integer id : LockManager.getLocks().keySet()) {
             LockManager.peekAtLock(id);
         }

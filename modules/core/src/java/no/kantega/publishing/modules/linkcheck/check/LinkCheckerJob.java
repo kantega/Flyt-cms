@@ -17,7 +17,6 @@
 package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
@@ -36,7 +35,8 @@ import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -46,7 +46,7 @@ import java.net.UnknownHostException;
 import java.util.Date;
 
 public class LinkCheckerJob implements InitializingBean {
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(LinkCheckerJob.class);
     public static final String CONTENT = Aksess.VAR_WEB + Aksess.CONTENT_URL_PREFIX + "/";
     public static final String CONTENT_AP = Aksess.VAR_WEB + "/content.ap?thisId=";
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
@@ -65,7 +65,7 @@ public class LinkCheckerJob implements InitializingBean {
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(getClass().getName(), "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
 

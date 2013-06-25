@@ -16,12 +16,14 @@
 
 package no.kantega.commons.taglib.template;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import java.io.IOException;
 
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
@@ -29,6 +31,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * Time: 1:15:35 PM
  */
 public class SectionNotEmptyTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(SectionNotEmptyTag.class);
 
     private String id = null;
     private String negate = null;
@@ -57,8 +60,8 @@ public class SectionNotEmptyTag extends BodyTagSupport {
             if((hasSection && hasContent && !negate) || (!hasSection && negate) || (!hasContent && negate)) {
                 bodyContent.writeOut(getPreviousOut());
             }
-        } catch (Exception e) {
-            Log.error("ERROR", e, null, null);
+        } catch (IOException e) {
+            log.error("Could not write to body", e);
             throw new JspTagException("SectionNotEmptyTag", e);
         } finally {
             bodyContent.clearBody();

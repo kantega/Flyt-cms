@@ -17,13 +17,14 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +37,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  *
  */
 public class GetAttributeTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetAttributeTag.class);
     private static final String SOURCE = "aksess.GetAttributeTag";
 
     private String name = null;
@@ -182,7 +184,7 @@ public class GetAttributeTag extends TagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

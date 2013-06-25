@@ -18,6 +18,8 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -25,7 +27,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.XmlBeanDefinitionReader;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
-import org.apache.log4j.Logger;
 
 
 public class SecurityBeanLoader implements BeanFactoryPostProcessor, ResourceLoaderAware {
@@ -33,7 +34,7 @@ public class SecurityBeanLoader implements BeanFactoryPostProcessor, ResourceLoa
     private String defaultSecurityResource;
     private ResourceLoader resourceLoader;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(SecurityBeanLoader.class);
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory context) throws BeansException {
 

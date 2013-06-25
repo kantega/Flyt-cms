@@ -17,14 +17,16 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.data.MultimediaImageMap;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class MultimediaImageMapAO {
+    private static final Logger log = LoggerFactory.getLogger(MultimediaImageMapAO.class);
     private static final String SOURCE = "aksess.MultimediaImageMapAO";
 
     /**
@@ -48,7 +50,7 @@ public class MultimediaImageMapAO {
             rs.close();
             return mim;
         } catch (SQLException e) {
-            Log.error(MultimediaImageMapAO.SOURCE, e, null, null);
+            log.error("", e);
             throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL feil ved henting av imagemap", e);
         } finally {
             try {
@@ -92,7 +94,7 @@ public class MultimediaImageMapAO {
             hasImageMapSt.setInt(2, mim.getMultimediaId());
             hasImageMapSt.execute();
         } catch (SQLException e) {
-            Log.error(MultimediaImageMapAO.SOURCE, e, null, null);
+            log.error("", e);
             throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL error saving imagemap", e);
         } finally {
             try {

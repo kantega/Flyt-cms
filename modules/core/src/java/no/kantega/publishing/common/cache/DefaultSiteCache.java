@@ -20,11 +20,12 @@ import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Nullable;
@@ -36,6 +37,7 @@ import java.util.Map;
 import static com.google.common.collect.Collections2.filter;
 
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
+    private static final Logger log = LoggerFactory.getLogger(DefaultSiteCache.class);
     private static String SOURCE = "SiteCache";
     private List<Site> sites = null;
     private Map<String, Site> hostnames = null;
@@ -114,7 +116,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
                 boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
                 if (isDisabled) {
-                    Log.info(SOURCE, "Slår av site:" + site.getName(), null, null);
+                    log.info( "Slår av site:" + site.getName());
                 }
                 site.setDisabled(isDisabled);
 

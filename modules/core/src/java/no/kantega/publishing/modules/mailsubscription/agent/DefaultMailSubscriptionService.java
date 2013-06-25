@@ -3,7 +3,6 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
@@ -13,6 +12,8 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryService{
+    private static final Logger log = LoggerFactory.getLogger(DefaultMailSubscriptionService.class);
 
     public void sendEmail(String recipient, List<Content> subscriberContent, Site site) throws  ConfigurationException, SystemException {
         Configuration config = Aksess.getConfiguration();
@@ -53,7 +55,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
                 List<MimeBodyPart> bodyParts = createBodyParts(config, alias, param);
                 MailSender.send(from, recipient, subject, bodyParts.toArray(new MimeBodyPart[bodyParts.size()]));
             } catch (Exception e) {
-                Log.error(this.getClass().getName(), e, null, null);
+                log.error("", e);
             }
         }
     }

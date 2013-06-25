@@ -23,7 +23,6 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.cache.SiteCache;
@@ -63,6 +62,8 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -74,6 +75,7 @@ import java.util.*;
  *  as well as some other snacksy operations.
  */
 public class ContentManagementService {
+    private static final Logger log = LoggerFactory.getLogger(ContentManagementService.class);
     private static final String SOURCE = "aksess.ContentManagementService";
 
     HttpServletRequest request = null;
@@ -149,7 +151,7 @@ public class ContentManagementService {
         }
 
         if (request != null) {
-            Log.debug(SOURCE, "Locking contentid: " + c.getId() + " for user: " + securitySession.getUser().getId() + " with IP: " + request.getRemoteAddr(), null, null);
+            log.debug( "Locking contentid: " + c.getId() + " for user: " + securitySession.getUser().getId() + " with IP: " + request.getRemoteAddr());
         }
 
         // Reset minor change field
@@ -432,7 +434,7 @@ public class ContentManagementService {
      */
     public Content copyContent(Content sourceContent, Association target, AssociationCategory category, boolean copyChildren) throws SystemException, NotAuthorizedException {
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
-        Log.info(SOURCE, String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
+        log.info( String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
 
         Content destParent = ContentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
@@ -478,7 +480,7 @@ public class ContentManagementService {
         AttachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
 
         if(copyChildren){
-            Log.info(SOURCE, "Copying children of Content " + sourceContent.getAssociation().getId());
+            log.info( "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(origialContentIdentifier);
 
@@ -1123,7 +1125,7 @@ public class ContentManagementService {
                     ContentIdentifier cid =  ContentIdentifier.fromAssociationId(a.getId());
                     Content c = ContentAO.getContent(cid, false);
                     if (c == null) {
-                        Log.error(SOURCE, "Content == null, associationId =" + a.getId(), null, null);
+                        log.error( "Content == null, associationId =" + a.getId());
                         throw new SystemException("Content == null, associationId =" + a.getId(), SOURCE, null);
                     }
                     int priv = Privilege.UPDATE_CONTENT;

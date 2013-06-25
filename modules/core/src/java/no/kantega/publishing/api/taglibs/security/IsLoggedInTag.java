@@ -17,14 +17,16 @@
 package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsLoggedInTag extends ConditionalTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(IsLoggedInTag.class);
     private static final String SOURCE = "aksess.IsLoggedInTag";
 
     protected boolean condition()  {
@@ -36,7 +38,7 @@ public class IsLoggedInTag extends ConditionalTagSupport {
                 return true;
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return false;

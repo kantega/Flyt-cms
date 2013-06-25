@@ -19,7 +19,6 @@ package no.kantega.publishing.jobs.contentimport;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
@@ -32,6 +31,8 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.event.ContentImporter;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import java.util.Iterator;
@@ -44,13 +45,14 @@ import java.util.Map;
  * Time: 11:12:15 AM
  */
 public class ContentImportJob {
+    private static final Logger log = LoggerFactory.getLogger(ContentImportJob.class);
 
     private static final String SOURCE = "aksess.ContentImportJob";
 
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         try {
@@ -69,21 +71,15 @@ public class ContentImportJob {
                     }
                 }
             }
-        } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (InvalidFileException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (InvalidTemplateException e) {
-            Log.error(SOURCE, e, null, null);
-        } catch (NotAuthorizedException e) {
-            Log.error(SOURCE, e, null, null);
+        } catch (SystemException | NotAuthorizedException | InvalidTemplateException | InvalidFileException e) {
+            log.error("Error calling importer", e);
         }
     }
 
     private void importContentFromImporter(ContentManagementService cms, ContentImporter ci) throws NotAuthorizedException, InvalidFileException, InvalidTemplateException {
         List contentList = ci.getContentList();
         if (contentList != null) {
-            Log.debug(SOURCE, "Starter import av " + contentList.size() + " elementer", null, null);
+            log.debug( "Starter import av " + contentList.size() + " elementer");
             for (int i = 0; i < contentList.size(); i++) {
                 Content c = (Content) contentList.get(i);
                 ContentIdentifier cid = c.getContentIdentifier();
@@ -96,9 +92,9 @@ public class ContentImportJob {
                         cms.checkInContent(c, ContentStatus.PUBLISHED);
                     }
                 } catch (ObjectLockedException e) {
-                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by someone else", null, null);
+                    log.error( "Could not update:" + c.getTitle() + " was locked by someone else");
                 } catch (TransactionLockException e) {
-                    Log.error(SOURCE, "Could not update:" + c.getTitle() + " was locked by another process/server", null, null);
+                    log.error( "Could not update:" + c.getTitle() + " was locked by another process/server");
                 }
             }
         }

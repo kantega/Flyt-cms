@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapTopiclistAttributeValueToContentPropertyBehaviour;
@@ -30,6 +29,8 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -40,6 +41,7 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class TopiclistAttribute extends ListAttribute {
+    private static final Logger log = LoggerFactory.getLogger(TopiclistAttribute.class);
     private int topicMapId = -1;
     private String instanceOf = null;
 
@@ -82,7 +84,7 @@ public class TopiclistAttribute extends ListAttribute {
                 topics = TopicAO.getAllTopics();
             }
         } catch (Exception e) {
-            Log.error("TopiclistAttribute", e, null, null);
+            log.error("", e);
         }
 
         for (Topic topic : topics) {

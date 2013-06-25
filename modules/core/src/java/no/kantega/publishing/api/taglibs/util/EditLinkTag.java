@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -25,6 +24,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -33,6 +34,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class EditLinkTag  extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(EditLinkTag.class);
     private static final String SOURCE = "aksess.EditLinkTag";
 
     private String cssStyle = null;
@@ -88,7 +90,7 @@ public class EditLinkTag  extends BodyTagSupport {
         } catch (ContentNotFoundException e) {
             // Gjør ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
-            Log.error(SOURCE, e);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();

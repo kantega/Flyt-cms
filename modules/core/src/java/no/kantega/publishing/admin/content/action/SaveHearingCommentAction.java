@@ -26,7 +26,8 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.HearingComment;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.security.SecuritySession;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +41,7 @@ import java.util.Date;
 
 public class SaveHearingCommentAction {
 
-	private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(SaveHearingCommentAction.class);
 	public static final String HEARING_KEY = SaveHearingCommentAction.class.getName() + ".HearingKey";
 	public static final String HEARING_INVITEES_KEY = SaveHearingCommentAction.class.getName() + ".HearingInviteeKey";
 

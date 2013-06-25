@@ -18,7 +18,6 @@ package no.kantega.publishing.api.taglibs.mini;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -27,6 +26,8 @@ import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -40,6 +41,7 @@ import java.io.IOException;
  * Time: 12:20:05
  */
 public class CreateTag extends AbstractSimpleEditTag {
+    private static final Logger log = LoggerFactory.getLogger(CreateTag.class);
 
     private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
     private int displayTemplateId = -1;
@@ -121,7 +123,7 @@ public class CreateTag extends AbstractSimpleEditTag {
         } catch (NotAuthorizedException e) {
                 //
         } catch (IOException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         } finally {
             bodyContent.clearBody();

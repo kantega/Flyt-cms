@@ -22,7 +22,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
@@ -38,7 +39,7 @@ import java.math.BigInteger;
 public class AdminFilter implements Filter {
     private ServletContext servletContext;
     private CrossSiteRequestForgeryContentRewriter crossSiteRequestForgeryContentRewriter;
-    private Logger  log = Logger.getLogger(getClass());
+    private Logger  log = LoggerFactory.getLogger(getClass());
 
     private static String[] excludedStaticResources = {".png", ".jpg", ".gif", ".jjs", ".js", ".css"};
 
@@ -116,7 +117,7 @@ public class AdminFilter implements Filter {
                     cause = (Throwable) e;
                 }
             }
-            log.error(cause);
+            log.error("", cause);
 
             handler.setThrowable(cause, request.getRequestURI());
             request.getSession(true).setAttribute("handler", handler);

@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.administration.action.CreateRootAction;
@@ -29,6 +28,8 @@ import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ import java.util.Map;
  * Time: 15:04:08
  */
 public class NavigateController extends AbstractContentAction {
+    private static final Logger log = LoggerFactory.getLogger(NavigateController.class);
     private String view;
 
     private SiteCache siteCache;
@@ -109,7 +111,7 @@ public class NavigateController extends AbstractContentAction {
             }
 
             setRequestVariables(request, editedContent, aksessService, model);
-            Log.debug(this.getClass().getName(), "User is editing page:" + editedContent.getTitle(), null, null);
+            log.debug( "User is editing page:" + editedContent.getTitle());
         }
 
         model.put("sites", siteCache.getSites());

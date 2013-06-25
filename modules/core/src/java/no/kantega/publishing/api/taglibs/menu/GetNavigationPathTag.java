@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.api.taglibs.menu;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
@@ -25,6 +24,8 @@ import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetNavigationPathTag  extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetNavigationPathTag.class);
     private static final String SOURCE = "aksess.GetNavigationPathTag";
 
     private String name = "menu";
@@ -116,7 +118,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

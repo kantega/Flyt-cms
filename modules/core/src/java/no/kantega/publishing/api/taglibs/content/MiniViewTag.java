@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
@@ -30,6 +29,8 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.kantega.jexmec.PluginManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,6 +38,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class MiniViewTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(MiniViewTag.class);
     private static final String SOURCE = "aksess.MiniViewTag";
 
     private String collection = null;
@@ -81,8 +83,7 @@ public class MiniViewTag extends TagSupport {
                         }
                         pageContext.include(template);
                     } catch (Exception e) {
-                        Log.error(SOURCE, "Unable to display miniview for: " + content.getTitle(), null, null);
-                        Log.error(SOURCE, e, null, null);
+                        log.error( "Unable to display miniview for: " + content.getTitle(), e);
                     }
 
                     // Sett tilbake til denne siden
@@ -92,7 +93,7 @@ public class MiniViewTag extends TagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error displaying miniview", e);
             throw new JspException("Error in miniview");
         }
 

@@ -1,10 +1,11 @@
 package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.ImportedTopicMap;
 import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ImportTopicMapAction extends AbstractController {
+    private static final Logger log = LoggerFactory.getLogger(ImportTopicMapAction.class);
     private static String SOURCE = "aksess.ImportTopicMapAction";
     public final static String IMPORETED_TOPICMAP_SESSION_KEY = "importedTopicMapKey";
     private String view;
@@ -23,7 +25,7 @@ public class ImportTopicMapAction extends AbstractController {
         Map<String, Object> model = new HashMap<String, Object>();
         int id =  param.getInt("id");
         if (id != -1) {
-            Log.info(SOURCE, "Importing topicmap with id: " + id, null, null);
+            log.info( "Importing topicmap with id: " + id);
 
             TopicMapService topicService = new TopicMapService(request);
             try{

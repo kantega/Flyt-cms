@@ -17,7 +17,8 @@
 package no.kantega.publishing.api.taglibs.content.paginate;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class PaginateCollectionTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(PaginateCollectionTag.class);
     private static final String SOURCE = "aksess.PaginateCollectionTag";
 
     private String collection = null;
@@ -101,7 +103,7 @@ public class PaginateCollectionTag extends TagSupport {
                 printPagination(pages, offset, numberOfPages);
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             throw new JspTagException(SOURCE, e);
         }
 

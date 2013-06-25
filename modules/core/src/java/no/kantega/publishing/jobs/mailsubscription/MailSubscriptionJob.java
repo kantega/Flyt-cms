@@ -17,7 +17,6 @@
 package no.kantega.publishing.jobs.mailsubscription;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
@@ -25,12 +24,15 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import no.kantega.publishing.common.data.enums.ServerType;
 import org.quartz.StatefulJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
 import java.util.Date;
 import java.util.List;
 
 public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
+    private static final Logger log = LoggerFactory.getLogger(MailSubscriptionJob.class);
     private static final String SOURCE = "aksess.jobs.MailSubscriptionJob";
 
     // Denne jobben kjøres ved ulike intervall for å sende ut meldinger, trenger å vite hvilket intervall
@@ -44,7 +46,7 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
 
@@ -52,19 +54,19 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
         try {
             jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
         } catch (ConfigurationException e) {
-            Log.error(SOURCE, "Unable to read aksess configuration", null, null);
+            log.error( "Unable to read aksess configuration");
         }
         if(jobDisabled){
-            Log.info(SOURCE, "Mailsubscriptionjob disabled", null, null);
+            log.info( "Mailsubscriptionjob disabled");
         }else{
-            Log.debug(SOURCE, "Looking for mailsubscriptions", null, null);
+            log.debug( "Looking for mailsubscriptions");
 
             Date previousRun = ScheduleLogAO.getLastRun(SOURCE + "-" + interval);
             ScheduleLogAO.setLastrun(SOURCE + "-" + interval, new Date());
 
             if (previousRun != null) {
                 for (MailSubscriptionAgent agent : mailSubscriptionAgents) {
-                    Log.info(SOURCE, "Sending mailsubscriptions using agent " + agent, null, null);
+                    log.info( "Sending mailsubscriptions using agent " + agent);
                     agent.emailNewContentSincePreviousDate(previousRun, interval);
                 }
             }

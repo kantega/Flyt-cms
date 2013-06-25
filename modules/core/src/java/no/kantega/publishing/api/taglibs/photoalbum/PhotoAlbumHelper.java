@@ -17,11 +17,12 @@
 package no.kantega.publishing.api.taglibs.photoalbum;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.service.MultimediaService;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PhotoAlbumHelper {
+    private static final Logger log = LoggerFactory.getLogger(PhotoAlbumHelper.class);
     private static final String SOURCE = "aksess.PhotoAlbumHelper";
 
     public static List getPhotos(PageContext pageContext, int albumId) {
@@ -60,7 +62,7 @@ public class PhotoAlbumHelper {
                 }
                 request.setAttribute("aksess_photos_" + albumId, photos);
             } catch (SystemException e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
         return photos;

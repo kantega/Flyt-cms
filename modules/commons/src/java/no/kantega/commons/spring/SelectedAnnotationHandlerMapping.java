@@ -1,6 +1,7 @@
 package no.kantega.commons.spring;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  * to add custom interceptors to specific URLs when using annotations 
  */
 public class SelectedAnnotationHandlerMapping extends DefaultAnnotationHandlerMapping {
+    private static final Logger log = LoggerFactory.getLogger(SelectedAnnotationHandlerMapping.class);
     private List<Pattern> urlPatterns;
 
     public void setUrls(List<String> urls) {
@@ -34,7 +36,7 @@ public class SelectedAnnotationHandlerMapping extends DefaultAnnotationHandlerMa
                         break;
                     }
                 } catch (Exception e) {
-                    Log.error(this.getClass().getName(), e);
+                    log.error("Error getting filtered", e);
                 }
             }
         }

@@ -19,7 +19,6 @@ package no.kantega.publishing.modules.mailsender;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
@@ -28,6 +27,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.generic.DateTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -52,6 +53,7 @@ import java.util.Properties;
  * @author Anders Skar, Vidar B. Tilrem
  */
 public class MailSender {
+    private static final Logger log = LoggerFactory.getLogger(MailSender.class);
     private static final String SOURCE = "Aksess.MailSender";
 
     /**
@@ -173,7 +175,7 @@ public class MailSender {
             eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
 
             // Logg sending
-            Log.debug(SOURCE, "Sending email to " + to + " with subject " + subject, null, null);
+            log.debug( "Sending email to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
             EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);

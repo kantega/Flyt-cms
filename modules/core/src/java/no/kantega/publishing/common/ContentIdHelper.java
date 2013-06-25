@@ -18,7 +18,6 @@ package no.kantega.publishing.common;
 
 import com.google.gdata.util.common.base.Pair;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -36,6 +35,8 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -49,6 +50,7 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelper {
+    private static final Logger log = LoggerFactory.getLogger(ContentIdHelper.class);
     private static final String SOURCE = "aksess.ContentIdHelper";
 
     private static final int defaultContentID = -1;
@@ -639,14 +641,14 @@ public class ContentIdHelper {
                     associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
                     contentIdentifier.setAssociationId(associationId);
                 } catch (SystemException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 }
             } else if (contentId == -1 && associationId != -1) {
                 try {
                     contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
                     contentIdentifier.setContentId(contentId);
                 } catch (SystemException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 }
             }
         }
