@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static no.kantega.commons.util.URLHelper.getValidUrl;
+import static no.kantega.commons.util.URLHelper.combinePaths;
 
 /**
  *
@@ -307,7 +307,7 @@ public final class AttributeTagHelper {
                         if(result.equals(content.getAlias()) && site.getHostnames().isEmpty()){
                             // Site does not have its own domain. append site alias to
                             // distinguish it from same alias on other sites.
-                            result = getValidUrl(site.getAlias(), result);
+                            result = combinePaths(site.getAlias(), result);
                         }
                         break;
                     case ContentProperty.ALIAS:

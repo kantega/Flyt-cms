@@ -44,12 +44,12 @@ public class URLHelper {
     }
 
     /**
-     * Get valid url from two fragments.
+     * Get combined url from two fragments.
      * /a + b -> /a/b
      * /a/ + /b -> /a/b
      * /a/ + b -> /a/b
      */
-    public static String getValidUrl(String urlFragment1, String urlFragment2){
+    public static String combinePaths(String urlFragment1, String urlFragment2){
         StringBuilder urlBuilder = new StringBuilder();
         if(!urlFragment1.endsWith("/")){
             urlBuilder.append(urlFragment1);
