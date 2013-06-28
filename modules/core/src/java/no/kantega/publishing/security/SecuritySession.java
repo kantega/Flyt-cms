@@ -20,6 +20,7 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
@@ -59,6 +60,7 @@ public class SecuritySession {
     private Identity identity = null;
     private SecurityRealm realm = null;
     private SiteCache siteCache;
+    private static RememberMeHandler rememberMeHandler;
 
     // Husker sist tilgangssjekk
     private CachedBaseObject prevObject = null;
@@ -80,18 +82,21 @@ public class SecuritySession {
             request.getSession(true).setAttribute("aksess.securitySession", session);
         }
 
-        IdentityResolver resolver = session.realm.getIdentityResolver();
-        Identity identity = null;
-        try {
-            Identity fakeIdentity = getFakeIdentity();
-            if(fakeIdentity != null) {
-                identity = fakeIdentity;
+        Identity identity = rememberMeHandler.getRememberedIdentity(request);
+        if (identity == null) {
 
-            } else {
-                identity = resolver.getIdentity(request);
+            IdentityResolver resolver = session.realm.getIdentityResolver();
+            try {
+                Identity fakeIdentity = getFakeIdentity();
+                if(fakeIdentity != null) {
+                    identity = fakeIdentity;
+
+                } else {
+                    identity = resolver.getIdentity(request);
+                }
+            } catch (IdentificationFailedException e) {
+                throw new SystemException("IdentificationFailedException", e);
             }
-        } catch (IdentificationFailedException e) {
-            throw new SystemException("IdentificationFailedException", e);
         }
         Identity currentIdentity = session.identity;
 
@@ -224,6 +229,7 @@ public class SecuritySession {
 
     private static SecuritySession createNewInstance() throws SystemException {
         SecuritySession session = new SecuritySession();
+        session.setRememberMeHandlerIfNull();
         session.realm = SecurityRealmFactory.getInstance();
         return session;
     }
@@ -316,11 +322,14 @@ public class SecuritySession {
             log.error("Error in url " + redirect, e);
         }
 
+        rememberMeHandler.forgetUser(request, response);
+
         try {
             resolver.initiateLogout(logoutContext);
         } catch (Exception e) {
             // Ikke alle IdentityResolvers håndterer utlogging, f.eks NTLM
         }
+
 
         // Nullstill
         user = null;
@@ -406,6 +415,12 @@ public class SecuritySession {
     private void setSiteCacheIfNull() {
         if(siteCache == null){
             siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
+    }
+
+    private void setRememberMeHandlerIfNull() {
+        if (rememberMeHandler == null) {
+            rememberMeHandler = RootContext.getInstance().getBean(RememberMeHandler.class);
         }
     }
 }

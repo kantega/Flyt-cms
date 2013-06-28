@@ -17,10 +17,11 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
+import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
-import no.kantega.publishing.security.RememberMeHandler;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
 import no.kantega.publishing.spring.RootContext;
@@ -50,11 +51,10 @@ public class LoginAction extends AbstractLoginAction {
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
 
-    @Autowired
-    private EventLog eventLog;
+    @Autowired private EventLog eventLog;
+    @Autowired private SystemConfiguration configuration;
+    @Autowired private RememberMeHandler rememberMeHandler;
 
-    @Autowired
-    private RememberMeHandler rememberMeHandler;
     private String loginView = null;
 
     private boolean rolesExists = false;
@@ -83,7 +83,7 @@ public class LoginAction extends AbstractLoginAction {
         PasswordManager passwordManager = getPasswordManager(domain);
         ResetPasswordTokenManager resetPasswordTokenManager = getResetPasswordTokenManager();
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         if (Aksess.isSecurityAllowPasswordReset() && resetPasswordTokenManager != null) {
             model.put("allowPasswordReset", true);
@@ -113,23 +113,13 @@ public class LoginAction extends AbstractLoginAction {
                 }
             } else {
                 if (passwordManager.verifyPassword(identity, password)) {
-                    // Register successful login
-                    userLoginRestrictor.registerLoginAttempt(username, true);
-                    ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), true);
 
-                    HttpSession session = request.getSession(true);
-                    IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
+                    registerSuccessfulLogin(request, username, domain);
 
-                    if (rememberMe != null && rememberMe.equals("on")) {
-                        response = rememberMeHandler.setRememberMe(response, username, domain);
+                    boolean rememberMeEnabled = configuration.getBoolean("security.login.rememberme.enabled", false);
+                    if (rememberMeEnabled && rememberMe != null && rememberMe.equals("on")) {
+                        rememberMeHandler.rememberUser(response, username, domain);
                     }
-
-                    // Set session logon info
-                    session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
-                    session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_DOMAIN, domain);
-
-                    // Finish login by getting instance
-                    SecuritySession.getInstance(request);
 
                     return new ModelAndView(new RedirectView(redirect));
                 } else {
@@ -141,29 +131,6 @@ public class LoginAction extends AbstractLoginAction {
                     model.put("loginfailed", Boolean.TRUE);
                 }
             }
-        } else {
-            boolean rememberMeEnabled = Aksess.getConfiguration().getBoolean("security.login.rememberme.enabled", false);
-            String[] usernameAndDomain = rememberMeHandler.hasRememberMe(request);
-            if (rememberMeEnabled && usernameAndDomain != null) {
-                username = usernameAndDomain[0];
-                domain = usernameAndDomain[1];
-
-                // Register successful login
-                userLoginRestrictor.registerLoginAttempt(username, true);
-                ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), true);
-
-                HttpSession session = request.getSession(true);
-                IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
-
-                // Set session logon info
-                session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
-                session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_DOMAIN, domain);
-
-                // Finish login by getting instance
-                SecuritySession.getInstance(request);
-
-                return new ModelAndView(new RedirectView(redirect));
-            }
         }
 
         model.put("redirect", redirect);
@@ -171,6 +138,22 @@ public class LoginAction extends AbstractLoginAction {
         model.put("loginLayout", getLoginLayout());
 
         return new ModelAndView(loginView, model);
+    }
+
+    private void registerSuccessfulLogin(HttpServletRequest request, String username, String domain) {
+
+        userLoginRestrictor.registerLoginAttempt(username, true);
+        ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), true);
+
+        HttpSession session = request.getSession(true);
+        IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
+
+        // Set session logon info
+        session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
+        session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_DOMAIN, domain);
+
+        // Finish login by getting instance
+        SecuritySession.getInstance(request);
     }
 
     public void setLoginView(String loginView) {

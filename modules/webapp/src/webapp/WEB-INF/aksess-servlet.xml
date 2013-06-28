@@ -322,8 +322,6 @@
         </property>
     </bean>
 
-    <bean id="rememberMeHandler" class="no.kantega.publishing.security.CookieRememberMeHandler"/>
-
     <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
         <property name="requestResetPasswordView" value="${security.login.requestresetpassword.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>
