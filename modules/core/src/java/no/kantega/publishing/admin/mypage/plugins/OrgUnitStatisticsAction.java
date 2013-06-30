@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.TrafficLogDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
@@ -42,8 +42,11 @@ public class OrgUnitStatisticsAction implements Controller {
     @Autowired
     private TrafficLogDao trafficLogDao;
 
+    @Autowired
+    private ContentAO contentAO;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
         User user = securitySession.getUser();
@@ -51,7 +54,7 @@ public class OrgUnitStatisticsAction implements Controller {
         if (!orgUnits.isEmpty()) {
             OrgUnit orgUnit = orgUnits.get(0);
             model.put("orgUnit", orgUnit);
-            Content content = ContentAO.getContent(orgUnit);
+            Content content = contentAO.getContent(orgUnit);
             log.debug( "Looked up organization unit with name '" + orgUnit.getName() + "'");
             if (content != null) {
                 Calendar cal = new GregorianCalendar();

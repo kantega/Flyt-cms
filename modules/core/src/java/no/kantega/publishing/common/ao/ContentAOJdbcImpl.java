@@ -34,6 +34,7 @@ import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
@@ -55,9 +56,10 @@ import static java.util.Arrays.asList;
 /**
  *
  */
-public class ContentAO extends NamedParameterJdbcDaoSupport{
-    private static final Logger log = LoggerFactory.getLogger(ContentAO.class);
+public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements ContentAO {
+    private static final Logger log = LoggerFactory.getLogger(ContentAOJdbcImpl.class);
 
+    @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         ContentIdentifier parent = getParent(cid);
@@ -94,6 +96,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         return parent;
     }
 
+    @Override
     public void forAllContentObjects(final ContentHandler contentHandler, ContentHandlerStopper stopper) {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content");
@@ -119,6 +122,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int id = cid.getContentId();
@@ -140,11 +144,13 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
         return getJdbcTemplate().query("select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = ? and content.ContentId = ? order by contentversion.Version desc", new ContentRowMapper(true), cid.getLanguage(), cid.getContentId());
     }
 
 
+    @Override
     public Content checkOutContent(ContentIdentifier cid) throws SystemException {
         Content content = getContent(cid, true);
         content.setIsCheckedOut(true);
@@ -153,6 +159,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
     }
 
 
+    @Override
     public Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
@@ -264,6 +271,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
      * @return Content object of the organization unit page; {@code null} if it does not exist.
      * @throws SystemException
      */
+    @Override
     public Content getContent(OrgUnit orgUnit) throws SystemException {
         Content content = null;
 
@@ -284,11 +292,13 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         return content;
     }
 
+    @Override
     public String getTitleByAssociationId(int associationId) {
         return getJdbcTemplate().queryForObject("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
     }
 
-    public static List<WorkList<Content>> getMyContentList(User user) throws SystemException {
+    @Override
+    public List<WorkList<Content>> getMyContentList(User user) throws SystemException {
         List<WorkList<Content>> workList = new ArrayList<>();
 
         WorkList<Content> draft = new WorkList<>();
@@ -402,8 +412,8 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         return workList;
     }
 
-
-    public static List<Content> getContentListForApproval() throws SystemException {
+    @Override
+    public List<Content> getContentListForApproval() throws SystemException {
         List<Content> contentList = new ArrayList<Content>();
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -426,10 +436,12 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         return contentList;
     }
 
+    @Override
     public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
         return getContentList(contentQuery, maxElements, sort, getAttributes, false);
     }
 
+    @Override
     public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
@@ -482,12 +494,12 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
             } else {
                 // Kan sorteres etter inntil to kriterier
                 if (sort2 != null) {
-                    Comparator<Content> comparator = new ContentComparator(sort2, sort.sortDescending());
+                    Comparator<Content> comparator = new ContentComparator(this, sort2, sort.sortDescending());
                     Collections.sort(contentList, comparator);
                 }
 
                 if (!contentQuery.useSqlSort() && sort1 != null) {
-                    Comparator<Content> comparator = new ContentComparator(sort1, sort.sortDescending());
+                    Comparator<Content> comparator = new ContentComparator(this, sort1, sort.sortDescending());
                     Collections.sort(contentList, comparator);
                 }
             }
@@ -496,6 +508,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         return contentList;
     }
 
+    @Override
     public void doForEachInContentList(final ContentQuery contentQuery, final int maxElements, SortOrder sort, final ContentHandler handler) throws SystemException {
         if (sort != null) {
             contentQuery.setSortOrder(sort);
@@ -522,6 +535,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
     }
 
 
+    @Override
     public ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int parentAssociationId = getJdbcTemplate().queryForInt("select ParentAssociationId from associations where AssociationId = ?", cid.getAssociationId());
@@ -531,6 +545,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
     }
 
 
+    @Override
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
 
         Connection c = null;
@@ -925,6 +940,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) throws SystemException {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
@@ -976,6 +992,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         });
     }
 
+    @Override
     public int getNextExpiredContentId(int after) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -994,6 +1011,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public int getNextWaitingContentId(int after) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -1021,6 +1039,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
      * @return
      * @throws SystemException
      */
+    @Override
     public int getNextActivationContentId(int after) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -1052,6 +1071,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
     }
 
 
+    @Override
     public void setContentVisibilityStatus(int contentId, int newStatus) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -1067,6 +1087,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public void setNumberOfNotes(int contentId, int count) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -1080,6 +1101,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public List<UserContentChanges> getNoChangesPerUser(int months) throws SystemException {
         List<UserContentChanges> ucclist = new ArrayList<>();
         try(Connection c = dbConnectionFactory.getConnection()){
@@ -1106,6 +1128,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public int getContentCount() throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
@@ -1122,6 +1145,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public int getLinkCount() throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
@@ -1138,6 +1162,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public int getContentProducerCount() throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(DISTINCT LastModifiedBy) AS count FROM contentversion");
@@ -1152,6 +1177,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
         }
     }
 
+    @Override
     public void updateContentFromTemplates(TemplateConfiguration templateConfiguration) {
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
         for (DisplayTemplate dt : templateConfiguration.getDisplayTemplates()) {
@@ -1176,6 +1202,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
      * @param contentId - ContentId
      * @return
      */
+    @Override
     public boolean hasBeenPublished(int contentId) {
         if (contentId == -1) {
             return false;
@@ -1215,6 +1242,7 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
      * @param expireDate - new expire date
      * @param updateChildren - true = update children / false = dont update children
      */
+    @Override
     public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
         ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
@@ -1239,7 +1267,4 @@ public class ContentAO extends NamedParameterJdbcDaoSupport{
     }
 
 
-    public interface ContentHandlerStopper {
-        public boolean isStopRequested();
-    }
 }

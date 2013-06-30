@@ -27,15 +27,16 @@ import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -53,6 +54,9 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     abstract String getView();
     abstract Map<String, Object> getModel(Content content, HttpServletRequest request);
     private boolean updatePublishProperties = true;
+
+    @Autowired
+    private ContentAO contentAO;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
@@ -213,7 +217,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             try {
                 Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 content.setPublishDate(startDate);
-                if (startDate == null && (!content.isNew()) && ContentAO.hasBeenPublished(content.getId())) {
+                if (startDate == null && (!content.isNew()) && contentAO.hasBeenPublished(content.getId())) {
                     errors.add(null, "aksess.error.publishdatenotset");
                 }
             } catch(Exception e) {

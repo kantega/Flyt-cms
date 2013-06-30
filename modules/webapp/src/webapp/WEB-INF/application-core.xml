@@ -290,6 +290,12 @@
 
     <bean id="xmlCache" class="no.kantega.publishing.common.ao.XMLCacheImpl"/>
 
+    <bean id="contentAO" class="no.kantega.publishing.common.ao.ContentAOJdbcImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.jobs.contentstate.ContentStateUpdater"/>
+
     <beans profile="useCaching">
         <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
     </beans>

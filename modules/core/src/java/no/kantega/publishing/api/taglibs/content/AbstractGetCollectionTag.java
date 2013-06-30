@@ -44,6 +44,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static java.util.Arrays.asList;
+
 /**
  * User: Anders Skar, Kantega AS
  * Date: Apr 3, 2007
@@ -226,7 +228,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 useAssociatedId = false;
             }
             if (pathElementIds != null && pathElementIds.length > 0) {
-                query.setPathElementIds(pathElementIds);
+                query.setPathElementIds(asList(pathElementIds));
                 useAssociatedId = false;
             }
 

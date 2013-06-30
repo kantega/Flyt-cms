@@ -18,12 +18,12 @@ package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.EventLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,9 +42,12 @@ public class LinkEmitter {
     @Autowired
     private EventLog eventLog;
 
+    @Autowired
+    private ContentAO contentAO;
+
     @PostConstruct
     public void initLinkEmitter() {
-        this.linkExtractor = new LinkExtractor(eventLog);
+        this.linkExtractor = new LinkExtractor(eventLog, contentAO);
     }
 
     public void emittLinks(final LinkHandler handler) {
@@ -55,7 +58,7 @@ public class LinkEmitter {
             final Counter attributeLinkCount = new Counter();
             long start = System.currentTimeMillis();
 
-            ContentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
+            contentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
                 public void handleContent(Content content) {
 
                     linkDao.deleteLinksForContentId(content.getId());

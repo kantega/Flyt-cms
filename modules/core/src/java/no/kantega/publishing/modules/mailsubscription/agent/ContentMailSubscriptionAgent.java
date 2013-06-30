@@ -25,12 +25,12 @@ import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
@@ -53,6 +53,9 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
 
     @Autowired
     private SiteCache siteCache;
+
+    @Autowired
+    private ContentAO contentAO;
 
     @Override
     public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval) {
@@ -88,7 +91,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
             query.setSiteId(site.getId());
         }
 
-        List<Content> allContentList = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
+        List<Content> allContentList = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
 
         // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
         List<Content> contentList = new ArrayList<>();

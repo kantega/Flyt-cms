@@ -18,11 +18,11 @@ package no.kantega.publishing.jobs.cleanup;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
@@ -43,6 +43,8 @@ public class DatabaseCleanupJob {
 
     @Autowired
     private EventLog eventLog;
+
+    private ContentAO contentAO;
 
     @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
     public void executeInternal() {
@@ -169,7 +171,7 @@ public class DatabaseCleanupJob {
             eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
             ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
-            ContentAO.deleteContent(cid);
+            contentAO.deleteContent(cid);
         }
     }
 

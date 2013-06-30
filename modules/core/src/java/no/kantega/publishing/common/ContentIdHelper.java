@@ -24,7 +24,6 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -33,6 +32,7 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -51,6 +51,7 @@ import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelper {
     private static final Logger log = LoggerFactory.getLogger(ContentIdHelper.class);
+    private static ContentAO contentAO;
 
     private static final int defaultContentID = -1;
     private static final int defaultSiteId = -1;
@@ -130,7 +131,10 @@ public class ContentIdHelper {
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(parent);
             query.setAssociationCategory(association.getCategory());
-            List<Content> children = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), false);
+            if(contentAO == null){
+                contentAO = RootContext.getInstance().getBean(ContentAO.class);
+            }
+            List<Content> children = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), false);
             for (int i = 0; i < children.size(); i++) {
                 Content c = children.get(i);
                 if (c.getAssociation().getId() == context.getAssociation().getId()) {

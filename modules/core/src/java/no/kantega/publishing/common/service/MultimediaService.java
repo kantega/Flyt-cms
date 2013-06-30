@@ -21,7 +21,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
@@ -33,6 +32,7 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.MultimediaMapWorker;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
@@ -52,13 +52,14 @@ public class MultimediaService {
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
     private EventLog eventLog;
+    private ContentAO contentAO;
 
     public MultimediaService() {
         ApplicationContext ctx = RootContext.getInstance();
         multimediaUsageDao = ctx.getBean(MultimediaUsageDao.class);
         multimediaDao = ctx.getBean(MultimediaDao.class);
         eventLog = ctx.getBean(EventLog.class);
-
+        contentAO = ctx.getBean(ContentAO.class);
     }
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
@@ -77,7 +78,7 @@ public class MultimediaService {
 
         if (multimedia != null && multimedia.getContentId() > 0) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
-            Content content = ContentAO.getContent(cid, false);
+            Content content = contentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized for id:" + id);
             }
@@ -242,7 +243,7 @@ public class MultimediaService {
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
-            Content content = ContentAO.getContent(cid, true);
+            Content content = contentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);
             }

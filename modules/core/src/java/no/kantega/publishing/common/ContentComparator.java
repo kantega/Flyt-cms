@@ -18,7 +18,6 @@ package no.kantega.publishing.common;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
@@ -26,6 +25,7 @@ import no.kantega.publishing.common.data.attributes.DateAttribute;
 import no.kantega.publishing.common.data.attributes.NumberAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.content.api.ContentAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,8 +40,9 @@ import java.util.Map;
  */
 public class ContentComparator implements Comparator<Content> {
     private static final Logger log = LoggerFactory.getLogger(ContentComparator.class);
+    private final ContentAO contentAO;
 
-    Map contentPages = new HashMap();
+    Map<String, Content> contentPages = new HashMap<>();
 
     int descending = -1;
 
@@ -49,7 +50,8 @@ public class ContentComparator implements Comparator<Content> {
 
     Collator collator = null;
 
-    public ContentComparator(String fieldName, boolean descending) {
+    public ContentComparator(ContentAO contentAO, String fieldName, boolean descending) {
+        this.contentAO = contentAO;
 
         collator = Collator.getInstance(Aksess.getDefaultLocale());
         collator.setStrength(Collator.PRIMARY);
@@ -93,18 +95,16 @@ public class ContentComparator implements Comparator<Content> {
         if (id == null || id.length() < 1){
             return "";
         }
-        Content cp = (Content)contentPages.get(id);
+        Content cp = contentPages.get(id);
         if (cp == null) {
             id = (id.contains(",")) ? id.substring(0,id.indexOf(",")) : id;
 
             ContentIdentifier cid = new ContentIdentifier();
             try {
                 cid.setAssociationId(Integer.parseInt(id, 10));
-                cp = ContentAO.getContent(cid, false);
+                cp = contentAO.getContent(cid, false);
                 contentPages.put(id, cp);
-            } catch (SystemException e) {
-                log.error("", e);
-            } catch (NumberFormatException e) {
+            } catch (SystemException | NumberFormatException e) {
                 log.error("", e);
             }
         }

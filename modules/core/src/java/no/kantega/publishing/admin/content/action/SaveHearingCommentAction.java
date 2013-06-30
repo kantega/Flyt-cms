@@ -19,12 +19,12 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.HearingComment;
 import no.kantega.publishing.common.data.Note;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +48,9 @@ public class SaveHearingCommentAction {
 	@Autowired
 	private NotesDao notesDao;
 
+    @Autowired
+    private ContentAO contentAO;
+
 	@RequestMapping(value = "/aksess/hearing/SaveHearingComment.action", method = RequestMethod.POST)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		RequestParameters param = new RequestParameters(request);
@@ -67,7 +70,7 @@ public class SaveHearingCommentAction {
 
 			if (comment != null && !comment.trim().equals("")) {
 				ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
-				Content content = ContentAO.getContent(cid,false);
+				Content content = contentAO.getContent(cid,false);
 				String name = SecuritySession.getInstance(request).getUser().getName();
 
 				HearingComment hc = new HearingComment();
@@ -84,7 +87,7 @@ public class SaveHearingCommentAction {
 				note.setAuthor(name);
 				notesDao.addNote(note);
 				int count = notesDao.getNotesByContentId(content.getId()).size();
-				ContentAO.setNumberOfNotes(content.getId(), count);
+				contentAO.setNumberOfNotes(content.getId(), count);
 
 			}
 			response.sendRedirect(sourceurl);

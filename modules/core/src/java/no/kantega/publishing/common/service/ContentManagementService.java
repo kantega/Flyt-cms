@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.service;
 
+import com.google.common.base.Predicate;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -54,6 +55,7 @@ import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.event.ContentListenerUtil;
@@ -69,6 +71,8 @@ import org.springframework.context.ApplicationContext;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
 import java.util.*;
+
+import static com.google.common.collect.Collections2.filter;
 
 /**
  *  A monolithic service for fetching content objects, saving them, deleting them,
@@ -87,7 +91,8 @@ public class ContentManagementService {
     private boolean cachingEnabled;
     private TrafficLogger trafficLogger;
     private SiteCache siteCache;
-
+    private ContentAO contentAO;
+    
     private ContentManagementService() {
         ApplicationContext context = RootContext.getInstance();
 
@@ -100,6 +105,7 @@ public class ContentManagementService {
         trafficLogger = context.getBean(TrafficLogger.class);
         xmlCache = context.getBean(XmlCache.class);
 
+        contentAO = context.getBean(ContentAO.class);
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
         } catch (ConfigurationException e) {
@@ -144,7 +150,7 @@ public class ContentManagementService {
             throw new ObjectLockedException(securitySession.getUser().getId());
         }
 
-        Content c = ContentAO.checkOutContent(id);
+        Content c = contentAO.checkOutContent(id);
         if (!securitySession.isAuthorized(c, Privilege.UPDATE_CONTENT)) {
             throw new NotAuthorizedException("checkOutContent");
         }
@@ -201,7 +207,7 @@ public class ContentManagementService {
      * @throws NotAuthorizedException - dersom bruker ikke har tilgang
      */
     public Content getLastVersionOfContent(ContentIdentifier id) throws SystemException, NotAuthorizedException {
-        Content c = ContentAO.getContent(id, true);
+        Content c = contentAO.getContent(id, true);
         if (c != null) {
             assertCanView(c, true, securitySession);
         }
@@ -235,14 +241,14 @@ public class ContentManagementService {
             final Element element = contentCache.get(key);
 
             if(element == null) {
-                Content content = ContentAO.getContent(id, adminMode);
+                Content content = contentAO.getContent(id, adminMode);
                 contentCache.put(new Element(key, content));
                 return content;
             } else {
                 return (Content) element.getObjectValue();
             }
         } else {
-            return ContentAO.getContent(id, adminMode);
+            return contentAO.getContent(id, adminMode);
         }
     }
 
@@ -284,7 +290,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List getAllContentVersions(ContentIdentifier id) throws SystemException {
-        return ContentAO.getAllContentVersions(id);
+        return contentAO.getAllContentVersions(id);
     }
 
 
@@ -299,7 +305,7 @@ public class ContentManagementService {
      */
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException, NotAuthorizedException {
         LockManager.releaseLock(content.getId());
-        boolean hasBeenPublished = ContentAO.hasBeenPublished(content.getId());
+        boolean hasBeenPublished = contentAO.hasBeenPublished(content.getId());
 
         if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
             throw new NotAuthorizedException("checkInContent");
@@ -340,7 +346,7 @@ public class ContentManagementService {
                 // If page is published, publish date must be set
                 content.setPublishDate(new Date());
             }
-            if ((!content.isNew()) && (!ContentAO.hasBeenPublished(content.getId()))) {
+            if ((!content.isNew()) && (!contentAO.hasBeenPublished(content.getId()))) {
                 // If the content has not been published before (e.g only saved as draft) and publish date has been set to be some time earlier than the publishing
                 // is performed, set the publish date to the exact time when the content is published.
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
@@ -350,7 +356,7 @@ public class ContentManagementService {
                 }
             }
         } else {
-            if ((!content.isNew()) && (ContentAO.hasBeenPublished(content.getId())) && content.getPublishDate() == null) {
+            if ((!content.isNew()) && (contentAO.hasBeenPublished(content.getId())) && content.getPublishDate() == null) {
                 // If page has been published before, publish date must be set
                 content.setPublishDate(new Date());
             }
@@ -381,7 +387,7 @@ public class ContentManagementService {
         ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
         contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
 
-        Content c = ContentAO.checkInContent(content, newStatus);
+        Content c = contentAO.checkInContent(content, newStatus);
 
         if (c.getStatus() == ContentStatus.HEARING) {
             Hearing hearing = content.getHearing();
@@ -435,7 +441,7 @@ public class ContentManagementService {
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
         log.info( String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
 
-        Content destParent = ContentAO.getContent(parentCid, true);
+        Content destParent = contentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
 
         // Modifiserer sourcecontent, nullstill id'er
@@ -497,7 +503,7 @@ public class ContentManagementService {
      * @param newVisibilityStatus the new status
      */
     public void setContentVisibilityStatus(Content content, int newVisibilityStatus) {
-        ContentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
+        contentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
         ContentEvent event = new ContentEvent().setContent(content);
         ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
@@ -523,7 +529,7 @@ public class ContentManagementService {
      */
     public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, String note) throws NotAuthorizedException, SystemException {
         Content c = getContent(cid);
-        boolean hasBeenPublished = ContentAO.hasBeenPublished(c.getId());
+        boolean hasBeenPublished = contentAO.hasBeenPublished(c.getId());
         if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
             throw new NotAuthorizedException("setContentStatus");
         }
@@ -542,7 +548,7 @@ public class ContentManagementService {
             NotesDao notesDao = (NotesDao)RootContext.getInstance().getBean("aksessNotesDao");
             notesDao.addNote(n);
             int count = notesDao.getNotesByContentId(contentId).size();
-            ContentAO.setNumberOfNotes(contentId, count);
+            contentAO.setNumberOfNotes(contentId, count);
         }
 
         Date newPublishDate = null;
@@ -566,7 +572,7 @@ public class ContentManagementService {
         }
 
         eventLog.log(securitySession, request, event, c.getTitle(), c);
-        Content content = ContentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
+        Content content = contentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
         ContentEvent contentEvent = new ContentEvent().setContent(content);
         ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
@@ -606,7 +612,7 @@ public class ContentManagementService {
 
                 ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
 
-                ContentAO.deleteContent(id);
+                contentAO.deleteContent(id);
                 if (title != null) {
                     eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }
@@ -637,7 +643,7 @@ public class ContentManagementService {
                 title = c.getTitle();
             }
         }
-        ContentAO.deleteContentVersion(id, false);
+        contentAO.deleteContentVersion(id, false);
         if (title != null) {
             eventLog.log(securitySession, request, Event.DELETE_CONTENT_VERSION, title);
         }
@@ -681,18 +687,18 @@ public class ContentManagementService {
             Element element = contentListCache.get(key);
 
             if(element == null) {
-                element = new Element(key, ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics));
+                element = new Element(key, contentAO.getContentList(query, maxElements, sort, getAttributes, getTopics));
                 contentListCache.put(element);
             }
             return (List<Content>) element.getObjectValue();
         } else {
-            return ContentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
+            return contentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
         }
     }
 
     private String buildContentListKey(ContentQuery.QueryWithParameters qp, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
         StringBuilder keyBuilder = new StringBuilder(qp.getQuery());
-        for (Object o : qp.getParams()) {
+        for (Object o : qp.getParams().entrySet()) {
             keyBuilder.append(o);
         }
         keyBuilder.append(maxElements);
@@ -749,7 +755,7 @@ public class ContentManagementService {
      */
     public List<WorkList<Content>> getMyContentList() throws SystemException {
         if (securitySession != null && securitySession.getUser() != null) {
-            return ContentAO.getMyContentList(securitySession.getUser());
+            return contentAO.getMyContentList(securitySession.getUser());
         }
 
         return null;
@@ -766,15 +772,13 @@ public class ContentManagementService {
             return null;
         }
 
-        List<Content> list = ContentAO.getContentListForApproval();
-        List<Content> approved = new ArrayList<Content>();
-        for (Content c : list) {
-            // Legg kun til elementer som brukeren har tilgang til
-            if (securitySession.isApprover(c)) {
-                approved.add(c);
+        List<Content> list = contentAO.getContentListForApproval();
+        return new ArrayList<>(filter(list, new Predicate<Content>() {
+            @Override
+            public boolean apply(Content c) {
+                return securitySession.isApprover(c);
             }
-        }
-        return approved;
+        }));
     }
 
 
@@ -788,7 +792,7 @@ public class ContentManagementService {
         if(cid == null) {
             return null;
         }
-        return ContentAO.getParent(cid);
+        return contentAO.getParent(cid);
     }
 
 
@@ -800,10 +804,10 @@ public class ContentManagementService {
      * @param updateChildren - true = update children / false = dont update children
      */
     public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) throws NotAuthorizedException {
-        Content content = ContentAO.getContent(cid, true);
+        Content content = contentAO.getContent(cid, true);
         if (content != null) {
             if (securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
-                ContentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
+                contentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
                 eventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
             } else {
                 throw new NotAuthorizedException("Cant update display period");
@@ -817,7 +821,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List getNoChangesPerUser(int months) throws SystemException {
-        return ContentAO.getNoChangesPerUser(months);
+        return contentAO.getNoChangesPerUser(months);
     }
 
 
@@ -1122,7 +1126,7 @@ public class ContentManagementService {
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker på
                     ContentIdentifier cid =  ContentIdentifier.fromAssociationId(a.getId());
-                    Content c = ContentAO.getContent(cid, false);
+                    Content c = contentAO.getContent(cid, false);
                     if (c == null) {
                         log.error( "Content == null, associationId =" + a.getId());
                         throw new SystemException("Content == null, associationId =" + a.getId(), null);
@@ -1165,14 +1169,14 @@ public class ContentManagementService {
         int aid = association.getAssociationId();
         if (aid != -1) {
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(aid);
-            Content c = ContentAO.getContent(cid, true);
+            Content c = contentAO.getContent(cid, true);
             Association old = AssociationAO.getAssociationById(association.getId());
             if (c != null && old != null) {
                 ContentIdentifier cidOldParent =  ContentIdentifier.fromAssociationId(old.getParentAssociationId());
-                Content oldParent = ContentAO.getContent(cidOldParent, true);
+                Content oldParent = contentAO.getContent(cidOldParent, true);
 
                 ContentIdentifier cidNewParent =  ContentIdentifier.fromAssociationId(association.getParentAssociationId());
-                Content newParent = ContentAO.getContent(cidNewParent, true);
+                Content newParent = contentAO.getContent(cidNewParent, true);
 
                 String event = Event.MOVE_CONTENT;
                 if (oldParent != null && newParent != null) {

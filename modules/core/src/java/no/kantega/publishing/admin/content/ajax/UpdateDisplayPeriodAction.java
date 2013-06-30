@@ -27,6 +27,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -43,6 +44,9 @@ import java.util.Map;
 @Controller
 public class UpdateDisplayPeriodAction {
     private static final Logger log = LoggerFactory.getLogger(UpdateDisplayPeriodAction.class);
+
+    @Autowired
+    private ContentStateUpdater stateUpdater;
 
     @RequestMapping("/admin/publish/UpdateDisplayPeriod.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -66,7 +70,6 @@ public class UpdateDisplayPeriodAction {
                     cms.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
 
                     // Update state of content immediately to not confuse user
-                    ContentStateUpdater stateUpdater = new ContentStateUpdater();
                     stateUpdater.expireContent();
                     stateUpdater.publishContent();
 

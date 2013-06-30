@@ -24,13 +24,13 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
@@ -49,6 +49,9 @@ public class ExpireContentAlertJob {
 
     @Autowired
     private SiteCache siteCache;
+
+    @Autowired
+    private ContentAO contentAO;
 
     public void execute() {
 
@@ -80,7 +83,7 @@ public class ExpireContentAlertJob {
                 query.setSiteId(site.getId());
 
                 SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
-                List<Content> contentList = ContentAO.getContentList(query, -1, sort, false);
+                List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
 
                 String defaultUserEmail = null;
 
@@ -159,7 +162,7 @@ public class ExpireContentAlertJob {
     }
 
     public void setDaysBeforeWarning(Integer days) {
-        daysBeforeWarning = days.intValue();
+        daysBeforeWarning = days;
     }
 }
 
