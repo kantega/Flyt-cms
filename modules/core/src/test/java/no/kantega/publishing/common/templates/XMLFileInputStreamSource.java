@@ -20,13 +20,14 @@ import no.kantega.publishing.common.data.InputStreamSource;
 
 import java.io.InputStream;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Feb 3, 2009
- * Time: 1:32:56 PM
- */
 public class XMLFileInputStreamSource implements InputStreamSource {
+    private final String file;
+
+    public XMLFileInputStreamSource(String file) {
+        this.file = file;
+    }
+
     public InputStream getInputStream() {
-        return getClass().getClassLoader().getResourceAsStream("test-templateconfig.xml");
+        return getClass().getClassLoader().getResourceAsStream(file);
     }
 }

@@ -121,7 +121,7 @@ public class ContentQuery {
         }
 
         query.append(" content.*, contentversion.*, associations.* from ");
-        query.append(StringUtils.join(joinTables, "',"));
+        query.append(StringUtils.join(joinTables, ','));
 
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");

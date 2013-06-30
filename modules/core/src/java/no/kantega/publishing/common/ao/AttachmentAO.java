@@ -126,7 +126,7 @@ public class AttachmentAO {
 
         try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement ps = c.prepareStatement(query);
-            ps.setInt(0, id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 return null;
@@ -143,7 +143,7 @@ public class AttachmentAO {
         String query = "select Data from attachments where Id = ?";
         try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement ps = c.prepareStatement(query);
-            ps.setInt(0, id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 return;
@@ -159,14 +159,14 @@ public class AttachmentAO {
 
 
     public static List<Attachment> getAttachmentList(ContentIdentifier cid) throws SystemException {
-        List<Attachment> list = new ArrayList<Attachment>();
+        List<Attachment> list = new ArrayList<>();
         try (Connection c = dbConnectionFactory.getConnection()) {
             if(contentIdHelper == null){
                 contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
             }
             contentIdHelper.assureContentIdAndAssociationIdSet(cid);
             PreparedStatement ps = c.prepareStatement("select " + DB_COLS + " from attachments where ContentId = ?");
-            ps.setInt(0, cid.getContentId());
+            ps.setInt(1, cid.getContentId());
             ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 Attachment mm = getAttachmentFromRS(rs);

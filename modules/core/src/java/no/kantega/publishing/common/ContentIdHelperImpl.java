@@ -39,6 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -432,7 +433,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 }
             }
         } catch (DataAccessException e) {
-            log.error("Could not find associationId for contentid " + contentId, e);
+            log.error("Could not find associationId for contentid " + contentId);
         }
 
         return associationId;
@@ -443,8 +444,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
         try {
             contentId = getJdbcTemplate().queryForInt("select ContentId from associations where AssociationId = ?", associationId);
-        } catch (DataAccessException e) {
-            log.error("Could not fint contentid for associationid " + associationId, e);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Could not fint contentid for associationid " + associationId);
         }
 
         return contentId;

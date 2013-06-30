@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ContentTemplateCache  {
-    private static final Map<String, ContentTemplate> templates = new ConcurrentHashMap<String, ContentTemplate>();
+    private static final Map<String, ContentTemplate> templates = new ConcurrentHashMap<>();
     private static Date lastUpdate = null;
 
     public static ContentTemplate getTemplateById(int id) throws SystemException {

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<template xmlns="http://www.kantega.no" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.kantega.no http://www.kantega.no/aksess/aksess-template.xsd">
+    <attributes>
+        <attribute name="tittel" type="text" mandatory="true" mapto="title"/>
+        <attribute name="ingress" type="text" mapto="description" maxlength="300"/>
+        <attribute name="max" title="Antall nyheter" type="number" default="20">
+            <helptext><![CDATA[Antall nyheter som vises som standard dersom brukeren ikke har valgt m&aring;ned/&aring;r]]></helptext>
+        </attribute>
+        <attribute name="vis arkiverte" type="list" default="true">
+            <options>
+                <option value="true">Ja</option>
+                <option value="false">Nei</option>
+            </options>
+            <helptext><![CDATA[Indikerer om det skal v&aelig;re mulig å s&oslash;ke opp arkiverte nyheter.]]></helptext>
+        </attribute>
+    </attributes>
+</template>

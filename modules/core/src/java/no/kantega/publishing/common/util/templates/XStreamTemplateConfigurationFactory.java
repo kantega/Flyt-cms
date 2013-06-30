@@ -25,11 +25,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 1:18:14 PM
- */
 public class XStreamTemplateConfigurationFactory implements TemplateConfigurationFactory {
     private static final Logger log = LoggerFactory.getLogger(XStreamTemplateConfigurationFactory.class);
 

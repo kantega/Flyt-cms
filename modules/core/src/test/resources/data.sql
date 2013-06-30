@@ -19,4 +19,6 @@ INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailIn
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (40, 2, -1, 0, 'mailz4@stinessen.com', 'immediate');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (50, 1, -1, 0, 'mailz5@mail.com', 'weekly');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (60, 2, -1, 0, 'mailz6@email.com', 'weekly');
-
+ALTER TABLE Content ALTER ContentId restart with 11;
+ALTER TABLE ContentVersion ALTER ContentVersionId restart with 11;
+ALTER TABLE Associations ALTER UniqueId restart with 11;

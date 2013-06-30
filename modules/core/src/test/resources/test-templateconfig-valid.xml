@@ -45,7 +45,7 @@
     </documentTypes>
     <contentTemplates>
         <contentTemplate databaseId="1" id="forside" contentType="PAGE">
-            <documentType id="klasseX"/>
+            <documentType id="klasse"/>
             <name>Forside</name>
             <templateFile>templates/forside.xml</templateFile>
             <associationCategories>
@@ -68,7 +68,7 @@
             <name>Nyhet</name>
             <templateFile>templates/artikkel.xml</templateFile>
             <allowedParentTemplates>
-                <contentTemplate id="liste med nyheterX"/>
+                <contentTemplate id="liste med nyheter"/>
             </allowedParentTemplates>
             <associationCategories/>
         </contentTemplate>
@@ -81,7 +81,7 @@
             <miniView>/WEB-INF/jsp/maler/mini/filnavn.jsp</miniView>
         </displayTemplate>
         <displayTemplate databaseId="2" id="nyheter" allowMultipleUsages="false">
-            <contentTemplate id="liste med nyheterX"/>
+            <contentTemplate id="liste med nyheter"/>
             <name>Nyheter</name>
             <view>/WEB-INF/jsp/common/maler/nyheter.jsp</view>
             <miniView>/WEB-INF/jsp/common/maler/mini/artikkel.jsp</miniView>
@@ -90,12 +90,6 @@
             </controllers>
         </displayTemplate>
         <displayTemplate databaseId="3" id="nyhet">
-            <contentTemplate id="nyhet"/>
-            <name>Nyhet</name>
-            <view>/WEB-INF/jsp/common/maler/nyhet.jsp</view>
-            <miniView>/WEB-INF/jsp/common/maler/mini/artikkel.jsp</miniView>
-        </displayTemplate>
-        <displayTemplate databaseId="3" id="nyhet2">
             <contentTemplate id="nyhet"/>
             <name>Nyhet</name>
             <view>/WEB-INF/jsp/common/maler/nyhet.jsp</view>

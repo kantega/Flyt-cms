@@ -30,11 +30,6 @@ import org.springframework.context.ApplicationContext;
 
 import java.util.*;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Dec 17, 2008
- * Time: 1:41:53 PM
- */
 public class TemplateConfigurationCache {
     private static final Logger log = LoggerFactory.getLogger(TemplateConfigurationCache.class);
 
@@ -61,8 +56,7 @@ public class TemplateConfigurationCache {
 
     public static TemplateConfigurationCache getInstance() {
         ApplicationContext context = RootContext.getInstance();
-        Map beans = context.getBeansOfType(TemplateConfigurationCache.class);
-        return (TemplateConfigurationCache) beans.values().iterator().next();
+        return context.getBean(TemplateConfigurationCache.class);
     }
 
     public synchronized void updateCache() {

@@ -37,7 +37,6 @@ import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
@@ -138,11 +137,11 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int language = cid.getLanguage();
 
         try {
-            Map<String, Object> values = getJdbcTemplate().queryForMap("select * from contentversion where ContentId = ? and Version = ? and Language = ?", id, version, language);
-            Integer contentVersionId = (Integer) values.get("ContentVersionId");
-            boolean isActive = (boolean) values.get("IsActive");
+            Map<String, Object> values = getJdbcTemplate().queryForMap("select ContentVersionId, IsActive from contentversion where ContentId = ? and Version = ? and Language = ?", id, version, language);
+            int contentVersionId = (int) values.get("ContentVersionId");
+            int isActive = (int) values.get("IsActive");
 
-            if (!deleteActiveVersion && isActive ) {
+            if (!deleteActiveVersion && isActive == 1) {
                 return;
             }
 
@@ -154,7 +153,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
-        return getJdbcTemplate().query("select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = ? and content.ContentId = ? order by contentversion.Version desc", new ContentRowMapper(true), cid.getLanguage(), cid.getContentId());
+        return getJdbcTemplate().query("select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = ? and content.ContentId = ? order by contentversion.Version desc", new ContentRowMapper(false), cid.getLanguage(), cid.getContentId());
     }
 
 
@@ -326,7 +325,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         try(Connection c = dbConnectionFactory.getConnection()){
 
             // Get drafts, pages waiting for approval and rejected pages
-            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
+            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
             st.setInt(1, ContentStatus.DRAFT.getTypeAsInt());
             st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
             st.setInt(3, ContentStatus.REJECTED.getTypeAsInt());
@@ -421,7 +420,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public List<Content> getContentListForApproval() throws SystemException {
-        List<Content> contentList = new ArrayList<Content>();
+        List<Content> contentList = new ArrayList<>();
 
         try(Connection c = dbConnectionFactory.getConnection()){
 
@@ -484,7 +483,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (listSize > 0 && getTopics) {
             // Hent topics
             for (Content content : contentList) {
-                List<Topic> topics = TopicAO.getTopicsByContentId(content.getId());
+                List<Topic> topics = topicDao.getTopicsByContentId(content.getId());
                 content.setTopics(topics);
             }
         }
@@ -636,13 +635,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
             // Delete all existing topic associations before insertion.
-            TopicAO.deleteTopicAssociationsForContent(content.getId());
+            topicDao.deleteTopicAssociationsForContent(content.getId());
 
             // Insert topics
             List<Topic> topics = content.getTopics();
             if (topics != null) {
                 for (Topic t : topics) {
-                    TopicAO.addTopicContentAssociation(t, content.getId());
+                    topicDao.addTopicToContentAssociation(t, content.getId());
                 }
             }
 
@@ -1214,7 +1213,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (contentId == -1) {
             return false;
         }
-        JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
         int cnt = getJdbcTemplate().queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
         return cnt > 0;
     }

@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.templates;
 
+import junit.framework.TestCase;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
@@ -23,17 +24,10 @@ import no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationF
 
 import java.util.List;
 
-import junit.framework.TestCase;
-
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 3:10:43 PM
- */
 public class ValidateTemplateConfigurationTest extends TestCase {
     public void testValidate() {
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
-        factory.setInputStreamSource(new XMLFileInputStreamSource());
+        factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig.xml"));
         TemplateConfiguration config = factory.getConfiguration();
 
         TemplateConfigurationValidator validator = new TemplateConfigurationValidator();
