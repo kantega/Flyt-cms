@@ -38,6 +38,7 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Autowired
     private ContentIdHelper contentIdHelper;
+
+    @Autowired
+    private TopicDao topicDao;
 
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
@@ -208,10 +212,15 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             // Hent aktiv versjon
             query.append(" and contentversion.IsActive = 1");
         }
-        query.append(" and content.ContentId = ?").append(" order by ContentVersionId");
+        query.append(" and content.ContentId = ? order by ContentVersionId");
         params.add(contentId);
 
-        Content content = jdbcTemplate.queryForObject(query.toString(), new ContentRowMapper(false), params.toArray());
+        Content content = null;
+        try {
+            content = jdbcTemplate.queryForObject(query.toString(), new ContentRowMapper(false), params.toArray());
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
 
         List<Association> associations = jdbcTemplate.query("SELECT * FROM associations WHERE ContentId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new AssociationRowMapper(), contentId);
 
@@ -256,7 +265,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         // Get content attributes
         jdbcTemplate.query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
 
-        List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
+        List<Topic> topics = topicDao.getTopicsByContentId(contentId);
         content.setTopics(topics);
 
         return content;
