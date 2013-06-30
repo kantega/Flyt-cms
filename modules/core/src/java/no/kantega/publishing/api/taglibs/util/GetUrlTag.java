@@ -19,8 +19,8 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -43,7 +43,8 @@ public class GetUrlTag extends TagSupport {
     boolean absoluteUrl = false;
     boolean escapeurl = true;
 
-    private UrlPlaceholderResolver urlPlaceholderResolver;
+    private static UrlPlaceholderResolver urlPlaceholderResolver;
+    private static ContentIdHelper contentIdHelper;
 
     public int doStartTag() throws JspException {
         JspWriter out;
@@ -108,7 +109,10 @@ public class GetUrlTag extends TagSupport {
     private void addSiteIdIfInAdminMode(StringBuilder urlBuilder, HttpServletRequest request) {
         if (HttpHelper.isAdminMode(request)) {
             try {
-                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, getUrlWithLeadingSlash(url));
+                if(contentIdHelper == null){
+                    contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                }
+                ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, getUrlWithLeadingSlash(url));
                 if (!url.contains("?")) {
                     urlBuilder.append("?siteId=").append(cid.getSiteId());
                 } else {
@@ -116,7 +120,7 @@ public class GetUrlTag extends TagSupport {
                 }
 
             } catch (ContentNotFoundException e) {
-
+                log.error("Could not find content", e);
             }
         }
     }

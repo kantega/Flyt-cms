@@ -23,11 +23,12 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -59,6 +60,7 @@ public class GetLinkTag extends BodyTagSupport{
     private String rel = null;
 
     private static SiteCache siteCache;
+    private static ContentIdHelper contentIdHelper;
 
     public void setCollection(String collection) {
         this.collection = collection;
@@ -136,8 +138,10 @@ public class GetLinkTag extends BodyTagSupport{
                     if (url != null && isAdminMode) {
                         Content current = (Content)request.getAttribute("aksess_this");
                         if (current == null) {
-                            // Hent denne siden
-                            ContentIdentifier contentIdentifier = ContentIdHelper.fromRequest(request);
+                            if(contentIdHelper == null){
+                                contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                            }
+                            ContentIdentifier contentIdentifier = contentIdHelper.fromRequest(request);
                             current = new ContentManagementService(request).getContent(contentIdentifier, true);
                             RequestHelper.setRequestAttributes(request, current);
                         }

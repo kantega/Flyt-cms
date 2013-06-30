@@ -25,12 +25,12 @@ import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
@@ -48,6 +48,7 @@ import java.util.List;
 
 public abstract class AbstractMenuTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractMenuTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     protected String name = "menu";
     protected int siteId = -1;
@@ -341,7 +342,10 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
         } else if (content == null && siteId != -1) {
             try {
-                ContentIdentifier cid = ContentIdHelper.fromSiteIdAndUrl(siteId, "/");
+                if(contentIdHelper == null){
+                    contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                }
+                ContentIdentifier cid = contentIdHelper.fromSiteIdAndUrl(siteId, "/");
                 content = cms.getContent(cid);
             }  catch (ContentNotFoundException e) {
                 //

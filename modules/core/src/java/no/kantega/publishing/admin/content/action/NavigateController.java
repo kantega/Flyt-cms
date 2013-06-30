@@ -24,12 +24,13 @@ import no.kantega.publishing.admin.administration.action.CreateRootAction;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,17 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 01.jul.2009
- * Time: 15:04:08
- */
 public class NavigateController extends AbstractContentAction {
     private static final Logger log = LoggerFactory.getLogger(NavigateController.class);
     private String view;
 
     private SiteCache siteCache;
     private CreateRootAction createRootAction;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -65,9 +64,9 @@ public class NavigateController extends AbstractContentAction {
         if (url != null || request.getParameter(AdminRequestParameters.THIS_ID) != null || request.getParameter(AdminRequestParameters.CONTENT_ID) != null) {
             ContentIdentifier cid = null;
             if (url != null) {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                cid = contentIdHelper.fromRequestAndUrl(request, url);
             } else {
-                cid = ContentIdHelper.fromRequest(request);
+                cid = contentIdHelper.fromRequest(request);
             }
             current = aksessService.getContent(cid);
         }
@@ -76,7 +75,7 @@ public class NavigateController extends AbstractContentAction {
             ContentIdentifier cid = null;
             try {
                 // No current object, go to start page
-                cid = ContentIdHelper.fromRequestAndUrl(request, "/");
+                cid = contentIdHelper.fromRequestAndUrl(request, "/");
             } catch (ContentNotFoundException cnfe) {
                 // Start page has not been created
                 Site site = siteCache.getSiteByHostname(request.getServerName());
@@ -88,7 +87,7 @@ public class NavigateController extends AbstractContentAction {
                     site = sites.get(0);
                 }
                 createRootAction.createRootPage(site.getId(), request);
-                cid = ContentIdHelper.fromRequestAndUrl(request, "/");
+                cid = contentIdHelper.fromRequestAndUrl(request, "/");
             }
             current = aksessService.getContent(cid);
         }

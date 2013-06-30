@@ -20,13 +20,14 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -40,13 +41,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditContentAction implements Controller {
-        private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
+    private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 

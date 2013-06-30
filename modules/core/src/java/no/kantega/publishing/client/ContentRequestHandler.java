@@ -26,12 +26,12 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +57,8 @@ public class ContentRequestHandler extends AbstractController {
 
     private SiteCache siteCache;
     private ContentRequestDispatcher contentRequestDispatcher;
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @Metered
     @Timed
@@ -75,7 +77,7 @@ public class ContentRequestHandler extends AbstractController {
             String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
             if (originalUri == null) {
                 // Direct call
-                cid = ContentIdHelper.fromRequest(request);
+                cid = contentIdHelper.fromRequest(request);
             } else {
                 // Called via 404 mechanism, eg. could be a page alias
                 // request_uri contains contextpath, must remove contextpath
@@ -83,7 +85,7 @@ public class ContentRequestHandler extends AbstractController {
                 if (isNotBlank(contextPath) && originalUri.contains(contextPath)) {
                     originalUri = originalUri.substring(contextPath.length(), originalUri.length());
                 }
-                cid = ContentIdHelper.fromRequestAndUrl(request, originalUri);
+                cid = contentIdHelper.fromRequestAndUrl(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
 
                 if (request.getMethod().toLowerCase().equals("post") && (request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {

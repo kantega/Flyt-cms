@@ -27,7 +27,6 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
@@ -38,6 +37,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
@@ -62,6 +62,7 @@ public final class AttributeTagHelper {
     public final static String REPEATER_CONTENT_OBJ_PAGE_VAR = "aksess_repeater_contentObj_";
     public final static String REPEATER_OFFSET_PAGE_VAR = "aksess_repeater_offset_";
     private static SiteCache siteCache;
+    private static ContentIdHelper contentIdHelper;
 
     public static Content getContent(PageContext pageContext, String collection, String contentId) throws SystemException, NotAuthorizedException {
         return getContent(pageContext, collection, contentId, null);
@@ -70,7 +71,9 @@ public final class AttributeTagHelper {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         Content content = null;
-
+        if(contentIdHelper == null){
+            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+        }
         try {
             if (contentId == null) {
                 if (collection != null) {
@@ -84,7 +87,7 @@ public final class AttributeTagHelper {
                     content = (Content)request.getAttribute("aksess_this");
                     if (content == null) {
                         // Hent denne siden
-                        content = cs.getContent(ContentIdHelper.fromRequest(request), true);
+                        content = cs.getContent(contentIdHelper.fromRequest(request), true);
                         RequestHelper.setRequestAttributes(request, content);
                     }
 
@@ -104,7 +107,7 @@ public final class AttributeTagHelper {
                             content = (Content)request.getAttribute("aksess_this");
                             if (content == null) {
                                 // Hent denne siden
-                                content = cs.getContent(ContentIdHelper.fromRequest(request), true);
+                                content = cs.getContent(contentIdHelper.fromRequest(request), true);
                                 RequestHelper.setRequestAttributes(request, content);
                             }
                         } else {
@@ -113,7 +116,7 @@ public final class AttributeTagHelper {
 
                         if (content != null) {
                             // Get parent page, next, previous page etc
-                            ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
+                            ContentIdentifier cid = contentIdHelper.findRelativeContentIdentifier(content, contentId);
                             if (cid != null) {
                                 // Next or previous page found
                                 content = cs.getContent(cid, false);
@@ -149,7 +152,7 @@ public final class AttributeTagHelper {
                         } catch (NumberFormatException e) {
                             if (contentId.charAt(0) != '/') contentId = "/" + contentId;
                             if (contentId.charAt(contentId.length() - 1) != '/') contentId = contentId + "/";
-                            cid = ContentIdHelper.fromRequestAndUrl(request, contentId);
+                            cid = contentIdHelper.fromRequestAndUrl(request, contentId);
                         }
 
                         content = (Content)request.getAttribute("aksess_content" + cid.getAssociationId());
@@ -448,7 +451,7 @@ public final class AttributeTagHelper {
             } else {
                 //Alias
                 try {
-                    ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
+                    ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, id);
                     associationId = contentIdentifier.getAssociationId();
                 } catch (Exception e) {
                     log.error("", e);

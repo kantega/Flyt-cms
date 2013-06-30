@@ -22,7 +22,6 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentAttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
@@ -35,12 +34,14 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -59,9 +60,12 @@ import static java.util.Arrays.asList;
 public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements ContentAO {
     private static final Logger log = LoggerFactory.getLogger(ContentAOJdbcImpl.class);
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         ContentIdentifier parent = getParent(cid);
 
         int id = cid.getContentId();
@@ -124,7 +128,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int id = cid.getContentId();
         int version = cid.getVersion();
         int language = cid.getLanguage();
@@ -161,107 +165,101 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
 
-        try(Connection c = dbConnectionFactory.getConnection()){
-
-            int contentId = cid.getContentId();
-            JdbcTemplate jdbcTemplate = getJdbcTemplate();
-            if (isAdminMode) {
-                if (requestedVersion == -1) {
-                    // When in administration mode users should see last version
-                    List<Integer> contentVersionIds = jdbcTemplate.queryForList("select ContentVersionId from contentversion where ContentId = ? order by ContentVersionId desc", Integer.class, contentId);
-                    if (contentVersionIds.isEmpty()) {
-                        return null;
-                    }else {
-                        contentVersionId = contentVersionIds.get(0);
-                    }
-                } else {
-
-                    try {
-                        contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by ContentVersionId desc", contentId, requestedVersion);
-                    } catch (EmptyResultDataAccessException e) {
-                        return null;
-                    }
+        int contentId = cid.getContentId();
+        JdbcTemplate jdbcTemplate = getJdbcTemplate();
+        if (isAdminMode) {
+            if (requestedVersion == -1) {
+                // When in administration mode users should see last version
+                List<Integer> contentVersionIds = jdbcTemplate.queryForList("select ContentVersionId from contentversion where ContentId = ? order by ContentVersionId desc", Integer.class, contentId);
+                if (contentVersionIds.isEmpty()) {
+                    return null;
+                }else {
+                    contentVersionId = contentVersionIds.get(0);
                 }
-            } else if(cid.getStatus() == ContentStatus.HEARING) {
-                // Find version for hearing, if no hearing is found, active version is returned
-                int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", contentId);
-                contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
             } else {
-                // Others should see active version
-                contentVersionId = -1;
-            }
 
-
-            StringBuilder query = new StringBuilder("select * from content, contentversion where content.ContentId = contentversion.ContentId");
-            List<Integer> params = new ArrayList<>(2);
-            if (contentVersionId != -1) {
-                // Hent angitt versjon
-                query.append(" and contentversion.ContentVersionId = ?");
-                params.add(contentVersionId);
-            } else {
-                // Hent aktiv versjon
-                query.append(" and contentversion.IsActive = 1");
-            }
-            query.append(" and content.ContentId = ?").append(" order by ContentVersionId");
-            params.add(contentId);
-
-            Content content = jdbcTemplate.queryForObject(query.toString(), new ContentRowMapper(false), params.toArray());
-
-            List<Association> associations = jdbcTemplate.query("SELECT * FROM associations WHERE ContentId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new AssociationRowMapper(), contentId);
-
-            // Get associations for this page
-            boolean foundCurrentAssociation = false;
-            for(Association a : associations){
-                if (!foundCurrentAssociation) {
-                    // Dersom knytningsid ikke er angitt bruker vi default for angitt site
-                    int associationId = cid.getAssociationId();
-                    if ((associationId == a.getId()) || (associationId == -1
-                            && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
-                            && a.getSiteId() == cid.getSiteId())) {
-                        foundCurrentAssociation = true;
-                        a.setCurrent(true);
-                    }
-                }
-                content.addAssociation(a);
-            }
-
-            if (!foundCurrentAssociation) {
-                // Knytningsid er ikke angitt, og heller ikke site, bruk den første
-                for (Association a : associations) {
-                    if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
-                        foundCurrentAssociation = true;
-                        a.setCurrent(true);
-                        break;
-                    }
-                }
-
-                if (!foundCurrentAssociation && associations.size() > 0) {
-                    Association a = associations.get(0);
-                    a.setCurrent(true);
-                    log.debug( "Fant ingen defaultknytning:" + contentId);
+                try {
+                    contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by ContentVersionId desc", contentId, requestedVersion);
+                } catch (EmptyResultDataAccessException e) {
+                    return null;
                 }
             }
-
-            if (content.getAssociation() == null) {
-                // All associations to page are deleted, dont return page
-                return null;
-            }
-
-            // Get content attributes
-            jdbcTemplate.query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
-
-            List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
-            content.setTopics(topics);
-
-            return content;
-
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", e);
+        } else if(cid.getStatus() == ContentStatus.HEARING) {
+            // Find version for hearing, if no hearing is found, active version is returned
+            int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", contentId);
+            contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
+        } else {
+            // Others should see active version
+            contentVersionId = -1;
         }
+
+
+        StringBuilder query = new StringBuilder("select * from content, contentversion where content.ContentId = contentversion.ContentId");
+        List<Integer> params = new ArrayList<>(2);
+        if (contentVersionId != -1) {
+            // Hent angitt versjon
+            query.append(" and contentversion.ContentVersionId = ?");
+            params.add(contentVersionId);
+        } else {
+            // Hent aktiv versjon
+            query.append(" and contentversion.IsActive = 1");
+        }
+        query.append(" and content.ContentId = ?").append(" order by ContentVersionId");
+        params.add(contentId);
+
+        Content content = jdbcTemplate.queryForObject(query.toString(), new ContentRowMapper(false), params.toArray());
+
+        List<Association> associations = jdbcTemplate.query("SELECT * FROM associations WHERE ContentId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new AssociationRowMapper(), contentId);
+
+        // Get associations for this page
+        boolean foundCurrentAssociation = false;
+        for(Association a : associations){
+            if (!foundCurrentAssociation) {
+                // Dersom knytningsid ikke er angitt bruker vi default for angitt site
+                int associationId = cid.getAssociationId();
+                if ((associationId == a.getId()) || (associationId == -1
+                        && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE
+                        && a.getSiteId() == cid.getSiteId())) {
+                    foundCurrentAssociation = true;
+                    a.setCurrent(true);
+                }
+            }
+            content.addAssociation(a);
+        }
+
+        if (!foundCurrentAssociation) {
+            // Knytningsid er ikke angitt, og heller ikke site, bruk den første
+            for (Association a : associations) {
+                if (a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
+                    foundCurrentAssociation = true;
+                    a.setCurrent(true);
+                    break;
+                }
+            }
+
+            if (!foundCurrentAssociation && associations.size() > 0) {
+                Association a = associations.get(0);
+                a.setCurrent(true);
+                log.debug( "Fant ingen defaultknytning:" + contentId);
+            }
+        }
+
+        if (content.getAssociation() == null) {
+            // All associations to page are deleted, dont return page
+            return null;
+        }
+
+        // Get content attributes
+        jdbcTemplate.query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
+
+        List<Topic> topics = TopicAO.getTopicsByContentId(contentId);
+        content.setTopics(topics);
+
+        return content;
     }
 
     /**
@@ -537,7 +535,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int parentAssociationId = getJdbcTemplate().queryForInt("select ParentAssociationId from associations where AssociationId = ?", cid.getAssociationId());
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(parentAssociationId);
         parentCid.setLanguage(cid.getLanguage());
@@ -942,7 +940,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) throws SystemException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
         int contentId = cid.getContentId();
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
@@ -1244,7 +1242,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
      */
     @Override
     public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
         try(Connection c = dbConnectionFactory.getConnection()){
 

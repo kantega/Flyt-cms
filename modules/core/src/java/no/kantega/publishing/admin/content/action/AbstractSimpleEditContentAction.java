@@ -12,7 +12,6 @@ import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
@@ -23,9 +22,11 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -38,6 +39,9 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     private static final Logger log = LoggerFactory.getLogger(AbstractSimpleEditContentAction.class);
 
     private String view;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     /**
      * Implement this method to decide if user is allowed to edit this page.
@@ -110,7 +114,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     }
 
     private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
-        ContentIdentifier cid = ContentIdHelper.fromRequest(request);
+        ContentIdentifier cid = contentIdHelper.fromRequest(request);
         return new ContentManagementService(request).getLastVersionOfContent(cid);
     }
 

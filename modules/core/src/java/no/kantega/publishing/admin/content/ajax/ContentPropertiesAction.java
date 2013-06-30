@@ -28,7 +28,6 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -39,6 +38,7 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
@@ -65,6 +65,7 @@ public class ContentPropertiesAction {
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
+    @Autowired private ContentIdHelper contentIdHelper;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -73,7 +74,7 @@ public class ContentPropertiesAction {
         ContentManagementService cms = new ContentManagementService(request);
 
         try {
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+            ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
             Content content = cms.getContent(cid, false);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 

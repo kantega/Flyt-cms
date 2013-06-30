@@ -34,7 +34,6 @@ import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.*;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -56,6 +55,7 @@ import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.event.ContentListenerUtil;
@@ -92,6 +92,7 @@ public class ContentManagementService {
     private TrafficLogger trafficLogger;
     private SiteCache siteCache;
     private ContentAO contentAO;
+    private ContentIdHelper contentIdHelper;
     
     private ContentManagementService() {
         ApplicationContext context = RootContext.getInstance();
@@ -106,6 +107,7 @@ public class ContentManagementService {
         xmlCache = context.getBean(XmlCache.class);
 
         contentAO = context.getBean(ContentAO.class);
+        contentIdHelper = context.getBean(ContentIdHelper.class);
         try {
             cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
         } catch (ConfigurationException e) {
@@ -144,7 +146,7 @@ public class ContentManagementService {
      * @throws ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(id);
+        contentIdHelper.assureContentIdAndAssociationIdSet(id);
         ContentLock lock = LockManager.peekAtLock(id.getContentId());
         if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
             throw new ObjectLockedException(securitySession.getUser().getId());
@@ -541,7 +543,7 @@ public class ContentManagementService {
             n.setText(note);
             n.setContentId(cid.getContentId());
 
-            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+            contentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
             n.setContentId(contentId);
 

@@ -19,13 +19,14 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -43,6 +44,9 @@ public class DeleteAssociationAction implements Controller {
     private String confirmDeleteSubPagesView;
     private String confirmDeleteView;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
@@ -56,7 +60,7 @@ public class DeleteAssociationAction implements Controller {
 
             // Get association
             String url = request.getParameter("url");
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+            ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
 
             // Get content (page) that association points to
             Content content = aksessService.getContent(cid);

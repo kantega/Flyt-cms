@@ -21,13 +21,14 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.model.MenuList;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,9 @@ import java.util.Map;
 public class ListSubPagesAction extends SimpleAdminController {
 
     private TemplateConfigurationCache templateConfigurationCache;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -54,7 +58,7 @@ public class ListSubPagesAction extends SimpleAdminController {
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                cid = contentIdHelper.fromRequestAndUrl(request, url);
                 currentContent = cms.getContent(cid);
             } catch (ContentNotFoundException e) {
                 // Do nothing

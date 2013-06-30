@@ -2,13 +2,14 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,11 +23,14 @@ public class AksessSetCurrentPageInterceptor extends HandlerInterceptorAdapter {
     private static final Logger log = LoggerFactory.getLogger(AksessSetCurrentPageInterceptor.class);
     private String aksessAlias;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         ContentManagementService cms = new ContentManagementService(request);
         try {
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, aksessAlias);
+            ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, aksessAlias);
             Content currentPage = cms.getContent(cid, true);
             RequestHelper.setRequestAttributes(request, currentPage);
         } catch (NotAuthorizedException | ContentNotFoundException e) {

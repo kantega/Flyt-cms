@@ -294,6 +294,10 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
     <bean class="no.kantega.publishing.jobs.contentstate.ContentStateUpdater"/>
 
     <beans profile="useCaching">

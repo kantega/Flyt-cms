@@ -21,6 +21,8 @@ import groovy.lang.GroovyCodeSource;
 import no.kantega.publishing.api.annotations.RequestHandler;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
 import no.kantega.publishing.common.data.Content;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.ServletContextAware;
@@ -37,16 +39,20 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A ContentRequestListener that executes groovy scripts with the same name as a jsp.
  */
 public class GroovyScriptContentRequestListener extends ContentRequestListenerAdapter implements ServletContextAware {
-
+    private static final Logger log = LoggerFactory.getLogger(GroovyScriptContentRequestListener.class);
     private GroovyClassLoader classLoader = new GroovyClassLoader(getClass().getClassLoader());
     private ServletContext servletContext;
-    private Map<String, ExecutionContext> scripts = Collections.synchronizedMap(new HashMap<String, ExecutionContext>());
+    private final Map<String, ExecutionContext> scripts = new ConcurrentHashMap<>();
 
     private ApplicationContext rootApplicationContext;
 
@@ -108,13 +114,8 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
 
                 }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            } catch (InstantiationException e) {
-                throw new RuntimeException(e);
-            } catch (InvocationTargetException e) {
+            } catch (IOException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                log.error("Error running script", e);
                 throw new RuntimeException(e);
             }
         }
@@ -250,7 +251,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
         this.rootApplicationContext = rootApplicationContext;
     }
 
-    class ExecutionContext {
+    private class ExecutionContext {
         private Method method;
         private Object script;
         private long lastModified;

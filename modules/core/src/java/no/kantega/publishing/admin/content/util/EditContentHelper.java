@@ -21,7 +21,6 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationHelper;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.data.*;
@@ -37,12 +36,14 @@ import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -54,6 +55,8 @@ public class EditContentHelper {
     private static final Logger log = LoggerFactory.getLogger(EditContentHelper.class);
 
     private static ContentAO contentAO;
+
+    private static ContentIdHelper contentIdHelper;
 
     /**
      * Create a new Content object
@@ -518,10 +521,12 @@ public class EditContentHelper {
 
             if (name != null && from != null && from.length() > 0) {
                 try {
-                    ContentIdentifier parentCid = ContentIdHelper.findRelativeContentIdentifier(content, from);
                     if(contentAO == null){
-                        contentAO = RootContext.getInstance().getBean(ContentAO.class);
+                        ApplicationContext context = RootContext.getInstance();
+                        contentAO = context.getBean(ContentAO.class);
+                        contentIdHelper = context.getBean(ContentIdHelper.class);
                     }
+                    ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
                     Content parent = contentAO.getContent(parentCid, true);
                     if (parent != null) {
                         copyProperty(parent, content, name);

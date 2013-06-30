@@ -18,11 +18,11 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -35,6 +35,7 @@ import java.util.List;
 public class AttachmentAO {
 
     private static final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
+    private static ContentIdHelper contentIdHelper;
 
     public static int setAttachment(Attachment attachment) throws SystemException {
         try (Connection c = dbConnectionFactory.getConnection())
@@ -121,10 +122,12 @@ public class AttachmentAO {
 
     public static Attachment getAttachment(int id) throws SystemException {
 
-        String query = "select " + DB_COLS + " from attachments where Id = " + id;
+        String query = "select " + DB_COLS + " from attachments where Id = ?";
 
         try (Connection c = dbConnectionFactory.getConnection()) {
-            ResultSet rs = SQLHelper.getResultSet(c, query);
+            PreparedStatement ps = c.prepareStatement(query);
+            ps.setInt(0, id);
+            ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 return null;
             }
@@ -137,9 +140,11 @@ public class AttachmentAO {
     }
 
     public static void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        String query = "select Data from attachments where Id = " + id;
+        String query = "select Data from attachments where Id = ?";
         try (Connection c = dbConnectionFactory.getConnection()) {
-            ResultSet rs = SQLHelper.getResultSet(c, query);
+            PreparedStatement ps = c.prepareStatement(query);
+            ps.setInt(0, id);
+            ResultSet rs = ps.executeQuery();
             if (!rs.next()) {
                 return;
             }
@@ -156,8 +161,13 @@ public class AttachmentAO {
     public static List<Attachment> getAttachmentList(ContentIdentifier cid) throws SystemException {
         List<Attachment> list = new ArrayList<Attachment>();
         try (Connection c = dbConnectionFactory.getConnection()) {
-            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
-            ResultSet rs = SQLHelper.getResultSet(c, "select " + DB_COLS + " from attachments where ContentId = " + cid.getContentId());
+            if(contentIdHelper == null){
+                contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+            }
+            contentIdHelper.assureContentIdAndAssociationIdSet(cid);
+            PreparedStatement ps = c.prepareStatement("select " + DB_COLS + " from attachments where ContentId = ?");
+            ps.setInt(0, cid.getContentId());
+            ResultSet rs = ps.executeQuery();
             while(rs.next()) {
                 Attachment mm = getAttachmentFromRS(rs);
                 list.add(mm);

@@ -350,14 +350,7 @@ public class dbConnectionFactory {
 
     public static Connection getConnection() throws SystemException {
         try {
-            Connection c;
-            if(debugConnections) {
-                c = proxyDs.getConnection();
-            } else {
-                c = ds.getConnection();
-            }
-
-            return c;
+            return debugConnections ? proxyDs.getConnection() : ds.getConnection();
         } catch (SQLException se) {
             log.error( "Unable to connect to database: url=" + dbUrl, se);
             throw new DatabaseConnectionException(se);

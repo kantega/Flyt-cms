@@ -19,12 +19,13 @@ package no.kantega.publishing.admin.ajax;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -43,6 +44,8 @@ import javax.servlet.http.HttpSession;
 public class ContentStateHandler {
     private static final Logger log = LoggerFactory.getLogger(ContentStateHandler.class);
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
     /**
      * Updates the user's session with the currently viewed content.
      *
@@ -54,7 +57,7 @@ public class ContentStateHandler {
         if (session != null) {
             try {
                 ContentManagementService cms = new ContentManagementService(request);
-                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
                 Content current = cms.getContent(cid);
                 session.setAttribute(AdminSessionAttributes.CURRENT_NAVIGATE_CONTENT, current);
             } catch (ContentNotFoundException e) {

@@ -31,34 +31,41 @@ import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
-public class ContentIdHelper {
-    private static final Logger log = LoggerFactory.getLogger(ContentIdHelper.class);
-    private static ContentAO contentAO;
+public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper {
+    private static final Logger log = LoggerFactory.getLogger(ContentIdHelperImpl.class);
 
-    private static final int defaultContentID = -1;
-    private static final int defaultSiteId = -1;
-    private static final int defaultContextId = -1;
-    private static final int defaultVersion = -1;
+    private final int defaultContentID = -1;
+    private final int defaultSiteId = -1;
+    private final int defaultContextId = -1;
+    private final int defaultVersion = -1;
 
-    private static SiteCache siteCache;
+    @Autowired
+    private SiteCache siteCache;
+
+    @Autowired
+    private ContentAO contentAO;
+
+    @Autowired
+    private ContentIdentifierDao contentIdentifierDao;
+
     /**
      * Find the ContentIdentifer for a Content, relative to the context-Content and expr.
      * @param context - The current Content-contect
@@ -67,7 +74,8 @@ public class ContentIdHelper {
      * @throws SystemException
      * @throws ContentNotFoundException
      */
-    public static ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
+    @Override
+    public ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
         if (context == null || expr == null) {
             return null;
         }
@@ -163,14 +171,13 @@ public class ContentIdHelper {
 
 
     /**
-     *      * // TODO ATTACK!
      * @param siteId - Site
      * @param url    - Url/alias, e.g. /nyheter/
      * @return ContentIdentifier for the given site and url.
      * @throws ContentNotFoundException
      * @throws SystemException
      */
-    private static ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
+    private ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
         int contentId = -1;
         int associationId = -1;
         int version  = -1;
@@ -225,7 +232,7 @@ public class ContentIdHelper {
                     url = url.substring(0, end);
                 }
             }
-            setSiteCacheIfNull();
+
             if (siteId != -1) {
                 if ("/".equalsIgnoreCase(url)) {
                     Site site = siteCache.getSiteById(siteId);
@@ -257,7 +264,7 @@ public class ContentIdHelper {
         }
     }
 
-    private static int getVersion(String url, int version) {
+    private int getVersion(String url, int version) {
         String versionToken = "version=";
         int versionPos = url.indexOf(versionToken);
         if (versionPos != -1) {
@@ -275,7 +282,7 @@ public class ContentIdHelper {
         return version;
     }
 
-    private static int getContentIdFromParameter(String url, int contentId, int associationId) {
+    private int getContentIdFromParameter(String url, int contentId, int associationId) {
         if (associationId == -1) {
             String idToken = "contentid=";
             int idPos = url.indexOf(idToken);
@@ -295,7 +302,7 @@ public class ContentIdHelper {
         return contentId;
     }
 
-    private static int getAssociationIdFromThisId(String url, int associationId) {
+    private int getAssociationIdFromThisId(String url, int associationId) {
         String aIdToken = "thisid=";
         int aIdPos = url.indexOf(aIdToken);
         if (aIdPos != -1) {
@@ -316,7 +323,7 @@ public class ContentIdHelper {
     /*
      Looks for /content/ID/name
      */
-    private static int getAssociationIdFromPrettyUrl(String url, int associationId) {
+    private int getAssociationIdFromPrettyUrl(String url, int associationId) {
         int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
         if (contentPos != -1 && url.length() > Aksess.CONTENT_URL_PREFIX.length() + 1) {
             String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
@@ -336,7 +343,7 @@ public class ContentIdHelper {
     /*
      Removes protocol and servername.
      */
-    private static String getPath(String url) {
+    private String getPath(String url) {
         url = url.toLowerCase();
         if (url.startsWith("http://") || url.startsWith("https://")) {
             url = url.substring(url.indexOf("://") + 3, url.length());
@@ -355,7 +362,7 @@ public class ContentIdHelper {
         return url;
     }
 
-    private static int getLanguage(String url, int language) {
+    private int getLanguage(String url, int language) {
         String languageToken = "language=";
         int languagePos = url.indexOf(languageToken);
         if (languagePos != -1) {
@@ -373,8 +380,7 @@ public class ContentIdHelper {
         return language;
     }
 
-    private static ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
-        ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
+    private ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
         ContentIdentifier cid = null;
         if (siteId > 0) {
             cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(siteId, url);
@@ -395,83 +401,56 @@ public class ContentIdHelper {
     }
 
 
-    private static int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
+    private int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
         int associationId = -1;
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-
-            PreparedStatement st;
-            ResultSet rs;
+        try {
             if (contextId != -1) {
                 // Først prøver vi å finne siden under der lenka kom fra
-                st = c.prepareStatement("SELECT AssociationId FROM associations WHERE ContentId = ? AND Path like ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
-                st.setInt(1, contentId);
-                st.setString(2, "%/" + contextId + "/%");
-                rs = st.executeQuery();
-                if(rs.next()) {
-                    associationId = rs.getInt("AssociationId");
-                }
+                List<Integer> associationIds = getJdbcTemplate().queryForList("SELECT AssociationId FROM associations WHERE ContentId = ? AND Path like ? AND (IsDeleted IS NULL OR IsDeleted = 0)", Integer.class,
+                        contentId, "%/" + contextId + "/%");
 
-                rs.close();
-                st.close();
+                if(!associationIds.isEmpty()) {
+                    associationId = associationIds.get(0);
+                }
 
                 // Så i samme nettsted som lenka kom fra
                 if (associationId == -1) {
-                    st = c.prepareStatement("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
-                    st.setInt(1, contextId);
-                    rs = st.executeQuery();
-                    if(rs.next()) {
-                        siteId = rs.getInt("SiteId");
-                    }
-                    rs.close();
-                    st.close();
+                    siteId = getJdbcTemplate().queryForInt("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", contextId);
                 }
             }
 
             if (associationId == -1) {
-                st = c.prepareStatement("SELECT AssociationId, SiteId FROM associations WHERE ContentId = ? AND Type = ? AND (IsDeleted IS NULL OR IsDeleted = 0)");
-                st.setInt(1, contentId);
-                st.setInt(2, AssociationType.DEFAULT_POSTING_FOR_SITE);
-                rs = st.executeQuery();
-                while(rs.next()) {
-                    int tmp = rs.getInt("AssociationId");
-                    int tmpSiteId = rs.getInt("SiteId");
+                List<Map<String,Object>> ids = getJdbcTemplate().queryForList("SELECT AssociationId, SiteId FROM associations WHERE ContentId = ? AND Type = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", contentId, AssociationType.DEFAULT_POSTING_FOR_SITE);
+
+                for(Map<String, Object> id : ids) {
+                    int tmp = (int) id.get("AssociationId");
+                    int tmpSiteId = (int) id.get("SiteId");
                     if (associationId == -1 || tmpSiteId == siteId) {
                         associationId = tmp;
                     }
                 }
-
-                rs.close();
-                st.close();
             }
-        } catch (SQLException e) {
-            throw new SystemException("Feil ved SQL kall", e);
+        } catch (DataAccessException e) {
+            log.error("Could not find associationId for contentid " + contentId, e);
         }
 
         return associationId;
     }
 
-    private static int findContentIdFromAssociationId(int associationId) throws SystemException {
+    private int findContentIdFromAssociationId(int associationId) throws SystemException {
         int contentId = -1;
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement st = c.prepareStatement("select ContentId from associations where AssociationId = ?");
-            st.setInt(1, associationId);
-            ResultSet rs = st.executeQuery();
-            while(rs.next()) {
-                contentId = rs.getInt("ContentId");
-            }
-
-            rs.close();
-            st.close();
-        } catch (SQLException e) {
-            throw new SystemException("Feil ved SQL kall",e);
+        try {
+            contentId = getJdbcTemplate().queryForInt("select ContentId from associations where AssociationId = ?", associationId);
+        } catch (DataAccessException e) {
+            log.error("Could not fint contentid for associationid " + associationId, e);
         }
 
         return contentId;
     }
 
-    private static int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
+    private int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
         return getSiteIdFromRequest(request, null).first;
     }
 
@@ -479,13 +458,14 @@ public class ContentIdHelper {
      * @return pair containing found siteId and the alias tried found.
      * If url is siteId/alias, url is adjusted to /alias
      */
-    private static Pair<Integer, String> getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
+    private Pair<Integer, String> getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
         int siteId = -1;
         String adjustedUrl = url;
         if (request.getParameter("siteId") != null) {
             try {
                 siteId = Integer.parseInt(request.getParameter("siteId"));
             } catch (NumberFormatException e) {
+                log.error("Could not parse siteId " + siteId, e);
             }
         }
 
@@ -507,12 +487,11 @@ public class ContentIdHelper {
                 try {
                     siteId = Integer.parseInt(siteIdStr);
                 } catch (NumberFormatException e) {
-
+                    log.error("Could not parse siteid " + siteId, e);
                 }
             }
         }
 
-        setSiteCacheIfNull();
         if (siteId == -1) {
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
@@ -539,12 +518,12 @@ public class ContentIdHelper {
     }
 
     /**
-     * // TODO ATTACK!
      * @param request - The current request
      * @return ContentIdentifier for the given request.
      * @throws ContentNotFoundException
      */
-    public static ContentIdentifier fromRequest(HttpServletRequest request) throws ContentNotFoundException {
+    @Override
+    public ContentIdentifier fromRequest(HttpServletRequest request) throws ContentNotFoundException {
         ContentIdentifier contentIdentifier = null;
         String url = request.getServletPath();
         String path = request.getPathInfo();
@@ -583,9 +562,9 @@ public class ContentIdHelper {
                 url = url + "?" + queryString;
             }
 
-            int siteId = ContentIdHelper.getSiteIdFromRequest(request);
+            int siteId = getSiteIdFromRequest(request);
 
-            contentIdentifier = ContentIdHelper.findContentIdentifier(siteId, url);
+            contentIdentifier = findContentIdentifier(siteId, url);
         }
 
         if (contentIdentifier != null) {
@@ -595,16 +574,16 @@ public class ContentIdHelper {
     }
 
     /**
-     *      * // TODO ATTACK!
      * @param request - The current request
      * @param url - The url of ContentIdentifier is desired for.
      * @return ContentIdentifier for url.
      * @throws ContentNotFoundException
      * @throws SystemException
      */
-    public static ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
-        Pair<Integer, String> siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
-        return ContentIdHelper.findContentIdentifier(siteId.first, siteId.second);
+    @Override
+    public ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
+        Pair<Integer, String> siteId = getSiteIdFromRequest(request, url);
+        return findContentIdentifier(siteId.first, siteId.second);
     }
 
     /**
@@ -615,51 +594,47 @@ public class ContentIdHelper {
      * @throws SystemException
      * @throws ContentNotFoundException
      */
-    public static ContentIdentifier fromSiteIdAndUrl(int siteId, String url) throws SystemException, ContentNotFoundException {
-        return ContentIdHelper.findContentIdentifier(siteId, url);
+    @Override
+    public ContentIdentifier fromSiteIdAndUrl(int siteId, String url) throws SystemException, ContentNotFoundException {
+        return findContentIdentifier(siteId, url);
     }
 
     /**
-     * // TODO try to remove
      * @param url - e.g. "/"
      * @return ContentIdentifier for url.
      * @throws ContentNotFoundException
      * @throws SystemException
      */
-    public static ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
-        return ContentIdHelper.findContentIdentifier(-1, url);
+    @Override
+    public ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
+        return findContentIdentifier(-1, url);
     }
 
     /**
      * Make sure the given ContentIdentifier has both contentId and associationId set.
      * @param contentIdentifier assure both are set on.
      */
-    public static void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier){
+    @Override
+    public void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier){
         if (contentIdentifier != null) {
             int associationId = contentIdentifier.getAssociationId();
             int contentId = contentIdentifier.getContentId();
 
             if (contentId != -1 && associationId == -1) {
                 try {
-                    associationId = ContentIdHelper.findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
+                    associationId = findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
                     contentIdentifier.setAssociationId(associationId);
                 } catch (SystemException e) {
                     log.error("", e);
                 }
             } else if (contentId == -1 && associationId != -1) {
                 try {
-                    contentId = ContentIdHelper.findContentIdFromAssociationId(associationId);
+                    contentId = findContentIdFromAssociationId(associationId);
                     contentIdentifier.setContentId(contentId);
                 } catch (SystemException e) {
                     log.error("", e);
                 }
             }
-        }
-    }
-
-    private static void setSiteCacheIfNull() {
-        if(siteCache == null){
-            siteCache = RootContext.getInstance().getBean(SiteCache.class);
         }
     }
 }

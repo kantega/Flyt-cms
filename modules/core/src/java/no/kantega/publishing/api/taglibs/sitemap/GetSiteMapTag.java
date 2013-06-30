@@ -21,11 +21,11 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -37,6 +37,7 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetSiteMapTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetSiteMapTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     private String name = "sitemap";
     private int siteId = -1;
@@ -65,7 +66,10 @@ public class GetSiteMapTag  extends TagSupport {
                 this.rootId = Integer.parseInt(rootId);
             } catch (NumberFormatException e) {
                 try {
-                    ContentIdentifier cid = ContentIdHelper.fromUrl(rootId);
+                    if(contentIdHelper == null){
+                        contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier cid = contentIdHelper.fromUrl(rootId);
                     this.rootId = cid.getAssociationId();
                 } catch (ContentNotFoundException | SystemException e1) {
                     log.error("", e);

@@ -103,5 +103,11 @@
 
     <bean class="no.kantega.publishing.spring.RootContext"/>
 
+    <bean class="no.kantega.publishing.common.ao.ContentAOJdbcImpl" >
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 
+    <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 </beans>

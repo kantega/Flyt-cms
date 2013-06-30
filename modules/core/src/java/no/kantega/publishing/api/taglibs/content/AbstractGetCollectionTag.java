@@ -24,10 +24,11 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
@@ -46,11 +47,6 @@ import java.util.*;
 
 import static java.util.Arrays.asList;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Apr 3, 2007
- * Time: 2:28:40 PM
- */
 public class AbstractGetCollectionTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractGetCollectionTag.class);
 
@@ -97,7 +93,8 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     protected boolean shuffle = false;
     protected int shuffleMax = -1;
 
-    private SiteCache siteCache;
+    private static SiteCache siteCache;
+    private static ContentIdHelper contentIdHelper;
 
     /**
      * Cleanup after tag is finished
@@ -316,7 +313,10 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        associatedId = ContentIdHelper.fromRequest(request);
+                        if(contentIdHelper == null){
+                            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                        }
+                        associatedId = contentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
                     // No content found
@@ -561,9 +561,13 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (!Character.isDigit(id.charAt(0))) {
                 //Alias
                 try {
-                    ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
+                    if(contentIdHelper == null){
+                        contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, id);
                     id = String.valueOf(contentIdentifier.getAssociationId());
                 } catch (Exception e) {
+                    log.error("Could not set pathElementid " + id, e);
                 }
             }
 

@@ -17,20 +17,18 @@
 package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Dec 6, 2007
- * Time: 2:04:36 PM
- */
 public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
     @Autowired
     private LinkDao linkDao;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public void contentExpired(ContentEvent event) {
         linkDao.deleteLinksForContentId(event.getContent().getId());
@@ -43,7 +41,7 @@ public class RemoveFromLinkCheckerListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier contentIdentifier) {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(contentIdentifier);
+        contentIdHelper.assureContentIdAndAssociationIdSet(contentIdentifier);
         linkDao.deleteLinksForContentId(contentIdentifier.getContentId());
     }
 }

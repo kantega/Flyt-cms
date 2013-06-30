@@ -19,10 +19,10 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -39,6 +39,8 @@ public class ListNotesAction extends SimpleAdminController {
     @Autowired
     NotesDao notesDao;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -52,7 +54,7 @@ public class ListNotesAction extends SimpleAdminController {
         ContentIdentifier cid = null;
         if (!"".equals(url)) {
             try {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                cid = contentIdHelper.fromRequestAndUrl(request, url);
 
                 List<Note> notes = notesDao.getNotesByContentId(cid.getContentId());
 

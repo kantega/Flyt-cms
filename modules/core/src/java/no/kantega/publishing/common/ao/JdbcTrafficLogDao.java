@@ -19,7 +19,6 @@ package no.kantega.publishing.common.ao;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.ContentViewStatistics;
 import no.kantega.publishing.common.data.PeriodViewStatistics;
 import no.kantega.publishing.common.data.RefererOccurrence;
@@ -27,8 +26,10 @@ import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -39,6 +40,8 @@ import java.util.Date;
 
 public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcTrafficLogDao.class);
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public int getNumberOfHitsOrSessionsInPeriod(TrafficLogQuery query, boolean sessions) throws SystemException {
         int visits = 0;
@@ -84,7 +87,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         String clause = "";
         ContentIdentifier cid = query.getCid();
         if (cid != null) {
-            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+            contentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
             int siteId = cid.getSiteId();
             if (siteId != -1) {
@@ -229,7 +232,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
     @SuppressWarnings("unchecked")
     private List<RefererOccurrence> internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         final StringBuffer query = new StringBuffer();
         query.append("select ").append(select).append(" from trafficlog where Contentid=? and ").append(groupby).append(" is not null ");
         if(start != null) {
@@ -251,7 +254,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
                     preparedStatement.setTimestamp(p++, new Timestamp(start.getTime()));
                 }
                 if(end != null) {
-                    preparedStatement.setTimestamp(p++, new Timestamp(end.getTime()));
+                    preparedStatement.setTimestamp(p, new Timestamp(end.getTime()));
                 }
                 preparedStatement.setMaxRows(25);
                 return preparedStatement;

@@ -20,10 +20,11 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.ContentidAttributeValueXMLExporter;
 import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -36,6 +37,8 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class ContentidAttribute extends Attribute {
     private static final Logger log = LoggerFactory.getLogger(ContentidAttribute.class);
+    private static ContentIdHelper contentIdHelper;
+
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
     protected String startId = "";
@@ -80,7 +83,10 @@ public class ContentidAttribute extends Attribute {
                 start = Integer.parseInt(startId);
             } catch (NumberFormatException e) {
                 try {
-                    ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, startId);
+                    if(contentIdHelper == null){
+                        contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier cid = contentIdHelper.findRelativeContentIdentifier(content, startId);
                     start = cid.getAssociationId();
                 } catch (ContentNotFoundException e1) {
                     log.error("", e);

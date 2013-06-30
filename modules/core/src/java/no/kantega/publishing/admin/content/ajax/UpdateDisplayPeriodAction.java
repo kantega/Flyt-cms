@@ -21,9 +21,9 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +48,9 @@ public class UpdateDisplayPeriodAction {
     @Autowired
     private ContentStateUpdater stateUpdater;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     @RequestMapping("/admin/publish/UpdateDisplayPeriod.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -59,7 +62,7 @@ public class UpdateDisplayPeriodAction {
             int associationId = param.getInt("associationId");
             if (associationId != -1) {
                 ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
-                ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+                contentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
                 Date publishDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());

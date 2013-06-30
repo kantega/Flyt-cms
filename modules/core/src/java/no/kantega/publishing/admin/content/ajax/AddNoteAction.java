@@ -20,11 +20,11 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
@@ -42,6 +42,10 @@ public class AddNoteAction extends SimpleAdminController {
 
     @Autowired
     private ContentAO contentAO;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters params = new RequestParameters(request);
@@ -56,7 +60,7 @@ public class AddNoteAction extends SimpleAdminController {
         if (!"".equals(url)) {
             ContentIdentifier cid = null;
             try {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                cid = contentIdHelper.fromRequestAndUrl(request, url);
                 int contentId = cid.getContentId();
 
                 Note note = new Note();

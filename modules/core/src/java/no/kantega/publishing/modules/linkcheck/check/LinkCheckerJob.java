@@ -20,7 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.ao.MultimediaAO;
@@ -31,6 +30,7 @@ import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.auth.AuthScope;
@@ -65,6 +65,9 @@ public class LinkCheckerJob implements InitializingBean {
 
     @Autowired
     private ContentAO contentAO;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
@@ -237,7 +240,7 @@ public class LinkCheckerJob implements InitializingBean {
         // Kan være et alias, sjekk
         String alias = link.substring(Aksess.VAR_WEB.length());
         try {
-            ContentIdentifier cid = ContentIdHelper.fromUrl(alias);
+            ContentIdentifier cid = contentIdHelper.fromUrl(alias);
             Content c = contentAO.getContent(cid, true);
             if (c != null) {
                 occurrence.setStatus(CheckStatus.OK);
