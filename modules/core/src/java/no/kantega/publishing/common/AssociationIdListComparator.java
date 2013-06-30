@@ -20,11 +20,12 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class AssociationIdListComparator  implements Comparator<Content> {
-    ContentIdentifier[] cids = null;
+    List<ContentIdentifier> cids = null;
 
-    public AssociationIdListComparator(ContentIdentifier[] cids) {
+    public AssociationIdListComparator(List<ContentIdentifier> cids) {
         this.cids = cids;
     }
 
@@ -33,8 +34,8 @@ public class AssociationIdListComparator  implements Comparator<Content> {
             int pos1 = -1;
             int pos2 = -1;
 
-            for (int i = 0; i < cids.length; i++) {
-                ContentIdentifier cid = cids[i];
+            for (int i = 0; i < cids.size(); i++) {
+                ContentIdentifier cid = cids.get(i);
                 if (cid.getAssociationId() == c1.getAssociation().getId()) {
                     pos1 = i;
                 }

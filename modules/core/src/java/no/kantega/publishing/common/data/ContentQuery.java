@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data;
 
+import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
@@ -32,6 +33,7 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,17 +41,17 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import static com.google.common.collect.Lists.transform;
+import static java.util.Arrays.asList;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
 
     private ContentIdentifier associatedId = null;
     private AssociationCategory associationCategory = null;
-    private ContentIdentifier[] contentList = null;
+    private List<ContentIdentifier> contentList = null;
     private Date modifiedDate = null;
     private Date publishDateFrom = null;
     private Date publishDateTo = null;
@@ -58,14 +60,14 @@ public class ContentQuery {
     private Date revisionDateFrom = null;
     private Date revisionDateTo = null;
 
-    private ContentIdentifier[] pathElementIds = null; // include only pages under given id in path
-    private ContentIdentifier[] excludedPathElementIds = null; // exclude pages under given id in path
+    private List<ContentIdentifier> pathElementIds = null; // include only pages under given id in path
+    private List<ContentIdentifier> excludedPathElementIds = null; // exclude pages under given id in path
 
-    private int[] contentTemplate = null;
+    private List<Integer> contentTemplate = null;
     private ContentType contentType = null;
-    private int[] documentType = null;
-    private int[] excludedDocumentTypes = null;
-    private int[] displayTemplate = null;
+    private List<Integer> documentType = null;
+    private List<Integer> excludedDocumentTypes = null;
+    private List<Integer> displayTemplate = null;
     private int language = -1;
     private int siteId = -1;
     private String keyword = null;
@@ -81,7 +83,7 @@ public class ContentQuery {
     private SortOrder sortOrder = null;
     private boolean includeDrafts = false;
     private boolean includeWaitingForApproval = false;
-    private int[] excludedAssociationTypes = null;
+    private List<Integer> excludedAssociationTypes = null;
 
     private int maxRecords = -1;
     private int offset = 0;
@@ -93,41 +95,17 @@ public class ContentQuery {
     public ContentQuery() {
     }
 
-    public PreparedStatement getPreparedStatement(Connection c) throws SQLException {
-
-        QueryWithParameters qp = getQueryWithParameters();
-        //QueryWithParameters is null when there is no content found 
-        if (qp == null){
-            return null;
-        }
-        String query = qp.getQuery();
-        List<Object> parameters= qp.getParams();
-
-        PreparedStatement st = c.prepareStatement(query);
-        for (int i = 0; i < parameters.size(); i++) {
-            Object o = parameters.get(i);
-            if (o instanceof Date) {
-                Date d = (Date)o;
-                st.setTimestamp(i + 1, new java.sql.Timestamp(d.getTime()));
-            } else {
-                st.setObject(i + 1, o);
-            }
-        }
-
-        return st;
-
-    }
 
     public QueryWithParameters getQueryWithParameters() {
         boolean useSqlSort = useSqlSort();
 
-        List parameters = new ArrayList();
+        Map<String, Object> parameters = new HashMap<>();
 
         StringBuilder query = new StringBuilder();
 
         String driver = dbConnectionFactory.getDriverName();
 
-        List<String> joinTables = new ArrayList<String>();
+        List<String> joinTables = new ArrayList<>(4);
         joinTables.add("content");
         joinTables.add("contentversion");
         joinTables.add("associations");
@@ -143,85 +121,72 @@ public class ContentQuery {
         }
 
         query.append(" content.*, contentversion.*, associations.* from ");
-
-        for (int i = 0; i < joinTables.size(); i++) {
-            String table = joinTables.get(i);
-            if (i > 0) {
-                query.append(",");
-            }
-            query.append(table);
-        }
+        query.append(StringUtils.join(joinTables, "',"));
 
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
-        query.append("and contentversion.Status IN (");
-        query.append(ContentStatus.PUBLISHED.getTypeAsInt());
+        query.append("and contentversion.Status IN (:status)");
+        List<Integer> statuses = new ArrayList<>(4);
+        statuses.add(ContentStatus.PUBLISHED.getTypeAsInt());
         if(onHearingFor != null) {
-            query.append(",").append(ContentStatus.HEARING.getTypeAsInt());
+            statuses.add(ContentStatus.HEARING.getTypeAsInt());
         }
         if (includeDrafts) {
-            query.append(",").append(ContentStatus.DRAFT.getTypeAsInt());
+            statuses.add(ContentStatus.DRAFT.getTypeAsInt());
         }
         if(includeWaitingForApproval){
-            query.append(",").append(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
+            statuses.add(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
         }
-
-        query.append(") and content.ContentId = associations.ContentId");
+        parameters.put("status", statuses);
+        query.append(" and content.ContentId = associations.ContentId");
 
         if (associatedId != null) {
             if (associatedId.getAssociationId() != -1) {
-                query.append(" and associations.ParentAssociationId = ?");
-                parameters.add(associatedId.getAssociationId());
+                query.append(" and associations.ParentAssociationId = :ParentAssociationId");
+                parameters.put("ParentAssociationId", associatedId.getAssociationId());
             }
             if (associatedId.getSiteId() != -1) {
-                query.append(" and associations.SiteId = ?");
-                parameters.add(associatedId.getSiteId());
+                query.append(" and associations.SiteId = :siteid");
+                parameters.put("siteid", associatedId.getSiteId());
             }
 
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
-                query.append(" and associations.Category = ?");
-                parameters.add(associationCategory.getId());
+                query.append(" and associations.Category = :category");
+                parameters.put("category", associationCategory.getId());
             }
-        } else if (contentList != null && contentList.length > 0) {
-            query.append(" and associations.UniqueId in (");
-            for (int i=0; i < contentList.length; i++){
-                if (contentList[i] != null) {
-                    if (i > 0) {
-                        query.append(",");
-                    }
-                    query.append("?");
-                    parameters.add(contentList[i].getAssociationId());
-                }
-            }
-            query.append(")");
+        } else if (contentList != null && !contentList.isEmpty()) {
+            query.append(" and associations.UniqueId in (:contentlist)");
+            parameters.put("contentlist", transform(contentList, cidToAssociationIdTransformer));
+
             if (excludedAssociationTypes == null) {
-                excludedAssociationTypes = new int[]{ AssociationType.SHORTCUT };
+                excludedAssociationTypes = asList(AssociationType.SHORTCUT);
             }
         } else if (pathElementIds != null) {
-            for (int i = 0; i < pathElementIds.length; i++) {
+            for (int i = 0; i < pathElementIds.size(); i++) {
+                String key = "pathelement".concat(String.valueOf(i));
                 if (i == 0) {
-                    query.append(" and (associations.Path like ?");
+                    query.append(" and (associations.Path like :").append(key);
                 } else {
-                    query.append(" or associations.Path like ?");
+                    query.append(" or associations.Path like :").append(key);
                 }
-                parameters.add("%/" + pathElementIds[i].getAssociationId() + "/%");
-                if (i == (pathElementIds.length-1)) {
+                parameters.put(key, "%/" + pathElementIds.get(i).getAssociationId() + "/%");
+                if (i == (pathElementIds.size()-1)) {
                     query.append(")");
                 }
             }
             if (associationCategory != null && associationCategory.getId() != -1) {
                 // Fetch only those in given category/column
-                query.append(" and associations.Category = ?");
-                parameters.add(associationCategory.getId());
+                query.append(" and associations.Category = :category");
+                parameters.put("category", associationCategory.getId());
             }
         } else if (excludedPathElementIds != null) {
-            for (int i=0; i<excludedPathElementIds.length; i++){
-                if (excludedPathElementIds[i]!=null) {
+            for (ContentIdentifier excludedPathElementId : excludedPathElementIds) {
+                if (excludedPathElementId != null) {
                     // exclude all published under given id
-                    query.append(" and associations.Path not like ? and associations.AssociationId <> ? ");
-                    parameters.add("/%" + excludedPathElementIds[i].getAssociationId() + "/%");
-                    parameters.add(excludedPathElementIds[i].getAssociationId());
+                    query.append(" and associations.Path not like :associationpath and associations.AssociationId <> :excludepathid ");
+                    parameters.put("associationpath", "/%" + excludedPathElementId.getAssociationId() + "/%");
+                    parameters.put("excludepathid", excludedPathElementId.getAssociationId());
                 }
             }
         } else if (sql != null) {
@@ -231,130 +196,89 @@ public class ContentQuery {
             }
             query.append(sql);
         } else if (attributes == null && excludedAssociationTypes == null) {
-            excludedAssociationTypes = new int[]{AssociationType.CROSS_POSTING, AssociationType.SHORTCUT};
+            excludedAssociationTypes = asList(AssociationType.CROSS_POSTING, AssociationType.SHORTCUT);
         }
 
-        addExclusionOfAssociationTypes(query);
+        if(excludedAssociationTypes != null && excludedAssociationTypes.size() > 0){
+            query.append(" and associations.Type not in (:excludedAssociationTypes)");
+            parameters.put("excludedAssociationTypes", excludedAssociationTypes);
+        }
 
         if (siteId != -1) {
-            query.append(" and associations.SiteId = ?");
-            parameters.add(siteId);
+            query.append(" and associations.SiteId = :siteId");
+            parameters.put("siteId", siteId);
         }
 
         if (language != -1) {
-            query.append(" and contentversion.Language = ?");
-            parameters.add(language);
+            query.append(" and contentversion.Language = :language");
+            parameters.put("language", language);
         }
 
         if (contentType != null) {
-            query.append(" and content.ContentType = ?");
-            parameters.add(contentType.getTypeAsInt());
+            query.append(" and content.ContentType = :contentType");
+            parameters.put("contentType", contentType.getTypeAsInt());
         }
 
-        if (documentType != null && documentType.length > 0) {
-            query.append(" and content.DocumentTypeId in (");
-            for (int i = 0; i < documentType.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                query.append("?");
-                parameters.add(documentType[i]);
-            }
-            query.append(") ");
+        if (documentType != null && documentType.size() > 0) {
+            query.append(" and content.DocumentTypeId in (:documenttype)");
+            parameters.put("documenttype", documentType);
         }
 
-        if (excludedDocumentTypes != null && excludedDocumentTypes.length > 0) {
-            query.append(" and content.DocumentTypeId not in (");
-            for (int i = 0; i < excludedDocumentTypes.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                query.append("?");
-                parameters.add(excludedDocumentTypes[i]);
-            }
-            query.append(") ");
+        if (excludedDocumentTypes != null && excludedDocumentTypes.size()> 0) {
+            query.append(" and content.DocumentTypeId not in (:excludedDocumentTypes)");
+            parameters.put("excludedDocumentTypes", excludedDocumentTypes);
         }
 
 
-        if (contentTemplate != null && contentTemplate.length > 0) {
-            query.append(" and content.ContentTemplateId in (");
-            for (int i = 0; i < contentTemplate.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                query.append("?");
-                parameters.add(contentTemplate[i]);
-            }
-            query.append(") ");
+        if (contentTemplate != null && contentTemplate.size() > 0) {
+            query.append(" and content.ContentTemplateId in (:contentTemplates)");
+            parameters.put("contentTemplates", contentTemplate);
         }
 
-        if (displayTemplate != null && displayTemplate.length > 0) {
-            query.append(" and content.DisplayTemplateId in (");
-            for (int i = 0; i < displayTemplate.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                query.append("?");
-                parameters.add(displayTemplate[i]);
-            }
-            query.append(") ");
+        if (displayTemplate != null && displayTemplate.size() > 0) {
+            query.append(" and content.DisplayTemplateId in (:displayTemplates)");
+            parameters.put("displayTemplates", displayTemplate);
         }
 
         // Fetch pages with given publishdate / expiredate
         if (publishDateFrom != null) {
-            query.append(" and content.PublishDate >= ?");
-            parameters.add(publishDateFrom);
+            query.append(" and content.PublishDate >= :PublishDateFrom");
+            parameters.put("PublishDateFrom", publishDateFrom);
         }
         if (publishDateTo != null) {
-            query.append(" and content.PublishDate <= ?");
-            parameters.add(publishDateTo);
+            query.append(" and content.PublishDate <= :PublishDateTo");
+            parameters.put("PublishDateTo", publishDateTo);
         }
         if (expireDateFrom != null) {
-            query.append(" and content.ExpireDate >= ?");
-            parameters.add(expireDateFrom);
+            query.append(" and content.ExpireDate >= :expireDateFrom");
+            parameters.put("expireDateFrom", expireDateFrom);
             showExpired = true;
         }
         if (expireDateTo != null) {
-            query.append(" and content.ExpireDate <= ?");
-            parameters.add(expireDateTo);
+            query.append(" and content.ExpireDate <= :expireDateTo");
+            parameters.put("expireDateTo", expireDateTo);
             showExpired = true;
         }
 
         // Fetch archived pages if specified
+        query.append(" and content.VisibilityStatus in (:VisibilityStatus)");
         if (showExpired) {
-            query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ", " + ContentVisibilityStatus.EXPIRED + ")");
+            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE, ContentVisibilityStatus.ARCHIVED, ContentVisibilityStatus.EXPIRED));
         } else if (showArchived) {
-            query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ", " + ContentVisibilityStatus.ARCHIVED + ")");
+            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE, ContentVisibilityStatus.ARCHIVED));
         } else {
-            query.append(" and content.VisibilityStatus in (" + ContentVisibilityStatus.ACTIVE + ")");
+            parameters.put("VisibilityStatus", ContentVisibilityStatus.ACTIVE);
         }
 
         if (owner != null) {
-            query.append(" and content.Owner in (");
-            String[] owners  = owner.split(",");
-            for (int i = 0; i < owners.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                String o = owners[i];
-                query.append("?");
-                parameters.add(o);
-            }
-            query.append(") ");
+            query.append(" and content.Owner in (:ownerunit)");
+            parameters.put("ownerunit", asList(owner.split(",")));
 
         }
         if (ownerPerson != null) {
-            query.append(" and content.OwnerPerson in (");
-            String[] owners  = ownerPerson.split(",");
-            for (int i = 0; i < owners.length; i++) {
-                if (i > 0) {
-                    query.append(",");
-                }
-                String o = owners[i];
-                query.append("?");
-                parameters.add(o);
-            }
-            query.append(") ");
+            query.append(" and content.OwnerPerson in (:ownerpersons");
+            parameters.put("ownerpersons", asList(ownerPerson.split(",")));
+
         }
 
         if (keyword != null) {
@@ -365,25 +289,24 @@ public class ContentQuery {
             if ((driver.contains("oracle")) || (driver.contains("postgresql"))) {
                 // Oracle and PostgreSQL is case sensitive
                 keyword = keyword.toLowerCase();
-                query.append(" and (lower(contentversion.Title) like ? or lower(contentversion.AltTitle) like ?)");
+                query.append(" and (lower(contentversion.Title) like :keyword or lower(contentversion.AltTitle) like :keyword)");
             } else {
-                query.append(" and (contentversion.Title like ? or contentversion.AltTitle like ?)");
+                query.append(" and (contentversion.Title like :keyword or contentversion.AltTitle like :keyword)");
             }
-            parameters.add(keyword);
-            parameters.add(keyword);
+            parameters.put("keyword", keyword);
 
         }
         if (modifiedDate != null) {
-            query.append(" and contentversion.LastModified >= ?");
-            parameters.add(modifiedDate);
+            query.append(" and contentversion.LastModified >= :modifiedDate");
+            parameters.put("modifiedDate", modifiedDate);
         }
         if (revisionDateFrom != null) {
-            query.append(" and content.RevisionDate is not null and content.RevisionDate >= ?");
-            parameters.add(revisionDateFrom);
+            query.append(" and content.RevisionDate is not null and content.RevisionDate >= :revisionDateFrom");
+            parameters.put("revisionDateFrom", revisionDateFrom);
         }
         if (revisionDateTo != null) {
-            query.append(" and content.RevisionDate is not null and content.RevisionDate <= ?");
-            parameters.add(revisionDateTo);
+            query.append(" and content.RevisionDate is not null and content.RevisionDate <= :revisionDateTo");
+            parameters.put("revisionDateTo", revisionDateTo);
         }
 
         if(topics != null && topics.size() > 0) {
@@ -395,13 +318,13 @@ public class ContentQuery {
 
                 query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where ");
                 for (int i = 0; i < topics.size(); i++) {
-                    Topic topic = (Topic)topics.get(i);
+                    Topic topic = topics.get(i);
                     if (i > 0){
                         query.append(" and ct2topic.contentId in (select ct2topic.contentId from ct2topic where ");
                     }
-                    query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(topic.getTopicMapId());
-                    parameters.add(topic.getId());
+                    query.append(" (TopicMapId = :TopicMapId and TopicId = :TopicId)");
+                    parameters.put("TopicMapId", topic.getTopicMapId());
+                    parameters.put("TopicId", topic.getId());
                     if (i > 0){
                         query.append(")");
                     }
@@ -411,57 +334,55 @@ public class ContentQuery {
                 // Done via join - quickest way
                 query.append(" and content.ContentId = ct2topic.ContentId and (");
                 for (int i = 0; i < topics.size(); i++) {
-                    Topic topic = (Topic)topics.get(i);
+                    Topic topic = topics.get(i);
                     if (i > 0) {
                         query.append(" or ");
                     }
-                    query.append(" (TopicMapId = ? and TopicId = ?)");
-                    parameters.add(topic.getTopicMapId());
-                    parameters.add(topic.getId());
+                    query.append(" (TopicMapId = :TopicMapId and TopicId = :TopicId)");
+                    parameters.put("TopicMapId", topic.getTopicMapId());
+                    parameters.put("TopicId", topic.getId());
                 }
                 query.append(") ");
             }
         }
 
         if (topicMapId != -1) {
-            query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = ?");
-            parameters.add(topicMapId);
+            query.append(" and content.contentId in (select ct2topic.contentId from ct2topic where TopicMapId = :topicMapId");
+            parameters.put("topicMapId", topicMapId);
         }
 
         if (topicType != null) {
-            query.append(" and content.contentId in (select contentId from ct2topic inner join tmtopic on ct2topic.topicId = tmtopic.topicId and ct2topic.topicMapId = tmtopic.topicMapId where ct2topic.topicMapId=? and tmtopic.InstanceOf=?)");
-            parameters.add(topicType.getTopicMapId());
-            parameters.add(topicType.getId());
+            query.append(" and content.contentId in (select contentId from ct2topic inner join tmtopic on ct2topic.topicId = tmtopic.topicId and ct2topic.topicMapId = tmtopic.topicMapId where ct2topic.topicMapId=:topictypetopicMapId and tmtopic.InstanceOf=:tmtopicinstanceof)");
+            parameters.put("topictypetopicMapId", topicType.getTopicMapId());
+            parameters.put("tmtopicinstanceof", topicType.getId());
         }
 
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
                     " and hearinginvitee.HearingId = hearing.Hearingid " +
-                    " and hearing.DeadLine > ?");
-            parameters.add(new Date());
+                    " and hearing.DeadLine > :hearingdeadline");
+            parameters.put("hearingdeadline", new Date());
 
             if (!onHearingFor.equals("everyone")) {
-                query.append(" and ((hearinginvitee.InviteeType = "+ HearingInvitee.TYPE_PERSON + " and hearinginvitee.InviteeRef = ?)");
-                parameters.add(onHearingFor);
+                query.append(" and ((hearinginvitee.InviteeType = "+ HearingInvitee.TYPE_PERSON + " and hearinginvitee.InviteeRef = :InviteeRef)");
+                parameters.put("InviteeRef", onHearingFor);
 
                 Map managers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
                 if (managers.size() > 0) {
                     OrganizationManager manager = (OrganizationManager) managers.values().iterator().next();
-                    List orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
+                    List<OrgUnit> orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
                     if(orgUnits.size() > 0) {
                         query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
-                                "     and hearinginvitee.InviteeRef in (");
+                                "     and hearinginvitee.InviteeRef in (:unitids))");
 
-                        for (int i = 0; i < orgUnits.size(); i++) {
-                            OrgUnit unit = (OrgUnit) orgUnits.get(i);
-                            query.append("?");
-                            parameters.add(unit.getExternalId());
-                            if(i < orgUnits.size() -1) {
-                                query.append(",");
+                        List<String> orgunitIds = transform(orgUnits, new Function<OrgUnit, String>() {
+                            @Override
+                            public String apply(OrgUnit input) {
+                                return input.getExternalId();
                             }
-                        }
-                        query.append("))");
+                        });
+                        parameters.put("unitids", orgunitIds);
                     }
                 }
                 query.append(")");
@@ -480,20 +401,20 @@ public class ContentQuery {
 
                         int noFound = 0;
                         ResultSet rs = st.executeQuery();
-                        query.append(" and content.ContentId in (");
+                        query.append(" and content.ContentId in (:attributecontentids)");
+                        List<Integer> attributecontentids = new ArrayList<>();
                         while (rs.next()) {
                             if (noFound > 0) {
                                 query.append(",");
                             }
                             int id = rs.getInt("ContentId");
-                            query.append("?");
-                            parameters.add(id);
+                            attributecontentids.add(id);
                             noFound++;
                         }
-                        query.append(")");
                         if (noFound == 0) {
                             return null;
                         }
+                        parameters.put("attributecontentids", attributecontentids);
                     }
                     st.close();
                 }
@@ -516,21 +437,6 @@ public class ContentQuery {
         return new QueryWithParameters(query.toString(), parameters);
     }
 
-    private void addExclusionOfAssociationTypes(StringBuilder query) {
-        if(excludedAssociationTypes != null && excludedAssociationTypes.length > 0){
-            query.append(" and associations.Type not in (");
-            for (int i = 0, excludedAssociationTypesLength = excludedAssociationTypes.length; i < excludedAssociationTypesLength; i++) {
-                Integer associationType = excludedAssociationTypes[i];
-                query.append(associationType);
-                if(i < excludedAssociationTypes.length - 1){
-                    query.append(",");
-                }
-            }
-            query.append(")");
-        }
-    }
-
-
     //  Setter methods only
     public void setAssociatedId(ContentIdentifier cid) {
         this.associatedId = cid;
@@ -539,25 +445,24 @@ public class ContentQuery {
 
     public void setContentList(String contentList) {
         String cids[] = contentList.split(",");
-        this.contentList = new ContentIdentifier[cids.length];
-        for (int i = 0; i < cids.length; i++) {
-            String tmp = cids[i].trim();
+        this.contentList = new ArrayList<>(cids.length);
+        for (String cid : cids) {
+            String tmp = cid.trim();
             int id = -1;
             try {
                 id = Integer.parseInt(tmp);
             } catch (NumberFormatException e) {
-
+                log.error("Could not format contentid " + tmp, e);
             }
-            ContentIdentifier cid =  ContentIdentifier.fromAssociationId(id);
-            this.contentList[i] = cid;
+            this.contentList.add(ContentIdentifier.fromAssociationId(id));
         }
     }
 
     public void setContentList(ContentIdentifier[] contentList) {
-        this.contentList = contentList;
+        this.contentList = asList(contentList);
     }
 
-    public ContentIdentifier[] getContentList() {
+    public List<ContentIdentifier> getContentList() {
         return contentList;
     }
 
@@ -586,13 +491,12 @@ public class ContentQuery {
     }
 
     public void setContentTemplate(int contentTemplate) {
-        this.contentTemplate = new int[1];
-        this.contentTemplate[0] = contentTemplate;
+        this.contentTemplate = asList(contentTemplate);
     }
 
     public void setContentTemplate(String contentTemplate) throws SystemException {
         String templates[] = contentTemplate.split("\\|");
-        this.contentTemplate = new int[templates.length];
+        this.contentTemplate = new ArrayList<>(templates.length);
         for (int i = 0; i < templates.length; i++) {
             String template = templates[i].trim();
             int id = -1;
@@ -606,7 +510,7 @@ public class ContentQuery {
                     log.info( "Reference to contenttemplate which does not exists:" + template);
                 }
             }
-            this.contentTemplate[i] = id;
+            this.contentTemplate.add(id);
         }
     }
 
@@ -643,8 +547,7 @@ public class ContentQuery {
     }
 
     public void setDocumentType(int documentType) {
-        this.documentType = new int[1];
-        this.documentType[0] = documentType;
+        this.documentType = asList(documentType);
     }
 
     public void setExcludedDocumentTypes(String documentType) throws SystemException {
@@ -655,11 +558,11 @@ public class ContentQuery {
         this.documentType = getDocumentTypesFromString(documentType);
     }
 
-    private int[] getDocumentTypesFromString(String documentType) {
+    private List<Integer> getDocumentTypesFromString(String documentType) {
         String doctypes[] = documentType.split("\\|");
-        int docTypeIds[] = new int[doctypes.length];
-        for (int i = 0; i < doctypes.length; i++) {
-            String doctype = doctypes[i].trim();
+        List<Integer> docTypeIds = new ArrayList<>(doctypes.length);
+        for (String doctype1 : doctypes) {
+            String doctype = doctype1.trim();
             int id = -1;
             try {
                 id = Integer.parseInt(doctype);
@@ -669,21 +572,21 @@ public class ContentQuery {
                     id = dt.getId();
                 }
             }
-            docTypeIds[i] = id;
+            docTypeIds.add(id);
+
         }
         return docTypeIds;
     }
 
     public void setDisplayTemplate(int displayTemplate) {
-        this.displayTemplate = new int[1];
-        this.displayTemplate[0] = displayTemplate;
+        this.displayTemplate = asList(displayTemplate);
     }
 
     public void setDisplayTemplate(String displayTemplate) throws SystemException {
         String templates[] = displayTemplate.split("\\|");
-        this.displayTemplate = new int[templates.length];
-        for (int i = 0; i < templates.length; i++) {
-            String template = templates[i].trim();
+        this.displayTemplate = new ArrayList<>(templates.length);
+        for (String template1 : templates) {
+            String template = template1.trim();
             int id = -1;
             try {
                 id = Integer.parseInt(template);
@@ -692,10 +595,11 @@ public class ContentQuery {
                 if (dt != null) {
                     id = dt.getId();
                 } else {
-                    log.info( "Reference to displaytemplate which does not exists:" + template);
+                    log.info("Reference to displaytemplate which does not exists:" + template);
                 }
             }
-            this.displayTemplate[i] = id;
+            this.displayTemplate.add(id);
+            ;
         }
     }
 
@@ -719,7 +623,7 @@ public class ContentQuery {
         a.setName(name);
         a.setValue(value);
         if (attributes == null) {
-            attributes = new ArrayList<Attribute>();
+            attributes = new ArrayList<>();
         }
         attributes.add(a);
     }
@@ -730,7 +634,7 @@ public class ContentQuery {
 
     public void setTopic(Topic topic) {
         if (topics == null) {
-            topics = new ArrayList<Topic>();
+            topics = new ArrayList<>();
         }
         topics.add(topic);
     }
@@ -749,12 +653,12 @@ public class ContentQuery {
 
     public void setPathElementId(ContentIdentifier pathElement) {
         if(this.pathElementIds == null) {
-            this.pathElementIds = new ContentIdentifier[1];
+            this.pathElementIds = new ArrayList<>();
         }
-        this.pathElementIds[0] = pathElement;
+        this.pathElementIds.add(pathElement);
     }
 
-    public void setPathElementIds(ContentIdentifier[] pathElementIds) {
+    public void setPathElementIds(List<ContentIdentifier> pathElementIds) {
         this.pathElementIds = pathElementIds;
     }
 
@@ -790,11 +694,11 @@ public class ContentQuery {
         this.onHearingFor = onHearingFor;
     }
 
-    public ContentIdentifier[] getExcludedPathElementIds() {
+    public List<ContentIdentifier> getExcludedPathElementIds() {
         return excludedPathElementIds;
     }
 
-    public void setExcludedPathElementIds(ContentIdentifier[] excludedPathElementIds) {
+    public void setExcludedPathElementIds(List<ContentIdentifier> excludedPathElementIds) {
         this.excludedPathElementIds = excludedPathElementIds;
     }
 
@@ -826,18 +730,26 @@ public class ContentQuery {
         this.includeWaitingForApproval = includeWaitingForApproval;
     }
 
-    public void setExcludedAssociationTypes(int[] excludedAssociationTypes){
+    public void setExcludedAssociationTypes(List<Integer> excludedAssociationTypes){
         this.excludedAssociationTypes = excludedAssociationTypes;
     }
+
+private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
+    @Override
+    public Integer apply(ContentIdentifier input) {
+        return input.getAssociationId();
+    }
+};
+
 
     /**
      * Class representing an instance of a query, that is the query string and the parameters to be set.
      */
     public class QueryWithParameters {
         private final String query;
-        private final List<Object> params;
+        private final Map<String, Object> params;
 
-        QueryWithParameters(String query, List<Object> params) {
+        QueryWithParameters(String query, Map<String, Object> params) {
             this.query = query;
             this.params = params;
         }
@@ -846,7 +758,7 @@ public class ContentQuery {
             return query;
         }
 
-        public List<Object> getParams() {
+        public Map<String, Object> getParams() {
             return params;
         }
 
@@ -870,4 +782,6 @@ public class ContentQuery {
             return result;
         }
     }
+
+
 }
