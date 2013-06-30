@@ -126,7 +126,8 @@ public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
     public void streamMultimediaData(final int id, final InputStreamHandler ish) {
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = " + id);
+                PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?");
+                p.setInt(1, id);
                 ResultSet rs = p.executeQuery();
                 if (!rs.next()) {
                     return null;

@@ -88,13 +88,13 @@ public class AssociationAO  {
 
         // Arv rettigheter fra parent dersom ikke satt
         if (a.getSecurityId() == -1 && a.getParentAssociationId() > 0) {
-            int secId = SQLHelper.getInt(c, "select SecurityId from associations where UniqueId = " + a.getParentAssociationId(), "SecurityId");
+            int secId = SQLHelper.getInt(c, "select SecurityId from associations where UniqueId = ?", "SecurityId", new Object[]{a.getParentAssociationId()});
             a.setSecurityId(secId);
         }
 
         if (a.getAssociationtype() != AssociationType.SHORTCUT) {
             // Avgjør om dette er en krysspublisering eller ikke
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ContentId = " + a.getContentId() + " and SiteId = " + a.getSiteId());
+            ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where ContentId = ? and SiteId = ?", new Object[]{a.getContentId(), a.getSiteId()});
             if (rs.next()) {
                 a.setAssociationtype(AssociationType.CROSS_POSTING);
             } else {
@@ -184,7 +184,7 @@ public class AssociationAO  {
 
         if (copyChildren) {
             // Finn barn til source legg dem inn
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ParentAssociationId = " + source.getId() + " AND (IsDeleted IS NULL OR IsDeleted = 0)");
+            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ParentAssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new Object[]{source.getId()});
             while (rs.next()) {
                 Association child = getAssociationFromRS(rs);
                 copyAssociations(c, child, newAssociation, null, copyChildren);
@@ -242,8 +242,9 @@ public class AssociationAO  {
 
         try (Connection c = dbConnectionFactory.getConnection()){
 
-            PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like '%/" + parentId + "/%'");
+            PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like ?");
             st.setInt(1, contentId);
+            st.setString(2, "%/" + parentId + "/%");
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 associations.add(getAssociationFromRS(rs));
@@ -338,10 +339,10 @@ public class AssociationAO  {
         newAssociation.setDepth(depth);
 
         try (Connection c = dbConnectionFactory.getConnection()){
-            int currentGroupId = SQLHelper.getInt(c, "select GroupId from content where ContentId = " + oldAssocation.getContentId(), "GroupId");
-            int parentContentId = SQLHelper.getInt(c, "select ContentId from associations where UniqueId = " + newAssociation.getParentAssociationId(), "ContentId");
-            int parentGroupId  = SQLHelper.getInt(c, "select GroupId from content where ContentId = " + parentContentId, "GroupId");
-            int parentSecurityId = SQLHelper.getInt(c, "select SecurityId from associations where UniqueId = " + newAssociation.getParentAssociationId(), "SecurityId");
+            int currentGroupId = SQLHelper.getInt(c, "select GroupId from content where ContentId = ?", "GroupId", new Object[]{oldAssocation.getContentId()});
+            int parentContentId = SQLHelper.getInt(c, "select ContentId from associations where UniqueId = ?", "ContentId", new Object[]{newAssociation.getParentAssociationId()});
+            int parentGroupId  = SQLHelper.getInt(c, "select GroupId from content where ContentId = ?", "GroupId", new Object[]{parentContentId});
+            int parentSecurityId = SQLHelper.getInt(c, "select SecurityId from associations where UniqueId = ?", "SecurityId", new Object[]{newAssociation.getParentAssociationId()});
 
             if (currentGroupId == oldAssocation.getContentId() || currentGroupId == parentGroupId) {
                 updateGroupId = false;
@@ -379,7 +380,7 @@ public class AssociationAO  {
             }
 
             // Finn alle som ligger under og oppdater path og groupid
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where Path like '%/" + oldAssocation.getId() +  "/%'");
+            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where Path like ?", new Object[]{"%/" + oldAssocation.getId() +  "/%"});
             pathst  = c.prepareStatement("update associations set Path = ?, Depth = ?, SiteId = ? where UniqueId = ?");
             groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ? and GroupId = ?");
             securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?");
@@ -648,7 +649,7 @@ public class AssociationAO  {
 
 
         // Finn alle undersider, sett nye rettigheter
-        ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where Path like '%/" + object.getId() +  "/%'");
+        ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where Path like ?", new Object[]{"%/" + object.getId() +  "/%"});
         PreparedStatement st = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?");
 
         // Undersider
