@@ -126,7 +126,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
             arguments.add("%" + eventLogQuery.getEventName() + "%");
         }
         where.append(" order by Time desc");
-        return new Pair<String, List<Object>>(where.toString(), arguments);
+        return new Pair<>(where.toString(), arguments);
     }
 
     private class EventLogQueryMapper implements RowMapper<EventLogEntry> {

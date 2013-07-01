@@ -21,11 +21,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import javax.sql.DataSource;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 15, 2009
- * Time: 1:47:36 PM
- */
 public class JdbcHostnamesDao implements HostnamesDao {
     private DataSource dataSource;
 
@@ -37,11 +32,11 @@ public class JdbcHostnamesDao implements HostnamesDao {
 
     public void setHostnamesForSiteId(int siteId, List<String> hostnames) {
         JdbcTemplate template = new JdbcTemplate(dataSource);
-        template.update("delete from site2hostname where SiteId = ?", new Object[] {siteId});
+        template.update("delete from site2hostname where SiteId = ?", siteId);
 
         boolean isDefault = true;
         for (String hostname : hostnames) {
-            template.update("insert into site2hostname values (?,?,?)", new Object[] {siteId, hostname, isDefault});
+            template.update("insert into site2hostname values (?,?,?)", siteId, hostname, isDefault);
             if (isDefault) isDefault = false;
         }
     }

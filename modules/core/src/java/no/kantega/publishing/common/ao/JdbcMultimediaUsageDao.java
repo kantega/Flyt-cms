@@ -1,17 +1,17 @@
 package no.kantega.publishing.common.ao;
 
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
-import org.springframework.jdbc.core.simple.SimpleJdbcTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.List;
 
-public class JdbcMultimediaUsageDao extends SimpleJdbcDaoSupport implements MultimediaUsageDao {
+public class JdbcMultimediaUsageDao extends JdbcDaoSupport implements MultimediaUsageDao {
 
     public void removeUsageForContentId(int contentId) {
         // Get Multimedia ids belonging to the Content object
         List<Integer> multimediaIds = getUsagesForContentId(contentId);
 
-        SimpleJdbcTemplate template = getSimpleJdbcTemplate();
+        JdbcTemplate template = getJdbcTemplate();
         template.update("delete from multimediausage where ContentId = ?", contentId);
 
         // Update usage count ("noUsages") on Multimedia objects belonging to the Content object
@@ -22,7 +22,7 @@ public class JdbcMultimediaUsageDao extends SimpleJdbcDaoSupport implements Mult
     }
 
     public void removeMultimediaId(int multimediaId) {
-        getSimpleJdbcTemplate().update("delete from multimediausage where MultimediaId = ?", multimediaId);
+        getJdbcTemplate().update("delete from multimediausage where MultimediaId = ?", multimediaId);
     }
 
     public List<Integer> getUsagesForMultimediaId(int multimediaId) {
@@ -34,7 +34,7 @@ public class JdbcMultimediaUsageDao extends SimpleJdbcDaoSupport implements Mult
     }
 
     public void addUsageForContentId(int contentId, int multimediaId) {
-        SimpleJdbcTemplate template = getSimpleJdbcTemplate();
+        JdbcTemplate template = getJdbcTemplate();
         if (template.queryForInt("select count(*) from multimediausage where ContentId = ? and MultimediaId = ?", contentId, multimediaId) == 0) {
             template.update("insert into multimediausage values (?,?)", contentId, multimediaId);
         }

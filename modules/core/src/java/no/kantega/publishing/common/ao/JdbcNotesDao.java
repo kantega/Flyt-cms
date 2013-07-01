@@ -16,32 +16,30 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.common.data.Note;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.util.List;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
-import org.springframework.jdbc.core.RowMapper;
-
-public class JdbcNotesDao  extends JdbcDaoSupport implements NotesDao {
+public class JdbcNotesDao extends JdbcDaoSupport implements NotesDao {
     private NotesRowMapper rowMapper = new NotesRowMapper();
 
-    @SuppressWarnings("unchecked")
     public List<Note> getNotesByContentId(int contentId) {
         return getJdbcTemplate().query("SELECT * FROM notes WHERE ContentId = ? ORDER BY CreatedDate DESC", new Object[] {contentId}, rowMapper);
     }
 
     public void addNote(Note note) {
-        getJdbcTemplate().update("INSERT INTO notes (Author, NoteText, CreatedDate, ContentId) VALUES (?, ?, ?, ?)", new Object[] {note.getAuthor(), note.getText(), note.getDate(), note.getContentId()});
+        getJdbcTemplate().update("INSERT INTO notes (Author, NoteText, CreatedDate, ContentId) VALUES (?, ?, ?, ?)", note.getAuthor(), note.getText(), note.getDate(), note.getContentId());
     }
 
     public void removeNote(int noteId) {
-        getJdbcTemplate().update("DELETE FROM notes WHERE NoteId=?", new Object[] {noteId});
+        getJdbcTemplate().update("DELETE FROM notes WHERE NoteId=?", noteId);
     }
 
-    private class NotesRowMapper implements RowMapper {
-        public Object mapRow(ResultSet rs, int i) throws SQLException {
+    private class NotesRowMapper implements RowMapper<Note> {
+        public Note mapRow(ResultSet rs, int i) throws SQLException {
             Note note = new Note();
             note.setNoteId(rs.getInt("NoteId"));
             note.setAuthor(rs.getString("Author"));

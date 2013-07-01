@@ -20,7 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
-import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.security.ao.PermissionsAO;
@@ -33,21 +32,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class MultimediaAO {
-    private static final String DB_TABLE = "multimedia";
-
-    /**
-     * Sletter et multimediaobjekt
-     * @param id - Id til objekt som skal slettes
-     * @throws SystemException
-     * @throws ObjectInUseException - Hvis det finnes underobjekter
-     */
-
-    @Deprecated
-    public static void deleteMultimedia(int id) throws SystemException, ObjectInUseException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        dao.deleteMultimedia(id);
-    }
-
 
     /**
      * Henter multimedia objekt fra basen (unntatt data)
@@ -170,7 +154,7 @@ public class MultimediaAO {
 
 
     private static void setSecurityIdForChildren(Connection c, int parentId, int oldSecurityId, int newSecurityId) throws SQLException {
-        ResultSet rs = SQLHelper.getResultSet(c, "select Id, Type from multimedia where ParentId = " + parentId + " and SecurityId = " + oldSecurityId);
+        ResultSet rs = SQLHelper.getResultSet(c, "select Id, Type from multimedia where ParentId = ? and SecurityId = ?" , new Object[]{parentId , oldSecurityId});
         PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?");
 
         while(rs.next()) {

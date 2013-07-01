@@ -25,11 +25,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 15, 2007
- * Time: 10:29:20 AM
- */
 public class ScheduleLogAO {
 
     public static Date getLastRun(String service) throws SystemException {

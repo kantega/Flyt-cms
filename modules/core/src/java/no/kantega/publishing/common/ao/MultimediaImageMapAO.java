@@ -36,7 +36,7 @@ public class MultimediaImageMapAO {
      */
     public static MultimediaImageMap loadImageMap(int multimediaId) throws SystemException {
         try (Connection c = dbConnectionFactory.getConnection()) {
-            ResultSet rs = SQLHelper.getResultSet(c, "SELECT Coords, Url, AltName, NewWindow from multimediaimagemap WHERE MultimediaId = " + multimediaId + " ORDER BY Id");
+            ResultSet rs = SQLHelper.getResultSet(c, "SELECT Coords, Url, AltName, NewWindow from multimediaimagemap WHERE MultimediaId = ? ORDER BY Id", new Object[]{multimediaId});
 
             MultimediaImageMap mim = new MultimediaImageMap();
             mim.setMultimediaId(multimediaId);
@@ -66,12 +66,12 @@ public class MultimediaImageMapAO {
 
             MultimediaImageMap.CoordUrlMap[] coordUrlMapArray = mim.getCoordUrlMap();
 
-            for (int i = 0; i < coordUrlMapArray.length; i++) {
+            for (MultimediaImageMap.CoordUrlMap aCoordUrlMapArray : coordUrlMapArray) {
                 ps.setInt(1, mim.getMultimediaId());
-                ps.setString(2, coordUrlMapArray[i].getCoord());
-                ps.setString(3, coordUrlMapArray[i].getUrl());
-                ps.setString(4, coordUrlMapArray[i].getAltName());
-                ps.setInt(5, coordUrlMapArray[i].isOpenInNewWindow() ? 1 : 0);
+                ps.setString(2, aCoordUrlMapArray.getCoord());
+                ps.setString(3, aCoordUrlMapArray.getUrl());
+                ps.setString(4, aCoordUrlMapArray.getAltName());
+                ps.setInt(5, aCoordUrlMapArray.isOpenInNewWindow() ? 1 : 0);
                 ps.execute();
             }
 
