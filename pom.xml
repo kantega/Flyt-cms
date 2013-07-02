@@ -263,7 +263,8 @@
                     </signature>
                 </configuration>
                 <!--
-                <executions>
+  
+                  <executions>
                     <execution>
                         <id>check-java-version</id>
                         <phase>test</phase>
