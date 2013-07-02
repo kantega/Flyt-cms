@@ -33,6 +33,12 @@ public interface TopicDao {
 
     void deleteAllImportedTopics(int topicMapId);
 
+    /**
+     * Deletes topics that no longer exist from content and roles.
+     * @param topicMapId
+     */
+    void deleteNonexistingTopicsTags(int topicMapId);
+
     Topic getTopic(int topicMapId, String topicId);
 
     void setTopic(Topic topic);

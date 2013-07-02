@@ -112,8 +112,8 @@ public class TopicMapService {
         }
         for(TopicAssociation topicAssociation: importedTopicMap.getTopicAssociationList()){
             saveImportedAssociation(topicMapId, topicAssociation);
-
         }
+        topicDao.deleteNonexistingTopicsTags(topicMapId);
     }
 
     private void saveImportedAssociation(int topicMapId, TopicAssociation topicAssociation) {
