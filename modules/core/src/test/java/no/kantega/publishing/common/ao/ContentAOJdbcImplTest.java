@@ -11,6 +11,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.content.api.ContentAO;
+import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 
 import static junit.framework.Assert.*;
+import static org.apache.commons.collections.CollectionUtils.select;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations= "classpath*:spring/testContext.xml")
@@ -133,6 +136,28 @@ public class ContentAOJdbcImplTest {
 
     @Test
     public void shouldCheckInNewContent(){
+        Content content = createAndCheckInContentObject(ContentStatus.PUBLISHED);
+        Content saved = contentAO.getContent(content.getContentIdentifier(), false);
+        assertNotNull(saved);
+        assertEquals(content.getTitle(), saved.getTitle());
+        assertEquals(content.getAlias(), saved.getAlias());
+        assertEquals(content.getContentTemplateId(), saved.getContentTemplateId());
+        assertEquals(content.getDisplayTemplateId(), saved.getDisplayTemplateId());
+        assertEquals(content.getDescription(), saved.getDescription());
+        assertEquals(content.getType(), saved.getType());
+        assertNotNull(saved.getAssociation().getAssociationId());
+        assertEquals(content.getAssociation().getParentAssociationId(), saved.getAssociation().getParentAssociationId());
+
+
+        List<Attachment> attachmentList = AttachmentAO.getAttachmentList(saved.getContentIdentifier());
+        assertFalse(attachmentList.isEmpty());
+        assertNotNull(attachmentList.get(0).getId());
+        assertEquals(saved.getId(), attachmentList.get(0).getContentId());
+
+
+    }
+
+    private Content createAndCheckInContentObject(ContentStatus contentStatus) {
         Content c = new Content();
         c.setAlias("/new/");
         c.setContentTemplateId(1);
@@ -162,58 +187,57 @@ public class ContentAOJdbcImplTest {
         m.setSize(4);
         c.addMultimedia(m);
 
-        Content content = contentAO.checkInContent(c, ContentStatus.PUBLISHED);
 
-        Content saved = contentAO.getContent(content.getContentIdentifier(), false);
-        assertNotNull(saved);
-        assertEquals(content.getTitle(), saved.getTitle());
-        assertEquals(content.getAlias(), saved.getAlias());
-        assertEquals(content.getContentTemplateId(), saved.getContentTemplateId());
-        assertEquals(content.getDisplayTemplateId(), saved.getDisplayTemplateId());
-        assertEquals(content.getDescription(), saved.getDescription());
-        assertEquals(content.getType(), saved.getType());
-        assertNotNull(saved.getAssociation().getAssociationId());
-        assertEquals(content.getAssociation().getParentAssociationId(), saved.getAssociation().getParentAssociationId());
-
-
-        List<Attachment> attachmentList = AttachmentAO.getAttachmentList(saved.getContentIdentifier());
-        assertFalse(attachmentList.isEmpty());
-        assertNotNull(attachmentList.get(0).getId());
-        assertEquals(saved.getId(), attachmentList.get(0).getContentId());
-
-
+        return contentAO.checkInContent(c, contentStatus);
     }
 
     @Test
     public void shouldGetContentListWithAttributesByContentTemplate(){
+        final Content c = createAndCheckInContentObject(ContentStatus.PUBLISHED);
         ContentQuery contentQuery = new ContentQuery();
-        contentQuery.setContentTemplate(2);
+        contentQuery.setContentTemplate(c.getContentTemplateId());
         List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, true);
+
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
-        Content content = contentList.get(0);
-        assertEquals(1, content.getId());
-        assertFalse("Content did not have attributes", content.getAttributes(AttributeDataType.CONTENT_DATA).isEmpty());
+        Collection<Content> content = select(contentList, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                return c.getId() == ((Content)o).getId();
+            }
+        });
+        assertEquals(1, content.size());
+        assertFalse("Content did not have attributes", content.iterator().next().getAttributes(AttributeDataType.CONTENT_DATA).isEmpty());
     }
 
     @Test
     public void shouldGetContentListWithOutAttributesByContentTemplate(){
+        final Content c = createAndCheckInContentObject(ContentStatus.PUBLISHED);
         ContentQuery contentQuery = new ContentQuery();
-        contentQuery.setContentTemplate(2);
+        contentQuery.setContentTemplate(c.getContentTemplateId());
         List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, false);
+
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
-        Content content = contentList.get(0);
-        assertEquals(1, content.getId());
-        assertTrue(content.getAttributes(AttributeDataType.ANY).isEmpty());
+        Collection<Content> content = select(contentList, new Predicate() {
+            @Override
+            public boolean evaluate(Object o) {
+                return c.getId() == ((Content) o).getId();
+            }
+        });
+
+        assertTrue(content.iterator().next().getAttributes(AttributeDataType.ANY).isEmpty());
     }
 
     @Test
     public void shouldUpdateContentStatus(){
-        ContentIdentifier cid = ContentIdentifier.fromAssociationId(1);
-        contentAO.setContentStatus(cid, ContentStatus.ARCHIVED, Calendar.getInstance().getTime(), "User");
-        Content content = contentAO.getContent(cid, true);
-        assertEquals(ContentStatus.ARCHIVED, content.getStatus());
-        assertEquals(3, content.getVersion());
+        Content content = createAndCheckInContentObject(ContentStatus.PUBLISHED_WAITING);
+        ContentIdentifier cid = content.getContentIdentifier();
+
+        contentAO.setContentStatus(cid, ContentStatus.PUBLISHED, Calendar.getInstance().getTime(), "User");
+
+        content = contentAO.getContent(cid, true);
+        assertEquals(ContentStatus.PUBLISHED, content.getStatus());
+        assertEquals(1, content.getVersion());
     }
 }
