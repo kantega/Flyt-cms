@@ -533,6 +533,10 @@ public class Content extends BaseObject {
         this.expireAction = expireAction;
     }
 
+    /**
+     * @param type AttributeDataType.CONTENT_DATA, AttributeDataType.ANY or AttributeDataType.META_DATA
+     * @return Attributes of given type.
+     */
     public List<Attribute> getAttributes(int type) {
         if (type == AttributeDataType.CONTENT_DATA) {
             return contentAttributes;

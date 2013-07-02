@@ -52,8 +52,6 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-import static java.util.Arrays.asList;
-
 /**
  *
  */
@@ -325,7 +323,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         try(Connection c = dbConnectionFactory.getConnection()){
 
             // Get drafts, pages waiting for approval and rejected pages
-            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
+            PreparedStatement st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status in (?,?,?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and associations.Type = ? order by contentversion.Status, contentversion.LastModified desc");
             st.setInt(1, ContentStatus.DRAFT.getTypeAsInt());
             st.setInt(2, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
             st.setInt(3, ContentStatus.REJECTED.getTypeAsInt());
@@ -452,13 +450,10 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
-        final List<Integer> cvids = new ArrayList<>();
-
         doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
                 contentMap.put(content.getVersionId(), content);
-                cvids.add(content.getVersionId());
             }
         });
 
@@ -466,8 +461,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-            String attrquery = "select * from contentattributes where ContentVersionId in (?) order by ContentVersionId";
-            getJdbcTemplate().query(attrquery, new RowCallbackHandler() {
+            String attrquery = "select * from contentattributes where ContentVersionId in (:cvids) order by ContentVersionId";
+            getNamedParameterJdbcTemplate().query(attrquery,Collections.singletonMap("cvids", contentMap.keySet()), new RowCallbackHandler() {
                 @Override
                 public void processRow(ResultSet rs) throws SQLException {
                     int cvid = rs.getInt("ContentVersionId");
@@ -476,7 +471,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                         ContentAOHelper.addAttributeFromRS(current, rs);
                     }
                 }
-            },cvids);
+            });
 
         }
 
@@ -648,13 +643,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             // Update subpages if these fields are changed
             if(oldContent != null ) {
                 if (!oldContent.getOwner().equals(content.getOwner())) {
-                    updateChildren(c, content.getAssociation().getId(), "owner", content.getOwner(), oldContent.getOwner());
+                    updateChildren(content.getAssociation().getId(), "owner", content.getOwner(), oldContent.getOwner());
                 }
                 if (!oldContent.getOwnerPerson().equals(content.getOwnerPerson())) {
-                    updateChildren(c, content.getAssociation().getId(), "ownerperson", content.getOwnerPerson(), oldContent.getOwnerPerson());
+                    updateChildren(content.getAssociation().getId(), "ownerperson", content.getOwnerPerson(), oldContent.getOwnerPerson());
                 }
                 if (oldContent.getGroupId() != content.getGroupId()) {
-                    updateChildren(c, content.getAssociation().getId(), "GroupId", "" + content.getGroupId(), "" + oldContent.getGroupId());
+                    updateChildren(content.getAssociation().getId(), "GroupId", String.valueOf(content.getGroupId()), String.valueOf(oldContent.getGroupId()));
                 }
             }
 
@@ -894,21 +889,22 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     /**
      * Updated field on subpages
-     * @param c
      * @param associationId
      * @param field
      * @param newValue
      * @param oldValue
      * @throws SQLException
      */
-    private void updateChildren(Connection c, int associationId, String field, String newValue, String oldValue) throws SQLException {
+    private void updateChildren(int associationId, String field, String newValue, String oldValue) throws SQLException {
 
-        JdbcTemplate jdbcTemplate = getJdbcTemplate();
-        List<Integer> childrenIds = jdbcTemplate.queryForList("select content.contentid from content, associations where content." + field + " = ? and associations.path like ? and content.ContentId=associations.ContentId",
+        List<Integer> childrenIds = getJdbcTemplate().queryForList("select content.contentid from content, associations where content." + field + " = ? and associations.path like ? and content.ContentId=associations.ContentId",
                 Integer.class, oldValue, "%/" + associationId + "/%");
 
         if (childrenIds.size() > 0) {
-            jdbcTemplate.update("update content set " + field + " = ? where ContentId in (?)", newValue, childrenIds);
+            HashMap<String, Object> params = new HashMap<>();
+            params.put("value", newValue);
+            params.put("childrenids", childrenIds);
+            getNamedParameterJdbcTemplate().update("update content set " + field + " = :value where ContentId in (:childrenids)", params);
         }
     }
 
@@ -952,7 +948,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         int contentId = cid.getContentId();
         JdbcTemplate jdbcTemplate = getJdbcTemplate();
-        List<Integer> versions = jdbcTemplate.queryForList("select Version from contentversion where ContentId = ? AND status IN (?) order by version desc", Integer.class, contentId, asList(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt(), ContentStatus.PUBLISHED_WAITING.getTypeAsInt()));
+        List<Integer> versions = jdbcTemplate.queryForList("select Version from contentversion where ContentId = ? AND status IN (?, ?) order by version desc", Integer.class, contentId, ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt(), ContentStatus.PUBLISHED_WAITING.getTypeAsInt());
         if(versions.isEmpty()){
             throw new IllegalStateException("Could not fint content version");
         }

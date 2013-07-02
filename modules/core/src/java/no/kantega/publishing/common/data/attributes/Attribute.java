@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -314,7 +315,7 @@ public abstract class Attribute {
     }
 
     public  void validate(ValidationErrors errors) {
-        if (mandatory && editable && isNotBlank(value)) {
+        if (mandatory && editable && isBlank(value)) {
             Map<String, Object> objects = new HashMap<>();
             objects.put("field", title);
             errors.add(name, "aksess.feil.mandatoryfield", objects);

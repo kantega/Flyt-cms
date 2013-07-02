@@ -56,9 +56,7 @@ public class EditContentAction implements Controller {
 
         int associationId = cid.getAssociationId();
         if (associationId == -1 && content == null) {
-            Connection c = null;
-            try {
-                c = dbConnectionFactory.getConnection();
+            try (Connection c = dbConnectionFactory.getConnection()){
                 ResultSet rs = SQLHelper.getResultSet(c, "select * from contentversion where isActive = 1");
                 if (!rs.next()) {
                     // Database is empty, create homepage
@@ -70,10 +68,6 @@ public class EditContentAction implements Controller {
                     return new ModelAndView(new RedirectView("SelectTemplate.action?parentId=0&templateId=dt;" + templateId));
                 } else {
                     throw new ContentNotFoundException("-1");
-                }
-            } finally {
-                if (c != null) {
-                    c.close();
                 }
             }
         }

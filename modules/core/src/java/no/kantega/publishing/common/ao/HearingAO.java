@@ -270,7 +270,7 @@ public class HearingAO {
             OrganizationManager manager = (OrganizationManager) RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
             List above = manager.getOrgUnitsAboveUser(user);
             if(above.size() > 0) {
-                StringBuffer buffer = new StringBuffer();
+                StringBuilder buffer = new StringBuilder();
                 buffer.append("select count(HearingInvitee.HearingInviteeId) FROM HearingInvitee, Hearing WHERE InviteeType=" + HearingInvitee.TYPE_ORGUNIT + " AND Hearing.HearingId=HearingInvitee.HearingId AND Hearing.ContentVersionId=" + contentVersionId+" AND InviteeRef IN (");
 
                 for (int i = 0; i < above.size(); i++) {

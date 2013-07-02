@@ -27,10 +27,12 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PathWorker {
@@ -49,7 +51,7 @@ public class PathWorker {
         for (int pathId : pathIds) {
             ids.add(pathId);
         }
-        return dbConnectionFactory.getJdbcTemplate().query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (?)", rowMapperWithContentTemplateId, ids);
+        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
     }
 
     /**
@@ -83,7 +85,7 @@ public class PathWorker {
         }
 
 
-        pathEntries = dbConnectionFactory.getJdbcTemplate().query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (?)", rowMapper, pathIds);
+        pathEntries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", pathIds),rowMapper);
 
         return pathEntries;
     }

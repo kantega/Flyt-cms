@@ -18,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import static junit.framework.Assert.*;
@@ -181,5 +182,38 @@ public class ContentAOJdbcImplTest {
         assertEquals(saved.getId(), attachmentList.get(0).getContentId());
 
 
+    }
+
+    @Test
+    public void shouldGetContentListWithAttributesByContentTemplate(){
+        ContentQuery contentQuery = new ContentQuery();
+        contentQuery.setContentTemplate(2);
+        List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, true);
+        assertNotNull(contentList);
+        assertFalse(contentList.isEmpty());
+        Content content = contentList.get(0);
+        assertEquals(1, content.getId());
+        assertFalse("Content did not have attributes", content.getAttributes(AttributeDataType.CONTENT_DATA).isEmpty());
+    }
+
+    @Test
+    public void shouldGetContentListWithOutAttributesByContentTemplate(){
+        ContentQuery contentQuery = new ContentQuery();
+        contentQuery.setContentTemplate(2);
+        List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, false);
+        assertNotNull(contentList);
+        assertFalse(contentList.isEmpty());
+        Content content = contentList.get(0);
+        assertEquals(1, content.getId());
+        assertTrue(content.getAttributes(AttributeDataType.ANY).isEmpty());
+    }
+
+    @Test
+    public void shouldUpdateContentStatus(){
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(1);
+        contentAO.setContentStatus(cid, ContentStatus.ARCHIVED, Calendar.getInstance().getTime(), "User");
+        Content content = contentAO.getContent(cid, true);
+        assertEquals(ContentStatus.ARCHIVED, content.getStatus());
+        assertEquals(3, content.getVersion());
     }
 }
