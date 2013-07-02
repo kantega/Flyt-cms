@@ -131,6 +131,11 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
 
     }
 
+    public void deleteNonexistingTopicsTags(int topicMapId) {
+        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
+    }
+
     public void setTopic(Topic topic) {
         // Delete topic without support tables and reinsert
         deleteTopic(topic, false);

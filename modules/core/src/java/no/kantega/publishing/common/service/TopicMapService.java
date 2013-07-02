@@ -113,6 +113,7 @@ public class TopicMapService {
             saveImportedAssociation(topicMapId, topicAssociation);
 
         }
+        topicDao.deleteNonexistingTopicsTags(topicMapId);
     }
 
     private void saveImportedAssociation(int topicMapId, TopicAssociation topicAssociation) {
