@@ -137,15 +137,7 @@
         <property name="cronExpression" value="30 0/5 * * * ?"/>
     </bean>
 
-    <bean name="databaseCleanupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
-    </bean>
-
-    <!-- Slett gamle innslag i trafikk og eventlog -->
-    <bean id="databaseCleanupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="databaseCleanupJob"/>
-        <property name="cronExpression" value="0 0 4 * * ?"/>
-    </bean>
+    <bean id="databaseCleanupJob" class="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
@@ -232,7 +224,6 @@
                 <ref local="mailSubscriptionTriggerDaily"/>
                 <ref local="mailSubscriptionTriggerWeekly"/>
                 <ref local="systemStatusTrigger"/>
-                <ref local="databaseCleanupTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="rebuildSearchIndexJobTrigger"/>

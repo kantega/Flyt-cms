@@ -27,7 +27,7 @@ import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -36,12 +36,13 @@ import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DatabaseCleanupJob  extends QuartzJobBean {
+public class DatabaseCleanupJob {
     private static final String SOURCE = "aksess.jobs.DatabaseCleanupJob";
     @Autowired
     private EventLog eventLog;
 
-    protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
+    @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
+    protected void executeInternal() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
             Log.info(SOURCE, "Job is disabled for server type slave", null, null);
