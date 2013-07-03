@@ -5,7 +5,6 @@ import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.AksessLocaleResolver;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.kantega.jexmec.PluginManager;
 import org.quartz.JobExecutionContext;
@@ -29,9 +28,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -55,10 +51,6 @@ public class ListJobsController extends AbstractController {
      */
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        if(request.getRequestURI().contains("jquery.tablesorter.min.js")){
-            writeJSToResponse(response);
-            return null;
-        }
         String[] jobs = Aksess.getConfiguration().getStrings("jobexecuter.jobs","all");
 
         LocaleResolver aksessLocaleResolver = new AksessLocaleResolver();
@@ -89,14 +81,6 @@ public class ListJobsController extends AbstractController {
         putAnnotationScheduledBeans(model, rootcontext);
 
         return new ModelAndView("org/kantega/openaksess/plugins/jobexecuter/view", model);
-    }
-
-    private void writeJSToResponse(HttpServletResponse response) throws IOException {
-        InputStream resourceAsStream = getClass().getResourceAsStream("/org/kantega/openaksess/plugins/jobexecuter/js/jquery.tablesorter.min.js");
-        OutputStream outputStream = response.getOutputStream();
-        response.setContentType("text/javascript");
-        IOUtils.copy(resourceAsStream, outputStream);
-        outputStream.close();
     }
 
     private void putAnnotationScheduledBeans(Map<String, Object> model, ApplicationContext rootcontext) {
@@ -245,7 +229,7 @@ public class ListJobsController extends AbstractController {
                 public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                     Scheduled annotation = AnnotationUtils.getAnnotation(method, Scheduled.class);
                     if (annotation != null) {
-                        scheduledBeans.add(new Pair<String, String>(bean.getKey(), method.getName()));
+                        scheduledBeans.add(new Pair<>(bean.getKey(), method.getName()));
                     }
                 }
             });
