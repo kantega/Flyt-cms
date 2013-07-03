@@ -14,7 +14,7 @@ public class MetricsAdminMenuContribution extends UIContributionAdapter {
     @Autowired
     public MetricsAdminMenuContribution(UIServices uiServices) {
         MenuItem item = uiServices.createMenu();
-        item.addLink("metricsmanager.title", "/admin/oap/administration/metrics");
+        item.addLink("metrics.title", "/admin/oap/administration/metrics");
         menuItems = Collections.singletonList(item);
     }
 
