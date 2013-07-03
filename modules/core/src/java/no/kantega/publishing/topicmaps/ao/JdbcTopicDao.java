@@ -18,6 +18,7 @@ package no.kantega.publishing.topicmaps.ao;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.data.Role;
@@ -84,6 +85,8 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     }
 
     public void deleteTopic(Topic topic, boolean deleteRelatedTables) throws SystemException {
+        Log.info(this.getClass().getName(), "Deleting topic " + topic.getBaseName() + ". Delete related tables? " + deleteRelatedTables);
+
         // Slett eksisterende topic
         getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicId = ? AND TopicMapId = ?", topic.getId(), topic.getTopicMapId());
 
@@ -100,6 +103,7 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     }
 
     public void deleteAllTopics(int topicMapId) {
+        Log.info(this.getClass().getName(), "Deleting all topics");
 
         getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ?", topicMapId);
 
@@ -116,14 +120,11 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     }
 
     public void deleteAllImportedTopics(int topicMapId) {
+        Log.info(this.getClass().getName(), "Deleting all imported topics");
 
         getSimpleJdbcTemplate().update("DELETE FROM tmbasename WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
         getSimpleJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
-
-        getSimpleJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
-
-        getSimpleJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
         getSimpleJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
@@ -132,6 +133,8 @@ public class JdbcTopicDao extends SimpleJdbcDaoSupport implements TopicDao {
     }
 
     public void deleteNonexistingTopicsTags(int topicMapId) {
+        Log.info(this.getClass().getName(), "Deleting nonexisting topic tags");
+
         getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
         getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
     }
