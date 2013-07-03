@@ -1,7 +1,7 @@
-package org.kantega.openaksess.plugins.metricsManager.dao;
+package org.kantega.openaksess.plugins.metrics.dao;
 
 import org.joda.time.LocalDateTime;
-import org.kantega.openaksess.plugins.metricsManager.MetricsModel;
+import org.kantega.openaksess.plugins.metrics.MetricsModel;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -26,7 +26,7 @@ public class DatabaseMetricsDao implements MetricsDao {
 
     @Override
     public List<MetricsModel> getMetrics(LocalDateTime start, LocalDateTime end) {
-        MetricsModel actor = this.jdbcTemplate.queryForObject(
+        MetricsModel actor = this.jdbcTemplate.queryForObject(                         // queryForList()
                 "select * from metrics where time > ? AND time < ? ",
                 new Object[]{start, end},
                 new RowMapper<MetricsModel>() {
@@ -47,9 +47,24 @@ public class DatabaseMetricsDao implements MetricsDao {
                         actor.setHeapUsage(rs.getDouble("heapUsage"));
                         actor.setNonHeapUsage(rs.getDouble("nonHeapUsage"));
 
+//                        actor.setIdleDbConnections();
+//                        actor.setMaxDbConnections();
+//                        actor.setOpenDbConnections();
+//
+//                        actor.setActiveRequests();
+//
+//                        actor.setBadRequests();
+//                        actor.setOk();
+//                        actor.setOther();
+//                        actor.setNoContent();
+//                        actor.setNotFound();
+//                        actor.setServerError();
+//                        actor.setCreated();
+
                         return actor;
                     }
                 });
+
         return null;
     }
 

@@ -1,7 +1,7 @@
-package org.kantega.openaksess.plugins.metricsManager.dao;
+package org.kantega.openaksess.plugins.metrics.dao;
 
 import org.joda.time.LocalDateTime;
-import org.kantega.openaksess.plugins.metricsManager.MetricsModel;
+import org.kantega.openaksess.plugins.metrics.MetricsModel;
 
 import java.util.List;
 

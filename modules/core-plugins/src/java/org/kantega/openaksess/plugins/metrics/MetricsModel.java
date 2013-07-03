@@ -1,4 +1,4 @@
-package org.kantega.openaksess.plugins.metricsManager;
+package org.kantega.openaksess.plugins.metrics;
 
 import org.joda.time.LocalDateTime;
 

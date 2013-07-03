@@ -1,9 +1,9 @@
-package org.kantega.openaksess.plugins.metricsManager;
+package org.kantega.openaksess.plugins.metrics;
 
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.*;
 import org.joda.time.LocalDateTime;
-import org.kantega.openaksess.plugins.metricsManager.dao.MetricsDao;
+import org.kantega.openaksess.plugins.metrics.dao.MetricsDao;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Map;
@@ -27,11 +27,12 @@ public class SaveMetricsJob {
         this(Clock.defaultClock(), VirtualMachineMetrics.getInstance(), Metrics.defaultRegistry());
     }
 
-    @Scheduled(cron = "${plugin.oastatistics.jobcron:0 0/5 * * * ?")
+    @Scheduled(fixedRate = 5000)              // (cron = "${plugin.oastatistics.jobcron:0 0/5 * * * ?")
     public void autoSaveMetrics(){
         MetricsModel model = new MetricsModel();
 
-        model.setDatetime(new LocalDateTime());
+        model.setDatetime(new LocalDateTime());                                  // 22 metrics
+
         model.setMemoryInit(vm.totalInit());
         model.setMemoryCommitted(vm.totalCommitted());
         model.setMemoryUsed(vm.totalUsed());
@@ -49,6 +50,17 @@ public class SaveMetricsJob {
 //        model.setMaxDbConnections();
 //        model.setOpenDbConnections();
 
+//        model.setActiveRequests();
+//
+//        model.setBadRequests();
+//        model.setOk();
+//        model.setOther();
+//        model.setNoContent();
+//        model.setNotFound();
+//        model.setServerError();
+//        model.setCreated();
+
+
         for (Map.Entry<String, SortedMap<MetricName, Metric>> entry : registry.groupedMetrics().entrySet()) {
             if (entry.getKey().equals("no.kantega.publishing.common.util.database.dbConnectionFactory")) {
                 for (Map.Entry<MetricName, Metric> subEntry : entry.getValue().entrySet()) {
@@ -58,10 +70,6 @@ public class SaveMetricsJob {
                 }
             }
         }
-
-//        idle-connections
-//        max-connections
-//        open-connections
 
 //        dao.saveMetrics(model);
     }

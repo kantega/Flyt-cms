@@ -19,21 +19,27 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd">
 
     <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
-        <constructor-arg value="org.kantega.openaksess.plugins.metricsManager"/>
+        <constructor-arg value="org.kantega.openaksess.plugins.metrics"/>
         <property name="handlerMappings">
-            <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+            <!--<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">-->
+            <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
                 <property name="alwaysUseFullPath" value="true"/>
+                <property name="mappings">
+                    <props>
+                        <prop key="/admin/oap/administration/metrics">metricsController</prop>
+                    </props>
+                </property>
                 <property name="interceptors">
                     <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor"/>
                 </property>
             </bean>
         </property>
         <property name="UIContributions">
-            <bean class="org.kantega.openaksess.plugins.metricsManager.MetricsManagerAdminMenuContribution"/>
+            <bean class="org.kantega.openaksess.plugins.metrics.MetricsAdminMenuContribution"/>
         </property>
     </bean>
 
-    <bean id="metricsDao" class="org.kantega.openaksess.plugins.metricsManager.dao.DatabaseMetricsDao">
+    <bean id="metricsDao" class="org.kantega.openaksess.plugins.metrics.dao.DatabaseMetricsDao">
         <property name="dataSource">
             <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
                 <property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
@@ -42,9 +48,11 @@
         </property>
     </bean>
 
-    <bean id="rrd4jController" class="org.kantega.openaksess.plugins.metricsManager.MetricsController"/>
+    <bean id="metricsController" class="org.kantega.openaksess.plugins.metrics.MetricsController">
+        <property name="dao" ref="metricsDao"/>
+    </bean>
 
-    <bean id="saveMetricsJob" class="org.kantega.openaksess.plugins.metricsManager.SaveMetricsJob">
+    <bean id="saveMetricsJob" class="org.kantega.openaksess.plugins.metrics.SaveMetricsJob">
         <property name="dao" ref="metricsDao"/>
     </bean>
 
