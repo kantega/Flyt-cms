@@ -1,5 +1,6 @@
 CREATE TABLE metrics(
-  capturetime timestamp,
+  Id BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY,
+  capturetime timestamp NOT NULL,
   memoryInit double,
   memoryMax double,
   memoryUsed double,
@@ -14,10 +15,21 @@ CREATE TABLE metrics(
   maxDbConnections integer,
   idleDbConnections integer,
   openDbConnections integer,
-  badRequests integer,
-  ok integer,
-  serverError integer,
-  notFound integer
+  uptime double,
+  daemonThreadCount integer,
+  threadCount integer,
+  totalStartedThreadCount bigint,
+  processCpuTime double,
+  systemCpuLoad double,
+  processCpuLoad double,
+  committedVirtualMemorySize bigint,
+  openFileDescriptorCount bigint,
+  maxFileDescriptorCount bigint,
+  systemLoadAverage double,
+  peakThreadCount int,
+  loadedClassCount int,
+  totalLoadedClassCount bigint,
+  unloadedClassCount bigint
 );
 
 CREATE INDEX capturetime_index ON metrics(capturetime);

@@ -17,7 +17,7 @@ public class DBInit {
             DatabasePopulatorUtils.execute(databasePopulator, dataSource);
             log.info("Created Metrics DB");
         } catch (Exception e) {
-            log.error("a", e);
+            log.info("Running metrics db init script failed, assuming because db already exists.");
         }
     }
 }
