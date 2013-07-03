@@ -26,7 +26,7 @@ public class DatabaseMetricsDao implements MetricsDao {
 
     @Override
     public List<MetricsModel> getMetrics(LocalDateTime start, LocalDateTime end) {
-        MetricsModel actor = this.jdbcTemplate.queryForObject(                         // queryForList()
+        MetricsModel actor = this.jdbcTemplate.queryForObject(                         // queryForList()?
                 "select * from metrics where time > ? AND time < ? ",
                 new Object[]{start, end},
                 new RowMapper<MetricsModel>() {

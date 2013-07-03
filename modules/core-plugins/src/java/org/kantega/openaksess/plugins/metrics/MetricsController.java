@@ -8,6 +8,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -20,11 +21,12 @@ public class MetricsController {
     public ModelAndView show() throws IOException {
         SaveMetricsJob job = new SaveMetricsJob();
         job.autoSaveMetrics();
-//        dao.getMetrics(null,null);
 
+        List<MetricsModel> metrics = dao.getMetrics(null,null);
 
         Map<String, Object> model = new HashMap<String, Object>();
 
+        model.put("metrics", metrics);
 
         return new ModelAndView("org/kantega/openaksess/plugins/metrics/view", model);
     }

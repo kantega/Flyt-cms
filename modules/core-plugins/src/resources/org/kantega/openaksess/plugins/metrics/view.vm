@@ -1,5 +1,4 @@
 
-
 #section("content")
     #box()
         <h2>#pluginMessage('metrics.heading')</h2>
