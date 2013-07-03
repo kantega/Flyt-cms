@@ -26,6 +26,7 @@
     <import resource="dbdiff.xml"/>
     <import resource="jobexecuter.xml"/>
     <import resource="failedemailsubmission.xml"/>
+    <import resource="metricsManager.xml"/>
 
     <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
         <property name="basenames">
@@ -33,6 +34,7 @@
                 <value>classpath:org/kantega/openaksess/plugins/dbdiff/dbdiff</value>
                 <value>classpath:org/kantega/openaksess/plugins/jobexecuter/jobexecuter</value>
                 <value>classpath:org/kantega/openaksess/plugins/failedSubmissions/failedsubmissions</value>
+                <value>classpath:org/kantega/openaksess/plugins/metricsManager/metricsmanager</value>
             </list>
         </property>
     </bean>
