@@ -39,6 +39,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-core-plugins</artifactId>
             <version>${project.version}</version>
+            <type>pom</type>
         </dependency>
 
         <dependency>

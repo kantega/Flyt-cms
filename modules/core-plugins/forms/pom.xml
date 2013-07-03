@@ -22,7 +22,7 @@
         <version>7.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-forms-plugin</artifactId>
-    <name>Forms Plugin</name>
+    <name>OpenAksess Forms Plugin</name>
 
     <dependencies>
 

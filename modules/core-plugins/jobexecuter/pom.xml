@@ -22,7 +22,7 @@
         <version>7.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-jobexecuter-plugin</artifactId>
-    <name>Jobexecuter Plugin</name>
+    <name>OpenAksess OpenAksess Jobexecuter Plugin</name>
 
     <dependencies>
         <dependency>

@@ -22,7 +22,7 @@
         <version>7.6.0-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-groovyconsole-plugin</artifactId>
-    <name>Groovy Console Plugin</name>
+    <name>OpenAksess Groovy Console Plugin</name>
 
     <dependencies>
         <dependency>

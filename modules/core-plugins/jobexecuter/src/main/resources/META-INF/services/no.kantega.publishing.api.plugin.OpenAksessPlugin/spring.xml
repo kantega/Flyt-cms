@@ -41,4 +41,12 @@
     </bean>
 
     <bean id="listJobsController" class="org.kantega.openaksess.plugins.jobexecuter.ListJobsController"/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:org/kantega/openaksess/plugins/jobexecuter/jobexecuter</value>
+            </list>
+        </property>
+    </bean>
 </beans>

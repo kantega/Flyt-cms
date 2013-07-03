@@ -20,4 +20,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <import resource="databaseformdelivery.xml"/>
     <import resource="pdf-and-emailformdelivery.xml"/>
+
+    <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
 </beans>

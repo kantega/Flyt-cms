@@ -26,7 +26,6 @@
                     <property name="interceptors">
                         <list>
                             <ref bean="adminRoleInterceptor"/>
-                            <bean class="org.kantega.openaksess.plugins.groovyconsole.GroovkyAuthorizationInterceptor"/>
                         </list>
                     </property>
                 </bean>
@@ -55,4 +54,12 @@
     </bean>
 
     <task:annotation-driven/>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:org/kantega/openaksess/plugins/metrics/metrics</value>
+            </list>
+        </property>
+    </bean>
 </beans>
