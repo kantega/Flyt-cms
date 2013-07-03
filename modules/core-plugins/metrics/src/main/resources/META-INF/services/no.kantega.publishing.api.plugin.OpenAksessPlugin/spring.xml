@@ -63,9 +63,7 @@
         <property name="url" value="jdbc:derby:${appDir}/metrics/metricsdb;create=true"/>
     </bean>
 
-    <bean id="metricsController" class="org.kantega.openaksess.plugins.metrics.MetricsController">
-        <property name="dao" ref="metricsDao"/>
-    </bean>
+    <bean id="metricsController" class="org.kantega.openaksess.plugins.metrics.MetricsController"/>
 
     <bean id="saveMetricsJob" class="org.kantega.openaksess.plugins.metrics.SaveMetricsJob">
         <property name="dao" ref="metricsDao"/>
