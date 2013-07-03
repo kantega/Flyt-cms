@@ -36,13 +36,31 @@
         </property>
     </bean>
 
+    <bean class="org.kantega.openaksess.plugins.metrics.init.DBInit">
+        <constructor-arg ref="metricsDatasource"/>
+        <constructor-arg>
+            <bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator">
+                <property name="scripts">
+                    <list>
+                        <value>classpath:/org/kantega/openaksess/plugins/metrics/ddl.sql</value>
+                    </list>
+                </property>
+            </bean>
+        </constructor-arg>
+    </bean>
+
     <bean id="metricsDao" class="org.kantega.openaksess.plugins.metrics.dao.DatabaseMetricsDao">
         <property name="dataSource">
             <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
                 <property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-                <property name="url" value="${appDir};create=true"/>
+                <property name="url" value="jdbc:derby:${appDir}/metrics/metricsdb;create=true"/>
             </bean>
         </property>
+    </bean>
+
+    <bean id="metricsDatasource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+        <property name="url" value="jdbc:derby:${appDir}/metrics/metricsdb;create=true"/>
     </bean>
 
     <bean id="metricsController" class="org.kantega.openaksess.plugins.metrics.MetricsController">

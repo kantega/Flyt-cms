@@ -2,7 +2,6 @@ package org.kantega.openaksess.plugins.metrics;
 
 import com.yammer.metrics.Metrics;
 import com.yammer.metrics.core.*;
-import org.joda.time.LocalDateTime;
 import org.kantega.openaksess.plugins.metrics.dao.MetricsDao;
 import org.springframework.scheduling.annotation.Scheduled;
 
@@ -30,8 +29,6 @@ public class SaveMetricsJob {
     @Scheduled(fixedRate = 5000)              // (cron = "${plugin.oastatistics.jobcron:0 0/5 * * * ?")
     public void autoSaveMetrics(){
         MetricsModel model = new MetricsModel();
-
-        model.setDatetime(new LocalDateTime());                                  // 22 metrics
 
         model.setMemoryInit(vm.totalInit());
         model.setMemoryCommitted(vm.totalCommitted());

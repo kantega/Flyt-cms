@@ -4,7 +4,7 @@ import org.joda.time.LocalDateTime;
 
 public class MetricsModel {
 
-    private LocalDateTime datetime;
+    private LocalDateTime capturetime = LocalDateTime.now();
 
     private double memoryInit;
     private double memoryMax;
@@ -19,26 +19,23 @@ public class MetricsModel {
     private double heapUsage;
     private double nonHeapUsage;
 
-    private double activeRequests;
+    private int activeRequests;
 
-    private double maxDbConnections;
-    private double idleDbConnections;
-    private double openDbConnections;
+    private int maxDbConnections;
+    private int idleDbConnections;
+    private int openDbConnections;
 
-    private double badRequests;
-    private double ok;
-    private double serverError;
-    private double notFound;
-    private double noContent;
-    private double created;
-    private double other;
+    private int badRequests;
+    private int ok;
+    private int serverError;
+    private int notFound;
 
-    public LocalDateTime getDatetime() {
-        return datetime;
+    public LocalDateTime getCapturetime() {
+        return capturetime;
     }
 
-    public void setDatetime(LocalDateTime datetime) {
-        this.datetime = datetime;
+    public void setCapturetime(LocalDateTime capturetime) {
+        this.capturetime = capturetime;
     }
 
     public double getMemoryInit() {
@@ -121,91 +118,67 @@ public class MetricsModel {
         this.nonHeapUsage = nonHeapUsage;
     }
 
-    public double getActiveRequests() {
+    public int getActiveRequests() {
         return activeRequests;
     }
 
-    public void setActiveRequests(double activeRequests) {
+    public void setActiveRequests(int activeRequests) {
         this.activeRequests = activeRequests;
     }
 
-    public double getMaxDbConnections() {
+    public int getMaxDbConnections() {
         return maxDbConnections;
     }
 
-    public void setMaxDbConnections(double maxDbConnections) {
+    public void setMaxDbConnections(int maxDbConnections) {
         this.maxDbConnections = maxDbConnections;
     }
 
-    public double getIdleDbConnections() {
+    public int getIdleDbConnections() {
         return idleDbConnections;
     }
 
-    public void setIdleDbConnections(double idleDbConnections) {
+    public void setIdleDbConnections(int idleDbConnections) {
         this.idleDbConnections = idleDbConnections;
     }
 
-    public double getOpenDbConnections() {
+    public int getOpenDbConnections() {
         return openDbConnections;
     }
 
-    public void setOpenDbConnections(double openDbConnections) {
+    public void setOpenDbConnections(int openDbConnections) {
         this.openDbConnections = openDbConnections;
     }
 
-    public double getBadRequests() {
+    public int getBadRequests() {
         return badRequests;
     }
 
-    public void setBadRequests(double badRequests) {
+    public void setBadRequests(int badRequests) {
         this.badRequests = badRequests;
     }
 
-    public double getOk() {
+    public int getOk() {
         return ok;
     }
 
-    public void setOk(double ok) {
+    public void setOk(int ok) {
         this.ok = ok;
     }
 
-    public double getServerError() {
+    public int getServerError() {
         return serverError;
     }
 
-    public void setServerError(double serverError) {
+    public void setServerError(int serverError) {
         this.serverError = serverError;
     }
 
-    public double getNotFound() {
+    public int getNotFound() {
         return notFound;
     }
 
-    public void setNotFound(double notFound) {
+    public void setNotFound(int notFound) {
         this.notFound = notFound;
-    }
-
-    public double getNoContent() {
-        return noContent;
-    }
-
-    public void setNoContent(double noContent) {
-        this.noContent = noContent;
-    }
-
-    public double getCreated() {
-        return created;
-    }
-
-    public void setCreated(double created) {
-        this.created = created;
-    }
-
-    public double getOther() {
-        return other;
-    }
-
-    public void setOther(double other) {
-        this.other = other;
     }
 }
