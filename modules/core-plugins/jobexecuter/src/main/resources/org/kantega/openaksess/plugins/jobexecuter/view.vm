@@ -25,17 +25,17 @@
                                 $dateTool.format("yyyy-MM-dd HH:mm", $trigger.previousFireTime)
                             #end
                         </td>
-                        <td>$dateTool.format("yyyy-MM-dd HH:mm", $trigger.nextFireTime)</td>
-                        <td><a href="?runJobName=$trigger.jobName&runGroupName=$trigger.jobGroup">#pluginMessage('jobexecuter.job.execute')</a></td>
+                        <td>$dateTool.format("yyyy-MM-dd HH:mm", ${trigger.nextFireTime})</td>
+                        <td><a href="?runJobName=${trigger.jobName}&runGroupName=${trigger.jobGroup}">#pluginMessage('jobexecuter.job.execute')</a></td>
                     </tr>
                 #end
                 #foreach($annotatedJob in $annotationScheduledBeans)
                     <tr>
-                        <td>$annotatedJob.first $annotatedJob.second</td>
+                        <td>${annotatedJob.second}</td>
                         <td>#pluginMessage('jobexecuter.job.unknown')</td>
                         <td>#pluginMessage('jobexecuter.job.unknown')</td>
                         <td>#pluginMessage('jobexecuter.job.unknown')</td>
-                        <td><a href="?runAnnotatedBeanName=$annotatedJob.first&runAnnotatedMethodName=$annotatedJob.second">#pluginMessage('jobexecuter.job.execute')</a></td>
+                        <td><a href="?runAnnotatedBeanClassName=${annotatedJob.first}&runAnnotatedMethodName=${annotatedJob.second}">#pluginMessage('jobexecuter.job.execute')</a></td>
                     </tr>
                 #end
                 </tbody>

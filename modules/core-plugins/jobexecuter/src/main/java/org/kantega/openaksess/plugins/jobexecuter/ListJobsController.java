@@ -61,7 +61,7 @@ public class ListJobsController extends AbstractController {
 
         String runJob = request.getParameter("runJobName");
         String runGroupName = request.getParameter("runGroupName");
-        String runAnnotatedBeanJob = request.getParameter("runAnnotatedBeanName");
+        String runAnnotatedBeanJob = request.getParameter("runAnnotatedBeanClassName");
         final String runAnnotatedMethodJob = request.getParameter("runAnnotatedMethodName");
 
         ApplicationContext rootcontext = RootContext.getInstance();
@@ -114,13 +114,18 @@ public class ListJobsController extends AbstractController {
      */
     private boolean tryToExecuteAnnotatedScheduledJob(String runAnnotatedBeanJob, final String runAnnotatedMethodJob, ApplicationContext rootcontext) {
         final Object bean;
+        Class<?> targetClass;
         try {
-            bean = rootcontext.getBean(runAnnotatedBeanJob);
+            targetClass = Class.forName(runAnnotatedBeanJob);
+            bean = rootcontext.getBean(targetClass);
         } catch (BeansException e) {
+            return false;
+        } catch (ClassNotFoundException e) {
+            logger.error("Could not find class", e);
             return false;
         }
 
-        Class<?> targetClass = AopUtils.getTargetClass(bean);
+        targetClass = AopUtils.getTargetClass(bean);
         ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                 Scheduled annotation = AnnotationUtils.getAnnotation(method, Scheduled.class);
@@ -212,7 +217,7 @@ public class ListJobsController extends AbstractController {
     }
 
     private Collection<Pair<String, String>> getScheduledAnnotatedJobs(Collection<ApplicationContext> applicationContexts){
-        Collection<Pair<String, String>> jobs = new HashSet<Pair<java.lang.String, java.lang.String>>();
+        Collection<Pair<String, String>> jobs = new HashSet<>();
 
         for (ApplicationContext applicationContext : applicationContexts) {
             jobs.addAll(getScheduledAnnotatedJobsFromApplicationContext(applicationContext));
@@ -221,15 +226,15 @@ public class ListJobsController extends AbstractController {
     }
 
     private Collection<Pair<String, String>> getScheduledAnnotatedJobsFromApplicationContext(ApplicationContext context) {
-        final Collection<Pair<String, String>> scheduledBeans = new HashSet<Pair<java.lang.String, java.lang.String>>();
+        final Collection<Pair<String, String>> scheduledBeans = new HashSet<>();
         Map<String, Object> allBeans = context.getBeansOfType(Object.class);
         for (final Map.Entry<String, Object> bean : allBeans.entrySet()) {
-            Class<?> targetClass = AopUtils.getTargetClass(bean.getValue());
+            final Class<?> targetClass = AopUtils.getTargetClass(bean.getValue());
             ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
                 public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                     Scheduled annotation = AnnotationUtils.getAnnotation(method, Scheduled.class);
                     if (annotation != null) {
-                        scheduledBeans.add(new Pair<>(bean.getKey(), method.getName()));
+                        scheduledBeans.add(new Pair<>(targetClass.getName(), method.getName()));
                     }
                 }
             });

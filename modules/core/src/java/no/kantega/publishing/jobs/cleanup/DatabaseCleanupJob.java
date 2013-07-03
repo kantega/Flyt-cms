@@ -44,15 +44,19 @@ public class DatabaseCleanupJob {
     @Autowired
     private EventLog eventLog;
 
+    @Autowired
     private ContentAO contentAO;
 
     @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
-    public void executeInternal() {
+    public void cleanDatabase() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
+        } else {
+            log.info("Starting database cleanup job");
         }
+
         try (Connection c = dbConnectionFactory.getConnection()){
             deleteAttachmentsWithNoContent(c);
             deleteOrphantMultimedia(c);
