@@ -18,10 +18,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kantega.openaksess</groupId>
-        <artifactId>openaksess-core-plugins</artifactId>
+        <artifactId>openaksess-core-plugins-parent</artifactId>
         <version>7.6.0-SNAPSHOT</version>
     </parent>
-    <artifactId>groovyscripts-plugin</artifactId>
+    <artifactId>openaksess-groovyscripts-plugin</artifactId>
     <name>Groovy scripts Plugin</name>
 
     <dependencies>

@@ -18,10 +18,10 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.kantega.openaksess</groupId>
-        <artifactId>openaksess-core-plugins</artifactId>
+        <artifactId>openaksess-core-plugins-parent</artifactId>
         <version>7.6.0-SNAPSHOT</version>
     </parent>
-    <artifactId>dbdiff-plugin</artifactId>
+    <artifactId>openaksess-dbdiff-plugin</artifactId>
     <name>DBdiff Plugin</name>
 
     <dependencies>

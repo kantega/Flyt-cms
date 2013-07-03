@@ -22,8 +22,8 @@
         <version>7.6.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-    <artifactId>openaksess-core-plugins</artifactId>
-    <name>OpenAksess core plugins</name>
+    <artifactId>openaksess-core-plugins-parent</artifactId>
+    <name>OpenAksess core plugins parent</name>
     <packaging>pom</packaging>
 
     <modules>
@@ -33,6 +33,7 @@
         <module>groovyscripts</module>
         <module>jobexecuter</module>
         <module>metrics</module>
+        <module>core-plugins-dep</module>
     </modules>
 
     <build>
