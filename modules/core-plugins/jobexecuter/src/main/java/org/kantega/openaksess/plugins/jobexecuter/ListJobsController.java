@@ -128,8 +128,7 @@ public class ListJobsController extends AbstractController {
         targetClass = AopUtils.getTargetClass(bean);
         ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
-                Scheduled annotation = AnnotationUtils.getAnnotation(method, Scheduled.class);
-                if (annotation != null && method.getName().equals(runAnnotatedMethodJob)) {
+                if (method.getName().equals(runAnnotatedMethodJob)) {
                     MethodInvokingRunnable runnable = new MethodInvokingRunnable();
                     runnable.setTargetObject(bean);
                     runnable.setTargetMethod(method.getName());
