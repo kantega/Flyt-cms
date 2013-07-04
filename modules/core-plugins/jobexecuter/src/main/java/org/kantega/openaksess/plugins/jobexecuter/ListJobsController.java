@@ -56,7 +56,7 @@ public class ListJobsController extends AbstractController {
         request.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, aksessLocaleResolver);
 
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         String runJob = request.getParameter("runJobName");
         String runGroupName = request.getParameter("runGroupName");
@@ -64,7 +64,7 @@ public class ListJobsController extends AbstractController {
         final String runAnnotatedMethodJob = request.getParameter("runAnnotatedMethodName");
 
         ApplicationContext rootcontext = RootContext.getInstance();
-        List <Scheduler> schedulers = new ArrayList<Scheduler>();
+        List <Scheduler> schedulers = new ArrayList<>();
         schedulers.addAll(getSchedulersFromContext(rootcontext));
         schedulers.addAll(getSchedulersFromPlugins());
 
