@@ -18,6 +18,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.MethodInvokingRunnable;
+import org.springframework.scheduling.support.ScheduledMethodRunnable;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
@@ -146,9 +147,9 @@ public class ListJobsController extends AbstractController {
     }
 
     private void putTriggersAndCurrentlyExecuting(String[] jobs, Map<String, Object> model, List<Scheduler> schedulers) throws SchedulerException {
-        List<JobExecutionContext> currentyExecuting = new ArrayList<JobExecutionContext>();
+        List<JobExecutionContext> currentyExecuting = new ArrayList<>();
 
-        List<Trigger> triggers = new ArrayList<Trigger>();
+        List<Trigger> triggers = new ArrayList<>();
         for (Scheduler scheduler : schedulers) {
             for (String group : scheduler.getTriggerGroupNames()) {
                 for (String trigger : scheduler.getTriggerNames(group)) {
@@ -175,7 +176,7 @@ public class ListJobsController extends AbstractController {
         if (allJobs) {
             return triggers;
         } else {
-            ArrayList<Trigger> filtered = new ArrayList<Trigger>();
+            ArrayList<Trigger> filtered = new ArrayList<>();
             for (Trigger t : triggers) {
                 for (String s : jobs) {
                     if (t.getJobName().equalsIgnoreCase(s)) {
@@ -192,7 +193,7 @@ public class ListJobsController extends AbstractController {
     }
 
     private Collection<Scheduler> getSchedulersFromPlugins() {
-        List<Scheduler> schedulers = new ArrayList<Scheduler>();
+        List<Scheduler> schedulers = new ArrayList<>();
 
         for (ApplicationContext pluginContext : getPluginApplicationContexts()) {
             schedulers.addAll(getSchedulersFromContext(pluginContext));
@@ -202,7 +203,7 @@ public class ListJobsController extends AbstractController {
     }
 
     private Collection<ApplicationContext> getPluginApplicationContexts(){
-        Collection<ApplicationContext> contexts = new ArrayList<ApplicationContext>();
+        Collection<ApplicationContext> contexts = new ArrayList<>();
         for (OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             // OK, this is a hack, but at least its in a plugin, not in the API
             for (MessageSource messageSource : plugin.getMessageSources()) {
@@ -220,10 +221,25 @@ public class ListJobsController extends AbstractController {
 
         for (ApplicationContext applicationContext : applicationContexts) {
             jobs.addAll(getScheduledAnnotatedJobsFromApplicationContext(applicationContext));
+            jobs.addAll(getTaskScheduledJobsFromApplicationContext(applicationContext));
         }
         return jobs;
     }
 
+    /**
+     * Find beans defined by <task:scheduled-tasks>....</task:scheduled-tasks>
+     */
+    private Collection<AnnotatedScheduledJob> getTaskScheduledJobsFromApplicationContext(ApplicationContext applicationContext) {
+        final Collection<AnnotatedScheduledJob> scheduledBeans = new HashSet<>();
+        for(ScheduledMethodRunnable methodRunnable : applicationContext.getBeansOfType(ScheduledMethodRunnable.class).values()){
+            scheduledBeans.add(new AnnotatedScheduledJob(methodRunnable.getTarget().getClass().getName(), methodRunnable.getMethod().getName(), null));
+        }
+        return scheduledBeans;
+    }
+
+    /**
+     * Find beans annotated with @Scheduled
+     */
     private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobsFromApplicationContext(ApplicationContext context) {
         final Collection<AnnotatedScheduledJob> scheduledBeans = new HashSet<>();
         Map<String, Object> allBeans = context.getBeansOfType(Object.class);
