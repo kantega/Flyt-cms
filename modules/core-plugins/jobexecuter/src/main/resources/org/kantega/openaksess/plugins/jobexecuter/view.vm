@@ -31,11 +31,11 @@
                 #end
                 #foreach($annotatedJob in $annotationScheduledBeans)
                     <tr>
-                        <td>${annotatedJob.second}</td>
+                        <td>${annotatedJob.methodName}</td>
+                        <td>#if(${annotatedJob.cron}) ${annotatedJob.cron} #else #pluginMessage('jobexecuter.job.unknown') #end</td>
                         <td>#pluginMessage('jobexecuter.job.unknown')</td>
                         <td>#pluginMessage('jobexecuter.job.unknown')</td>
-                        <td>#pluginMessage('jobexecuter.job.unknown')</td>
-                        <td><a href="?runAnnotatedBeanClassName=${annotatedJob.first}&runAnnotatedMethodName=${annotatedJob.second}">#pluginMessage('jobexecuter.job.execute')</a></td>
+                        <td><a href="?runAnnotatedBeanClassName=${annotatedJob.className}&runAnnotatedMethodName=${annotatedJob.methodName}">#pluginMessage('jobexecuter.job.execute')</a></td>
                     </tr>
                 #end
                 </tbody>

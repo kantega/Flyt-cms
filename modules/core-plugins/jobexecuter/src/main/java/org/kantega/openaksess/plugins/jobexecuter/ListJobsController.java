@@ -1,6 +1,5 @@
 package org.kantega.openaksess.plugins.jobexecuter;
 
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.AksessLocaleResolver;
@@ -86,7 +85,7 @@ public class ListJobsController extends AbstractController {
     private void putAnnotationScheduledBeans(Map<String, Object> model, ApplicationContext rootcontext) {
         Collection<ApplicationContext> applicationContexts = getPluginApplicationContexts();
         applicationContexts.add(rootcontext);
-        Collection<Pair<String, String>> scheduledAnnotatedJobs = getScheduledAnnotatedJobs(applicationContexts);
+        Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs = getScheduledAnnotatedJobs(applicationContexts);
         model.put("annotationScheduledBeans", scheduledAnnotatedJobs);
     }
 
@@ -216,8 +215,8 @@ public class ListJobsController extends AbstractController {
         return contexts;
     }
 
-    private Collection<Pair<String, String>> getScheduledAnnotatedJobs(Collection<ApplicationContext> applicationContexts){
-        Collection<Pair<String, String>> jobs = new HashSet<>();
+    private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobs(Collection<ApplicationContext> applicationContexts){
+        Collection<AnnotatedScheduledJob> jobs = new HashSet<>();
 
         for (ApplicationContext applicationContext : applicationContexts) {
             jobs.addAll(getScheduledAnnotatedJobsFromApplicationContext(applicationContext));
@@ -225,8 +224,8 @@ public class ListJobsController extends AbstractController {
         return jobs;
     }
 
-    private Collection<Pair<String, String>> getScheduledAnnotatedJobsFromApplicationContext(ApplicationContext context) {
-        final Collection<Pair<String, String>> scheduledBeans = new HashSet<>();
+    private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobsFromApplicationContext(ApplicationContext context) {
+        final Collection<AnnotatedScheduledJob> scheduledBeans = new HashSet<>();
         Map<String, Object> allBeans = context.getBeansOfType(Object.class);
         for (final Map.Entry<String, Object> bean : allBeans.entrySet()) {
             final Class<?> targetClass = AopUtils.getTargetClass(bean.getValue());
@@ -234,7 +233,7 @@ public class ListJobsController extends AbstractController {
                 public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                     Scheduled annotation = AnnotationUtils.getAnnotation(method, Scheduled.class);
                     if (annotation != null) {
-                        scheduledBeans.add(new Pair<>(targetClass.getName(), method.getName()));
+                        scheduledBeans.add(new AnnotatedScheduledJob(targetClass.getName(), method.getName(), annotation.cron()));
                     }
                 }
             });
@@ -242,5 +241,28 @@ public class ListJobsController extends AbstractController {
         return scheduledBeans;
     }
 
+    public class AnnotatedScheduledJob {
+        private final String className;
+        private final String methodName;
+        private final String cron;
+
+        public AnnotatedScheduledJob(String className, String methodName, String cron) {
+            this.className = className;
+            this.methodName = methodName;
+            this.cron = cron;
+        }
+
+        public String getClassName() {
+            return className;
+        }
+
+        public String getMethodName() {
+            return methodName;
+        }
+
+        public String getCron() {
+            return cron;
+        }
+    }
 }
 
