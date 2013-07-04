@@ -58,8 +58,8 @@ public class MailSubscriptionServiceJdbcImpl extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public List<MailSubscription> getAllMailSubscriptions() {
-        return getJdbcTemplate().query("select distinct Email from mailsubscription order by Email", rowMapper);
+    public List<String> getAllMailSubscriptions() {
+        return getJdbcTemplate().queryForList("select distinct Email from mailsubscription order by Email", String.class);
     }
 
     private RowMapper<MailSubscription> rowMapper  = new RowMapper<MailSubscription>() {

@@ -40,8 +40,8 @@ public interface MailSubscriptionService {
     void removeAllMailSubscriptions(String email);
 
     /**
-     * Gets all main subscriptions in the entire subscription database
+     * Gets all email addresses in the entire subscription database
      * @return list of email addresses.
      */
-    List<MailSubscription> getAllMailSubscriptions();
+    List<String> getAllMailSubscriptions();
 }
