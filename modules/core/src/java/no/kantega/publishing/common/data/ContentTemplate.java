@@ -19,6 +19,7 @@ package no.kantega.publishing.common.data;
 import no.kantega.publishing.api.model.PublicIdObject;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class ContentTemplate implements PublicIdObject {
     private String defaultPageUrlAlias = null;
 
     private Integer expireMonths;
-    private Integer expireAction;
+    private ExpireAction expireAction;
 
     private boolean isHearingEnabled = false;
     private Integer keepVersions;
@@ -112,11 +113,11 @@ public class ContentTemplate implements PublicIdObject {
         this.expireMonths = expireMonths;
     }
 
-    public Integer getExpireAction() {
+    public ExpireAction getExpireAction() {
         return expireAction;
     }
 
-    public void setExpireAction(int expireAction) {
+    public void setExpireAction(ExpireAction expireAction) {
         this.expireAction = expireAction;
     }
 

@@ -1,7 +1,3 @@
-<%@ page import="no.kantega.publishing.common.data.enums.ExpireAction" %>
-<%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
-<%@ page import="no.kantega.publishing.common.data.Content" %>
 <%@ page import="no.kantega.publishing.common.data.Attachment" %>
 <%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>

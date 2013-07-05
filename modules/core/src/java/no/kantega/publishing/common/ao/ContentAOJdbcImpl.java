@@ -352,7 +352,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             // Get pages which expire soon
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ExpireAction = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and content.ExpireDate > ? and content.ExpireDate < ? order by content.ExpireDate desc");
             st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
-            st.setInt(2, ExpireAction.REMIND);
+            st.setString(2, ExpireAction.REMIND.name());
             st.setString(3, user.getId());
             st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
             st.setTimestamp(5, new java.sql.Timestamp(new Date().getTime()+(long)1000*60*60*24*30));
@@ -818,7 +818,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         contentSt.setTimestamp(p++, content.getPublishDate() == null ? null : new Timestamp(content.getPublishDate().getTime()));
         contentSt.setTimestamp(p++, content.getExpireDate() == null ? null : new Timestamp(content.getExpireDate().getTime()));
         contentSt.setTimestamp(p++, content.getRevisionDate() == null ? null : new Timestamp(content.getRevisionDate().getTime()));
-        contentSt.setInt(p++, content.getExpireAction());
+        contentSt.setString(p++, content.getExpireAction().name());
         contentSt.setInt(p++, content.getVisibilityStatus());
         contentSt.setLong(p++, content.getForumId());
         contentSt.setInt(p++, content.isOpenInNewWindow() ? 1:0);

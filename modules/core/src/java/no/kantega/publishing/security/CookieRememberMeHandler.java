@@ -1,7 +1,6 @@
 package no.kantega.publishing.security;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.util.Base64;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.security.api.identity.DefaultIdentity;
@@ -16,6 +15,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.apache.commons.codec.binary.Base64.decodeBase64;
+import static org.apache.commons.codec.binary.Base64.encodeBase64;
 
 public class CookieRememberMeHandler implements RememberMeHandler, InitializingBean {
 
@@ -45,7 +47,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
         String messageDigestHex = getMessageDigestHex(username, domain, hashKey);
 
         String s = username + ":" + domain + ":" + messageDigestHex;
-        String cookieValue = Base64.encode(s.getBytes());
+        String cookieValue = new String(encodeBase64(s.getBytes()));
 
         Cookie rememberMeCookie = createRememberMeCookie(cookieValue, cookieMaxAge);
 
@@ -62,7 +64,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
             return null;
         }
 
-        String s = new String(Base64.decode(rememberMeCookie.getValue()));
+        String s = new String(decodeBase64(rememberMeCookie.getValue().getBytes()));
         Pattern pattern = Pattern.compile("([^:]*):([^:]*):([^:]*)");
         Matcher matcher = pattern.matcher(s);
         if (!matcher.matches()) {

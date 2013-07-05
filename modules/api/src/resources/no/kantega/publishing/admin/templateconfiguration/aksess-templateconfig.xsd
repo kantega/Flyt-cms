@@ -359,17 +359,22 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
-            <xs:attribute name="expireAction" type="xs:integer">
+            <xs:attribute name="expireAction" type="xs:string">
                 <xs:annotation>
                     <xs:documentation>
                        The action that should be performed when the content expires.
                         One of the values in no.kantega.publishing.common.data.enums.ExpireAction
-                        (HIDE = 0
-                         REMIND = 1
-                         DELETE = 2
-                         ARCHIVE = 3)
+                        (HIDE, REMIND, DELETE, ARCHIVE)
                     </xs:documentation>
                 </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:string">
+                        <xs:enumeration value="HIDE" />
+                        <xs:enumeration value="REMIND" />
+                        <xs:enumeration value="DELETE" />
+                        <xs:enumeration value="ARCHIVE" />
+                    </xs:restriction>
+                </xs:simpleType>
             </xs:attribute>
             <xs:attribute name="expireMonths" type="xs:integer">
                 <xs:annotation>

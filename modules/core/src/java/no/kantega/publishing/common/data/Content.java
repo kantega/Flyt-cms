@@ -68,7 +68,7 @@ public class Content extends BaseObject {
     private Date expireDate  = null;
     private Date revisionDate = null;
     private Date changeFromDate = null;
-    private int expireAction = ExpireAction.HIDE;
+    private ExpireAction expireAction = ExpireAction.HIDE;
     private int visibilityStatus = ContentVisibilityStatus.ACTIVE;
     private int numberOfNotes = 0;
 
@@ -522,14 +522,11 @@ public class Content extends BaseObject {
         this.expireDate = expireDate;
     }
 
-    public int getExpireAction() {
+    public ExpireAction getExpireAction() {
         return expireAction;
     }
 
-    /**
-     * @param expireAction one of {@link ContentVisibilityStatus}
-     */
-    public void setExpireAction(int expireAction) {
+    public void setExpireAction(ExpireAction expireAction) {
         this.expireAction = expireAction;
     }
 

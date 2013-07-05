@@ -23,6 +23,7 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
@@ -225,9 +226,9 @@ public class TemplateConfigurationExportHelper {
             if (expireMonths > 0) {
                 template.setExpireMonths(expireMonths);
             }
-            int expireAction = rs.getInt("ExpireAction");
-            if (expireAction > 0) {
-                template.setExpireAction(expireAction);
+            String expireAction = rs.getString("ExpireAction");
+            if (expireAction != null) {
+                template.setExpireAction(ExpireAction.valueOf(expireAction));
             }
             int hearing = rs.getInt("HearingEnabled");
             if (hearing == 1) {

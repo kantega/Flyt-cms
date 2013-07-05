@@ -30,6 +30,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -253,9 +254,9 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             errors.add(null, "aksess.error.date", objects);
         }
 
-        int expireAction = param.getInt("expireaction");
-        if (expireAction != -1) {
-            content.setExpireAction(expireAction);
+        String expireAction = param.getString("expireaction");
+        if (expireAction != null) {
+            content.setExpireAction(ExpireAction.valueOf(expireAction));
         }
 
         if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {

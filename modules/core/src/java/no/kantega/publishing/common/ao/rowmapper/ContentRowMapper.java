@@ -3,6 +3,7 @@ package no.kantega.publishing.common.ao.rowmapper;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -37,7 +38,7 @@ public class ContentRowMapper implements RowMapper<Content> {
         content.setAlias(rs.getString("Alias"));
         content.setPublishDate(rs.getTimestamp("PublishDate"));
         content.setExpireDate(rs.getTimestamp("ExpireDate"));
-        content.setExpireAction(rs.getInt("ExpireAction"));
+        content.setExpireAction(ExpireAction.valueOf(rs.getString("ExpireAction")));
         content.setVisibilityStatus(rs.getInt("VisibilityStatus"));
 
         content.setNumberOfNotes(rs.getInt("NumberOfNotes"));

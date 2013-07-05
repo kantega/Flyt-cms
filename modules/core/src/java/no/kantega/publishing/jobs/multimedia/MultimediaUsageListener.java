@@ -62,7 +62,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentExpired(ContentEvent event) {
-        int action = event.getContent().getExpireAction();
+        ExpireAction action = event.getContent().getExpireAction();
 
         if (action == ExpireAction.DELETE) {
             multimediaUsageDao.removeUsageForContentId(event.getContent().getId());

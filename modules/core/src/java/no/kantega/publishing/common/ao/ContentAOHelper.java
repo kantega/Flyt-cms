@@ -24,6 +24,7 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import org.apache.commons.lang.StringUtils;
@@ -61,7 +62,7 @@ public class ContentAOHelper {
         content.setAlias(rs.getString("Alias"));
         content.setPublishDate(rs.getTimestamp("PublishDate"));
         content.setExpireDate(rs.getTimestamp("ExpireDate"));
-        content.setExpireAction(rs.getInt("ExpireAction"));
+        content.setExpireAction(ExpireAction.valueOf(rs.getString("ExpireAction")));
         content.setVisibilityStatus(rs.getInt("VisibilityStatus"));
 
         content.setNumberOfNotes(rs.getInt("NumberOfNotes"));

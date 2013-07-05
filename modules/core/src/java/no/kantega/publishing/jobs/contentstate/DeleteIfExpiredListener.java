@@ -36,7 +36,7 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
 
     public void contentExpired(ContentEvent event) {
         Content content = event.getContent();
-        int action = content.getExpireAction();
+        ExpireAction action = content.getExpireAction();
 
         if(action == ExpireAction.DELETE) {
             try {

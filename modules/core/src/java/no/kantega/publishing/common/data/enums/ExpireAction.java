@@ -16,9 +16,6 @@
 
 package no.kantega.publishing.common.data.enums;
 
-public class ExpireAction {
-    public static final int HIDE = 0;
-    public static final int REMIND = 1;
-    public static final int DELETE = 2;
-    public static final int ARCHIVE = 3;    
+public enum ExpireAction {
+    HIDE, REMIND, DELETE, ARCHIVE
 }
