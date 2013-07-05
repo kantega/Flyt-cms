@@ -41,20 +41,25 @@ public class MiniViewTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(MiniViewTag.class);
 
     private String collection = null;
+    private Content contentObject;
 
     public void setCollection(String collection) {
         this.collection = collection;
     }
 
+    public void setObj(Content obj) {
+        this.contentObject = obj;
+    }
+
     public int doStartTag() throws JspException {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
         PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
-        SiteCache siteCache = (SiteCache) RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+        SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
         DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
         try {
             Content currentPage = (Content)request.getAttribute("aksess_this");
-            Content content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
+            Content content = (contentObject == null) ? (Content)pageContext.getAttribute("aksess_collection_" + collection) : contentObject;
 
             if (content != null) {
                 String template = null;
