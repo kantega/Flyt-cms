@@ -2005,6 +2005,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Instance of Content to show mini view for. Cannot be used in conjunction with collection.</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
     <tag>
         <description>Include JSP search view for customized display of object in search result</description>
