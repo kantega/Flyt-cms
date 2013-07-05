@@ -46,7 +46,7 @@ public class SubscriptionController implements AksessController {
     private MailSubscriptionService mailSubscriptionService;
 
     public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String epost = ServletRequestUtils.getStringParameter(request, "epost");
+        String epost = ServletRequestUtils.getStringParameter(request, "epost", "");
 
         int documentType = ServletRequestUtils.getIntParameter(request, "documenttype", -1);
 
