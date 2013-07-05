@@ -30,7 +30,6 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.*;
-import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
@@ -65,7 +64,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     private TopicDao topicDao;
 
     @Override
-    public ContentIdentifier deleteContent(ContentIdentifier cid) throws SystemException, ObjectInUseException {
+    public ContentIdentifier deleteContent(ContentIdentifier cid) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         ContentIdentifier parent = getParent(cid);
 
@@ -128,7 +127,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) throws SystemException {
+    public void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int id = cid.getContentId();
         int version = cid.getVersion();
@@ -150,13 +149,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public List<Content> getAllContentVersions(ContentIdentifier cid) throws SystemException {
+    public List<Content> getAllContentVersions(ContentIdentifier cid) {
         return getJdbcTemplate().query("select * from content, contentversion where content.ContentId = contentversion.ContentId and contentversion.Language = ? and content.ContentId = ? order by contentversion.Version desc", new ContentRowMapper(false), cid.getLanguage(), cid.getContentId());
     }
 
 
     @Override
-    public Content checkOutContent(ContentIdentifier cid) throws SystemException {
+    public Content checkOutContent(ContentIdentifier cid) {
         Content content = getContent(cid, true);
         content.setIsCheckedOut(true);
 
@@ -165,7 +164,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
     @Override
-    public Content getContent(ContentIdentifier cid, boolean isAdminMode) throws SystemException {
+    public Content getContent(ContentIdentifier cid, boolean isAdminMode) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int requestedVersion = cid.getVersion();
         int contentVersionId = -1;
@@ -441,12 +440,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException {
+    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) {
         return getContentList(contentQuery, maxElements, sort, getAttributes, false);
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
+    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
@@ -510,7 +509,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public void doForEachInContentList(final ContentQuery contentQuery, final int maxElements, SortOrder sort, final ContentHandler handler) throws SystemException {
+    public void doForEachInContentList(final ContentQuery contentQuery, final int maxElements, SortOrder sort, final ContentHandler handler) {
         if (sort != null) {
             contentQuery.setSortOrder(sort);
         }
@@ -537,7 +536,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
     @Override
-    public ContentIdentifier getParent(ContentIdentifier cid) throws SystemException {
+    public ContentIdentifier getParent(ContentIdentifier cid) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int parentAssociationId = getJdbcTemplate().queryForInt("select ParentAssociationId from associations where AssociationId = ?", cid.getAssociationId());
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(parentAssociationId);
@@ -914,7 +913,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
      * @param maxVersions
      * @throws SystemException
      */
-    private void deleteOldContentVersions(Content content, int maxVersions) throws SystemException {
+    private void deleteOldContentVersions(Content content, int maxVersions) {
         try(Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement st = c.prepareStatement("select * from contentversion where ContentId = ? and Status <> ? order by Version desc");
@@ -943,7 +942,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) throws SystemException {
+    public Content setContentStatus(ContentIdentifier cid, ContentStatus newStatus, Date newPublishDate, String userId) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
         int contentId = cid.getContentId();
@@ -1033,14 +1032,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
 
-    /**
-     * Return the id of the next content id which should be activated
-     * - because publish date was reached (on a new page or existing page)
-     * - because changefrom date was reached (on a existing page)
-     * @param after - which content id to start at
-     * @return
-     * @throws SystemException
-     */
     @Override
     public int getNextActivationContentId(int after) throws SystemException {
 
@@ -1199,11 +1190,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         }
     }
 
-    /**
-     * Check if page is published or has been published
-     * @param contentId - ContentId
-     * @return
-     */
     @Override
     public boolean hasBeenPublished(int contentId) {
         if (contentId == -1) {
@@ -1236,15 +1222,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
 
-    /**
-     * Updates publish date and expire date on a content object and all child objects
-     * @param cid - ContentIdentifier to content object
-     * @param publishDate - new publish date
-     * @param expireDate - new expire date
-     * @param updateChildren - true = update children / false = dont update children
-     */
     @Override
-    public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) {
+    public void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) throws SystemException{
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
         try(Connection c = dbConnectionFactory.getConnection()){
