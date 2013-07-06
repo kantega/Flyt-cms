@@ -67,14 +67,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     @Autowired
     private ContentIdentifierDao contentIdentifierDao;
 
-    /**
-     * Find the ContentIdentifer for a Content, relative to the context-Content and expr.
-     * @param context - The current Content-contect
-     * @param expr    - Path, e.g. "../", "../../" or "/"
-     * @return        - ContentIdentifier
-     * @throws SystemException
-     * @throws ContentNotFoundException
-     */
+
     @Override
     public ContentIdentifier findRelativeContentIdentifier(Content context, String expr) throws SystemException, ContentNotFoundException {
         if (context == null || expr == null) {
@@ -169,7 +162,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         }
 
     }
-
 
     /**
      * @param siteId - Site
@@ -401,7 +393,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         return cid;
     }
 
-
     private int findAssociationIdFromContentId(int contentId, int siteId, int contextId) throws SystemException {
         int associationId = -1;
 
@@ -518,11 +509,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         return new Pair<>(siteId, adjustedUrl);
     }
 
-    /**
-     * @param request - The current request
-     * @return ContentIdentifier for the given request.
-     * @throws ContentNotFoundException
-     */
     @Override
     public ContentIdentifier fromRequest(HttpServletRequest request) throws ContentNotFoundException {
         ContentIdentifier contentIdentifier = null;
@@ -574,47 +560,22 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         return contentIdentifier;
     }
 
-    /**
-     * @param request - The current request
-     * @param url - The url of ContentIdentifier is desired for.
-     * @return ContentIdentifier for url.
-     * @throws ContentNotFoundException
-     * @throws SystemException
-     */
     @Override
     public ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
         Pair<Integer, String> siteId = getSiteIdFromRequest(request, url);
         return findContentIdentifier(siteId.first, siteId.second);
     }
 
-    /**
-     *
-     * @param siteId - id of the site we want ContentIdentifier for.
-     * @param url we want ContentIdentifier for.
-     * @return ContentIdentifier for url on site with siteId
-     * @throws SystemException
-     * @throws ContentNotFoundException
-     */
     @Override
     public ContentIdentifier fromSiteIdAndUrl(int siteId, String url) throws SystemException, ContentNotFoundException {
         return findContentIdentifier(siteId, url);
     }
 
-    /**
-     * @param url - e.g. "/"
-     * @return ContentIdentifier for url.
-     * @throws ContentNotFoundException
-     * @throws SystemException
-     */
     @Override
     public ContentIdentifier fromUrl(String url) throws ContentNotFoundException, SystemException {
         return findContentIdentifier(-1, url);
     }
 
-    /**
-     * Make sure the given ContentIdentifier has both contentId and associationId set.
-     * @param contentIdentifier assure both are set on.
-     */
     @Override
     public void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier){
         if (contentIdentifier != null) {
