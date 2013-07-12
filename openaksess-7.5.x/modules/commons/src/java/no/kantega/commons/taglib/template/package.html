@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+</head>
+<body bgcolor="white">
+
+<p>
+Template TagLibs brukes for å definere logiske områder (sections) i en JSP slik at disse
+den fysiske rekkefølgen kan spesifiseres i en egen design JSP fil.
+</p>
+
+<p>
+Ved å bruke biblioteket fremfor vanlig JSP include oppnår man en mye større
+fleksibilitet i forhold til å flytte om på elementer og endre design senere.
+</p>
+
+<p>
+Hvordan biblioteket brukes:
+  <ol>
+    <li>Lag en JSP fil der du bruker &lt;kantega:section&gt; tagger rundt de forskjellige
+    logiske områdene i filen</li>
+    <li>Lag en designmal der du bruker &lt;kantega:getsection&gt; tagger for å hente
+    ut de forskjellige logiske områdene
+    <li>Inkluder designmalen fra JSP siden med vanlig &lt;jsp:include&gt;</li>
+  </ol>
+</p>
+<!-- Put @see and @since tags down here. -->
+
+</body>
+</html>

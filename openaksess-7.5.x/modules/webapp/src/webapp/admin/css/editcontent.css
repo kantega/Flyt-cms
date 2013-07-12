@@ -1,0 +1,252 @@
+html, body {
+    overflow: hidden;
+}
+
+/************** Edit content **************/
+#EditContentMain {
+    overflow: auto;
+}
+
+#EditContentPane {
+    margin: 10px;
+    width: 600px;
+}
+
+
+#PropertiesPane label {
+    display: inline;
+}
+
+#EditContentTabs {
+    height: 21px;
+    float:left;
+}
+
+#EditContentTabs .tab {
+    margin-left: 30px;
+    float:left;
+}
+
+#EditContentTabs .tab span {
+    background-color: #ff0000;
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:10px;
+    line-height: 25px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+
+#EditContentTabs .tab span.content {
+    background-image: url("../bitmaps/common/icons/small/content.png");
+}
+
+#EditContentTabs .tab span.metadata {
+    background-image: url("../bitmaps/common/icons/small/metadata.png");
+}
+
+
+#TopicList .topic {
+    border: 1px solid #30d3fc;
+    background-color: #c0e5f7;
+    padding: 5px;
+    float: left;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+
+#TopicList .topic .topicname {
+    float: left;
+}
+
+#TopicList .topic .buttonGroup {
+    margin-left: 5px;
+    float: left;
+    clear: none;
+    padding: 0;
+}
+
+
+#TopicList .topic a.delete {
+    display: block;
+    width: 16px;
+    height: 16px;
+    background: url("../bitmaps/common/icons/small/remove.png");
+}
+
+#SelectTopics {
+    clear: left;
+    float: left;
+    width: 235px;
+}
+#TopicInput {
+    width: 229px;
+}
+#ChooseTopicButton {
+    margin-top: 4px;
+    float: right;
+}
+
+.buttonRow {
+    padding: 2px;
+    clear:both;
+    /*height: 20px;*/
+    width: 598px;
+}
+
+.buttonRow .button {
+    vertical-align: middle;
+    margin-left: 2px;
+    display: inline-block;
+    height: 18px;
+    width: 18px;
+    background-color: #aaffff;
+}
+
+.buttonRow .seperator {
+    vertical-align: middle;
+    display: inline-block;
+    background: url("../bitmaps/editor/editor_seperator.gif") no-repeat;
+    width: 4px;
+    height: 18px;
+}
+
+.buttonRow .remove-formatting {
+    background: url("../bitmaps/editor/editor_removeformat.gif") no-repeat;
+    width: 23px;
+}
+
+.buttonRow .strong {
+    background: url("../bitmaps/editor/editor_bold.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .italic {
+    background: url("../bitmaps/editor/editor_italic.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .underline {
+    background: url("../bitmaps/editor/editor_underline.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .justify-left {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-center {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .justify-right {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .unorderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .orderedlist {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .indent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .outdent {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .redo {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .undo {
+    background: url("../bitmaps/editor/editor_undo.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .link {
+    background: url("../bitmaps/editor/editor_link.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .anchor {
+    background: url("../bitmaps/editor/editor_anchor.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .media {
+    background: url("../bitmaps/editor/editor_multimedia.gif") no-repeat;
+    width: 18px;
+}
+
+.buttonRow .inserttable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .edittable {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertcol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertrow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removecol {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .removerow {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .insertchar {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .subscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .superscript {
+    /*background: url("../bitmaps/editor/editor_underline.gif") no-repeat;*/
+    width: 18px;
+}
+
+.buttonRow .replace {
+    background: url("../bitmaps/editor/editor_replace.gif") no-repeat;
+    width: 18px;
+}
+
+/* TinyMCE override styles */
+.o2k7Skin .mceMenu { width: auto !important;}
+
+.inpSelectList {
+    background: #fff;
+    border: 1px solid #999;
+    max-height: 200px;
+    overflow: auto;
+}

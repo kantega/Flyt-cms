@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+
+    <bean id="timerFactory" class="org.springframework.scheduling.timer.TimerFactoryBean">
+        <property name="scheduledTimerTasks">
+            <list>
+                <bean class="org.springframework.scheduling.timer.ScheduledTimerTask">
+                    <property name="timerTask">
+                        <bean class="org.springframework.scheduling.timer.MethodInvokingTimerTaskFactoryBean">
+                            <property name="targetObject">
+                                <bean class="no.kantega.publishing.cache.SlaveCacheExpiratorJob">
+                                    <property name="cacheManager" ref="cacheManager"/>
+                                </bean>
+                            </property>
+                            <property name="targetMethod" value="execute"/>
+                        </bean>
+                    </property>
+                    <property name="delay" value="1000"/>
+                    <property name="period" value="${jobs.slaveCacheExpirator.period}"/>
+                </bean>
+            </list>
+        </property>
+    </bean>    
+
+</beans>

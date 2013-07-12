@@ -1,0 +1,2704 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Aksess CMS Main Taglib API</description>
+    <tlib-version>2.0</tlib-version>
+    <short-name>aksess</short-name>
+    <uri>http://www.kantega.no/aksess/tags/aksess</uri>
+    <tag>
+        <description>Prints value from config file </description>
+        <name>getconfig</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetConfigTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Configuration value to get from Aksess config file</description>
+            <name>key</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Default value is no value is present in Aksess config file</description>
+            <name>default</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print today's date</description>
+        <name>getdate</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetDateTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Date format, using SimpleDateFormat</description>
+            <name>format</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print URL as absolute URL</description>
+        <name>geturl</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetUrlTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>URL to print (prints URL to startpage if url is not specified)</description>
+            <name>url</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies whether to add context path to start of url or not. default is 'true'</description>
+            <name>addcontextpath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies whether to generate an absolute url, with scheme, domain and port(if not 80 or 443). default is 'false'</description>
+            <name>absoluteUrl</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Extra query parameters which should be added to the generated URL</description>
+            <name>queryparams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Url have escaped &amp;s by default. Set to false to disable</description>
+            <name>escapeurl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+
+        <example>
+            <![CDATA[
+                    Print URL to root:
+                        <aksess:geturl/> -> /contextpath
+                        <aksess:geturl url="/someresource"/> -> /contextpath/someresource
+                        <aksess:geturl url="/someresource"/ absoluteUrl="true"> -> http(s)://server(:8080)/contextpath/someresource
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Fetch and print HTML content from external URL</description>
+        <name>gethtml</name>
+        <tag-class>no.kantega.commons.taglib.util.GetHtmlTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>URL of web page to fetch</description>
+            <name>url</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Include JSP file replacing macros in URL.</description>
+        <name>include</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.IncludeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Path to JSP file to include. Macros are $SITE = site of current page and $LANGUAGE language of current page</description>
+            <name>url</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Include page "design.jsp" replacing $SITE with alias of current site:
+                        <aksess:include url="/WEB-INF/jsp$SITE/include/design.jsp"/>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Check if attribute equals specified value and print body if is equal</description>
+        <name>ifequals</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.AttributeIfEqualsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of page attribute</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Value to compare page attribute with</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if attribute is NOT equal to specified value</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Show body if attribute "fruit" has value "apple":
+                        <aksess:ifequals name="fruit" value="apple">
+                            ...
+                        </aksess:ifequals>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Check if alias of current page equals specified alias and print body if is equal</description>
+        <name>ifaliasequals</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.AttributeIfAliasEqualsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Value to compare page alias with</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if alias is NOT equal to specified value</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Check if attribute contains specified value. Typically used with attributes which can contains several values</description>
+        <name>ifcontains</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.AttributeIfContainsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of page attribute</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Value to compare page attribute with</description>
+            <name>value</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print body if specified attribute exists and is not empty</description>
+        <name>exists</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.AttributeExistsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of page attribute to check if exists</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of the repeater containing the attribute, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if attribute not exists</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if exists: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display attribute "text" if it exists:
+
+                        <aksess:exists name="text">
+                            <div>
+                                <aksess:getattribute name="text"/>
+                            </div>
+                        </aksess:exists>
+
+
+                    Display attribute "text" from collection "news" if it exists:
+
+                        <aksess:getcollection name="news" associatedid="/news/">
+                            <aksess:exists name="text" collection="news">
+                                <div>
+                                    <aksess:getattribute name="text" collection="news"/>
+                                </div>
+                            </aksess:exists>
+                        </aksess:getcollection>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Print body if specified attribute not exists or is empty</description>
+        <name>notexists</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.AttributeNotExistsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of page attribute to check if NOT exists</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if exists: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display default text if attribute "text" from collection "news" has no value:
+
+                        <aksess:getcollection name="news" associatedid="/news/">
+                            <aksess:notexists name="text" collection="news">
+                                <div>
+                                    ...default text...
+                                </div>
+                            </aksess:notexists>
+                        </aksess:getcollection>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Prints body if link is external</description>
+        <name>isexternallink</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IsExternalLinkTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Id or alias of other page to link to</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find page to link to, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if link is not external</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+
+    </tag>
+    <tag>
+        <description>Print body if current page is within path of specified contentid</description>
+        <name>isinpath</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IsInPathTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Id or alias of other page</description>
+            <name>contentid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>ContentObject who owns the path. if omitted, current page is used.</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if contentId is NOT in path</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Prints the specified attribute for current page (or page specified using collection or obj)</description>
+        <name>getattribute</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetAttributeTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of page attribute to print</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to print page attribute from, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify custom CSS class to use when tag return a HTML tag such as an IMG tag</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Transform result to uppercase or lowercase</description>
+            <name>transform</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to print attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>For DateAttribute specifies date format, using SimpleDateFormat</description>
+            <name>format</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images), parentid (for images), description (for images)</description>
+            <name>property</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Used with image attributes, sets maximum height (image will be scaled if necessary)</description>
+            <name>height</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Used with image attributes, sets maximum width (image will be scaled if necessary)</description>
+            <name>width</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Used with text attributes, sets maximum length of text (text will be cut if longer)</description>
+            <name>maxlength</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a default value if attribute does not exists</description>
+            <name>defaultvalue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used with images, determines if links to images should show image in browser (inline) or download (attachment)</description>
+            <name>contentdisposition</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Used with images. Contain is default, and ensures the whole image is contained within values supplied. Center is center weighted cropping</description>
+            <name>cropping</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.enums.Cropping</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Get attribute with name "text":
+                        <aksess:getattribute name="text"/>
+
+
+                    Get attribute with name "phonenumber" from frontpage:
+                        Phonenumber: <aksess:getattribute name="phonenumber" contentid="/"/>
+
+                    Get attribute with name "picture" and shrink it if wider than 100 pixels:
+                        <aksess:getattribute name="picture" width="100"/>
+
+                    Get attribute with name "picture" and shrink it to just cover an area of 100 by 100 pixels, cropping from center of image
+                        <aksess:getattribute name="picture" width="100" height="100" cropping="CENTERED"/>
+
+
+                    Get width of image attribute with name "picture":
+                        <aksess:getattribute name="picture" property="width"/>
+
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Prints the specified metadata attribute for current page (or page specified using collection or obj)</description>
+        <name>getmetadata</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetMetaDataTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of page metadata attribute to print</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to print page attribute from, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to print attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>For DateAttribute specifies date format, using SimpleDateFormat</description>
+            <name>format</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Used with text attributes, sets maximum length of text (text will be cut if longer)</description>
+            <name>maxlength</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images)</description>
+            <name>property</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Get custom metadata attribute named "myattribute":
+                        <aksess:getmetadata name="myattribute"/>
+
+
+                    Get publish date of current page:
+                        <aksess:getmetadata name="publishdate"/>
+
+
+                    Get date of last modification of page:
+                        <aksess:getmetadata name="lastmodified"/>
+
+
+                    Get user id of user who last modified page:
+                        <aksess:getmetadata name="modifiedby"/>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Stores the specified attribute for current page (or page specified using collection or obj) as request attribute</description>
+        <name>setvariable</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.SetVariableTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of page (content/metadata) attribute to save as request attribute</description>
+            <name>attribute</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if exists: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name to use for stored request attribute</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to get page attribute from, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of a repeater, use with repeatattributes tag</description>
+            <name>repeater</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>For DateAttribute specifies date format, using SimpleDateFormat</description>
+            <name>format</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify page attribute property to print: html (default), value, url, width (for images), height (for images)</description>
+            <name>property</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Used with image attributes, sets maximum height (image will be scaled if necessary)</description>
+            <name>height</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Used with image attributes, sets maximum width (image will be scaled if necessary)</description>
+            <name>width</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a default value if attribute does not exists</description>
+            <name>defaultvalue</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Searches parents of page for attribute if attribute does not exists in this page</description>
+            <name>inheritfromancestors</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Save attribute "birth date" as a request attribute "date" and fetch using JSP scriptlet:
+
+                        <aksess:setvariable name="date" attribute="birth date"/>
+                        <%
+                            String date = (String)request.getAttribute("date");
+                        %>
+
+
+                    Save attribute "max levels to display" as request attribute and use as parameters to <aksess:getsitemap/> tag:
+                        <aksess:setvariable attribute="max levels to display" name="depth"/>
+                        <aksess:getsitemap name="sitemap" depth="${depth}" associationcategory="Global menu"/>
+                        <aksess:printsitemap name="sitemap"/>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Check if a attribute is hidden for current site (NB: Causes content template to be read)</description>
+        <name>ishiddenforsite</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IsHiddenTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of page (content/metadata) attribute to save as request attribute</description>
+            <name>attribute</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if is hidden: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name to use for stored request attribute</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to get page attribute from, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Prints body if user is authorized to edit this page</description>
+        <name>iseditablebyuser</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.IsEditableByUserTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Prints a link (A tag) to edit current page</description>
+        <name>editlink</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.EditLinkTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>CSS class to use for link</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS inline style for link</description>
+            <name>style</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Abbreviate text in body to the specified number of characers. Adds ... after text</description>
+        <name>abbreviate</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.AbbreviateTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>leftedge</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>maxsize</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Prints a link (A tag) to current page (or page specified by collection or obj)</description>
+        <name>link</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetLinkTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection with pages to link to, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to link to</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Used to add onclick for generated A tag</description>
+            <name>onclick</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class for generated A tag</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Inline CSS style for generated A tag</description>
+            <name>style</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Tabindex for generated A tag</description>
+            <name>tabindex</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Accesskey for generated A tag</description>
+            <name>accesskey</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Target for generated A tag</description>
+            <name>target</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Extra query parameters which should be added to the generated A tag</description>
+            <name>queryparams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Specify title for a tag. Title of linked page is default</description>
+            <name>title</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify rel attribute used in a tag</description>
+            <name>rel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Use aksess:link to generate links to pages in a collection:
+                        <aksess:getcollection name="list" associationcategory="related content">
+                            <p>
+                                <aksess:link collection="list">
+                                    <aksess:getattribute name="title" collection="list"/>
+                                </aksess:link><br>
+                                <aksess:getattribute name="text" collection="list"/>
+                            </p>
+                        </aksess:getcollection>
+
+
+                    Print link to a page with id = objectid (objectid is a request attribute):
+                        <aksess:link contentid="${objectid}">Click here</aksess:link>
+            ]]>
+        </example>
+    </tag>
+
+
+
+    <tag>
+        <description>Gets a collection of pages and iterates through them</description>
+        <name>getcollection</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetCollectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute to store current page as</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Stores status as LoopTagStatus object</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get direct childpages for, it not specified current page is default</description>
+            <name>associatedid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get all childpages for</description>
+            <name>pathelementid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Site which to get pages from</description>
+            <name>site</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>TODO:</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>List of pageids or name of other page attribute with list of ids</description>
+            <name>contentlist</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content template</description>
+            <name>contenttemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content type (page, file, link)</description>
+            <name>contenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified document type</description>
+            <name>documenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified display template</description>
+            <name>displaytemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find all pages, ignoring associatedid. Normally used with contenttemplate, displaytemplate or documenttype</description>
+            <name>findall</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Find only pages published after specified date</description>
+            <name>publishedfromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages published before specified date</description>
+            <name>publishedtodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire after specified date</description>
+            <name>expirefromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire before specified date</description>
+            <name>expiretodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true (default false) to only get standard attributes such as title, description (increases performance)</description>
+            <name>skipattributes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to false (default true) to get topics for pages</description>
+            <name>skiptopics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used to only find pages with keyword (using SQL search), see search tag for more advanced search with better performance</description>
+            <name>keyword</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages modified after specified date</description>
+            <name>modifieddate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision after specified date</description>
+            <name>revisiondatefrom</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision before specified date</description>
+            <name>revisiondateto</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum number of pages to list</description>
+            <name>max</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Which attribute or field to sort list by (use standard fields for best performance sorting data using SQL)</description>
+            <name>orderby</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sort ascending(false) or descending(true)</description>
+            <name>descending</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used for personalization, set relevance=user to only get pages with relevance for user</description>
+            <name>relevance</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true to show archived pages</description>
+            <name>showarchived</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to true to show expired pages</description>
+            <name>showexpired</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topic</description>
+            <name>topic</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.topicmaps.data.Topic</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with at least one of the specified topics</description>
+            <name>topics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.List</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topicid, use with topicmapid</description>
+            <name>topicid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmapid, use with topicid</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (organizational unit)</description>
+            <name>owner</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (person)</description>
+            <name>ownerperson</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>onhearingfor</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Uses a no.kantega.publishing.common.data.ContentQuery to query for pages</description>
+            <name>contentquery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.ContentQuery</type>
+        </attribute>
+        <attribute>
+            <description>Shuffle (randomize) the collection after it is fetched from the database</description>
+            <name>shuffle</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Return only shuffleMax items from the shuffled collection</description>
+            <name>shuffleMax</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only get items from offset n + 1</description>
+            <name>offset</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    List subpages to current page with associationcategory = "related content" and print title with link
+                        <aksess:getcollection name="list" associationcategory="related content">
+                            <p>
+                                <aksess:link collection="list">
+                                    <aksess:getattribute name="title" collection="list"/>
+                                </aksess:link>
+                            </p>
+                        </aksess:getcollection>
+
+                    List last 10 subpages published under the page with alias "/news/":
+                        <aksess:getcollection name="news" associatedid="/news/" max="10" orderby="publishdate" descending="true">
+                            <p>
+                                <aksess:link collection="news">
+                                    <aksess:getattribute name="title" collection="news"/>
+                                </aksess:link>
+                            </p>
+                        </aksess:getcollection>
+
+
+                    List subpages to current page with associationcategory = "related content" and in a table with different CSS class for odd and even rows:
+                        <table>
+                        <aksess:getcollection name="list" associationcategory="related content" varStatus="status">
+                            <tr class="row${status.index mod 2}">
+                                <td>
+                                    <aksess:link collection="list">
+                                        <aksess:getattribute name="title" collection="list"/>
+                                    </aksess:link>
+                                </td>
+                            </tr>
+                        </aksess:getcollection>
+                        </table>
+
+
+                    List all pages which published with the displaytemplate = "News" published between "fromdate" and "todate":
+                        <aksess:getcollection name="news" displaytemplate="News" findall="true" publishdatefrom="${fromdate}" publishtodate="${todate}">
+                            <p>
+                                <aksess:link collection="news">
+                                    <aksess:getattribute name="title" collection="news"/>
+                                </aksess:link>
+                            </p>
+                        </aksess:getcollection>
+
+                        Note: If findall attribute is not specified only subpages to current page would be listed
+
+
+                    List all pages contained in the attribute "selected pages". "selected pages" is an attribute of type "contentid" or "contentlist":
+
+                        <aksess:getcollection name="pages" contentlist="selected pages">
+                            <p>
+                                <aksess:link collection="pages">
+                                    <aksess:getattribute name="title" collection="pages"/>
+                                </aksess:link>
+                            </p>
+                        </aksess:getcollection>
+                        
+
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Performs a query for pages and print body if collection of pages is not empty</description>
+        <name>ifcollectionnotempty</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IfCollectionNotEmptyTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get direct childpages for, it not specified current page is default</description>
+            <name>associatedid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get all childpages for</description>
+            <name>pathelementid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Site which to get pages from</description>
+            <name>site</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>List of pageids or name of other page attribute with list of ids</description>
+            <name>contentlist</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content template</description>
+            <name>contenttemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content type (page, file, link)</description>
+            <name>contenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified document type</description>
+            <name>documenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified display template</description>
+            <name>displaytemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find all pages, ignoring associatedid. Normally used with contenttemplate, displaytemplate or documenttype</description>
+            <name>findall</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Find only pages published after specified date</description>
+            <name>publishedfromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages published before specified date</description>
+            <name>publishedtodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire after specified date</description>
+            <name>expirefromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire before specified date</description>
+            <name>expiretodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true (default false) to only get standard attributes such as title, description (increases performance)</description>
+            <name>skipattributes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to false (default true) to get topics for pages</description>
+            <name>skiptopics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used to only find pages with keyword (using SQL search), see search tag for more advanced search with better performance</description>
+            <name>keyword</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages modified after specified date</description>
+            <name>modifieddate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision after specified date</description>
+            <name>revisiondatefrom</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision before specified date</description>
+            <name>revisiondateto</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum number of pages to list</description>
+            <name>max</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Which attribute or field to sort list by (use standard fields for best performance sorting data using SQL)</description>
+            <name>orderby</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sort ascending(false) or descending(true)</description>
+            <name>descending</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used for personalization, set relevance=user to only get pages with relevance for user</description>
+            <name>relevance</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true to show archived pages</description>
+            <name>showarchived</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to true to show expired pages</description>
+            <name>showexpired</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topic</description>
+            <name>topic</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.topicmaps.data.Topic</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with at least one of the specified topics</description>
+            <name>topics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.List</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topicid, use with topicmapid</description>
+            <name>topicid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmapid, use with topicid</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (organizational unit)</description>
+            <name>owner</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (person)</description>
+            <name>ownerperson</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>onhearingfor</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Uses a no.kantega.publishing.common.data.ContentQuery to query for pages</description>
+            <name>contentquery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.ContentQuery</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display a "div" with heading if collection of pages is not empty:
+
+                        <aksess:ifcollectionnotempty name="links" associationcategory="related links" orderby="priority">
+                            <div class="box">
+                            <strong>Related links:</strong>
+                            <ul>
+                                <aksess:getcollection name="links">
+                                    <li><aksess:link collection="links"><aksess:getattribute name="title" collection="links"/></aksess:link></li>
+                                </aksess:getcollection>
+                            </ul>
+                            </div>
+                        </aksess:ifcollectionnotempty>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Performs a query for pages and print body if collection of pages is empty</description>
+        <name>ifcollectionempty</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.IfCollectionEmptyTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get direct childpages for, it not specified current page is default</description>
+            <name>associatedid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get all childpages for</description>
+            <name>pathelementid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Site which to get pages from</description>
+            <name>site</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only get pages published in specified category (column)</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>List of pageids or name of other page attribute with list of ids</description>
+            <name>contentlist</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content template</description>
+            <name>contenttemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content type (page, file, link)</description>
+            <name>contenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified document type</description>
+            <name>documenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Exclud pages with specified document types (use | as separator)</description>
+            <name>excludeddocumenttypes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified display template</description>
+            <name>displaytemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find all pages, ignoring associatedid. Normally used with contenttemplate, displaytemplate or documenttype</description>
+            <name>findall</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Find only pages published after specified date</description>
+            <name>publishedfromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages published before specified date</description>
+            <name>publishedtodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire after specified date</description>
+            <name>expirefromdate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages which expire before specified date</description>
+            <name>expiretodate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true (default false) to only get standard attributes such as title, description (increases performance)</description>
+            <name>skipattributes</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to false (default true) to get topics for pages</description>
+            <name>skiptopics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used to only find pages with keyword (using SQL search), see search tag for more advanced search with better performance</description>
+            <name>keyword</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages modified after specified date</description>
+            <name>modifieddate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision after specified date</description>
+            <name>revisiondatefrom</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with revision before specified date</description>
+            <name>revisiondateto</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum number of pages to list</description>
+            <name>max</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Which attribute or field to sort list by (use standard fields for best performance sorting data using SQL)</description>
+            <name>orderby</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sort ascending(false) or descending(true)</description>
+            <name>descending</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Used for personalization, set relevance=user to only get pages with relevance for user</description>
+            <name>relevance</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Set to true to show archived pages</description>
+            <name>showarchived</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to true to show expired pages</description>
+            <name>showexpired</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topic</description>
+            <name>topic</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.topicmaps.data.Topic</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with at least one of the specified topics</description>
+            <name>topics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.util.List</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with specified topicid, use with topicmapid</description>
+            <name>topicid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmapid, use with topicid</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Get pages tagged with topicmap, use with topicid</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (organizational unit)</description>
+            <name>owner</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified owner (person)</description>
+            <name>ownerperson</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>onhearingfor</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Uses a no.kantega.publishing.common.data.ContentQuery to query for pages</description>
+            <name>contentquery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.ContentQuery</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display the text "No subpages" if no subpages exist: 
+
+                        <aksess:ifcollectionempty name="links">
+                            No subpages
+                        </aksess:ifcollectionempty>
+            ]]>
+        </example>
+
+    </tag>
+    <tag>
+        <description>Get random page(s) based on criteria such as template</description>
+        <name>getrandom</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetRandomTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection with random pages</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page which to get direct childpages for, it not specified current page is default</description>
+            <name>associatedid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only get pages published in specified category (column)</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>List of pageids or name of other page attribute with list of ids</description>
+            <name>contentlist</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified content template</description>
+            <name>contenttemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>contenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified document type</description>
+            <name>documenttype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Find only pages with specified display template</description>
+            <name>displaytemplate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum number of pages to get</description>
+            <name>max</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Returns a list of pages which should be approved by current user </description>
+        <name>getcontentforapproval</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetContentForApprovalTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of request attribute to store list</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Fetch logged in user or specified user and store as request attribute</description>
+        <name>getuser</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.GetUserTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Userid of user to fetch, current user if not specified</description>
+            <name>userid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute</description>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>getroletopics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Sets whether the user should be retrieved from cache. Increases performance at the risk of returning outdated user data.</description>
+            <name>usecache</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display a link with current users email:
+                        <aksess:getuser name="user"/>
+                        <a href="mailto:${user.email}">${user.name}</a>
+
+                    Display the names of users from a list of userids. Using cache for increased performance:
+                        <ul>
+                        <c:forEach items="${userids}" var="userid">
+                            <aksess:getuser name="user" userid="${userid}" usecache="true"/>
+                            <li>${user.name}</li>
+                        </c:forEach>
+                        </ul>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Print name of logged in user or specified user</description>
+        <name>getusername</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.GetUserNameTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Userid of user to print, current user if not specified</description>
+            <name>userid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Sets whether the user should be retrieved from cache. Increases performance at the risk of returning outdated user data.</description>
+            <name>usecache</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print body if user is logged in</description>
+        <name>isloggedin</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.IsLoggedInTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    <tag>
+        <description>Print body if user is not logged in</description>
+        <name>isnotloggedin</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.IsNotLoggedInTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    <tag>
+        <description>Print body if has role</description>
+        <name>hasrole</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.HasRoleTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Roles</description>
+            <name>roles</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Print body if role is authorized for operation</description>
+        <name>roleisauthorized</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.RoleIsAuthorizedTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Role</description>
+            <name>role</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Inverts statement, eg check if role not has access</description>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Privilege to check, default is Privilege.READ</description>
+            <name>privilege</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Include JSP mini view for display of object (for portlet like view)</description>
+        <name>miniview</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.MiniViewTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Instance of Content to show mini view for. Cannot be used in conjunction with collection.</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Get sitemap and save as request attribute</description>
+        <name>getsitemap</name>
+        <tag-class>no.kantega.publishing.api.taglibs.sitemap.GetSiteMapTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use associationcategory</description>
+            <name>association</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Only get pages published in specified category (column)</description>
+            <name>associationcategory</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get pages with specified language, default is language of current page</description>
+            <name>language</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Deprecated, use rootid</description>
+            <name>rootid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specify when start of sitemap should not be homepage of site</description>
+            <name>startid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get sitemap of specified site, default is site from current page</description>
+            <name>siteid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Maximum levels (depth) of pages to get</description>
+            <name>depth</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Includes current page in sitemap even when published in other associationcategory</description>
+            <name>alwaysincludecurrentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to true to get all pages, ignoring language</description>
+            <name>ignorelanguage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    We have a site which contains information in different languages: Norwegian and English. The English start page
+                    has the alias "/english/.
+
+
+                    Fetch and print sitemap for Norwegian pages (max 3 levels):
+
+                        <aksess:getsitemap name="sitemap" depth="3" associationcategory="Global menu"/>
+                        <aksess:printsitemap name="sitemap"/>
+
+
+                    Fetch and print sitemap for English pages (max 3 levels):
+
+                        <aksess:getsitemap name="sitemap" depth="3" rootid="/english/ associationcategory="Global menu"/>
+                        <aksess:printsitemap name="sitemap"/>
+
+
+                    Fetch and print sitemap for whole site:
+
+                        <aksess:getsitemap name="sitemap" depth="3" ignorelanguage="true" associationcategory="Global menu"/>
+                        <aksess:printsitemap name="sitemap"/>                   
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Print sitemap from sitemap found in request attribute, use with getsitemap</description>
+        <name>printsitemap</name>
+        <tag-class>no.kantega.publishing.api.taglibs.sitemap.PrintSiteMapTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of request attribute which holds sitemap</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Prints sitemap in XML format for crawlers when set to true</description>
+            <name>crawlerSiteMap</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Fetch and print sitemap for site:
+
+                        <aksess:getsitemap name="sitemap" depth="3" associationcategory="Global menu"/>
+                        <aksess:printsitemap name="sitemap"/>
+
+                    See getsitemap for further examples.
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Prints QuickMenu-adapted ul/li-menu found in request attribute, use with getsitemap</description>
+        <name>printquickmenu</name>
+        <tag-class>no.kantega.publishing.api.taglibs.sitemap.PrintQuickMenuTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of request attribute which holds sitemap</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class used when page has children</description>
+            <name>haschildrencssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class used when page has no children</description>
+            <name>nochildrencssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class used when page has no children</description>
+            <name>activepagecssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>activepageid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Print IMG tag with icon based on given MIME type (deprecated)</description>
+        <name>mimeicon</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.MimeIconTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>MIME type</description>
+            <name>mimetype</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Alt tag for image</description>
+            <name>alt</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Iterate over the topics for the given content or associated to a given topic or with a specified topic id</description>
+        <name>topics</name>
+        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.GetTopicsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of request attribute to use for topic</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of status object (LoopTagStatus)</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>associatedid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topic to get, use with topicmapid</description>
+            <name>topicid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Get all topics which are instance of given topic id</description>
+            <name>instance</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>List of topics, use with topiclist attribute</description>
+            <name>topiclist</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Comma seperated list of topics which to ignore</description>
+            <name>ignoretopics</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topicmap to get</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection of pages, use getcollection with gettopics=true instead</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of page to get topics for</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Iterate over the topics for the given topic map</description>
+        <name>foreachtopicinmap</name>
+        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.ForEachTopicInMapTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of request attribute which holds topic</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of status object (LoopTagStatus)</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topicmap to get</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap to get</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Iterate over the topics for the given topic type</description>
+        <name>foreachtopicintype</name>
+        <tag-class>no.kantega.publishing.api.taglibs.topicmaps.ForEachTopicInTypeTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of request attribute which holds topic</description>
+            <name>var</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of status object (LoopTagStatus)</description>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topicmap</description>
+            <name>topicmapid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of topicmap</description>
+            <name>topicmap</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of topictype</description>
+            <name>topictypeid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.String</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Transform and display XML document in cache with given xslt</description>
+        <name>transformxml</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.TransformXMLTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>cacheid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>xslt</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Send content of tag as email</description>
+        <name>sendmail</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mail.SendMailTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Sender of email</description>
+            <name>from</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Recipient of email</description>
+            <name>to</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Subject of email</description>
+            <name>subject</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Evaluates body if user is in admin mode (logged in admin gui)</description>
+        <name>isadminmode</name>
+        <tag-class>no.kantega.publishing.api.taglibs.security.IsAdminModeTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Negate</description>
+            <name>negate</name>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Used to register and display votes in poll</description>
+        <name>poll</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.PollTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Unique id for this poll</description>
+            <name>pollid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Retrieves all options for an EditableListAttribute with a given key</description>
+        <name>getoptions</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.GetOptionsTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>key</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>language</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <name>ignorevariant</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute for list option</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Set specified content as current page temporarily</description>
+        <name>use</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.UseContentTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of collection to find page attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Fetch parent page as set this temporarily as current page
+
+                        <aksess:use contentid="../">
+                            <h1>
+                                <aksess:getattribute name="heading"/>
+                            </h1>
+                            <div>
+                                <aksess:getattribute name="text"/>
+                            </div>
+                        </aksess:use>
+
+                        Current page is now back to normal
+
+                        <aksess:getattribute name="heading"/>
+
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Fetch an organizational unit and store as request attribute</description>
+        <name>getorgunit</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetOrgUnitTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>OrgUnitId of unit to fetch</description>
+            <name>orgunitid</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of request attribute. The attribute is of type no.kantega.publishing.org.OrgUnit. If not specified, the name will be set to 'currentorgunit'</description>
+            <name>name</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Display the name of unit with id 24:
+                        <aksess:getorgunit orgunitid="24" name="unit"/>
+                        <span class="unitname">${unit.name}</span>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Strips HTML-tags from content within this tag.</description>
+        <name>stripmarkup</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.StripMarkupTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Comma separated list of tags to strip.</description>
+            <name>tags</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Strip all tags or just firs/last.</description>
+            <name>all</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Should we skip html/head/body tags? Default is true.</description>
+            <name>skiptags</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <aksess:stripmarkup tags="p,br" all="true">
+                        <p>Example of markup where tags will be stripped.<br></p>
+                    </aksess:stripmakup>
+                    Will produce output like this:
+                        Example of markup where tags will be stripped.
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Create pagination of a given collection</description>
+        <name>paginate</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.paginate.PaginateCollectionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of collection to paginate</description>
+            <name>collection</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for previous link. Leave blank to not use</description>
+            <name>prevlabel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for next link. Leave blank to not use</description>
+            <name>nextlabel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Number of results per page. Default is 25</description>
+            <name>resultsperpage</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the ul element. Default is paginate</description>
+            <name>ulclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the previous element. Default is prev</description>
+            <name>prevclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the next element. Default is next</description>
+            <name>nextclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the current selected element. Default is current</description>
+            <name>currentclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Class name for the gap elements. Default is gap</description>
+            <name>gapclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Number of links before and after the gap</description>
+            <name>beforeandafterlinks</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    <aksess:ifcollectionnotempty name="myCollection">
+                        <aksess:paginate collection="myCollection" prevlabel="Previous" nextlabel="Next"/>
+                        <aksess:getcollection name="myCollection">
+                            ....
+                        </aksess:getcollection>
+                     </aksess:ifcollectionnotempty>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Iterate through repeatable attributes</description>
+        <name>repeatattributes</name>
+        <tag-class>no.kantega.publishing.api.taglibs.content.RepeatAttributesTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of repeater attributes</description>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Name of collection to find repeater attribute in, used with getcollection tag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id or alias of other page to get repeater attribute from</description>
+            <name>contentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Attribute type to check if exists: default is content data, specifiy metadata for metadata attributes</description>
+            <name>attributetype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Show a photos inside a repeaterattribute
+
+                    <aksess:repeatattributes name="photos">
+                        <p>
+                        <aksess:getattribute name="photo" repeater="photos"/><br>
+                        <aksess:getattribute name="photocaption" repeater="photos"/>
+                        </p>
+                    </aksess:repeatattributes>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Render body content as a Velocity template. All request attributes are available in velocity context</description>
+        <name>rendervelocitytext</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.RenderVelocityTextTag</tag-class>
+        <body-content>JSP</body-content>
+        <example>
+            <![CDATA[
+                    <aksess:setvariable name="givenName" attribute="givenName"/>
+
+                    <aksess:rendervelocitytext>
+                     Hi $givenName
+                    </aksess:rendervelocitytext>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Checks which device the user is using</description>
+        <name>getdevice</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.GetDeviceTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <description>Name of the request-attribue</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+</taglib>

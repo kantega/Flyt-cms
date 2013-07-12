@@ -1,0 +1,206 @@
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <groupId>org.kantega.openaksess</groupId>
+        <artifactId>openaksess</artifactId>
+        <version>7.5.10-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>openaksess-db</artifactId>
+    <packaging>jar</packaging>
+
+    <name>OpenAksess db</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-ddlutils-plugin</artifactId>
+                <groupId>org.apache.db.ddlutils.plugins</groupId>
+                <version>1.1-kantega</version>
+
+                <dependencies>
+                    <dependency>
+                        <groupId>net.sourceforge.jtds</groupId>
+                        <artifactId>jtds</artifactId>
+                        <version>1.2</version>
+                    </dependency>
+                </dependencies>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>ddl2db</goal>
+                        </goals>
+                        <phase>process-resources</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <ddl2dbTasks>
+                        <mkdir dir="${basedir}/target/classes/dbschema" />
+                        <mkdir dir="${basedir}/target/classes/org/kantega/openaksess/db/" />
+
+                        <copy file="${basedir}/src/main/schema/aksess-dbschema.xml" tofile="${basedir}/target/classes/org/kantega/openaksess/db/openaksess-dbschema.xml" />
+
+                        <ddlToDatabase databaseType="mysql">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-mysql.sql" doDrops="false" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="mssql">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-mssql.sql" doDrops="false" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="derby">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby.sql" doDrops="false" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="derby">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby-test.sql" doDrops="true" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="derby">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <!-- We reuse the database in unit tests, so we need to drop tables before creating them again -->
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-derby-test-nodrop.sql" doDrops="false" />
+                        </ddlToDatabase>
+
+
+                        <ddlToDatabase databaseType="oracle10">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-oracle.sql" doDrops="false" />
+                        </ddlToDatabase>
+
+                        <ddlToDatabase databaseType="postgresql">
+
+                            <fileset dir="src/main/schema">
+                                <include name="aksess-dbschema.xml" />
+                            </fileset>
+                            <writeSchemaSqlToFile outputFile="${basedir}/target/classes/dbschema/aksess-database-postgresql.sql" doDrops="false" />
+                        </ddlToDatabase>
+                    </ddl2dbTasks>
+
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>dbdiff</id>
+
+            <build>
+                <plugins>
+
+
+                    <plugin>
+                        <artifactId>maven-ddlutils-plugin</artifactId>
+                        <groupId>org.apache.db.ddlutils.plugins</groupId>
+                        <version>1.1-kantega</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.jtds</groupId>
+                                <artifactId>jtds</artifactId>
+                                <version>1.2</version>
+                            </dependency>
+                        </dependencies>
+
+
+                        <configuration>
+                            <ddl2dbTasks>
+                                <mkdir dir="${basedir}/target/schemas/" />
+
+                                <ddlToDatabase databaseType="${dbtype}">
+                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15" driverClassName="net.sourceforge.jtds.jdbc.Driver" username="user" password="password" />
+
+                                    <fileset dir="src/main/schema">
+                                        <include name="aksess-dbschema.xml" />
+                                    </fileset>
+                                    <writeSchemaSqlToFile outputFile="${basedir}/target/schemas/aksess-database-diff-${dbtype}.sql" doDrops="false" alterDatabase="true" />
+                                </ddlToDatabase>
+                            </ddl2dbTasks>
+
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>dbcreateschema</id>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-ddlutils-plugin</artifactId>
+                        <groupId>org.apache.db.ddlutils.plugins</groupId>
+                        <version>1.1-kantega</version>
+
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.jtds</groupId>
+                                <artifactId>jtds</artifactId>
+                                <version>${jtds.version}</version>
+                            </dependency>
+                        </dependencies>
+
+
+                        <configuration>
+                            <db2dllTasks>
+                                <echo>Creating XML schema from database..</echo>
+                                <mkdir dir="${basedir}/target/schemas/" />
+
+                                <databaseToDdl databaseType="${dbtype}">
+                                    <database url="jdbc:jtds:sqlserver://localhost:1433/database;tds=8.0;loginTimeout=15" driverClassName="net.sourceforge.jtds.jdbc.Driver" username="user" password="password" />
+
+                                    <writeSchemaToFile outputFile="${basedir}/target/schemas/aksess-schema.xml" />
+                                    <!--<writeDataToFile outputFile="${basedir}/target/data.xml" />-->
+                                </databaseToDdl>
+                            </db2dllTasks>
+
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

@@ -1,0 +1,1243 @@
+html {
+    height: 100%;
+    min-height: 100%;
+}
+
+html#Popup {
+    height: auto;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    font-size: 68.8%; /* 11px */
+    color: #000000;
+    background-color: #f7f7f7;
+    height: 100%;
+    min-height: 100%;
+}
+
+body.popup {
+    height: auto;
+}
+
+/************** General styles **************/
+a {
+    color: #000000;
+    text-decoration: none;
+}
+
+a.disabled {
+    color:#5e5e5e;
+}
+
+a.textlink, .ui-state-highlight a.textlink {
+    color: #1780B9;
+    font-weight: bold;
+}
+
+input[type=submit] {
+    cursor: pointer;
+}
+
+input.disabled {
+    background-color: #eeeeed;
+}
+input.radio, input.checkbox {
+    float: left;
+    margin: 0 5px;
+}
+label.radio, label.checkbox {
+    float: left;
+}
+
+fieldset {
+    border: 1px solid black;
+    padding: 4px;
+}
+legend {
+    color: #000;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+td a, .ui-widget-content td a {
+    color:#1780b9;
+}
+
+td.number, th.number{
+    text-align:right;
+}
+
+table.noborder td, table.noborder th {
+    border:0;
+}
+
+/************** General classes **************/
+
+.ajaxloading {
+    background: url("../bitmaps/common/icons/small/loader_inline.gif") left center no-repeat;
+    line-height: 28px;
+    padding-left: 20px;
+    color: #3ED7FD;
+}
+
+.clearing {
+    clear: both;
+}
+
+.supportMenu {
+    float: right;
+}
+
+#MainPane > .info {
+    margin: 10px;
+}
+
+.error {
+    background-color: #FFCCCC;
+}
+
+.hidden {
+    display: none;
+}
+
+.floatLeft {
+    float: left;
+}
+
+.floatRight {
+    float: right;
+}
+
+
+/************** Layout **************/
+#Top {
+    min-width: 982px;
+}
+
+body.mediaArchive #Top {
+    min-width: 500px;
+}
+
+#TopMenu {
+    height: 28px;
+    line-height: 28px;
+    padding: 0 17px;
+    background: #3B3C3D url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -664px;
+}
+#ModesMenu {
+    padding: 0 5px;
+    height: 37px;
+    background: #333333 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -183px;
+}
+
+#ToolsMenu {
+    height: 25px;
+    padding: 0 5px;
+    background: #E3E3E3 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -553px;
+}
+
+#TabToolsMenu {
+    height: 26px;
+    padding: 0 5px;
+    background: #E3E3E3 url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -608px;
+}
+
+#SideBar {
+    background-color: #cccccc;
+    float: right;
+    width: 280px;
+    height: 100%;
+    overflow: auto;
+}
+
+#AjaxLoadingIllustration {
+    position: absolute;
+    top: 0;
+    right: 180px;
+    background: url("../bitmaps/common/icons/small/loader_framework.gif") left center no-repeat;
+    color: #ffffff;
+    height: 28px;
+    line-height: 28px;
+    display: none;
+}
+
+/************** Generic content pane styles  **************/
+#MainPane {
+    position: relative;
+    float: left;
+}
+
+#MainPane table .title{
+    width: 200px;
+}
+
+table.fullWidth {
+    width: 100%;
+}
+
+.grayText{
+    color: #888;
+}
+
+.rightFloat{
+    float: right;
+}
+
+/************** Specific content panes styles ********/
+
+#Content.publish #MainPane, #Content.multimedia #MainPane {
+    margin: 0;
+    height: 100%;
+}
+
+.framesplit {
+    width:10px;
+    height:100%;
+}
+
+.framesplit.metadata{
+    float: right;
+    border-right: 1px solid #8F8F8F;
+    background: url(../bitmaps/sprite-repeat-y.png) repeat-y -40px 0;
+}
+
+#Content.navigateContent #MainPane, #Content.navigateMultimedia #MainPane {
+    position: relative;
+    width: auto;
+    height: 100%;
+    background: #A0A0A0;
+    margin: 0;
+    overflow: hidden;
+}
+#Content.organizeSubpages #MainPane {
+    background: #ffffff;
+}
+#Content.sidebar {
+    float: left;
+}
+
+#Content.sidebar #MainPane {
+    float: left;
+    width: 620px;
+}
+
+#Content.administration #MainPaneContent {
+    width: 600px;
+    margin: 10px;
+}
+
+#Content.selecttemplate #MainPaneContent {
+    width: 600px;
+    margin: 10px;
+}
+
+
+#Content.mypage {
+    min-width: 900px;
+}
+
+#Content.mypage table .date{
+    width: 20%;
+}
+
+#Content.mypage table .modifiedby{
+    width: 20%;
+}
+
+#Content.mypage table .isnew{
+    background-color: #a3d4e2;
+    border-radius: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+    border: 1px solid #0085BD;
+    float: right;
+    color: #006385;
+}
+
+#Content.mypage table .action{
+    width: 160px;
+}
+
+#Content.mypage .widgetcolumn {
+    float: left;
+    width: 31%;
+    padding: 1%;
+    min-height: 50%;
+}
+
+#Content.mypage .widget {
+    border: 1px solid #999;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    -moz-box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    -webkit-box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.4);
+    margin-bottom: 15px;
+    background:#fff;
+}
+#Content.mypage .widget-header {
+    -moz-border-radius-topright: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-radius-top-right: 5px;
+    -webkit-border-radius-top-left: 5px;
+    border: none;
+    color: #000;
+    height: 25px;
+    padding: 0 10px;
+    line-height: 25px;
+    background: #E3E3E3 repeat-x scroll left center;
+}
+#Content.mypage .widget-header h2 {
+    margin: 0;
+    float: left;
+}
+#Content.mypage .widget-header a{
+    color: #000;
+}
+#Content.mypage .widget-header .ui-icon {
+    float: right;
+    margin-top: 4px;
+    cursor: pointer;
+    background-image: url(images/ui-icons_222222_256x240.png);
+}
+#Content.mypage .widget-content {
+    padding: 10px;
+}
+
+#Content.topicmaps {
+    background-color:#fff;
+}
+.ui-sortable-placeholder { border: 1px dotted black !important; border-radius: 0 !important; background: #fafafa !important; visibility: visible !important; }
+.ui-sortable-placeholder * { visibility: hidden; }
+
+
+/************** Top menu **************/
+#TopMenu .logo {
+    background: transparent url("../bitmaps/sprite-common.png") no-repeat -157px -1818px;
+    line-height: 28px;
+    padding-left: 31px;
+}
+#TopMenu a {
+    line-height: 28px;
+    margin-right: 15px;
+}
+
+#TopMenu a.menuitem { color: #fff; font-size: 1.091em; /* 12px */ }
+#TopMenu a.menuitem:hover { color: #ffffff; }
+#TopMenu a.menuitem.selected { color: #ffffff; font-weight: bold; }
+
+/* Extra dfinitions for .logout and .help in default_ie7.css */
+#TopMenu a.menuitem.logout { background: url("../bitmaps/sprite-common.png") no-repeat -159px -1716px; padding-left: 20px; float: right;}
+#TopMenu a.menuitem.help { background: url("../bitmaps/sprite-common.png") no-repeat -159px -1764px; padding-left: 20px; float: right;}
+
+/************** Modes menu **************/
+#ModesMenu {
+    color: #dddddd;
+}
+
+#ModesMenu .search input[type=text]{
+    width: 150px;
+    height: 26px;
+    line-height: 26px;
+    border: none;
+    font-size: 14px;
+    margin-top: 7px;
+    padding:0 0 0 25px;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat left -234px;
+    float: left;
+    font-family:verdana, sans-serif;
+}
+#ModesMenu .search input[type=submit]{
+    height: 37px;
+    width: 61px;
+    border: none;
+    color: #dddddd;
+    font-size: 1em;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1915px;
+    float: left;
+}
+
+#ModesMenu .buttonGroup {
+    white-space: nowrap;
+    margin-right: 10px;
+    float: left;
+}
+
+#ModesMenu .buttonGroup .button {
+    font-size: 1.091em;  /*12px */
+    float: left;
+    color: #ffffff;
+    display: inline-block;
+    height: 37px;
+    line-height: 37px;
+    padding: 0 10px;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -245px;
+}
+
+#ModesMenu .buttonGroup .button .edit {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -936px;
+}
+
+#ModesMenu .buttonGroup .button.active {
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -303px;
+}
+
+#ModesMenu .buttonGroup .button.first {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat 0 5px;
+}
+
+#ModesMenu .buttonGroup .button.first.active {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat 0 -54px;
+}
+#ModesMenu .buttonGroup .button.last {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -112px;
+}
+
+#ModesMenu .buttonGroup span.singlebutton {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -112px;
+    padding-right: 4px;
+    margin-left: 4px;
+    display: block;
+    overflow: hidden;
+}
+
+#ModesMenu .buttonGroup .button.last.active {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -170px;
+}
+#ModesMenu .buttonGroup .buttonSeparator {
+    width: 1px;
+    height: 26px;
+    margin-top: 5px;
+    float: left;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1862px;
+}
+
+#ModesMenu .button span {
+    padding-left: 20px;
+    line-height: 37px;
+    display: block;
+    height: 37px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+
+#ModesMenu #NotesCount {
+    padding-left: 0;
+    display: inline;    
+}
+
+/************** Tools menu **************/
+#ToolsMenu .buttonGroup {
+    display: inline;
+}
+#ToolsMenu .button {
+    line-height: 25px;
+    display: inline-block;
+    height: 25px;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -291px;
+}
+#ToolsMenu .button .delete {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
+}
+#ToolsMenu .button span {
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:10px;
+    line-height: 25px;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+#ToolsMenu .button.disabled span {
+    color: #999;
+    cursor: default;
+}
+
+#TabToolsMenu .tabGroup {
+    display: inline;
+}
+
+#TabToolsMenu .active {
+    margin-right: 3px;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat -100px -430px;
+}
+
+#TabToolsMenu .active span {
+    background: url("../bitmaps/sprite-buttons.png") no-repeat right -486px;
+}
+
+#TabToolsMenu .tab span {
+    display: inline-block;
+    line-height: 26px;
+    cursor: pointer;
+}
+
+#TabToolsMenu .tab span span {
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:10px;
+    line-height: 26px;
+    background-position: 10px 50%;
+    background-repeat: no-repeat;
+}
+
+#TabToolsMenu .tab {
+    line-height: 26px;
+    display: inline-block;
+    height: 26px;
+}
+
+#TabToolsMenu .tab .content {
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -388px;
+}
+#TabToolsMenu .tab .metadata{
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -1628px;
+}
+#TabToolsMenu .tab .versions{
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -795px;
+}
+#TabToolsMenu .tab .attachments {
+    background: url("../bitmaps/sprite-common.png") no-repeat 10px -611px;
+}
+
+/************** Buttons ************/
+#EditContentButtons .barButton input.publish {
+    margin-left: 10px;
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -657px;
+}
+
+#EditContentButtons .barButton input.cancel {
+    background: url("../bitmaps/sprite-common.png") no-repeat 0 -277px;
+}
+
+#EditContentButtons .barButton input.insert {
+    background: url("../bitmaps/common/icons/large/insert.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
+}
+
+#EditContentButtons .barButton input.save {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
+}
+
+#EditContentButtons .barButton input.approve {
+    margin-left: 10px;
+    background: url("../bitmaps/common/icons/large/save.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
+}
+
+#EditContentButtons .barButton input.reject {
+    background: url("../bitmaps/common/icons/large/cancel.png") no-repeat center left;
+    /*background: url("../bitmaps/sprite-common.png") no-repeat -159px -675px;*/
+}
+
+#EditContentButtons .barButton input.savedraft {
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
+}
+
+#EditContentButtons input.hearing {
+    background: url("../bitmaps/sprite-common.png") no-repeat -159px -1008px;
+}
+
+
+/************** Buttons **************/
+#Content .buttonBar {
+    height: 50px;
+    line-height: 50px;
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 0;
+}
+
+#Content .buttonBar .barButton {
+    padding-right: 10px;
+    margin-right: 10px;
+    background: url("../bitmaps/default/framework/buttonbar_background_seperator.png") right top no-repeat;
+}
+
+#Content .buttonBar .barButton > .disabled {
+    cursor: default;
+}
+
+#Content .barButton {
+    display: inline-block;
+    height: 50px;
+    margin-right: 20px;
+}
+
+#Content .barButton.hidden {
+    display: none;
+}
+
+
+#Content .buttonBar input {
+    font-size: 1.1em;
+    padding-left: 34px;
+    line-height: 50px;
+    height: 50px;
+    border: 0;
+    cursor: pointer;
+    background: transparent;
+}
+
+#Content .buttonGroup, .ui-dialog-content .buttonGroup{
+    clear: left;
+    padding-top: 10px;
+}
+
+#Content .button, .ui-dialog-content .button {
+    display: inline-block;
+    cursor: pointer;
+    border: 1px solid #bbbbbb;
+    background: url("../bitmaps/common/button.png") repeat-x;
+    padding-right: 5px;
+    padding-left: 5px;
+}
+
+
+#Content .button:hover, .ui-dialog-content .button:hover {
+    border: 1px solid #3ed7fd;
+}
+
+
+#Content .button input, .ui-dialog-content .button input {
+    background-color: transparent;
+    display: inline-block;
+    padding-left: 5px;
+    padding-right:5px;
+    line-height: 20px;
+    height: 20px;
+    border: 0;
+}
+
+
+#Content .button input[class], .ui-dialog-content .button input[class] {
+    display: inline-block;
+    padding-left: 25px;
+    padding-right:5px;
+    background-repeat: no-repeat;
+    border: 0;
+}
+
+
+#Content .button span,  .ui-dialog-content .button span {
+    background-color: transparent;
+    display: inline-block;
+    padding-left: 30px;
+    padding-right:5px;
+    line-height: 20px;
+    background-repeat: no-repeat;
+}
+
+
+.button .add {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -52px
+}
+#ToolsMenu .button .add {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -49px;
+}
+.button .back {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -135px;
+}
+.button .cancel {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -346px;
+}
+.button .choose {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1177px;
+}
+.button .copy {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -611px;
+}
+.button .crop {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -658px;
+}
+.button .cut {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -749px;
+}
+.button .delete{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -798px; /*10px -795px;*/
+}
+.button .displayPeriod {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -235px;
+}
+.button .edit{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -945px; /*0 -936px;*/
+}
+.button .imagemap {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -1249px;
+}
+.button .insert {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -1358px;
+}
+.button .linkcheck {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1485px;
+}
+.button .moveUp {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px 2px;
+}
+.button .moveDown {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 5px -1952px;
+}
+.button .newfile {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -165px;
+}
+.button .newfolder {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -211px;
+}
+.button .newSubpage {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -256px;
+}
+.button .ok{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -391px;
+}
+.button .notes {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -336px;
+}
+.button .organize {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -428px;
+}
+.button .paste {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -569px;
+}
+.button .privileges {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -615px;
+}
+.button .remove {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -726px;
+}
+.button .reset{
+    background-image: url("../bitmaps/common/icons/small/reset.png");
+}
+.button .search {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1131px;
+}
+.button .select{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -154px -1177px;
+}
+.button .settings {
+    /*background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px 0px;*/
+    background-image: url("../bitmaps/common/icons/small/settings.png");
+}
+.button .statistics {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1989px;
+}
+.button .view {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px -113px;
+}
+
+.button .upload {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -155px -1628px;
+}
+
+.buttonBar input#MinorChange {
+    height: auto;
+    float: none;
+}
+
+#LabelMinorChange {
+    float: none;
+}
+
+/************** Form elements and content attributes **************/
+
+.attributeHiddenEmpty {
+    display:none;
+}
+
+.contentAttribute, .contentAttributeRepeater, .formElement {
+    margin-bottom: 14px;
+}
+
+.contentAttribute .heading, .contentAttributeRepeater .heading, .formElement .heading {
+    font-weight: bold;
+}
+
+.contentAttribute.error .heading {
+    color: #ff0000;
+}
+
+#Content .contentAttribute .buttonGroup, #Content .contentAttributeRepeater .buttonGroup, .formElement .buttonGroup {
+    padding-top: 2px;
+    text-align: right;
+    margin-left: 15px;
+}
+
+.contentAttribute .inputs, .formElement .inputs, .contentAttribute .content, .formElement .content {
+    clear: both;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons {
+    text-align: right;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterHandle {
+    cursor: move;
+    min-height: 20px;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons a {
+    cursor: pointer;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons .delete {
+    background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
+    display: inline-block;
+    padding: 5px 5px 5px 20px;
+    font-weight: normal;
+    font-size: 12px;
+    color: #0030ff;
+}
+
+.inline .formElement .inputs {
+    line-height: 24px;
+    clear:none;
+}
+
+.inline .formElement div.heading {
+    width: 100px;
+}
+
+.fullWidth {
+    width: 100%;
+}
+
+input.fullWidth, select.fullWidth {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+#Content td .button, #Content td .button:hover {
+    background: transparent;
+    border: 0;    
+}
+
+
+/************** Boxes **************/
+div.roundCorners {
+    /*padding-bottom: 20px;*/
+    max-width: 650px;
+}
+
+div.roundCorners div.top {
+    background: url("../bitmaps/default/boxes/grouptopleft.png") no-repeat top left;
+    height: 17px;
+    position: relative;
+}
+
+div.roundCorners div.top div.corner {
+    background: url("../bitmaps/default/boxes/grouptopright.png") no-repeat top right;
+    width: 5px;
+    height: 17px;
+    position: absolute;
+    right: 0;
+}
+
+div.roundCorners div.bottom {
+    background: url("../bitmaps/default/boxes/groupbottomleft.png") no-repeat top left;
+    /*background: blue;*/
+    height: 5px;
+    position: relative;
+}
+
+div.roundCorners div.bottom div.corner {
+    background: url("../bitmaps/default/boxes/groupbottomright.png") no-repeat top right;
+    width: 5px;
+    height: 5px;
+    position: absolute;
+    right: 0;
+}
+
+div.roundCorners div.body {
+    background: url("../bitmaps/default/boxes/groupleft.png") repeat-y left;
+}
+
+div.roundCorners div.body div.right {
+    margin-left: 5px;
+    padding: 5px 15px 5px 15px;
+    background: #ffffff url("../bitmaps/default/boxes/groupright.png") repeat-y right;
+}
+
+div.roundCorners .row {
+    margin-bottom: 0.5em;
+}
+div.roundCorners h1, div.roundCorners h2 {
+    padding: 0 0 3px 0;
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1px solid #dbdbdb;
+}
+
+div.roundCorners>h1, div.roundCorners>h2 {
+    margin: -5px -10px 10px -15px;
+}
+
+
+div.sidebarFieldset {
+    background: #f7f7f7 url("../bitmaps/default/framework/rightbox_background.jpg") repeat-x;
+    border-bottom: 1px solid #999999;
+}
+
+div.sidebarFieldset fieldset {
+    border: 0;
+    padding: 10px;
+}
+div.sidebarFieldset fieldset legend {
+    padding-top: 1em;
+    font-weight: bold;
+}
+
+div.sidebarFieldset fieldset select {
+    width: 235px;
+}
+
+/************** Information slider **************/
+.infoslider {
+    display: none;
+    width: 100%;
+    background: #ffffff url("../bitmaps/default/framework/infoslider_bottom.png") repeat-x bottom left;
+    position: absolute;
+    z-index: 100;
+    left: 0;
+    padding-bottom: 20px;
+}
+.infoslider .ui-resizable-s {
+    height: 11px;
+    bottom: 0;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat center -345px;
+}
+.infoslider .close {
+    position: absolute;
+    height: 14px;
+    bottom: 5px;
+    right: 0;
+    cursor: pointer;
+    padding: 0 5px;
+    background: url("../bitmaps/sprite-buttons.png") no-repeat left -386px;
+}
+.infoslider .close span {
+    font-size: 10px;
+    line-height: 15px;
+    padding-right: 10px;
+    background: url("../bitmaps/sprite-common.png") no-repeat -244px -44px;
+}
+.infoslider .label {
+    font-weight: bold;
+}
+
+.infoslider table {
+    width: 100%;
+}
+.infoslider table th, .infoslider table td {
+    padding: 0 1em;
+    width: 18%;
+}
+.infoslider .breadcrumbs {
+    margin-left: 10px;
+}
+
+.infoslider fieldset {
+    border: 0;
+    padding: 0;
+    padding-top: 4px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+.infoslider  legend {
+    font-weight: bold;
+}
+.infoslider  legend a {
+    color:#1780B9;
+    font-weight: normal;
+}
+
+.infoslider .slidercontent {
+    padding-left: 40px;
+    padding-top: 0.5em;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+}
+
+/* Info slider types */
+.infoslider.details .slidercontent {
+    background-image: url("../bitmaps/common/icons/large/details.png");
+}
+.infoslider.associations .slidercontent {
+    background-image: url("../bitmaps/common/icons/large/details.png");
+}
+.infoslider.associations ul.breadcrumbs {
+    margin-bottom: 0.5em;
+}
+.infoslider.associations ul.breadcrumbs li:first-child {
+    background: url(../bitmaps/common/icons/small/site_small.png) left center no-repeat;
+    padding-left: 12px;
+}
+.infoslider.brokenlinks .slidercontent {
+    background-image: url("../bitmaps/common/icons/large/details.png");
+}
+.infoslider.search .slidercontent {
+    padding-left: 0;
+}
+.infoslider.filters .slidercontent {
+    padding-left: 0;
+}
+/************** Search results **************/
+#ModesMenu .buttonGroup.search {
+    float: right;
+    position: relative;
+}
+#SearchResults {
+    width: 100%;
+    background: #ffffff url("../bitmaps/default/framework/contentstatus_background.png") top left repeat-x;
+    display: none;
+    border-bottom: 1px solid #999999;
+}
+
+#SearchResults iframe {
+    width: 100%;
+    height: 100%;
+    border:0;
+}
+
+#MainPaneContent {
+    overflow: auto;    
+    padding-top: 10px;
+    padding-bottom: 10px;
+    min-width: 670px;
+}
+
+/************** Organize subpages **************/
+#SubPages ul {
+    margin: 0 0 2em;
+}
+#SubPages ul .ui-selected {
+    background: #cccccc;
+}
+
+#SubPages li {
+    list-style: none;
+    height: 17px;
+    border-bottom: 1px solid #cccccc;
+}
+
+#SubPages li.menu {
+    color: #aaa;
+}
+
+#SubPages li.menu .name{
+    font-weight: bold;
+    color: #000000;
+}
+
+#SubPages li.page {
+    cursor: pointer;
+}
+#SubPages li.page:hover {
+    background: #eee;
+}
+#SubPages li.page.selected {
+    background: url("../bitmaps/sprite-repeat-x.png") repeat-x 0 -366px;
+    color: #ffffff;
+    cursor: n-resize;
+}
+#SubPages li.ui-sortable-helper { /* Item while dragging */
+    border-top: 1px solid #cccccc;
+    background: #eeeeee;
+}
+
+#SubPages li span {
+    display: inline-block;
+    width: 18%;
+    line-height: 17px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+#SubPages li .name {
+    padding-left: 2em;
+    width: 26%;
+}
+#SubPages li .views {
+    text-align: right;
+    width: 10%;
+}
+
+#SubPages li .contentStatus .description {
+    padding-left: 18px;
+    width: auto;
+}
+#SubPages li .contentStatus .status0 {}
+#SubPages li .contentStatus .status5 {}
+#SubPages li .contentStatus .status10 {}
+#SubPages li .contentStatus .status20 {}
+#SubPages li .contentStatus .status25 {}
+#SubPages li .contentStatus .status30 {}
+#SubPages li .contentStatus .status30_0 {
+    background: url("../bitmaps/common/icons/small/contentstatus_published_posponed.png") left center no-repeat;
+}
+#SubPages li .contentStatus .status30_10 {
+    background: url("../bitmaps/common/icons/small/contentstatus_published.png") left center no-repeat;
+}
+#SubPages li .contentStatus .status30_15 {
+    background: url("../bitmaps/common/icons/small/contentstatus_expired.png") left center no-repeat;
+}
+#SubPages li .contentStatus .status30_20 {
+    background: url("../bitmaps/common/icons/small/contentstatus_expired.png") left center no-repeat;
+}
+#SubPages li .contentStatus .status40 {}
+
+
+/************** jQuery UI adaptions **************/
+#ui-datepicker-div {
+    display: none;
+}
+.ui-datepicker-trigger {
+    padding-top: 2px;
+    margin-left: 3px;
+    vertical-align: top;
+}
+
+/************** Statistics **************/
+th.no {
+    width: 30px;
+}
+
+th.views {
+    width: 100px;
+}
+
+th.percent {
+    width: 50px;
+}
+
+/************ Data tables ***************/
+
+div.dataTables_info {
+    color: #000000;
+    padding-left: 10px;
+    float: left;
+}
+
+div.dataTables_paginate {
+    float: right;
+    padding-right: 10px;
+}
+
+table.dataTable th.sorting, table.dataTable th.sorting_desc, table.dataTable th.sorting_asc {
+    cursor: pointer;
+}
+
+.paginate_disabled_previous,
+.paginate_enabled_previous,
+.paginate_disabled_next,
+.paginate_enabled_next
+{
+    float: left;
+    height: 20px;
+    width: 20px;
+    background-repeat: no-repeat;
+}
+
+.paginate_disabled_previous {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px 0;
+}
+
+
+.paginate_enabled_previous {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -159px 0;
+}
+
+.paginate_disabled_next {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1954px;
+
+}
+
+.paginate_enabled_next {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0 -1954px;
+}
+
+
+/************ Tabs ***************/
+#MainPaneContent .tabGroup {
+    display: inline;
+}
+
+#MainPaneContent .active {
+    margin-right: 3px;
+    background-color: #eeeeee;
+}
+
+#MainPaneContent .tab {
+    line-height: 26px;
+    display: inline-block;
+    height: 26px;
+}
+
+
+/******** alphabeticalList ***********/
+.alphabeticalList li {
+    margin-top: 1.5em;
+    list-style: none;
+}
+.alphabeticalList span.letter {
+    font-weight: bold;
+}
+.alphabeticalList .occurrences {
+    color: #999;
+}
+.alphabeticalList ol {
+    margin: 0;
+}
+.alphabeticalList ol li {
+    margin: 0;
+}
+.alphabeticalList ol li a {
+}
+.alphabeticalList ol li a:hover {
+    text-decoration: underline;
+}
+
+/******** Popup windows ***********/
+body.popup {
+    background-color: #fff;
+    margin: 10px;
+}
+
+iframe#externalSite {
+    padding: 0;
+}
+iframe #AjaxLoadingIllustration {
+    top: 4px;
+    right: 317px;
+}
+
+
+/*****  Notes *****/
+#NoteText {
+    background: #FFFDAA;
+    width: 596px;
+    height: 100px;
+    padding: 2px;
+    border: 1px solid #a9a9a9;
+}
+    
+#Notes .noteButtons .delete {
+    background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
+    display: inline-block;
+    padding: 5px 0 5px 20px;
+}
+
+#Notes .noteButtons {
+    float: right;
+    cursor: pointer;    
+}
+
+#Notes {
+    margin-top: 2em;
+}
+
+#Notes .note h2 {
+    text-align: left;
+    padding-bottom: 10px;
+}
+

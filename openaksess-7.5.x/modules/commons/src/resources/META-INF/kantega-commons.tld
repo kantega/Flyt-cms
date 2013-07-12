@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Aksess CMS Taglib API for menus</description>
+    <tlib-version>2.0</tlib-version>
+    <short-name>kantega</short-name>
+    <uri>http://www.kantega.no/aksess/tags/commons</uri>
+    <tag>
+        <description>Stores a section (HTML) block as a request attribute which can be fetched using getsection</description>
+        <name>section</name>
+        <tag-class>no.kantega.commons.taglib.template.PutSectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                    Define a section with id "content":
+                        <kantega:section id="content">
+                            <aksess:getattribute name="title"/><br>
+                            <p><aksess:getattribute name="text"/></p>
+                        </kantega:section>
+
+                    Retrieve content from section with id "content":
+                        <kantega:getsection id="content"/>
+            ]]>
+        </example>
+    </tag>
+    <tag>
+        <description>Fetch a section (HTML) area stored using section tag</description>
+        <name>getsection</name>
+        <tag-class>no.kantega.commons.taglib.template.GetSectionTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Evaluate section if secion with given id exists</description>
+        <name>hassection</name>
+        <tag-class>no.kantega.commons.taglib.template.HasSectionTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Evaluate section if secion with given id not exists</description>
+        <name>sectionnotempty</name>
+        <tag-class>no.kantega.commons.taglib.template.SectionNotEmptyTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <name>id</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>negate</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Print locale specific text from property file in classpath. Locale is determined automatically based on the language of current published page. File has filename = bundle_locale.properties</description>
+        <name>label</name>
+        <tag-class>no.kantega.commons.taglib.util.LabelTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>key</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>escapeJavascript</name>
+            <required>false</required>
+            <rtexprvalue>false</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <dynamic-attributes>true</dynamic-attributes>
+        <example>
+            <![CDATA[
+                    Fetch label "form.email" from propery file site_en.properties / site_no.properties:
+
+                        site_en.properties:
+                            form.email = E-mail
+
+                        site_no.properties:
+                            form.email = E-post
+
+
+                        <kantega:label key="form.email"/>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
+        <description>Generate a far future expiring url for a url</description>
+        <name>expireurl</name>
+        <tag-class>no.kantega.commons.taglib.expires.ExpiresResourceUrlTag</tag-class>
+        <body-content>empty</body-content>
+        <attribute>
+            <name>url</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Include context path in generated expire url? Default value true.</description>
+            <name>includecontextpath</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>java.lang.Boolean</type>
+        </attribute>
+    </tag>
+</taglib>
+

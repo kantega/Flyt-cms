@@ -1,0 +1,10 @@
+INSERT INTO content (ContentId, ContentType, ContentTemplateId, MetaDataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, Location, Alias, PublishDate, ExpireDate, ExpireAction, VisibilityStatus, NumberOfNotes, OwnerPerson, RevisionDate, ForumId, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) VALUES (1, 0, 2, -1, 2, -1, 1, '', null, '/alias/', '2012-01-04 13:21:35', null, 0, 10, 0, '', null, -1, 0, -1, 0, 0, 0, 1, 0);
+INSERT INTO associations (UniqueId, AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) VALUES (1, 1, 1, 0, 0, 1, 1, 1, 1225741972, '/', 0, 0, 0, 298);
+INSERT INTO associationcategory (AssociationId, AssociationName, Description, PublicId, LastModified) VALUES (1, 'Hovedmeny', 'Venstremeny', null, '2009-12-18 13:12:23');
+INSERT INTO sites (SiteId, Name, Alias) VALUES (1, 'Site', '/alias/');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (10, 1, -1, 0, 'mailz@gmail.com', 'daily');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (20, 2, -1, 0, 'mailz2@gmail.com', 'daily');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (30, 1, -1, 0, 'mailz3@broadpark.no', 'immediate');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (40, 2, -1, 0, 'mailz4@stinessen.com', 'immediate');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (50, 1, -1, 0, 'mailz5@mail.com', 'weekly');
+INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (60, 2, -1, 0, 'mailz6@email.com', 'weekly');

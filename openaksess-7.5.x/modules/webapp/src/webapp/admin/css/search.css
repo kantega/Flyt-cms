@@ -1,0 +1,53 @@
+body {
+    background-color: #ffffff;
+}
+div.search .searchicon {
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -149px -1069px;
+    position: relative;
+    height: 35px;
+    width: 35px;
+    left:0;
+    top:0;
+}
+
+#SearchResult {
+    float: left;
+    padding: 1em 1em 1em 30px;
+    width: 75%;
+    margin: 0;
+    list-style: none outside none;
+}
+
+#SearchDrilldown {
+    padding-left: 10px;
+    float: left;
+    width: 19%;
+    margin:0;
+}
+
+.hit {
+    margin-top: 1em;
+}
+.hit a {
+    color: #3398CC;
+    font-weight: bold;
+}
+
+.hitCount {
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.paging {
+    margin-top: 1.5em;
+}
+
+.pagenumbers {
+    display: inline-block;
+}
+
+.highlight {
+    background-color: #fcec5a;
+}
+
+

@@ -1,0 +1,53 @@
+#section("content")
+<script type="text/javascript">
+    window.onload = function() {
+        document.getElementById("groovycode").focus();
+    }
+    function handleKey(e, t) {
+        if (e.ctrlKey && e.keyCode == 13) {
+            document.getElementById("groovyform").submit();
+            killEvent(e);
+        }
+    }
+</script>
+
+#box()
+<h1>Groovy console</h1>
+
+<p>
+    Enter some Groovy code:
+</p>
+<form method="post" id="groovyform">
+    <textarea style="width:600px;height:200px" id="groovycode" name="code"
+              onkeydown="handleKey(event, this)">$!{code}</textarea>
+    <br/>
+    <input type="submit" value="Run!"/>
+</form>
+
+
+#if(${returnValue})
+    Resultat: ${returnValue}
+#end
+
+
+#if(${out})
+    <div>
+        Output: <br/>
+        <textarea style="width:800px;height:200px" wrap="off">$!{out}</textarea>
+    </div>
+#end
+
+#if(${variables})
+    <table>
+        #foreach($entry in $variables.entrySet())
+            <tr>
+                <td style="font-family: monospace">${entry.key}</td>
+                <td>${entry.value}</td>
+            </tr>
+        #end
+    </table>
+#end
+#end
+#end
+
+#applyAdminLayout()

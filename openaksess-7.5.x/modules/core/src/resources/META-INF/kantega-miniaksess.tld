@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+         version="2.0">
+    <description>Aksess CMS Taglib API for MiniAksess</description>
+    <tlib-version>2.0</tlib-version>
+    <short-name>miniaksess</short-name>
+    <uri>http://www.kantega.no/aksess/tags/miniaksess</uri>
+    <tag>
+        <description>Creates link for creating page with MiniAksess. contenttemplateid, contenttemplatename, displaytemplateid or displaytemplatename must be specified</description>
+        <name>create</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.CreateTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Id of displaytemplate to use for new page</description>
+            <name>displaytemplateid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of displaytemplate to use for new page</description>
+            <name>displaytemplatename</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of contenttemplate to use for new page</description>
+            <name>contenttemplateid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>int</type>
+        </attribute>
+        <attribute>
+            <description>Name of contenttemplate to use for new page</description>
+            <name>contenttemplatename</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Parent id of page to create (current page is default)</description>
+            <name>parentid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Category / column where to publish new page</description>
+            <name>associationcategory</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class for generated link</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Id of generated link</description>
+            <name>linkid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to redirect to after editing</description>
+            <name>redirecturl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to redirect when cancelling</description>
+            <name>cancelurl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>        
+        <attribute>
+            <description>Additional query parameters, eg: queryParms="param1=some&amp;param2=thing"</description>
+            <name>queryParams</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Url to the controller responsible for rendering MiniAksess</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Lager en link til for å redigere en side med MiniAksess.</description>
+        <name>edit</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.EditTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Id of page to edit (current page is default)</description>
+            <name>associationid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class for generated link</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>             
+        <attribute>
+            <description>Id of generated link</description>
+            <name>linkid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to redirect to after editing</description>
+            <name>redirecturl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>URL to redirect when cancelling</description>
+            <name>cancelurl</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to edit directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Name of collection, use with aksess:getcollectiontag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Url to the controller responsible for rendering MiniAksess</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Create link to delete page with MiniAksess</description>
+        <name>delete</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.DeleteTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Id of page (association) to delete</description>
+            <name>associationid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS class for generated link</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>confirmmultipledelete</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Id of generated link</description>
+            <name>linkid</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to edit directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+        <attribute>
+            <description>Name of collection, use with aksess:getcollectiontag</description>
+            <name>collection</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Label for confirmation, needs bundle</description>
+            <name>confirmationlabel</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Bundle to load confirmationlabel from</description>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+    <tag>
+        <description>Creates a form tag for submitting input to MiniAksess. Should contain a &lt;mini:inputscreen/&gt;-tag</description>
+        <name>form</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.FormTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>The form submit action. Default action will be used if not specified.</description>
+            <name>action</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>Allow users to save drafts</description>
+            <name>allowdraft</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Set to true to prevent form tag for generating info messages</description>
+            <name>hideinfomessages</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+
+
+    </tag>
+    <tag>
+        <description>Renders the input screen for MiniAksess. Must be used within a &lt;mini:form/&gt;-tag</description>
+        <name>inputscreen</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.InputScreenTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+        <tag>
+        <description>Renders the javascript and css dependencies for MiniAkses. Must be used within the html &lt;head/&gt;-tag</description>
+        <name>headerdependencies</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.HeaderDependenciesTag</tag-class>
+        <body-content>empty</body-content>
+    </tag>
+    <tag>
+        <description>Evaluates body if current page is a draft and editable by user</description>
+        <name>iseditabledraft</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.IsEditableDraftTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Specifies a no.kantega.publishing.common.data.Content to use directly</description>
+            <name>obj</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>no.kantega.publishing.common.data.Content</type>
+        </attribute>
+    </tag>
+
+    <tag>
+        <description>Gets a collection of drafts for user</description>
+        <name>getdraftsforuser</name>
+        <tag-class>no.kantega.publishing.api.taglibs.mini.GetDraftsForUserTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>Name of request attribute for drafts</description>
+            <name>var</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>varStatus</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>
+</taglib>
+

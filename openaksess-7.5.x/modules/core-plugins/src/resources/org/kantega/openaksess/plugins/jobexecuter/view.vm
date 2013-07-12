@@ -1,0 +1,66 @@
+###setTitle('jobexecuter.title')
+
+#section("content")
+    #box()
+           <h2>#pluginMessage('jobexecuter.jobs.heading')</h2>
+
+            <table id="jobs" class="fullWidth">
+                <thead>
+                <tr>
+                    <th><strong>#pluginMessage('jobexecuter.jobname')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.cronexpression')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.job.previousrun')</strong></th>
+                    <th><strong>#pluginMessage('jobexecuter.job.nextrun')</strong></th>
+                    <th>&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                #foreach($trigger in $triggers)
+                    <tr>
+                        <td>$trigger.jobName</td>
+                        <td>$!{trigger.cronExpression}</td>
+                        <td>#if (!$trigger.previousFireTime)
+                                #pluginMessage('jobexecuter.job.neverrun')
+                            #else
+                                $dateTool.format("yyyy-MM-dd HH:mm", $trigger.previousFireTime)
+                            #end
+                        </td>
+                        <td>$dateTool.format("yyyy-MM-dd HH:mm", $trigger.nextFireTime)</td>
+                        <td><a href="?runJobName=$trigger.jobName&runGroupName=$trigger.jobGroup">#pluginMessage('jobexecuter.job.execute')</a></td>
+                    </tr>
+                #end
+                #foreach($annotatedJob in $annotationScheduledBeans)
+                    <tr>
+                        <td>$annotatedJob.first $annotatedJob.second</td>
+                        <td>#pluginMessage('jobexecuter.job.unknown')</td>
+                        <td>#pluginMessage('jobexecuter.job.unknown')</td>
+                        <td>#pluginMessage('jobexecuter.job.unknown')</td>
+                        <td><a href="?runAnnotatedBeanName=$annotatedJob.first&runAnnotatedMethodName=$annotatedJob.second">#pluginMessage('jobexecuter.job.execute')</a></td>
+                    </tr>
+                #end
+                </tbody>
+            </table>
+            <h2>#pluginMessage('jobexecuter.job.runningjobs')</h2>
+
+        <table class="fullWidth">
+            <tr>
+                <th><strong>#pluginMessage('jobexecuter.jobname')</strong></th>
+                <th><strong>#pluginMessage('jobexecuter.job.runningjobs.startedtime')</strong></th>
+            </tr>
+            #foreach($exec in $currentlyExecuting)
+                <tr>
+                    <td>$exec.trigger.jobName</td>
+                    <td>$exec.trigger.previousFireTime</td>
+                </tr>
+            #end
+        </table>
+    #end
+#end
+#applyAdminLayout()
+<script type="text/javascript" src="${contextPath}/admin/oap/administration/jobs/js/jquery.tablesorter.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+                $("#jobs").tablesorter( {sortList: [[0,0]]});
+            }
+    );
+</script>
