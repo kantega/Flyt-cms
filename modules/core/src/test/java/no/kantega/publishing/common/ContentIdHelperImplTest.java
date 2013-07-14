@@ -8,13 +8,16 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -22,7 +25,8 @@ import java.lang.reflect.Method;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -35,19 +39,104 @@ public class ContentIdHelperImplTest {
     @Autowired
     private ContentIdHelper contentIdHelper;
 
-    @Test
-    public void shouldReturnNullForImage() throws ContentNotFoundException {
-        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/images/image.png");
+    @Before
+    public void setup(){
+        Site defaultSite = new Site();
+        defaultSite.setId(1);
+        defaultSite.setAlias("/alias");
+        when(siteCache.getDefaultSite()).thenReturn(defaultSite);
+        when(siteCache.getSiteById(1)).thenReturn(defaultSite);
+        MockServletContext servletContext = new MockServletContext();
+        servletContext.setContextPath("/");
+
+        ((ServletContextAware)contentIdHelper).setServletContext(servletContext);
+    }
+
+    @Test(expected = ContentNotFoundException.class)
+    public void shouldThrowForImage() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "");
         ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/images/image.png");
-        assertNull("ContentIdentifier for image was not null", cid);
     }
 
     @Test
     public void aliasShouldReturnCorrectContentIdentifier() throws ContentNotFoundException {
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
         ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/alias/");
-        assertNotNull("ContentIdentifier for image was not null", cid);
+        assertNotNull("ContentIdentifier was null", cid);
         assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+
+        cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/alias/");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+    }
+
+    @Test
+    public void contentIdAndThisIdShouldReturnCorrectContentIdentifier() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/content.ap?thisId=1&contentId=1");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+
+        cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/content.ap?thisId=1&contentId=1");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+    }
+
+    @Test
+    public void contentIdThisIdLanguageAndVersionShouldReturnCorrectContentIdentifier() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/content.ap?thisId=1&contentId=1&version=2&language=2");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have contentid 1", 1, cid.getContentId());
+        assertEquals("ContentIdentifier did not have language", 2, cid.getLanguage());
+        assertEquals("ContentIdentifier did not have version", 2, cid.getVersion());
+
+        cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/content.ap?thisId=1&contentId=1&version=2&language=2");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have contentid 1", 1, cid.getContentId());
+        assertEquals("ContentIdentifier did not have language", 2, cid.getLanguage());
+        assertEquals("ContentIdentifier did not have version", 2, cid.getVersion());
+    }
+
+    @Test
+    public void contentIdShouldReturnCorrectContentIdentifierWithThisId() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/content.ap?contentId=1");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+    }
+
+    @Test
+    public void prettyUrlShouldReturnCorrectContentIdentifierWithThisId() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/content/1/Tittel");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+
+        cid = contentIdHelper.fromRequestAndUrl(request, "/content/1/Tittel");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+    }
+
+    @Test
+    public void baseReturnCorrectContentIdentifierWithThisId() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
+
+        cid = contentIdHelper.fromRequestAndUrl(request, "/");
+        assertNotNull("ContentIdentifier was null", cid);
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getAssociationId());
+        assertEquals("ContentIdentifier did not have associationId 1", 1, cid.getContentId());
     }
 
     @Test

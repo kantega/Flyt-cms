@@ -42,7 +42,9 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +53,7 @@ import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
-public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper {
+public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper, ServletContextAware {
     private static final Logger log = LoggerFactory.getLogger(ContentIdHelperImpl.class);
 
     private final int defaultContentID = -1;
@@ -68,6 +70,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
     @Autowired
     private ContentIdentifierDao contentIdentifierDao;
+    public Pattern CONTENT_URL_PATTERN;
 
 
     @Override
@@ -171,61 +174,53 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
      * @throws SystemException
      */
     private ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
+        if (url == null) {
+            throw new ContentNotFoundException("");
+        }
+        Matcher contentUrlMatcher = CONTENT_URL_PATTERN.matcher(url);
+        if(!contentUrlMatcher.matches()){
+            return null;
+        }
+
         int contentId = -1;
         int associationId = -1;
         int version  = -1;
         int language = Language.NORWEGIAN_BO;
 
-        if (url == null) {
-            throw new ContentNotFoundException("");
+        String thisIdGroup = contentUrlMatcher.group("thisId");
+        String contentIdGroup = contentUrlMatcher.group("contentId");
+        String versionGroup = contentUrlMatcher.group("version");
+        String languageGroup = contentUrlMatcher.group("language");
+        String prettythisIdGroup = contentUrlMatcher.group("prettythisId");
+
+        if(thisIdGroup != null){
+            associationId = Integer.parseInt(thisIdGroup);
+        }
+        if(contentIdGroup != null){
+            contentId = Integer.parseInt(contentIdGroup);
+        }
+        if(versionGroup != null){
+            version = Integer.parseInt(versionGroup);
+        }
+        if(languageGroup != null){
+            language = Integer.parseInt(languageGroup);
+        }
+        if(prettythisIdGroup != null){
+            associationId = Integer.parseInt(prettythisIdGroup);
         }
 
-        if (url.indexOf('#') > 0) {
-            url = url.substring(0, url.indexOf("#"));
-        }
 
-        url = getPath(url);
-
-        associationId = getAssociationIdFromPrettyUrl(url, associationId);
-
-        associationId = getAssociationIdFromThisId(url, associationId);
-
-        contentId = getContentIdFromParameter(url, contentId, associationId);
-
-        language = getLanguage(url, language);
-
-        version = getVersion(url, version);
-
-        // Hvis contentId ikke finnes i URL, slå opp i basen
         if (contentId != -1 || associationId != -1) {
-            ContentIdentifier cid;
-
-            if (associationId != -1) {
-                cid = ContentIdentifier.fromAssociationId(associationId);
-            } else {
-                cid = ContentIdentifier.fromContentId(contentId);
-                cid.setSiteId(siteId);
-            }
+            ContentIdentifier cid = new ContentIdentifier();
+            cid.setContentId(contentId);
+            cid.setAssociationId(associationId);
+            cid.setSiteId(siteId);
             cid.setVersion(version);
             cid.setLanguage(language);
             assureContentIdAndAssociationIdSet(cid);
             return cid;
         } else {
-            int end = url.indexOf('?');
-            if (end != -1) {
-                url = url.substring(0, end);
-            }
-
-            end = url.lastIndexOf(Aksess.CONTENT_REQUEST_HANDLER);
-            if (end != -1) {
-                url = url.substring(0, end);
-            } else {
-                end = url.lastIndexOf(Aksess.getStartPage());
-                if (end != -1) {
-                    url = url.substring(0, end);
-                }
-            }
-
+            url = contentUrlMatcher.group("content");
             if (siteId != -1) {
                 if ("/".equalsIgnoreCase(url)) {
                     Site site = siteCache.getSiteById(siteId);
@@ -255,122 +250,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
             return getContentIdentifier(siteId, url);
         }
-    }
-
-    private int getVersion(String url, int version) {
-        String versionToken = "version=";
-        int versionPos = url.indexOf(versionToken);
-        if (versionPos != -1) {
-            String versionStr = url.substring(versionPos + versionToken.length(), url.length());
-            int end = versionStr.indexOf('&');
-            if (end != -1) {
-                versionStr = versionStr.substring(0, end);
-            }
-            try {
-                version = Integer.parseInt(versionStr);
-            } catch (NumberFormatException e) {
-                // Siste versjon
-            }
-        }
-        return version;
-    }
-
-    private int getContentIdFromParameter(String url, int contentId, int associationId) {
-        if (associationId == -1) {
-            String idToken = "contentid=";
-            int idPos = url.indexOf(idToken);
-            if (idPos != -1) {
-                String idStr = url.substring(idPos + idToken.length(), url.length());
-                int end = idStr.indexOf('&');
-                if (end != -1) {
-                    idStr = idStr.substring(0, end);
-                }
-                try {
-                    contentId = Integer.parseInt(idStr);
-                } catch (NumberFormatException e) {
-                    // Gjør ingenting
-                }
-            }
-        }
-        return contentId;
-    }
-
-    private int getAssociationIdFromThisId(String url, int associationId) {
-        String aIdToken = "thisid=";
-        int aIdPos = url.indexOf(aIdToken);
-        if (aIdPos != -1) {
-            String idStr = url.substring(aIdPos + aIdToken.length(), url.length());
-            int end = idStr.indexOf('&');
-            if (end != -1) {
-                idStr = idStr.substring(0, end);
-            }
-            try {
-                associationId = Integer.parseInt(idStr);
-            } catch (NumberFormatException e) {
-                // Gjør ingenting
-            }
-        }
-        return associationId;
-    }
-
-    /*
-     Looks for /content/ID/name
-     */
-    private int getAssociationIdFromPrettyUrl(String url, int associationId) {
-        int contentPos = url.indexOf(Aksess.CONTENT_URL_PREFIX);
-        if (contentPos != -1 && url.length() > Aksess.CONTENT_URL_PREFIX.length() + 1) {
-            String idStr = url.substring(contentPos + Aksess.CONTENT_URL_PREFIX.length() + 1, url.length());
-            int end = idStr.indexOf("/");
-            if (end != -1) {
-                idStr = idStr.substring(0, end);
-            }
-            try {
-                associationId = Integer.parseInt(idStr);
-            } catch (NumberFormatException e) {
-                // Do nothing
-            }
-        }
-        return associationId;
-    }
-
-    /*
-     Removes protocol and servername.
-     */
-    private String getPath(String url) {
-        url = url.toLowerCase();
-        if (url.startsWith("http://") || url.startsWith("https://")) {
-            url = url.substring(url.indexOf("://") + 3, url.length());
-            if (url.indexOf('/') != -1) {
-                url = url.substring(url.indexOf('/'), url.length());
-            }
-
-            String contextPath = Aksess.getContextPath().toLowerCase();
-            if (url.length() > contextPath.length()) {
-                url = url.substring(contextPath.length(), url.length());
-            }
-            if (url.length() == 0) {
-                url = "/";
-            }
-        }
-        return url;
-    }
-
-    private int getLanguage(String url, int language) {
-        String languageToken = "language=";
-        int languagePos = url.indexOf(languageToken);
-        if (languagePos != -1) {
-            String languageStr = url.substring(languagePos + languageToken.length(), url.length());
-            int end = languageStr.indexOf('&');
-            if (end != -1) {
-                languageStr = languageStr.substring(0, end);
-            }
-            try {
-                language = Integer.parseInt(languageStr);
-            } catch (NumberFormatException e) {
-                // Standard språk
-            }
-        }
-        return language;
     }
 
     private ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
@@ -408,7 +287,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
                 // Så i samme nettsted som lenka kom fra
                 if (associationId == -1) {
-                    siteId = getJdbcTemplate().queryForInt("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", contextId);
+                    siteId = getJdbcTemplate().queryForObject("SELECT SiteId FROM associations WHERE AssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", Integer.class,  contextId);
                 }
             }
 
@@ -434,7 +313,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         int contentId = -1;
 
         try {
-            contentId = getJdbcTemplate().queryForInt("select ContentId from associations where AssociationId = ?", associationId);
+            contentId = getJdbcTemplate().queryForObject("select ContentId from associations where AssociationId = ?", Integer.class, associationId);
         } catch (EmptyResultDataAccessException e) {
             log.error("Could not fint contentid for associationid " + associationId);
         }
@@ -583,5 +462,10 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 }
             }
         }
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        CONTENT_URL_PATTERN = Pattern.compile(ContentIdHelperHelper.getPatternWithContextPath(servletContext.getContextPath()));
     }
 }
