@@ -12,7 +12,6 @@ import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
@@ -65,9 +64,9 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
      */
     protected Content getContentForEdit(HttpServletRequest request) throws InvalidFileException, ObjectLockedException, NotAuthorizedException, InvalidTemplateException, ContentNotFoundException {
         RequestParameters param = new RequestParameters(request);
-        if (param.getInt("thisId") != -1) {
-            return getExistingPage(request);
-        } else if (param.getInt("parentId") != -1) {
+        if (param.getInt(AdminRequestParameters.THIS_ID) != -1) {
+            return getExistingPage(request, ContentIdentifier.fromAssociationId(param.getInt(AdminRequestParameters.THIS_ID)));
+        } else if (param.getInt(AdminRequestParameters.PARENT_ID) != -1) {
             return createNewPage(request);
         } else {
             throw new InvalidParameterException("", "");
@@ -105,8 +104,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         return new ContentManagementService(request).createNewContent(createParam);
     }
 
-    private Content getExistingPage(HttpServletRequest request) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
-        ContentIdentifier cid = ContentIdHelper.fromRequest(request);
+    private Content getExistingPage(HttpServletRequest request, ContentIdentifier cid) throws NotAuthorizedException, SystemException, InvalidFileException, InvalidTemplateException, ObjectLockedException, ContentNotFoundException {
         return new ContentManagementService(request).getLastVersionOfContent(cid);
     }
 
@@ -238,7 +236,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                 ContentManagementService cms = new ContentManagementService(getSecuritySession(request));
                 // Has no display template, show parent
                 ContentIdentifier parentCid = cms.getParent(content.getContentIdentifier());
-                Content parent = null;
+                Content parent;
                 try {
                     parent = cms.getContent(parentCid, false);
                     url = parent.getUrl();

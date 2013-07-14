@@ -79,7 +79,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                         int aId = Integer.parseInt(contentId);
                         cid = ContentIdentifier.fromAssociationId(aId);
                     } catch (NumberFormatException e) {
-                        cid = ContentIdHelper.fromSiteIdAndUrl(content.getAssociation().getSiteId(), contentId);
+                        cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
                     }
 
 

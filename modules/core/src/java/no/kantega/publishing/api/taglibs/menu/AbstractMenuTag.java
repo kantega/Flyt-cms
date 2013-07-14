@@ -22,18 +22,18 @@ import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,7 +77,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     protected abstract void printBody() throws IOException;
     protected abstract void reset();
 
-    private SiteCache siteCache;
+    private static SiteCache siteCache;
+    private static ContentIdentifierDao contentIdentifierDao;
 
     public void setName(String name) {
         this.name = name;
@@ -339,11 +340,12 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         if (content == null && defaultId != -1) {
             content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
         } else if (content == null && siteId != -1) {
-            try {
-                ContentIdentifier cid = ContentIdHelper.fromSiteIdAndUrl(siteId, "/");
+            if(contentIdentifierDao == null){
+                contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
+            }
+            ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(siteId, "/");
+            if (cid != null) {
                 content = cms.getContent(cid);
-            }  catch (ContentNotFoundException e) {
-                //
             }
         }
 

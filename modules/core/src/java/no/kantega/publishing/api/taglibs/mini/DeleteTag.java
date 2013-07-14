@@ -30,11 +30,6 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 30.mai.2008
- * Time: 12:20:25
- */
 public class DeleteTag extends AbstractSimpleEditTag {
 
     private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
@@ -53,7 +48,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
             }
             SecuritySession securitySession = SecuritySession.getInstance(request);
             if (content != null && securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
-                StringBuffer link = new StringBuffer();
+                StringBuilder link = new StringBuilder();
                 link.append("<a");
                 if (cssclass != null) {
                     link.append(" class=\"").append(cssclass).append("\"");
@@ -74,7 +69,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
                     txt =  LocaleLabels.getLabel("aksess.confirmdelete.mini", locale);
                 }
 
-                link.append(" href=\"Javascript:if (confirm('" + txt + "')) location.href='");
+                link.append(" href=\"Javascript:if (confirm('").append(txt).append("')) location.href='");
                 link.append(URLHelper.getRootURL(request));
                 link.append("admin/publish/SimpleDeleteContent.action?associationId=");
                 link.append(content.getAssociation().getId());
@@ -90,12 +85,10 @@ public class DeleteTag extends AbstractSimpleEditTag {
                 out.print(link.toString());
             }
 
-        } catch (SystemException e) {
+        } catch (SystemException | IOException e) {
             throw new JspException(e);
         } catch (NotAuthorizedException e) {
             //
-        } catch (IOException e) {
-            throw new JspException(e);
         } finally {
             bodyContent.clearBody();
         }

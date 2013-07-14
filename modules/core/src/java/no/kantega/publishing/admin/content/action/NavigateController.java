@@ -38,11 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 01.jul.2009
- * Time: 15:04:08
- */
 public class NavigateController extends AbstractContentAction {
     private String view;
 
