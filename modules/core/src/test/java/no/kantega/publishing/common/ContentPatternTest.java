@@ -28,7 +28,8 @@ public class ContentPatternTest {
     private static final Pair<String, String> contentId = new Pair<>("contentId", "1");
     private static final Pair<String, String> language = new Pair<>("language", "1");
     private static final Pair<String, String> version = new Pair<>("version", "1");
-    private final Pair<String,String> restContentId = new Pair<>("rest", "?contentId=1");
+    private static final Pair<String, String> siteId = new Pair<>("siteId", "1");
+    private static final Pair<String, String> restContentId = new Pair<>("rest", "?contentId=1");
 
     @Test
     public void contentApPatternShouldExtractAllTheValues() throws ContentNotFoundException {

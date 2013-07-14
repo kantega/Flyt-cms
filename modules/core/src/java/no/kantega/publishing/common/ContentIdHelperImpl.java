@@ -33,7 +33,6 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,6 +46,8 @@ import org.springframework.web.bind.ServletRequestUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
@@ -57,6 +58,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     private final int defaultSiteId = -1;
     private final int defaultContextId = -1;
     private final int defaultVersion = -1;
+    private final Pattern siteIdPattern = Pattern.compile(".*siteId=(?<siteId>\\d+).*");
 
     @Autowired
     private SiteCache siteCache;
@@ -133,9 +135,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(parent);
             query.setAssociationCategory(association.getCategory());
-            if(contentAO == null){
-                contentAO = RootContext.getInstance().getBean(ContentAO.class);
-            }
+
             List<Content> children = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), false);
             for (int i = 0; i < children.size(); i++) {
                 Content c = children.get(i);
@@ -451,15 +451,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
      * If url is siteId/alias, url is adjusted to /alias
      */
     private Pair<Integer, String> getSiteIdFromRequest(HttpServletRequest request, String url) throws SystemException {
-        int siteId = -1;
+        int siteId = ServletRequestUtils.getIntParameter(request, "siteId", -1);
         String adjustedUrl = url;
-        if (request.getParameter("siteId") != null) {
-            try {
-                siteId = Integer.parseInt(request.getParameter("siteId"));
-            } catch (NumberFormatException e) {
-                log.error("Could not parse siteId " + siteId, e);
-            }
-        }
 
         if (siteId == -1) {
             Content content = (Content)request.getAttribute("aksess_this");
@@ -469,18 +462,9 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         }
 
         if (siteId == -1 && url != null) {
-            int siteIdPos = url.indexOf("siteId=");
-            if (siteIdPos != -1) {
-                String siteIdStr = url.substring(siteIdPos + "siteId=".length(), url.length());
-                int siteIdEndPos = siteIdStr.indexOf("&");
-                if (siteIdEndPos != -1) {
-                    siteIdStr = siteIdStr.substring(0, siteIdEndPos);
-                }
-                try {
-                    siteId = Integer.parseInt(siteIdStr);
-                } catch (NumberFormatException e) {
-                    log.error("Could not parse siteid " + siteId, e);
-                }
+            Matcher siteIdMatcher = siteIdPattern.matcher(url);
+            if(siteIdMatcher.matches()){
+                siteId = Integer.parseInt(siteIdMatcher.group("siteId"));
             }
         }
 
@@ -488,6 +472,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
+
             }
             if(url != null) {
                 List<Site> sites = siteCache.getSites();
