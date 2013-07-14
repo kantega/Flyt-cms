@@ -16,17 +16,20 @@
 
 package no.kantega.commons.taglib.template;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import java.io.IOException;
 
 /**
  * Benyttes for å hente ut en section som er lagret med put tidligere
  */
 public class HasSectionTag  extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(HasSectionTag.class);
     private String id = null;
     private String negate = null;
 
@@ -51,8 +54,8 @@ public class HasSectionTag  extends BodyTagSupport {
             if((hasSection && ! negate) || (!hasSection && negate)) {
                 bodyContent.writeOut(getPreviousOut());
             }
-        } catch (Exception e) {
-            Log.error("ERROR", e, null, null);
+        } catch (IOException e) {
+            log.error("Error writing content",  e);
             throw new JspTagException("HasSectionTag", e);
         } finally {
             bodyContent.clearBody();

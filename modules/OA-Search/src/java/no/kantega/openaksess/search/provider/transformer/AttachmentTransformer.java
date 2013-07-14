@@ -3,17 +3,18 @@ package no.kantega.openaksess.search.provider.transformer;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.AttachmentAO;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -29,11 +30,14 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
 
+    @Autowired
+    private ContentAO contentAO;
+
     public IndexableDocument transform(Attachment attachment) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(attachment));
 
         ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(attachment.getContentId());
-        Content content = ContentAO.getContent(contentIdentifier, true);
+        Content content = contentAO.getContent(contentIdentifier, true);
 
         if (content != null && content.isSearchable()) {
             indexableDocument.setLanguage(getLanguageAsISOCode(content.getLanguage()));

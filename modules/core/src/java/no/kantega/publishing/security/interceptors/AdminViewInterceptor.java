@@ -32,7 +32,7 @@ public class AdminViewInterceptor extends HandlerInterceptorAdapter {
 
         Map<String, Object> model = modelAndView.getModel();
         if (model == null) {
-            model = new HashMap<String, Object>();
+            model = new HashMap<>();
         }
         model.put("aksess_locale", Aksess.getDefaultAdminLocale());
 

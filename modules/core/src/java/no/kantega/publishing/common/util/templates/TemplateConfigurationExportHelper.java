@@ -17,16 +17,18 @@
 package no.kantega.publishing.common.util.templates;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.PublicIdObject;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -44,7 +46,7 @@ import java.util.*;
  *
  */
 public class TemplateConfigurationExportHelper {
-    private static String SOURCE = "aksess.TemplateConfigurationExportHelper";
+    private static final Logger log = LoggerFactory.getLogger(TemplateConfigurationExportHelper.class);
 
     /**
      * Returns a templateconfiguration from database - used to export old versions to XML
@@ -88,7 +90,7 @@ public class TemplateConfigurationExportHelper {
             }
 
         } catch (Exception e) {
-            Log.error("TemplateConfigurationExportHelper", e, null, null);
+            log.error("Error exporting template configuration", e);
         }
         return tc;
 
@@ -224,9 +226,9 @@ public class TemplateConfigurationExportHelper {
             if (expireMonths > 0) {
                 template.setExpireMonths(expireMonths);
             }
-            int expireAction = rs.getInt("ExpireAction");
-            if (expireAction > 0) {
-                template.setExpireAction(expireAction);
+            String expireAction = rs.getString("ExpireAction");
+            if (expireAction != null) {
+                template.setExpireAction(ExpireAction.valueOf(expireAction));
             }
             int hearing = rs.getInt("HearingEnabled");
             if (hearing == 1) {

@@ -47,7 +47,7 @@
         <contentTemplate databaseId="1" id="forside" contentType="PAGE">
             <documentType id="klasseX"/>
             <name>Forside</name>
-            <templateFile>forside.xml</templateFile>
+            <templateFile>templates/forside.xml</templateFile>
             <associationCategories>
                 <associationCategory id="hovedmeny"/>
                 <associationCategory id="midtspalte"/>
@@ -56,7 +56,7 @@
         </contentTemplate>
         <contentTemplate databaseId="2" id="liste med nyheter" contentType="PAGE">
             <name>Liste med nyheter</name>
-            <templateFile>nyheter.xml</templateFile>
+            <templateFile>templates/nyheter.xml</templateFile>
             <allowedParentTemplates>
                 <contentTemplate id="forside"/>
             </allowedParentTemplates>
@@ -66,7 +66,7 @@
         </contentTemplate>
         <contentTemplate databaseId="3" id="nyhet" contentType="PAGE">
             <name>Nyhet</name>
-            <templateFile>artikkel.xml</templateFile>
+            <templateFile>templates/artikkel.xml</templateFile>
             <allowedParentTemplates>
                 <contentTemplate id="liste med nyheterX"/>
             </allowedParentTemplates>

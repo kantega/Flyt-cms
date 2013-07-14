@@ -17,15 +17,16 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.data.MultimediaImageMap;
+import no.kantega.publishing.common.util.database.SQLHelper;
+import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
 public class MultimediaImageMapAO {
-    private static final String SOURCE = "aksess.MultimediaImageMapAO";
+    private static final Logger log = LoggerFactory.getLogger(MultimediaImageMapAO.class);
 
     /**
      * Get MultimediaImageMap for multimedia object
@@ -34,11 +35,8 @@ public class MultimediaImageMapAO {
      * @throws SystemException -
      */
     public static MultimediaImageMap loadImageMap(int multimediaId) throws SystemException {
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, "SELECT Coords, Url, AltName, NewWindow from multimediaimagemap WHERE MultimediaId = " + multimediaId + " ORDER BY Id");
+        try (Connection c = dbConnectionFactory.getConnection()) {
+            ResultSet rs = SQLHelper.getResultSet(c, "SELECT Coords, Url, AltName, NewWindow from multimediaimagemap WHERE MultimediaId = ? ORDER BY Id", new Object[]{multimediaId});
 
             MultimediaImageMap mim = new MultimediaImageMap();
             mim.setMultimediaId(multimediaId);
@@ -48,16 +46,8 @@ public class MultimediaImageMapAO {
             rs.close();
             return mim;
         } catch (SQLException e) {
-            Log.error(MultimediaImageMapAO.SOURCE, e, null, null);
-            throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL feil ved henting av imagemap", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                //
-            }
+            log.error("", e);
+            throw new SystemException("SQL feil ved henting av imagemap", e);
         }
     }
 
@@ -67,9 +57,7 @@ public class MultimediaImageMapAO {
      * @throws SystemException -
      */
     public static void storeImageMap(MultimediaImageMap mim) throws SystemException {
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             Statement st = c.createStatement();
             // Delete old mappings
             st.execute("delete from multimediaimagemap where MultimediaId=" + mim.getMultimediaId());
@@ -78,12 +66,12 @@ public class MultimediaImageMapAO {
 
             MultimediaImageMap.CoordUrlMap[] coordUrlMapArray = mim.getCoordUrlMap();
 
-            for (int i = 0; i < coordUrlMapArray.length; i++) {
+            for (MultimediaImageMap.CoordUrlMap aCoordUrlMapArray : coordUrlMapArray) {
                 ps.setInt(1, mim.getMultimediaId());
-                ps.setString(2, coordUrlMapArray[i].getCoord());
-                ps.setString(3, coordUrlMapArray[i].getUrl());
-                ps.setString(4, coordUrlMapArray[i].getAltName());
-                ps.setInt(5, coordUrlMapArray[i].isOpenInNewWindow() ? 1 : 0);
+                ps.setString(2, aCoordUrlMapArray.getCoord());
+                ps.setString(3, aCoordUrlMapArray.getUrl());
+                ps.setString(4, aCoordUrlMapArray.getAltName());
+                ps.setInt(5, aCoordUrlMapArray.isOpenInNewWindow() ? 1 : 0);
                 ps.execute();
             }
 
@@ -92,15 +80,8 @@ public class MultimediaImageMapAO {
             hasImageMapSt.setInt(2, mim.getMultimediaId());
             hasImageMapSt.execute();
         } catch (SQLException e) {
-            Log.error(MultimediaImageMapAO.SOURCE, e, null, null);
-            throw new SystemException(MultimediaImageMapAO.SOURCE, "SQL error saving imagemap", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-            }
+            log.error("", e);
+            throw new SystemException("SQL error saving imagemap", e);
         }
     }
 

@@ -2,7 +2,6 @@ package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public class SaveHearingHelper  {
-    private static final String SOURCE = "aksess.admin.SaveHearingHelper";
 
     private HttpServletRequest request = null;
     private Content content = null;
@@ -24,7 +22,7 @@ public class SaveHearingHelper  {
     }
 
 
-    public ValidationErrors getHttpParameters(ValidationErrors errors) throws RegExpSyntaxException {
+    public ValidationErrors getHttpParameters(ValidationErrors errors) {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         Hearing hearing = content.getHearing();

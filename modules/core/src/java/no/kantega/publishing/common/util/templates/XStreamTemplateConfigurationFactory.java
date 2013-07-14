@@ -16,20 +16,17 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import no.kantega.publishing.common.data.*;
-import no.kantega.commons.log.Log;
 import com.thoughtworks.xstream.XStream;
+import no.kantega.publishing.common.data.InputStreamSource;
+import no.kantega.publishing.common.data.TemplateConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 1:18:14 PM
- */
 public class XStreamTemplateConfigurationFactory implements TemplateConfigurationFactory {
-    private static String SOURCE = "aksess.XStreamTemplateConfigurationFactory";
+    private static final Logger log = LoggerFactory.getLogger(XStreamTemplateConfigurationFactory.class);
 
     private InputStreamSource inputStreamSource;
 
@@ -43,7 +40,7 @@ public class XStreamTemplateConfigurationFactory implements TemplateConfiguratio
             xstream.fromXML(inputStreamSource.getInputStream(), templateConfiguration);
             is.close();
         } catch (IOException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return templateConfiguration;

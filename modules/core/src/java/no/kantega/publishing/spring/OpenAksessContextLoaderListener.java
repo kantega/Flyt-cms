@@ -22,7 +22,8 @@ import no.kantega.commons.configuration.DefaultConfigurationLoader;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -54,7 +55,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
     private File dataDirectory;
 
     private ConfigurationLoader configurationLoader;
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(OpenAksessContextLoaderListener.class);
     private ServletContextEvent event;
 
     @Override

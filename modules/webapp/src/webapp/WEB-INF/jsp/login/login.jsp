@@ -68,6 +68,13 @@
                 <label>Passord...</label>
                 <input type="password" id="j_password" name="j_password" size="25" maxlength="60">
             </div>
+            <c:set var="isRememberMe"><aksess:getconfig key="security.login.rememberme.enabled"/></c:set>
+            <c:if test="${isRememberMe}">
+                <div id="RememberMe">
+                    <label for="remember_me">Husk meg</label>
+                    <input type="checkbox" id="remember_me" name="remember_me">
+                </div>
+            </c:if>
             <div id="Submit">
                 <input type="submit" value="<kantega:label key="aksess.login.login"/>">
             </div>

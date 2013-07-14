@@ -16,12 +16,13 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -33,7 +34,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  *
  */
 public class SetVariableTag extends TagSupport {
-    private static final String SOURCE = "aksess.SetVariableTag";
+    private static final Logger log = LoggerFactory.getLogger(SetVariableTag.class);
 
     private String name = null;
     private String attribute = null;
@@ -134,8 +135,8 @@ public class SetVariableTag extends TagSupport {
             }
             request.setAttribute(name, result);
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

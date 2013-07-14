@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.security.data;
 
+import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.enums.RoleType;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.security.api.identity.Identity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,14 +30,13 @@ import java.util.Properties;
  */
 public class User extends SecurityIdentifier {
 
-    private Identity identity;
     private String givenName = "";
     private String surname = "";
     private String email = null;
     private String department;
-    private HashMap<String, Role> roles = new HashMap<String, Role>();
+    private HashMap<String, Role> roles = new HashMap<>();
     private List<Topic> topics = null;
-    private List orgUnits = new ArrayList();
+    private List<OrgUnit> orgUnits = new ArrayList<>();
     private Properties attributes;
     
     public boolean matchesId(String id) {
@@ -110,7 +109,7 @@ public class User extends SecurityIdentifier {
             return;
         }
         if (topics == null) {
-            topics = new ArrayList<Topic>();
+            topics = new ArrayList<>();
         }
         boolean found = false;
         for (Topic t : topics) {
@@ -131,11 +130,11 @@ public class User extends SecurityIdentifier {
         topics.remove(topic);
     }
 
-    public List getOrgUnits() {
+    public List<OrgUnit> getOrgUnits() {
         return orgUnits;
     }
 
-    public void setOrgUnits(List orgUnits) {
+    public void setOrgUnits(List<OrgUnit> orgUnits) {
         this.orgUnits = orgUnits;
     }
 

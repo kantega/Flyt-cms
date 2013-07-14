@@ -20,7 +20,7 @@ import no.kantega.publishing.common.data.Note;
 import java.util.List;
 
 public interface NotesDao {
-    public List<Note> getNotesByContentId(int contentId);
+    public List getNotesByContentId(int contentId);
     public void addNote(Note note);
     public void removeNote(int nid);
 }

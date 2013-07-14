@@ -17,7 +17,7 @@
 package no.kantega.publishing.common.exception;
 
 public class MissingTemplateException extends no.kantega.commons.exception.KantegaException {
-    public MissingTemplateException(String message, String source) {
-        super(message, source, null);
+    public MissingTemplateException(String message) {
+        super(message, null);
     }
 }

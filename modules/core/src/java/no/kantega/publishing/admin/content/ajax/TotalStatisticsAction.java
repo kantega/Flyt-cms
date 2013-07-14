@@ -20,13 +20,13 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.TrafficLogDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -40,6 +40,9 @@ import java.util.*;
 public class TotalStatisticsAction  extends SimpleAdminController {
     @Autowired
     TrafficLogDao trafficLogDao;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -60,7 +63,7 @@ public class TotalStatisticsAction  extends SimpleAdminController {
         ContentIdentifier cid = null;
         if (!"".equals(url)) {
             try {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                cid = contentIdHelper.fromRequestAndUrl(request, url);
 
                 Content content = aksessService.getContent(cid);
                 if (content != null) {

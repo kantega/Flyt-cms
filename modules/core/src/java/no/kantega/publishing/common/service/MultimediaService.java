@@ -21,7 +21,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
@@ -33,18 +32,19 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.service.impl.MultimediaMapWorker;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MultimediaService {
-    private static final String SOURCE = "aksess.ContentManagementService";
 
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
@@ -52,12 +52,14 @@ public class MultimediaService {
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
     private EventLog eventLog;
+    private ContentAO contentAO;
 
     public MultimediaService() {
-        multimediaUsageDao = RootContext.getInstance().getBean(MultimediaUsageDao.class);
-        multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
-        eventLog = RootContext.getInstance().getBean(EventLog.class);
-
+        ApplicationContext ctx = RootContext.getInstance();
+        multimediaUsageDao = ctx.getBean(MultimediaUsageDao.class);
+        multimediaDao = ctx.getBean(MultimediaDao.class);
+        eventLog = ctx.getBean(EventLog.class);
+        contentAO = ctx.getBean(ContentAO.class);
     }
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
@@ -76,12 +78,12 @@ public class MultimediaService {
 
         if (multimedia != null && multimedia.getContentId() > 0) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
-            Content content = ContentAO.getContent(cid, false);
+            Content content = contentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
-                throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+                throw new NotAuthorizedException("Not authorized for id:" + id);
             }
         } else if (multimedia != null && !securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
-             throw new NotAuthorizedException(this.getClass().getName(), "Not authorized for id:" + id);
+             throw new NotAuthorizedException("Not authorized for id:" + id);
         }
 
         return multimedia;
@@ -152,7 +154,7 @@ public class MultimediaService {
             newParent.setSecurityId(0);
         }
         if (!securitySession.isAuthorized(newParent, Privilege.UPDATE_CONTENT) || (!securitySession.isAuthorized(mm, Privilege.UPDATE_CONTENT))) {
-            throw new NotAuthorizedException("Kan ikke flytte multimedia", SOURCE);
+            throw new NotAuthorizedException("Kan ikke flytte multimedia");
         }
 
         multimediaDao.moveMultimedia(mmId, newParentId);
@@ -173,7 +175,7 @@ public class MultimediaService {
                     deleteMultimedia(child.getId());
                 } catch (ObjectInUseException e) {
                     // Should never occur, because MultimediaType is MEDIA. Can only occur with MultimediaType FOLDER.
-                    throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+                    throw new SystemException("Error deleting multimediafolder with id "+id+".", e);
                 }
             } else {
                 deleteMultimediaFolder(child.getId());
@@ -182,7 +184,7 @@ public class MultimediaService {
         try {
             deleteMultimedia(id);
         } catch (ObjectInUseException e) {
-            throw new SystemException("Error deleting multimediafolder with id "+id+"." , this.getClass().getName(), e);
+            throw new SystemException("Error deleting multimediafolder with id "+id+".", e);
         }
     }
 
@@ -194,7 +196,7 @@ public class MultimediaService {
                 title = t.getName();
             }
             if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".", this.getClass().getName());
+                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".");
             }
         }
         multimediaDao.deleteMultimedia(id);
@@ -241,7 +243,7 @@ public class MultimediaService {
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
-            Content content = ContentAO.getContent(cid, true);
+            Content content = contentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);
             }

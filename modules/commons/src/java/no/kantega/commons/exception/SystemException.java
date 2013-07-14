@@ -16,19 +16,13 @@
 
 package no.kantega.commons.exception;
 
-import org.apache.log4j.Logger;
 
 /**
  *
  */
 public class SystemException extends RuntimeException {
 
-    public SystemException(String message, String source, Throwable original) {
+    public SystemException(String message, Throwable original) {
         super(message, original);
-        if (original != null) {
-            Logger.getLogger(source).error(message, original);
-        } else {
-            Logger.getLogger(source).error(message);
-        }
     }
 }

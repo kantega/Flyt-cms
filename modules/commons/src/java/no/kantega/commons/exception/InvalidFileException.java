@@ -16,14 +16,12 @@
 
 package no.kantega.commons.exception;
 
-import no.kantega.commons.log.Log;
-
 /**
  *
  */
 public class InvalidFileException extends no.kantega.commons.exception.KantegaException {
-    public InvalidFileException(String file, String source, Throwable original) {
-        super("Feil i lesing av fil:" + file, source, original);
-        Log.error(source, original, null, null);
+
+    public InvalidFileException(String file, Throwable original) {
+        super("Feil i lesing av fil:" + file, original);
     }
 }

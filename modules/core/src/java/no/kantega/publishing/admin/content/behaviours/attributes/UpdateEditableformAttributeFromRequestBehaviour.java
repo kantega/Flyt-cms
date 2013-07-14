@@ -17,14 +17,14 @@
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.publishing.admin.content.htmlfilter.CleanupFormHtmlFilter;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.EditableformAttribute;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -34,6 +34,7 @@ import java.io.StringWriter;
  * Time: 11:53:33 AM
  */
 public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
+    private static final Logger log = LoggerFactory.getLogger(UpdateEditableformAttributeFromRequestBehaviour.class);
 
     private static String BODY_START = "<BODY>";
     private static String BODY_END   = "</BODY>";
@@ -81,7 +82,7 @@ public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAt
             value = value.substring(start + BODY_START.length(), end);
         } catch (Exception e) {
             value = origVal;
-            Log.error("", e, null, null);
+            log.error("", e);
         }
 
         // Some versions of Xerces creates XHTML tags

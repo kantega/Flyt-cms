@@ -16,18 +16,19 @@
 
 package no.kantega.publishing.controls.userprofile;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.client.util.RequestParameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Properties;
 import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -35,8 +36,8 @@ import java.util.Enumeration;
  * Time: 2:25:16 PM
  */
 public class ViewProfileController implements AksessController {
+    private static final Logger log = LoggerFactory.getLogger(ViewProfileController.class);
 
-    private static String SOURCE = "aksess.ViewProfileController";
 
     public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         User user = null;
@@ -63,7 +64,7 @@ public class ViewProfileController implements AksessController {
                 while (propertyNames.hasMoreElements()) {
                     String propertyName = (String)propertyNames.nextElement();
                     model.put("attribute_" + propertyName, attributes.getProperty(propertyName));
-                    Log.debug(SOURCE, "property:" + propertyName, null, null);
+                    log.debug( "property:" + propertyName);
                 }
             }
         }

@@ -165,7 +165,7 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         this.pluginClassLoaderProviders = pluginClassLoaderProviders;
     }
 
-    public void setExposedBeanNames(List exposedBeanNames) {
+    public void setExposedBeanNames(List<String> exposedBeanNames) {
         this.exposedBeanNames = exposedBeanNames;
     }
 

@@ -19,7 +19,6 @@ package no.kantega.publishing.api.taglibs.menu;
 import java.io.IOException;
 
 public class GetMenuTag extends AbstractMenuTag {
-    private static final String SOURCE = "aksess.GetMenuTag";
 
 
     protected void printBody() throws IOException {

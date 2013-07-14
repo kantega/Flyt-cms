@@ -34,7 +34,6 @@ import java.util.*;
  */
 public class NewsArchiveController implements AksessController {
 
-    private static final String SOURCE = "aksess.NewsArchiveController";
 
     private int startYear = -1;
     private int defaultMax = 20;

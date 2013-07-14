@@ -16,14 +16,15 @@
 
 package no.kantega.publishing.security.login;
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PostLoginHandlerFactory {
-    private static final String SOURCE = "aksess.PostLoginHandlerFactory";
+    private static final Logger log = LoggerFactory.getLogger(PostLoginHandlerFactory.class);
 
 
     public static PostLoginHandler newInstance () throws SystemException, ConfigurationException {
@@ -37,7 +38,7 @@ public class PostLoginHandlerFactory {
         try {
             return (PostLoginHandler)Class.forName(postloginhandler).newInstance();
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             return null;
         }
     }

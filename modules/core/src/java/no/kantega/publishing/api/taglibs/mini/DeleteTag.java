@@ -32,7 +32,6 @@ import java.util.Locale;
 
 public class DeleteTag extends AbstractSimpleEditTag {
 
-    private static final String SOURCE = "no.kantega.publishing.api.taglibs.mini.CreateTag";
     private String associationId = null;
     private String confirmationlabel = null;
     private String bundle = null;

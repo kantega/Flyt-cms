@@ -18,7 +18,6 @@ package no.kantega.publishing.topicmaps.impl;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
@@ -29,6 +28,8 @@ import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
 import org.apache.xpath.CachedXPathAPI;
 import org.apache.xpath.XPathAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XTMImportWorker{
-    private static final String SOURCE = "aksess.XTMImportWorker";
+    private static final Logger log = LoggerFactory.getLogger(XTMImportWorker.class);
 
     //In xtm 1.0 attribute xlink:href is used, in xtm 2.0 attribute href is used.
     private static final String[] ATTRIBUTE_HREF = {"xlink:href","href"};
@@ -67,7 +68,7 @@ public class XTMImportWorker{
         //Ignore topics that don't have subjectidenty and instanceof
         boolean shouldBeImported = topic.getInstanceOf() != null || topic.getSubjectIdentity() != null;
         if( ! shouldBeImported){
-            Log.debug(this.getClass().getName(),"Skipping topics that don't have subjectidenty and instanceof: " + topic.getId());
+            log.debug("Skipping topics that don't have subjectidenty and instanceof: " + topic.getId());
         }
         return shouldBeImported;
     }
@@ -459,7 +460,7 @@ public class XTMImportWorker{
                 Element elmTopic = (Element)topics.item(i);
                 addTopic(elmTopic);
             }
-            Log.info(getClass().getSimpleName(), "Antall topics:" + topics.getLength());
+            log.info( "Antall topics:" + topics.getLength());
 
             // Legg inn
             NodeList associations = XPathAPI.selectNodeList(xmlTopicMap.getDocumentElement(), "association");
@@ -467,10 +468,10 @@ public class XTMImportWorker{
                 Element elmAssociation = (Element)associations.item(i);
                 addAssociation(elmAssociation);
             }
-            Log.info(getClass().getSimpleName(), "Antall associations:" + associations.getLength());
+            log.info( "Antall associations:" + associations.getLength());
 
         } catch (TransformerException e) {
-            throw new SystemException("Uventet XML/XPath feil", SOURCE, e);
+            throw new SystemException("Uventet XML/XPath feil", e);
         }
     }
 }

@@ -16,11 +16,12 @@
 
 package no.kantega.publishing.modules.forms.tags;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.forms.validate.FormError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,6 +37,7 @@ import java.util.Locale;
  *
  */
 public class FormTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(FormTag.class);
 
     private String action = null;
     private String errortext = null;
@@ -90,8 +92,8 @@ public class FormTag extends BodyTagSupport {
             out.print("<input type=\"hidden\" name=\"isAksessFormSubmit\" value=\"true\">");
             out.print("</form>\n");
         } catch (IOException e) {
-            Log.error(getClass().getName(), e, null, null);
-            throw new JspTagException(getClass().getName() + ":" + e.getMessage());
+            log.error("Error writing to stream", e);
+            throw new JspTagException(e);
         }
         action = null;
         errortext = null;

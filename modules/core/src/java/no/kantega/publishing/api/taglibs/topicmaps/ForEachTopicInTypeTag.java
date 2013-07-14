@@ -1,26 +1,26 @@
 package no.kantega.publishing.api.taglibs.topicmaps;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
-
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import org.apache.log4j.Logger;
+import java.util.List;
 
 /**
  *
  */
 public class ForEachTopicInTypeTag extends LoopTagSupport {
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(ForEachTopicInTypeTag.class);
 
     private Iterator<Topic> i;
     private int topicmapid =-1;
@@ -50,8 +50,8 @@ public class ForEachTopicInTypeTag extends LoopTagSupport {
             }
             i = topicList.iterator();
         } catch (SystemException e) {
-            log.error(e);
-            throw new JspTagException(e.getMessage());
+            log.error("Could not set topiclist", e);
+            throw new JspTagException(e);
         }
     }
 

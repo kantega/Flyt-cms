@@ -16,13 +16,15 @@
 
 package no.kantega.publishing.security.realm;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.commons.exception.SystemException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 public class SecurityRealmFactory {
-    private static final String SOURCE = "aksess.SecurityRealmFactory";
+    private static final Logger log = LoggerFactory.getLogger(SecurityRealmFactory.class);
 
     public static SecurityRealm getInstance() throws SystemException {
         return getInstance(Aksess.getSecurityRealmName());
@@ -32,7 +34,8 @@ public class SecurityRealmFactory {
         ApplicationContext context = RootContext.getInstance();
         SecurityRealm realm = (SecurityRealm) context.getBean(realmName);
         if (realm == null) {
-            throw new SystemException(SOURCE, "Realm with name" + realmName + " not found", null);
+            log.error("Realm with name" + realmName + " not found");
+            throw new SystemException("Realm with name" + realmName + " not found", null);
         }
 
         return realm;

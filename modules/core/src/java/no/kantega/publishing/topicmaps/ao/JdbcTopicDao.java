@@ -121,14 +121,16 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
 
         getJdbcTemplate().update("DELETE FROM tmoccurence WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
 
-        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
-
-        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId IN (SELECT TopicId FROM tmtopic WHERE Imported = 1)", topicMapId);
-
         getJdbcTemplate().update("DELETE FROM tmtopic WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
         getJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND Imported = 1", topicMapId);
 
+    }
+
+    @Override
+    public void deleteNonexistingTopicsTags(int topicMapId) {
+        getJdbcTemplate().update("DELETE FROM role2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
+        getJdbcTemplate().update("DELETE FROM ct2topic WHERE TopicMapId = ? AND TopicId NOT IN (SELECT TopicId FROM tmtopic WHERE TopicMapId = ?)", topicMapId, topicMapId);
     }
 
     public void setTopic(Topic topic) {

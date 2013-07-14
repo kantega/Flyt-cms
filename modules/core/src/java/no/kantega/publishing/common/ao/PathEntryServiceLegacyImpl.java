@@ -1,11 +1,12 @@
 package no.kantega.publishing.common.ao;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.path.PathEntryService;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport implements PathEntryService {
+    private static final Logger log = LoggerFactory.getLogger(PathEntryServiceLegacyImpl.class);
 
     @Override
     public List<PathEntry> getPathEntriesByContentIdentifier(ContentIdentifier contentIdentifier) {
@@ -33,7 +35,7 @@ public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport imp
             associationIds.put("associationIds", Arrays.asList(replaceSlashAddCurrent.split(",")));
             pathEntries = getNamedParameterJdbcTemplate().query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:associationIds) order by associations.AssociationId", associationIds, rowMapper);
         } catch (DataAccessException e) {
-            Log.error("PathEntryServiceLegacyImpl", e.getMessage());
+            log.error( e.getMessage());
         }
         return pathEntries;
     }

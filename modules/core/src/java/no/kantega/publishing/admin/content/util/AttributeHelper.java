@@ -16,29 +16,21 @@
 
 package no.kantega.publishing.admin.content.util;
 
-import no.kantega.commons.util.RegExp;
-import no.kantega.commons.exception.RegExpSyntaxException;
+import java.util.regex.Pattern;
 
 public class AttributeHelper {
-    private static final String REGEXP = "[^a-zA-Z0-9\\$]";
+    private static final Pattern ILLEGAL_PATTERN = Pattern.compile("[^a-zA-Z0-9\\$]");
 
 
     public static String getInputFieldName(String name) {
-        try {
-            name = name.replace(".", "$");
-            return "attributeValue_" + RegExp.replace(REGEXP, name, "_");
-        } catch (RegExpSyntaxException e) {
-            return "attributeValue_" + name;
-        }
+        name = name.replace(".", "$");
+        return "attributeValue_" + ILLEGAL_PATTERN.matcher(name).replaceAll("_");
     }
 
     public static String getInputContainerName(String name) {
-        try {
-            name = name.replace(".", "$");
-            return "contentAttribute_" + RegExp.replace(REGEXP, name, "_");
-        } catch (RegExpSyntaxException e) {
-            return "contentAttribute_" + name;
-        }
+        name = name.replace(".", "$");
+        return "contentAttribute_" + ILLEGAL_PATTERN.matcher(name).replaceAll("_");
+
     }
 
 }

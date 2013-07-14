@@ -21,20 +21,21 @@ import com.google.common.collect.Multimap;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -42,22 +43,25 @@ import java.util.*;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class ExpireContentAlertJob {
+    private static final Logger log = LoggerFactory.getLogger(ExpireContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 14;
-    private static String SOURCE = "ExpireContentAlertJob";
 
     @Autowired
     private SiteCache siteCache;
 
+    @Autowired
+    private ContentAO contentAO;
+
     public void execute() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         
         try {
-            Log.info(SOURCE, "Looking for content will expire in less than " + daysBeforeWarning + " days", null, null);
+            log.info( "Looking for content will expire in less than " + daysBeforeWarning + " days");
 
 
             List<Site> sites = siteCache.getSites();
@@ -79,7 +83,7 @@ public class ExpireContentAlertJob {
                 query.setSiteId(site.getId());
 
                 SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
-                List<Content> contentList = ContentAO.getContentList(query, -1, sort, false);
+                List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
 
                 String defaultUserEmail = null;
 
@@ -87,7 +91,7 @@ public class ExpireContentAlertJob {
                     Configuration config = Aksess.getConfiguration();
                     defaultUserEmail = config.getString("mail" + alias + "contentexpire.recipient");
                 } catch (ConfigurationException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 }
 
                 Multimap<String, Content> users = ArrayListMultimap.create();
@@ -121,12 +125,12 @@ public class ExpireContentAlertJob {
                     // Send message using listeners
                     List<Content> userContentList = new ArrayList<>(entry.getValue());
                     if (user != null) {
-                        Log.info(SOURCE, "Sending alert to user " + user.getId() + " - " + userContentList.size() + " docs about to expire", null, null);
+                        log.info( "Sending alert to user " + user.getId() + " - " + userContentList.size() + " docs about to expire");
                         for (ContentAlertListener listener : listeners) {
                             listener.sendContentAlert(user, userContentList);
                         }
                     } else {
-                        Log.info(SOURCE, "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs about to expire", null, null);
+                        log.info( "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs about to expire");
                     }
                 }
 
@@ -134,7 +138,7 @@ public class ExpireContentAlertJob {
             }
 
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
     }
@@ -158,7 +162,7 @@ public class ExpireContentAlertJob {
     }
 
     public void setDaysBeforeWarning(Integer days) {
-        daysBeforeWarning = days.intValue();
+        daysBeforeWarning = days;
     }
 }
 

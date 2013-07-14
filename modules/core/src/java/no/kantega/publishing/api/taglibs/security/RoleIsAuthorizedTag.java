@@ -2,18 +2,19 @@ package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class RoleIsAuthorizedTag extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.HasRoleTag";
+    private static final Logger log = LoggerFactory.getLogger(RoleIsAuthorizedTag.class);
 
     private String role;
     private String collection;
@@ -35,7 +36,7 @@ public class RoleIsAuthorizedTag extends ConditionalTagSupport {
                 }
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         } catch (NotAuthorizedException e) {
             // Do nothing
         }

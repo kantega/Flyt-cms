@@ -4,7 +4,8 @@ import no.kantega.publishing.plugin.provider.PluginHotDeployProvider;
 import no.kantega.publishing.plugin.provider.PluginInfo;
 import no.kantega.publishing.plugin.provider.ThreadLocalPluginLoaderErrors;
 import no.kantega.publishing.spring.RuntimeMode;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class PluginDeploymentController {
     private PluginHotDeployProvider provider;
 
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(PluginDeploymentController.class);
 
     @Autowired
     private ThreadLocalPluginLoaderErrors threadLocalPluginLoaderErrors;

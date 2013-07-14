@@ -21,7 +21,7 @@ import java.util.concurrent.BlockingQueue;
 
 @Component
 public class IndexableAttachmentProvider implements IndexableDocumentProvider {
-
+    private final String FROM_CLAUSE = "FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0";
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -52,7 +52,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     private void provideAttachments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
         try (Connection connection = dataSource.getConnection()){
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id " + FROM_CLAUSE);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 int id = resultSet.getInt("Id");
@@ -70,6 +70,8 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
                 IndexableDocument indexableDocument = transformer.transform(attachment);
                 log.info("Transformed Attachment {}", attachment.getFilename());
                 indexableDocumentQueue.put(indexableDocument);
+            } else {
+                log.error("Attachment with id {} was null", id);
             }
         } finally {
             progressReporter.reportProgress();
@@ -91,6 +93,6 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     private long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForInt("SELECT count(attachments.Id) FROM attachments, content, associations WHERE attachments.ContentId = content.ContentId AND content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+        return jdbcTemplate.queryForInt("SELECT count( distinct attachments.Id ) " + FROM_CLAUSE);
     }
 }

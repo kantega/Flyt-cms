@@ -14,6 +14,7 @@ if (typeof properties.formeditor == 'undefined') {
 }
 
 properties.editcontext['labels'] = {
+    addattribute : '<kantega:label key="aksess.addattribute.title" escapeJavascript="true"/>',
     selecttopic : '<kantega:label key="aksess.selecttopic.title" escapeJavascript="true"/>',
     selectcontent : '<kantega:label key="aksess.popup.selectcontent" escapeJavascript="true"/>',
     selectorgunit : '<kantega:label key="aksess.popup.selectorgunit" escapeJavascript="true"/>',

@@ -25,7 +25,6 @@
 
 <kantega:section id="body">
 
-
     <script type="text/javascript">
         function selectMultimedia() {
             openaksess.editcontext.doInsertTag = false;
@@ -33,25 +32,23 @@
             var mmwin = window.open("${pageContext.request.contextPath}/admin/publish/popups/SelectMediaFolder.action", "openAksessPopup", "toolbar=no,width=280,height=450,resizable=yes,scrollbars=yes");
             mmwin.focus();
         }
-
         function buttonOkPressed() {
             if (validateUpload()) {
                 document.uploadForm.submit();
             }
             return false;
         }
-
         function validateUpload() {
             if (document.uploadForm.elements['file'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.uploadfile.missing" escapeJavascript="true"/>');
                 return false;
             } else {
-            <%-- Check if the file type is black-listed. If so, cancel the upload and display an error message --%>
+                <%-- Check if the file type is black-listed. If so, cancel the upload and display an error message --%>
                 var fileName = document.uploadForm.elements['file'].value;
                 var blacklistedFileTypes = new Array();
-            <c:forEach var="fileType" items="${blacklistedFileTypes}" varStatus="status">
+                <c:forEach var="fileType" items="${blacklistedFileTypes}" varStatus="status">
                 blacklistedFileTypes[${status.index}] = ".${fileType}";
-            </c:forEach>
+                </c:forEach>
                 for (i = 0; i < blacklistedFileTypes.length; i++) {
                     var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
                     var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
@@ -61,33 +58,22 @@
                     }
                 }
             }
-
-        <c:if test="${id == -1}">
-        <c:if test="${altNameRequired}">
-            if (document.uploadForm.elements['altname'].value == "") {
-                alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
-                return false;
-            }
-        </c:if>
-        <c:if test="${fileUploadedFromEditor}">
+            <c:if test="${id == -1}">
+            <c:if test="${fileUploadedFromEditor}">
             if ($("#MultimediaAddToArchive").is(":checked") && document.uploadForm.elements['parentId'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.selectfolder.missing" escapeJavascript="true"/>');
                 return false;
             }
-        </c:if>
-        </c:if>
-
+            </c:if>
+            </c:if>
             $("#UploadFormButtons").hide();
             $("#UploadStatus").show();
-
             return true;
         }
-
-        function displayMetadata() {
+        function displayButtons() {
             $(".uploadMetadata").show();
             $("#UploadFormButtons").show();
         }
-
         function toggleSelectMediaFolder() {
             $("ParentId").val('');
             $("ParentText").val('');
@@ -97,16 +83,19 @@
                 $("#MediaFolderContainer").hide();
             }
         }
-
         /**
          * Callback from popup where user select an image
          * @param url
          * @param text
          */
         openaksess.editcontext.insertValueAndNameIntoForm = function (id, name) {
-            var frm = document.uploadForm;
-            frm.parentId.value = id;
-            frm.parentName.value = name;
+            if (id == 0) {
+                alert('<kantega:label key="aksess.multimedia.selectfolder.root.forbidden" escapeJavascript="true"/>');
+            } else {
+                var frm = document.uploadForm;
+                frm.parentId.value = id;
+                frm.parentName.value = name;
+            }
         };
 
         $(document).ready(function() {
@@ -127,13 +116,12 @@
                     <label><kantega:label key="aksess.multimedia.uploadfile"/></label>
                 </div>
                 <div class="inputs">
-                    <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayMetadata()" <c:if test="${id == -1}">multiple</c:if>>
+                    <input type="file" class="fullWidth" id="File" name="file" value="" size="45" onchange="displayButtons()" <c:if test="${id == -1 && !fileUploadedFromEditor}"> multiple </c:if>>
                     <c:if test="${allowPreserveImageSize}">
                         <div>
                             <input type="checkbox" id="PreserveImageSize" name="preserveImageSize" value="true"><label for="PreserveImageSize"><kantega:label key="aksess.multimedia.preserveimagesize"/></label>
                         </div>
                     </c:if>
-
                     <c:if test="${id == -1 && fileUploadedFromEditor}">
                         <div class="uploadMetadata hidden">
                             <input type="checkbox" name="multimediaAddToArchive" id="MultimediaAddToArchive" value="true"><label for="MultimediaAddToArchive"><kantega:label key="aksess.multimedia.addtoarchive"/></label>
@@ -143,57 +131,31 @@
             </div>
 
             <c:if test="${id == -1}">
-                <div class="uploadMetadata hidden">
-                    <c:choose>
-                        <c:when test="${fileUploadedFromEditor}">
-                            <div id="MediaFolderContainer" class="hidden formElement">
-                                <div class="heading">
-                                    <label><kantega:label key="aksess.multimedia.selectfolder"/></label>
-                                </div>
-                                <div class="inputs">
-                                    <input type="text" class="fullWidth" name="parentName" id="ParentName" value="" maxlength="128" readonly="readonly">
-                                    <input type="hidden" name="parentId" id="ParentId" value="">
-                                </div>
-                                <div class="buttonGroup">
-                                    <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-                                </div>
+                <c:choose>
+                    <c:when test="${fileUploadedFromEditor}">
+                        <div id="MediaFolderContainer" class="formElement hidden">
+                            <div class="heading">
+                                <label><kantega:label key="aksess.multimedia.selectfolder"/></label>
                             </div>
-                        </c:when>
-                        <c:otherwise>
-                            <input type="hidden" name="parentId" value="${parentId}">
-                        </c:otherwise>
-                    </c:choose>
-                    <div class="formElement">
-                        <div class="heading">
-                            <label><kantega:label key="aksess.multimedia.medianame"/></label>
-                        </div>
-                        <div class="inputs">
-                            <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
-                        </div>
-                    </div>
-                    <div class="formElement">
-                        <div class="heading">
-                            <label><kantega:label key="aksess.multimedia.altname"/></label>
-                        </div>
-                        <div class="inputs">
-                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
-                            <div class="ui-state-highlight">
-                                <kantega:label key="aksess.multimedia.altinfo"/>
+                            <div class="inputs">
+                                <input type="text" class="fullWidth" name="parentName" id="ParentName" value="" maxlength="128" readonly="readonly">
+                                <input type="hidden" name="parentId" id="ParentId" value="">
+                            </div>
+                            <div class="buttonGroup">
+                                <a href="Javascript:selectMultimedia()" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
                             </div>
                         </div>
-                    </div>
-                    <div class="formElement">
-                        <div class="heading">
-                            <label><kantega:label key="aksess.multimedia.author"/></label>
-                        </div>
-                        <div class="inputs">
-                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
-                        </div>
-                    </div>
-                </div>
+                    </c:when>
+                    <c:otherwise>
+                        <input type="hidden" name="parentId" value="${parentId}">
+                    </c:otherwise>
+                </c:choose>
             </c:if>
 
             <div id="UploadFormButtons" class="buttonGroup hidden">
+                <div class="ui-state-highlight <c:if test="${fileUploadedFromEditor}">hidden</c:if>">
+                    <kantega:label key="aksess.multimedia.uploadfile.label"/>
+                </div>
                 <span class="button"><input type="button" class="ok" value="<kantega:label key="aksess.button.upload"/>"></span>
             </div>
 

@@ -30,7 +30,6 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class UserAttribute extends Attribute {
-    private static final String SOURCE = "aksess.UserAttribute";
 
     private boolean multiple = false;
 

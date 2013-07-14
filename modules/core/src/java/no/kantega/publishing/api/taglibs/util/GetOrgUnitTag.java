@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -28,8 +29,8 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.util.Map;
 
 public class GetOrgUnitTag extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(GetOrgUnitTag.class);
 
-    private static final String SOURCE = "aksess.GetOrgUnitTag";
     private String name = "currentorgunit";
     private String orgUnitId = null;
 
@@ -58,8 +59,8 @@ public class GetOrgUnitTag extends TagSupport {
                 request.setAttribute(name, orgUnit);
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

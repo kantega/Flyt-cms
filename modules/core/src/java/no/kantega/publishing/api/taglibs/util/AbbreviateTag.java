@@ -48,8 +48,7 @@ import java.io.IOException;
  * leftedge er 5 og mazSize er 6 = ""<br>
  */
 public class AbbreviateTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.AbbreviateTag";
-    private String text = "";
+        private String text = "";
     private int leftedge = 0;
     private int maxsize = 4;
 

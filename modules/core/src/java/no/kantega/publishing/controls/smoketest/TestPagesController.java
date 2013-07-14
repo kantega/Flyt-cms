@@ -1,6 +1,5 @@
 package no.kantega.publishing.controls.smoketest;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
@@ -15,6 +14,8 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import org.apache.commons.lang.StringUtils;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -33,6 +34,7 @@ import java.util.*;
  * </pre>
  */
 public class TestPagesController extends AbstractController {
+    private static final Logger log = LoggerFactory.getLogger(TestPagesController.class);
 
     private TemplateConfigurationCache templateConfigurationCache;
     private static final String FILTER_SEPARATOR = "\\|";
@@ -85,7 +87,7 @@ public class TestPagesController extends AbstractController {
                 outputter.output(pages, response.getOutputStream());
             }
             catch (IOException e) {
-                Log.error("TestPagesController", e);
+                log.error("", e);
             }
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);

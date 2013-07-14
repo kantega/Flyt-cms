@@ -24,13 +24,13 @@ import java.util.List;
  *
  */
 public interface OrganizationManager {
-    public List getChildUnits(OrgUnit unit);
+    public List<OrgUnit> getChildUnits(OrgUnit unit);
     public void doForUsersInOrgUnit(OrgUnit unit, UserCallbackHandler handler);
-    List getOrgUnitsAboveUser(String  userId);
+    List<OrgUnit> getOrgUnitsAboveUser(String  userId);
     public boolean isUserInOrgUnit(String user, OrgUnit unit);
     public OrgUnit getUnitByExternalId(String externalId);
     public OrgUnit getUnitByUser(User user);
     public boolean isUnitLeader(User user);
     public User getUnitLeader(OrgUnit unit);
-    public List searchOrgUnits(String phrase);
+    public List<OrgUnit> searchOrgUnits(String phrase);
 }

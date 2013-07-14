@@ -16,8 +16,6 @@
 
 package no.kantega.commons.exception;
 
-//import org.apache.log4j.Logger;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
@@ -27,7 +25,6 @@ import java.io.StringWriter;
 public class KantegaException extends Exception {
 
     private String message;
-    private String source;
     private String originalType;
     private String originalMessage;
     private String originalStack;
@@ -35,19 +32,17 @@ public class KantegaException extends Exception {
     private String extendedMessage;
     private String description;
 
-    public KantegaException(String message, String source, Throwable original) {
+    public KantegaException(String message, Throwable original) {
         super(message);
         this.message = message;
-        this.source = source;
         this.originalType = (original == null)?null:original.getClass().getName();
         this.originalMessage = (original == null)?null:original.getMessage();
         this.originalStack = (original == null)?null:createStacktrace(original);
     }
 
-    public KantegaException(String message, String errorCode, String extendedMessage, String description, String source, Throwable original) {
+    public KantegaException(String message, String errorCode, String extendedMessage, String description, Throwable original) {
         super(message);
         this.message = message;
-        this.source = source;
         this.errorCode = errorCode;
         this.extendedMessage = extendedMessage;
         this.description = description;
@@ -115,13 +110,12 @@ public class KantegaException extends Exception {
         return b.toString();
     }
 
-    private final boolean hasLinebreaks(String s) {
-        if (s == null) return false;
-        return (s.indexOf("\n") > -1);
+    private  boolean hasLinebreaks(String s) {
+        return s != null && (s.contains("\n"));
     }
 
     public String toString() {
-        StringBuffer b = new StringBuffer();
+        StringBuilder b = new StringBuilder();
         b.append("<exception>\n");
         b.append("\t<type>");
         b.append(this.getClass().getName());
@@ -129,9 +123,6 @@ public class KantegaException extends Exception {
         b.append("\t<message>");
         b.append(message);
         b.append("</message>\n");
-        b.append("\t<source>");
-        b.append(source);
-        b.append("</source>\n");
 
         if(errorCode != null) {
             b.append("\t<errorCode>");

@@ -16,6 +16,8 @@
 
 package no.kantega.commons.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
@@ -28,7 +30,7 @@ public class StringHelper {
      * @return - new text
      */
     public static String replace(String source, String oldPattern, String newPattern){
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int startIdx = 0;
         int idxOld = 0;
         while ((idxOld = source.indexOf(oldPattern, startIdx)) >= 0) {
@@ -164,6 +166,14 @@ public class StringHelper {
         return ints;
     }
 
+    public static List<Integer> getIntsAsList(String source, String seperator) {
+        int ints[] = getInts(source, seperator);
+        List<Integer> asList = new ArrayList<>(ints.length);
+        for (int anInt : ints) {
+            asList.add(anInt);
+        }
+        return asList;
+    }
     /**
      * Return string with first letter in uppercase
      * @param source - source text

@@ -151,6 +151,11 @@
         <!-- Dynamic -->
         <%
             screen.generateInputScreen();
+            if (screen.hasHiddenAttributes()) {
+        %>
+            <%@ include file="../layout/fragments/addattributebutton.jsp" %>
+        <%
+            }
         %>
 </kantega:section>
 <%@ include file="../layout/editContentLayout.jsp" %>

@@ -17,21 +17,18 @@
 
 package no.kantega.publishing.admin.topicmaps.ajax;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
-
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

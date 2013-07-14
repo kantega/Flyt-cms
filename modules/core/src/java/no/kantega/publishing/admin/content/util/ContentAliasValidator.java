@@ -17,27 +17,31 @@
 package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import org.springframework.beans.factory.annotation.Autowired;
+import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ContentAliasValidator {
+public class ValidatorHelper {
+    private static final Logger log = LoggerFactory.getLogger(ValidatorHelper.class);
 
-    private static Pattern validAliasPattern = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
+    private static  final Pattern ALIAS_PATTERN = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
 
-    @Autowired
-    private ContentIdentifierDao contentIdentifierDao;
+    public static void validateAlias(String alias, Content content, ValidationErrors errors) {
 
-    public void validateAlias(String alias, Content content, ValidationErrors errors) {
-            if (!matchesAliasPattern(alias)) {
-                errors.add(null, "aksess.error.aliasisillegal");
-            }
+        if (!ALIAS_PATTERN.matcher(alias).matches()) {
+            errors.add(null, "aksess.error.aliasisillegal");
+        }
 
+        try {
+            ContentIdentifierDao contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
             List<Association> associations = content.getAssociations();
             for (Association association : associations) {
                 ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(association.getSiteId(), alias);
@@ -46,9 +50,8 @@ public class ContentAliasValidator {
                     break;
                 }
             }
-    }
-
-    public static boolean matchesAliasPattern(String alias) {
-        return validAliasPattern.matcher(alias).matches();
+        } catch (SystemException ex) {
+            log.error("", ex);
+        }
     }
 }

@@ -76,11 +76,23 @@
         <property name="cronExpression" value="0 45 6 ? * MON"/>
     </bean>
 
-    <!-- MailSubscriptionAgent bean -->
+    <!-- Mail subscription -->
+    <bean id="aksessMailSubscriptionService" class="no.kantega.publishing.modules.mailsubscription.MailSubscriptionServiceJdbcImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
     <bean id="aksessMailSubscriptionDeliveryService" class="no.kantega.publishing.modules.mailsubscription.agent.DefaultMailSubscriptionService"/>
 
-    <bean id="aksessMailSubscriptionAgent" class="no.kantega.publishing.modules.mailsubscription.agent.MailSubscriptionAgent">
+    <bean id="aksessContentMailSubscriptionAgent" class="no.kantega.publishing.modules.mailsubscription.agent.ContentMailSubscriptionAgent">
         <property name="mailSubscriptionDeliveryService" ref="aksessMailSubscriptionDeliveryService"/>
+    </bean>
+
+    <bean id="aksessMailSubscriptionAgents" class="org.springframework.beans.factory.config.ListFactoryBean">
+        <property name="sourceList">
+            <list>
+                <ref bean="aksessContentMailSubscriptionAgent"/>
+            </list>
+        </property>
     </bean>
 
     <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
@@ -88,7 +100,7 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="interval" value="immediate"/>
-                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
                 <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
@@ -99,7 +111,7 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="interval" value="daily"/>
-                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
                 <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
@@ -110,7 +122,7 @@
         <property name="jobDataAsMap">
             <map>
                 <entry key="interval" value="weekly"/>
-                <entry key="mailSubscriptionAgent" value-ref="aksessMailSubscriptionAgent"/>
+                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
                 <entry key="siteCache" value-ref="aksessSiteCache"/>
             </map>
         </property>
@@ -140,15 +152,7 @@
         <property name="cronExpression" value="30 0/5 * * * ?"/>
     </bean>
 
-    <bean name="databaseCleanupJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
-    </bean>
-
-    <!-- Slett gamle innslag i trafikk og eventlog -->
-    <bean id="databaseCleanupTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="databaseCleanupJob"/>
-        <property name="cronExpression" value="0 0 4 * * ?"/>
-    </bean>
+    <bean id="databaseCleanupJob" class="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
@@ -220,7 +224,6 @@
                 <ref local="mailSubscriptionTriggerDaily"/>
                 <ref local="mailSubscriptionTriggerWeekly"/>
                 <ref local="systemStatusTrigger"/>
-                <ref local="databaseCleanupTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="brokenLinkEventTrigger" />

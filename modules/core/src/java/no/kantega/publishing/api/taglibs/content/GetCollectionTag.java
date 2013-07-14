@@ -16,9 +16,10 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.data.Content;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -29,7 +30,7 @@ import java.util.List;
  * Henter en liste med innholdselement (sider) og looper gjennom dem
  */
 public class GetCollectionTag extends AbstractGetCollectionTag {
-    private static final String SOURCE = "aksess.GetCollectionTag";
+    private static final Logger log = LoggerFactory.getLogger(GetCollectionTag.class);
 
     protected CollectionLoopTagStatus status = null;
 
@@ -54,8 +55,8 @@ public class GetCollectionTag extends AbstractGetCollectionTag {
             pageContext.setAttribute("aksess_collection_size" + name, collection.size());
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
         return doIter();
     }

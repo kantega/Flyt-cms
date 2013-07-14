@@ -18,9 +18,9 @@ package no.kantega.publishing.security;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
@@ -41,6 +41,8 @@ import no.kantega.security.api.identity.*;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +54,13 @@ import java.util.List;
 import java.util.Map;
 
 public class SecuritySession {
-    private static String SOURCE = "SecuritySession";
+    private static final Logger log = LoggerFactory.getLogger(SecuritySession.class);
 
     private User user = null;
     private Identity identity = null;
     private SecurityRealm realm = null;
     private SiteCache siteCache;
+    private static RememberMeHandler rememberMeHandler;
 
     // Husker sist tilgangssjekk
     private CachedBaseObject prevObject = null;
@@ -86,40 +89,43 @@ public class SecuritySession {
             request.getSession(true).setAttribute("aksess.securitySession", session);
         }
 
-        IdentityResolver resolver = session.realm.getIdentityResolver();
-        Identity identity = null;
-        try {
-            Identity fakeIdentity = getFakeIdentity();
-            if(fakeIdentity != null) {
-                identity = fakeIdentity;
+        Identity identity = rememberMeHandler.getRememberedIdentity(request);
+        if (identity == null) {
 
-            } else {
-                identity = resolver.getIdentity(request);
+            IdentityResolver resolver = session.realm.getIdentityResolver();
+            try {
+                Identity fakeIdentity = getFakeIdentity();
+                if(fakeIdentity != null) {
+                    identity = fakeIdentity;
+
+                } else {
+                    identity = resolver.getIdentity(request);
+                }
+            } catch (IdentificationFailedException e) {
+                throw new SystemException("IdentificationFailedException", e);
             }
-        } catch (IdentificationFailedException e) {
-            throw new SystemException(SOURCE, "IdentificationFailedException", e);
         }
         Identity currentIdentity = session.identity;
 
         // If your is now logged in or has changed identity, must create new session
         if (identity != null && (currentIdentity == null || !identity.getUserId().equals(currentIdentity.getUserId()) || !identity.getDomain().equals(currentIdentity.getDomain()))) {
-            session = createNewUserInstance(identity);
-            try {
-                session.handlePostLogin(request);
-            } catch (ConfigurationException e) {
-                throw new SystemException(SOURCE, "Konfigurasjonsfeil", e);
-            }
-            // Innloggede brukere har lengre sesjonstimeout
-            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
-                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
-            }
-            request.getSession(true).setAttribute("aksess.securitySession", session);
+                session = createNewUserInstance(identity);
+                try {
+                    session.handlePostLogin(request);
+                } catch (ConfigurationException e) {
+                    throw new SystemException("Konfigurasjonsfeil", e);
+                }
+                // Innloggede brukere har lengre sesjonstimeout
+                if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
+                    request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
+                }
+                request.getSession(true).setAttribute("aksess.securitySession", session);
 
-        } else if (identity == null && currentIdentity != null) {
-            // Bruker er utlogget via ekstern tjeneste - lag blank sesjon           
-            session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
-            request.getSession(true).removeAttribute("adminMode");
+            } else if (identity == null && currentIdentity != null) {
+                // Bruker er utlogget via ekstern tjeneste - lag blank sesjon
+                session = createNewInstance();
+                request.getSession(true).setAttribute("aksess.securitySession", session);
+                request.getSession(true).removeAttribute("adminMode");
         }
 
         return session;
@@ -152,7 +158,7 @@ public class SecuritySession {
         try {
             p = manager.getProfileForUser(identity);
         } catch (no.kantega.security.api.common.SystemException e) {
-            throw new SystemException(SOURCE, "Feil ved henting av profil", e);
+            throw new SystemException("Feil ved henting av profil", e);
         }
 
         User user = new User();
@@ -230,6 +236,7 @@ public class SecuritySession {
 
     private static SecuritySession createNewInstance() throws SystemException {
         SecuritySession session = new SecuritySession();
+        session.setRememberMeHandlerIfNull();
         session.realm = SecurityRealmFactory.getInstance();
         return session;
     }
@@ -299,9 +306,9 @@ public class SecuritySession {
         try {
             loginContext.setTargetUri(new URI(redirect));
         } catch (URISyntaxException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error in url " + redirect, e);
         }
-        Log.debug(SOURCE, String.format("Initiating login in authentication context: %s", resolver.getAuthenticationContext()));
+        log.debug( "Initiating login in authentication context: {}", resolver.getAuthenticationContext());
         resolver.initateLogin(loginContext);
     }
 
@@ -319,14 +326,17 @@ public class SecuritySession {
         try {
             logoutContext.setTargetUri(new URI(redirect));
         } catch (URISyntaxException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error in url " + redirect, e);
         }
+
+        rememberMeHandler.forgetUser(request, response);
 
         try {
             resolver.initiateLogout(logoutContext);
         } catch (Exception e) {
             // Ikke alle IdentityResolvers håndterer utlogging, f.eks NTLM
         }
+
 
         // Nullstill
         user = null;
@@ -412,6 +422,12 @@ public class SecuritySession {
     private void setSiteCacheIfNull() {
         if(siteCache == null){
             siteCache = RootContext.getInstance().getBean(SiteCache.class);
+        }
+    }
+
+    private void setRememberMeHandlerIfNull() {
+        if (rememberMeHandler == null) {
+            rememberMeHandler = RootContext.getInstance().getBean(RememberMeHandler.class);
         }
     }
 }

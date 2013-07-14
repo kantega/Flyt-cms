@@ -18,17 +18,18 @@ package no.kantega.publishing.jobs.alerts;
 
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.data.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ContentEmailAlertListener implements ContentAlertListener {
-    private static String SOURCE = "ContentEmailAlertListener";
+    private static final Logger log = LoggerFactory.getLogger(ContentEmailAlertListener.class);
 
     private String mailSubject = "Aksess Publisering";
     private String mailTemplate = "expirecontent.vm";
@@ -38,7 +39,7 @@ public class ContentEmailAlertListener implements ContentAlertListener {
 
         String recipient = user.getEmail();
         if (recipient == null || recipient.indexOf("@") == -1) {
-            Log.info(SOURCE, "Kunne ikke sende epost til (mangler epostadresse): " + user.getId(), null, null);
+            log.info( "Kunne ikke sende epost til (mangler epostadresse): " + user.getId());
             return;
         }
 
@@ -51,13 +52,13 @@ public class ContentEmailAlertListener implements ContentAlertListener {
             param.put("baseurl", Aksess.getBaseUrl());
             param.put("applicationurl", Aksess.getApplicationUrl());
 
-            Log.debug(SOURCE, "Sender varsling til:" + recipient, null, null);
+            log.debug( "Sender varsling til:" + recipient);
 
             MailSender.send(mailFrom, recipient, mailSubject, mailTemplate, param);
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         } catch (ConfigurationException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
     }
 

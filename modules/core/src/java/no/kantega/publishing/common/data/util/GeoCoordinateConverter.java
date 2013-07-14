@@ -1,8 +1,10 @@
 package no.kantega.publishing.common.data.util;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GeoCoordinateConverter {
+    private static final Logger log = LoggerFactory.getLogger(GeoCoordinateConverter.class);
     /**
      * Converts various latitude/longitude formats to a long
      * Supported formats:  H"M'S and H/1,M/1,S/1000
@@ -45,7 +47,7 @@ public class GeoCoordinateConverter {
             }
 
         } catch (NumberFormatException e) {
-            Log.error(GeoCoordinateConverter.class.getName(), e);
+            log.error("", e);
         }
         return result;
     }

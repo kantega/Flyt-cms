@@ -8,7 +8,8 @@
 <%@ page import="no.kantega.publishing.security.SecuritySession"%>
 <%@ page import="java.util.Properties"%>
 <%@ page import="java.io.IOException"%>
-<%@ page import="no.kantega.commons.log.Log"%>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.slf4j.Logger" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -26,7 +27,7 @@
   --%>
 
 <%
-
+    Logger log = LoggerFactory.getLogger("no.kantega.openaksess.jsp.error");
     request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
     response.setDateHeader("Expires", 0);
     ExceptionHandler handler = (ExceptionHandler)request.getSession(true).getAttribute("handler");
@@ -51,12 +52,12 @@
     try {
         versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
     } catch (IOException e) {
-        Log.info("info/index.jsp", "aksess-version.properties not found", null, null);
+        log.info("aksess-version.properties not found");
     }
     try {
         webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
     } catch (IOException e) {
-        Log.info("info/index.jsp", "aksess-webapp-version.properties not found", null, null);
+        log.info("aksess-webapp-version.properties not found");
     }
 %>
 

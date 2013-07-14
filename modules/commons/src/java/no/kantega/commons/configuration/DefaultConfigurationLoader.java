@@ -16,37 +16,30 @@
 
 package no.kantega.commons.configuration;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.apache.log4j.Logger;
 
-import javax.servlet.ServletContext;
-import java.util.Properties;
-import java.util.List;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.io.IOException;
+import java.util.List;
+import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: May 29, 2009
- * Time: 12:47:56 PM
- * To change this template use File | Settings | File Templates.
- */
 public class DefaultConfigurationLoader implements ConfigurationLoader {
-    private List<String> resources = new ArrayList<String>();
+    private List<String> resources = new ArrayList<>();
 
     private ResourceLoader resourceLoader;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(DefaultConfigurationLoader.class);
 
     public DefaultConfigurationLoader() {
 
     }
 
     public DefaultConfigurationLoader(ResourceLoader resourceLoader, String... resources) {
-        this.resources = new ArrayList(Arrays.asList(resources));
+        this.resources = new ArrayList<>(Arrays.asList(resources));
         this.resourceLoader = resourceLoader;
     }
 
@@ -72,7 +65,7 @@ public class DefaultConfigurationLoader implements ConfigurationLoader {
     }
 
     public void setResources(String... resources) {
-        this.resources = new ArrayList(Arrays.asList(resources));
+        this.resources = new ArrayList<>(Arrays.asList(resources));
     }
 
     public void addResource(String resourceLocation) {

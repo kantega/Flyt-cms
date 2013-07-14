@@ -3,9 +3,10 @@ package no.kantega.publishing.plugin.provider;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.spring.RuntimeMode;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.kantega.jexmec.ClassLoaderProvider;
 import org.kantega.jexmec.jarfiles.EmbeddedLibraryPluginClassLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.xml.stream.XMLEventReader;
@@ -30,11 +31,12 @@ import static java.util.Collections.singleton;
  *
  */
 public class PluginHotDeployProvider implements ClassLoaderProvider {
+    private static final Logger log = LoggerFactory.getLogger(PluginHotDeployProvider.class);
 
     private ClassLoaderProvider.Registry registry;
     private File pluginWorkDirectory;
     private Map<String, DeployedPlugin> loaders = new HashMap<String, DeployedPlugin>();
-    private Logger logger = Logger.getLogger(getClass());
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private ClassLoader parentClassLoader;
     private File installedPluginsDirectory;
 
@@ -131,7 +133,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
                 try {
                     file.close();
                 } catch (IOException e) {
-                    logger.error("Exception closing jar file " + file, e);
+                    log.error("", e);
                 }
             }
         }

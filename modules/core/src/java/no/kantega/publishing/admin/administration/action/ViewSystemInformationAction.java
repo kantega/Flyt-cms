@@ -18,11 +18,12 @@ package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationLoader;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -35,15 +36,13 @@ import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Controller for viewing information about the application.
  */
 public class ViewSystemInformationAction extends AbstractController {
+    private static final Logger log = LoggerFactory.getLogger(ViewSystemInformationAction.class);
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -90,7 +89,7 @@ public class ViewSystemInformationAction extends AbstractController {
             model.put("aksessRevision", versionInfo.get("revision"));
             model.put("aksessTimestamp", parseDate((String) versionInfo.get("date")));
         } catch (IOException e) {
-            Log.info(this.getClass().getName(), "aksess-version.properties not found", null, null);
+            log.info( "aksess-version.properties not found");
         }
         try {
             Properties webappVersionInfo = new Properties();
@@ -99,7 +98,7 @@ public class ViewSystemInformationAction extends AbstractController {
             model.put("webappVersion", webappVersionInfo.get("version"));
             model.put("webappTimestamp", parseDate((String) webappVersionInfo.get("date")));
         } catch (IOException e) {
-            Log.info(this.getClass().getName(), "aksess-webapp-version.properties not found", null, null);
+            log.info( "aksess-webapp-version.properties not found");
         }
     }
 
@@ -137,7 +136,12 @@ public class ViewSystemInformationAction extends AbstractController {
             try {
                 parsedDate = timestampFormat.parse(date);
             } catch (ParseException e1) {
-                Log.error("ViewSystemInformationAction", e1);
+                timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+                try {
+                    parsedDate = timestampFormat.parse(date);
+                } catch (ParseException e2) {
+                    log.error("Could not parse " + date, e2);
+                }
             }
         }
 

@@ -18,14 +18,18 @@ package no.kantega.publishing.admin.mypage.plugins;
 
 import com.google.gdata.client.analytics.AnalyticsService;
 import com.google.gdata.client.analytics.DataQuery;
-import com.google.gdata.data.analytics.*;
+import com.google.gdata.data.analytics.DataEntry;
+import com.google.gdata.data.analytics.DataFeed;
+import com.google.gdata.data.analytics.ManagementEntry;
+import com.google.gdata.data.analytics.ManagementFeed;
 import com.google.gdata.util.AuthenticationException;
 import com.google.gdata.util.ServiceException;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -36,19 +40,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
  */
 public class GoogleAnalyticsAction implements Controller {
-
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private String formView;
     private String resultsView;
 
@@ -75,16 +73,16 @@ public class GoogleAnalyticsAction implements Controller {
                 }
             } catch (AuthenticationException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
+                log.error("Retrieving stats from Google Analytics failed: Authentication failed.", e);
             } catch (MalformedURLException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Malformed URL.", e);
+                log.error("Retrieving stats from Google Analytics failed: Malformed URL.", e);
             } catch (IOException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Network error trying to retrieve feed.", e);
+                log.error("Retrieving stats from Google Analytics failed: Network error trying to retrieve feed.", e);
             } catch (ServiceException e) {
                 model.put("errorMsg", LocaleLabels.getLabel("aksess.googleanalytics.error.failed", Aksess.getDefaultAdminLocale()));
-                Logger.getLogger(getClass()).error("Retrieving stats from Google Analytics failed: Analytics API responded with an error message.", e);
+                log.error("Retrieving stats from Google Analytics failed: Analytics API responded with an error message.", e);
             }
         }
         return new ModelAndView(view, model);

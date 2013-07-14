@@ -23,7 +23,6 @@ import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
@@ -32,10 +31,12 @@ import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -47,15 +48,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Nov 12, 2007
- * Time: 2:56:05 PM
- */
 public class AddContentAction extends AbstractController {
     private String view;
 
     private TemplateConfigurationCache templateConfigurationCache;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
@@ -66,14 +65,14 @@ public class AddContentAction extends AbstractController {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cidParent = ContentIdHelper.fromRequestAndUrl(request, url);
+        ContentIdentifier cidParent = contentIdHelper.fromRequestAndUrl(request, url);
         Content parent = aksessService.getContent(cidParent);
         if (parent == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
 
         if (!securitySession.isAuthorized(parent, Privilege.UPDATE_CONTENT)) {
-            throw new NotAuthorizedException("Not authorized to edit:" + parent.getTitle(), this.getClass().getName());
+            throw new NotAuthorizedException("Not authorized to edit:" + parent.getTitle());
         }
 
         model.put("parent", parent);

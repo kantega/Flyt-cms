@@ -19,19 +19,21 @@ package no.kantega.publishing.api.taglibs.content;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +45,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Apr 3, 2007
- * Time: 2:28:40 PM
- */
+import static java.util.Arrays.asList;
+
 public class AbstractGetCollectionTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.AbstractGetCollectionTag";
+    private static final Logger log = LoggerFactory.getLogger(AbstractGetCollectionTag.class);
 
     protected String name = null;
     protected String orderBy = null;
@@ -94,7 +93,8 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     protected boolean shuffle = false;
     protected int shuffleMax = -1;
 
-    private SiteCache siteCache;
+    private static SiteCache siteCache;
+    private static ContentIdHelper contentIdHelper;
 
     /**
      * Cleanup after tag is finished
@@ -225,7 +225,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 useAssociatedId = false;
             }
             if (pathElementIds != null && pathElementIds.length > 0) {
-                query.setPathElementIds(pathElementIds);
+                query.setPathElementIds(asList(pathElementIds));
                 useAssociatedId = false;
             }
 
@@ -313,7 +313,10 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        associatedId = ContentIdHelper.fromRequest(request);
+                        if(contentIdHelper == null){
+                            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                        }
+                        associatedId = contentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
                     // No content found
@@ -422,7 +425,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         } catch (NumberFormatException e) {
             // Do nothing, name of displaytemplate was supplied instead of id
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error setting displaytemplate " + displayTemplate, e);
         }
 
         this.displayTemplate = displayTemplate;
@@ -444,7 +447,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                         this.siteId = site.getId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e1, null, null);
+                    log.error("Could not set site " + siteId, e1);
                 }
             }
         }
@@ -544,7 +547,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 try {
                     date = df.parse((String)dateObj);
                 } catch (ParseException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("Could not parse " + date, e);
                 }
             }
         }
@@ -558,9 +561,13 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (!Character.isDigit(id.charAt(0))) {
                 //Alias
                 try {
-                    ContentIdentifier contentIdentifier = ContentIdHelper.fromRequestAndUrl(request, id);
+                    if(contentIdHelper == null){
+                        contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, id);
                     id = String.valueOf(contentIdentifier.getAssociationId());
                 } catch (Exception e) {
+                    log.error("Could not set pathElementid " + id, e);
                 }
             }
 
@@ -579,7 +586,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                         }
                         pathElementIds[i] = pathElementId;
                     } catch (NumberFormatException e) {
-                        Log.error(SOURCE, e, null, null);
+                        log.error("Could not parse " + elementId, e);
                     }
                 }
             }

@@ -16,8 +16,9 @@
 
 package no.kantega.publishing.api.taglibs.security;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -25,7 +26,7 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class IsNotLoggedInTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.IsLoggedInTag";
+    private static final Logger log = LoggerFactory.getLogger(IsNotLoggedInTag.class);
 
     public int doStartTag() throws JspException {
         return EVAL_BODY_TAG;
@@ -41,8 +42,8 @@ public class IsNotLoggedInTag extends BodyTagSupport {
                 bodyContent.writeOut(getPreviousOut());
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

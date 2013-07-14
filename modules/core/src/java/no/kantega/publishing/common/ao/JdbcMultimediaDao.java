@@ -1,5 +1,6 @@
 package no.kantega.publishing.common.ao;
 
+import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.publishing.common.ao.rowmapper.ExifMetadataToMultimediaRowMapper;
@@ -14,7 +15,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -22,13 +23,16 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.collect.Lists.transform;
 
 
 /**
  * @see MultimediaDao
  */
-public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
+public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements MultimediaDao {
     private static final String DB_TABLE = "multimedia";
     private static final String DB_COLS = "Id, ParentId, " + DB_TABLE + ".SecurityId, " + DB_TABLE + ".Type, Name, Author, Description, Filename, MediaSize, Width, Height, LastModified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, ProfileImageUserId, NoFiles, NoSubFolders, HasImageMap, NoUsages, " + DB_TABLE + ".ContentId";
 
@@ -42,7 +46,7 @@ public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
         // Check if there are any children
         int noChildren = getJdbcTemplate().queryForInt("select COUNT(id) from multimedia where ParentId = ?", id);
         if (noChildren > 0) {
-            throw new ObjectInUseException(this.getClass().getSimpleName(), "");
+            throw new ObjectInUseException("Multimedia with id " + id + " is in use");
         }
 
         // Get parent id
@@ -101,32 +105,25 @@ public class JdbcMultimediaDao extends JdbcDaoSupport implements MultimediaDao {
             return multimedia;
         }
 
-        String query = getQueryForExifData(multimedia);
-        getJdbcTemplate().query(query, new ExifMetadataToMultimediaRowMapper(multimedia));
+        String query = "SELECT * FROM multimediaexifdata WHERE MultimediaId IN (:ids) ORDER BY MultimediaId, Directory, ValueKey";
+        List<Integer> ids = transform(multimedia, new Function<Multimedia, Integer>() {
+            @Override
+            public Integer apply(Multimedia input) {
+                return input.getId();
+            }
+        });
+        getNamedParameterJdbcTemplate().query(query, Collections.singletonMap("ids", ids), new ExifMetadataToMultimediaRowMapper(multimedia));
 
         return multimedia;
     }
 
-    private String getQueryForExifData(List<Multimedia> multimedia) {
-        StringBuilder query = new StringBuilder();
-        query.append("SELECT * FROM multimediaexifdata WHERE MultimediaId IN (");
 
-        for (int i = 0, multimediaSize = multimedia.size(); i < multimediaSize; i++) {
-            Multimedia media = multimedia.get(i);
-            if (i > 0) {
-                query.append(",");
-            }
-            query.append(media.getId());
-        }
-
-        query.append(") ORDER BY MultimediaId, Directory, ValueKey");
-        return query.toString();
-    }
 
     public void streamMultimediaData(final int id, final InputStreamHandler ish) {
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = " + id);
+                PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?");
+                p.setInt(1, id);
                 ResultSet rs = p.executeQuery();
                 if (!rs.next()) {
                     return null;

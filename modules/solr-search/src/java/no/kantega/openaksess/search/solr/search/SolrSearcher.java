@@ -282,10 +282,12 @@ public class SolrSearcher implements Searcher {
     }
 
     private List<String> getSpellSuggestions(SpellCheckResponse spellCheckResponse) {
-        List<SpellCheckResponse.Suggestion> suggestions = spellCheckResponse.getSuggestions();
         List<String> suggestionStrings = new ArrayList<>();
-        for (SpellCheckResponse.Suggestion suggestion : suggestions) {
-            suggestionStrings.addAll(suggestion.getAlternatives());
+        if (spellCheckResponse != null) {
+            List<SpellCheckResponse.Suggestion> suggestions = spellCheckResponse.getSuggestions();
+            for (SpellCheckResponse.Suggestion suggestion : suggestions) {
+                suggestionStrings.addAll(suggestion.getAlternatives());
+            }
         }
         return suggestionStrings;
     }

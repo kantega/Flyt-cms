@@ -79,19 +79,21 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.bindContentupdateEvents(): #Statusbar has received contentupdate event. Url: " + url);
             openaksess.content.contentstatus.init();
             openaksess.content.contentstatus.disableButtons();
-            $.get(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function(data){
-                if (data) {
-                    openaksess.content.contentstatus.breadcrumbs(data.path);
-                    openaksess.content.contentstatus.brokenLinks(data.links);
-                    openaksess.content.contentstatus.details(data.contentProperties);
-                    openaksess.content.contentstatus.associations(data.associations);
-                    openaksess.content.contentstatus.enableButtons(data.enabledButtons);
-                    openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
-                    openaksess.content.contentstatus.updateFilters(data.userPreferences);
-                    openaksess.content.contentstatus.showContentHints(data.contentHints);
-                    openaksess.content.contentstatus.lockedBy = data.lockedBy;
-                }
-            }, "json");
+            if (url != 'about:blank') {
+                $.get(properties.contextPath + "/admin/publish/ContentProperties.action", {url: url}, function (data) {
+                    if (data) {
+                        openaksess.content.contentstatus.breadcrumbs(data.path);
+                        openaksess.content.contentstatus.brokenLinks(data.links);
+                        openaksess.content.contentstatus.details(data.contentProperties);
+                        openaksess.content.contentstatus.associations(data.associations);
+                        openaksess.content.contentstatus.enableButtons(data.enabledButtons);
+                        openaksess.content.contentstatus.showApproveOrReject(data.showApproveButtons);
+                        openaksess.content.contentstatus.updateFilters(data.userPreferences);
+                        openaksess.content.contentstatus.showContentHints(data.contentHints);
+                        openaksess.content.contentstatus.lockedBy = data.lockedBy;
+                    }
+                }, "json");
+            }
         });
 
         $("#ContentmainContainer").bind("contentupdate", function(e, url){

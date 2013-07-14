@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.common.Aksess;
 
@@ -100,7 +99,7 @@ public class DateAttribute extends Attribute {
     }
 
     @Override
-    public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+    public void validate(ValidationErrors errors) {
         super.validate(errors);
 
         if (value == null || value.length() == 0) {

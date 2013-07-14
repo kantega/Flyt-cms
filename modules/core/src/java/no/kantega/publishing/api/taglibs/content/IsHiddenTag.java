@@ -1,17 +1,18 @@
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsHiddenTag extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.IsHiddenTag";
+    private static final Logger log = LoggerFactory.getLogger(IsHiddenTag.class);
 
     private String attribute = null;
     private String contentId = null;
@@ -76,7 +77,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e);
+            log.error("", e);
         }
 
         return (negate);

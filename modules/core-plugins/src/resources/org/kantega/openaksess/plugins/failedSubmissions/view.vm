@@ -1,5 +1,0 @@
-#if($failedSubmissions.size() > 0)
-    $failedSubmissions.size() #pluginMessage('failedSubmissions.title')
-#else
-    OK
-#end

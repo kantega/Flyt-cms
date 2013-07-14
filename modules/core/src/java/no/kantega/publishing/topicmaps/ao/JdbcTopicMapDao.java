@@ -22,25 +22,28 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.topicmaps.ao.rowmapper.TopicMapRowMapper;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.KeyHolder;
-import java.util.*;
 
-public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao {
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class JdbcTopicMapDao extends NamedParameterJdbcDaoSupport implements TopicMapDao {
     private TopicMapRowMapper rowMapper = new TopicMapRowMapper();
 
     public List<TopicMap> getTopicMaps() {
-        return getSimpleJdbcTemplate().query("SELECT * FROM tmmaps ORDER BY Name", rowMapper);
+        return getJdbcTemplate().query("SELECT * FROM tmmaps ORDER BY Name", rowMapper);
     }
 
     public TopicMap getTopicMapById(int topicMapId) {
-        return getSimpleJdbcTemplate().queryForObject("SELECT * FROM tmmaps WHERE Id = ?", rowMapper, topicMapId);
+        return getJdbcTemplate().queryForObject("SELECT * FROM tmmaps WHERE Id = ?", rowMapper, topicMapId);
     }
 
     public TopicMap saveOrUpdateTopicMap(final TopicMap topicMap) {
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("Name", topicMap.getName());
         params.put("Url", topicMap.getUrl());
         params.put("IsEditable", topicMap.isEditable() ? 1 : 0);
@@ -57,24 +60,24 @@ public class JdbcTopicMapDao extends SimpleJdbcDaoSupport implements TopicMapDao
         }else{
              params.put("id", topicMap.getId());
             String sql = "UPDATE tmmaps SET Name=:Name, Url=:Url, IsEditable=:IsEditable, WSOperation=:WSOperation, WSSoapAction=:WSSoapAction, WSEndPoint=:WSEndPoint WHERE id=:id";
-            getSimpleJdbcTemplate().update(sql, params);
+            getNamedParameterJdbcTemplate().update(sql, params);
         }
         return topicMap;
     }
 
     public void deleteTopicMap(int topicMapId) throws ObjectInUseException {
-        int cnt = getSimpleJdbcTemplate().queryForInt("select count(*) from tmtopic where TopicMapId = ?", topicMapId);
+        int cnt = getJdbcTemplate().queryForInt("select count(*) from tmtopic where TopicMapId = ?", topicMapId);
         if (cnt > 0) {
-            throw new ObjectInUseException(this.getClass().getSimpleName(), "");
+            throw new ObjectInUseException("Topic map with id " + topicMapId + " is in use");
         }
 
-        getSimpleJdbcTemplate().update("delete from tmmaps where Id = ?", topicMapId);
+        getJdbcTemplate().update("delete from tmmaps where Id = ?", topicMapId);
 
-        getSimpleJdbcTemplate().update("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?", topicMapId, ObjectType.TOPICMAP);
+        getJdbcTemplate().update("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?", topicMapId, ObjectType.TOPICMAP);
     }
 
     public TopicMap getTopicMapByName(String name) throws SystemException {
-        List<TopicMap> topicMaps = getSimpleJdbcTemplate().query("SELECT * FROM tmmaps WHERE name like ?", rowMapper, name + "%");
+        List<TopicMap> topicMaps = getJdbcTemplate().query("SELECT * FROM tmmaps WHERE name like ?", rowMapper, name + "%");
         if (topicMaps.size() > 0) {
             return topicMaps.get(0);
         } else {

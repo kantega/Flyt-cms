@@ -16,25 +16,13 @@
 
 package no.kantega.commons.exception;
 
-import no.kantega.commons.log.Log;
-
-
-/**
- *
- */
 public class ConfigurationException extends KantegaException {
-    public ConfigurationException(String message, String source) {
-        super(message, source, null);
-        Log.error(source, message, null, null);
-    }
 
     public ConfigurationException(String message, Throwable original) {
-        super(message, "no.kantega.secure.configuration", original);
-        Log.error("no.kantega.secure.configuration", original, null, null);
+        super(message, original);
     }
 
     public ConfigurationException(String message) {
-        super(message, "no.kantega.secure.configuration", null);
-        Log.error("no.kantega.secure.configuration", message, null, null);
+        super(message, null);
     }
 }

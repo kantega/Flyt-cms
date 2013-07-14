@@ -20,13 +20,14 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -40,37 +41,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EditContentAction implements Controller {
-    private static String SOURCE = "aksess.EditContentAction";
     private static final String REDIRECT_TO_METADATA_PARAM = "editmetadata";
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
 
         String url = request.getParameter("url");
-        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
 
         int associationId = cid.getAssociationId();
         if (associationId == -1 && content == null) {
-            Connection c = null;
-            try {
-                c = dbConnectionFactory.getConnection();
+            try (Connection c = dbConnectionFactory.getConnection()){
                 ResultSet rs = SQLHelper.getResultSet(c, "select * from contentversion where isActive = 1");
                 if (!rs.next()) {
                     // Database is empty, create homepage
                     int templateId = SQLHelper.getInt(c, "select DisplayTemplateId from displaytemplates where urlfullview = '" + Aksess.getStartPage() + "'", "DisplayTemplateId");
                     if (templateId == -1) {
-                        throw new MissingTemplateException(Aksess.getStartPage(), SOURCE);
+                        throw new MissingTemplateException(Aksess.getStartPage());
                     }
 
                     return new ModelAndView(new RedirectView("SelectTemplate.action?parentId=0&templateId=dt;" + templateId));
                 } else {
-                    throw new ContentNotFoundException("-1", SOURCE);
-                }
-            } finally {
-                if (c != null) {
-                    c.close();
+                    throw new ContentNotFoundException("-1");
                 }
             }
         }

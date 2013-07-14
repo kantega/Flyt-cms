@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
@@ -30,6 +29,8 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.kantega.jexmec.PluginManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -37,23 +38,28 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class MiniViewTag extends TagSupport {
-    private static final String SOURCE = "aksess.MiniViewTag";
+    private static final Logger log = LoggerFactory.getLogger(MiniViewTag.class);
 
     private String collection = null;
+    private Content contentObject;
 
     public void setCollection(String collection) {
         this.collection = collection;
     }
 
+    public void setObj(Content obj) {
+        this.contentObject = obj;
+    }
+
     public int doStartTag() throws JspException {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
         PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
-        SiteCache siteCache = (SiteCache) RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+        SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
         DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
         try {
             Content currentPage = (Content)request.getAttribute("aksess_this");
-            Content content = (Content)pageContext.getAttribute("aksess_collection_" + collection);
+            Content content = (contentObject == null) ? (Content)pageContext.getAttribute("aksess_collection_" + collection) : contentObject;
 
             if (content != null) {
                 String template = null;
@@ -81,8 +87,7 @@ public class MiniViewTag extends TagSupport {
                         }
                         pageContext.include(template);
                     } catch (Exception e) {
-                        Log.error(SOURCE, "Unable to display miniview for: " + content.getTitle(), null, null);
-                        Log.error(SOURCE, e, null, null);
+                        log.error( "Unable to display miniview for: " + content.getTitle(), e);
                     }
 
                     // Sett tilbake til denne siden
@@ -92,7 +97,7 @@ public class MiniViewTag extends TagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error displaying miniview", e);
             throw new JspException("Error in miniview");
         }
 

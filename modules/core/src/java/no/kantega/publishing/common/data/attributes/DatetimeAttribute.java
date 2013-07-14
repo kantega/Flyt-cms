@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.common.Aksess;
 
@@ -65,7 +64,7 @@ public class DatetimeAttribute extends DateAttribute {
         return "";
     }
 
-    public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+    public void validate(ValidationErrors errors) {
         Map<String, Object> objects = new HashMap<>();
         objects.put("field", title);
 

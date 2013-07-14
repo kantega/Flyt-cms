@@ -130,7 +130,7 @@
                 <label><kantega:label key="aksess.publishinfo.period.action"/></label>
                 <table class="noborder" id="EndDateActionChoice">
                     <%
-                        int expireAction = ((Content)session.getAttribute("currentContent")).getExpireAction();
+                        ExpireAction expireAction = ((Content)session.getAttribute("currentContent")).getExpireAction();
                     %>
                     <tr>
                         <td><input name="expireaction" type="radio" id="ExpireActionHide" value="<%=ExpireAction.HIDE%>" <%if (expireAction == ExpireAction.HIDE) out.write(" checked");%>></td>

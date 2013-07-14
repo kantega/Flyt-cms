@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.service;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.eventlog.Event;
@@ -30,6 +29,8 @@ import no.kantega.publishing.topicmaps.ao.*;
 import no.kantega.publishing.topicmaps.data.*;
 import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
 import no.kantega.publishing.topicmaps.impl.XTMImportWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +40,7 @@ import java.net.URL;
 import java.util.List;
 
 public class TopicMapService {
+    private static final Logger log = LoggerFactory.getLogger(TopicMapService.class);
 
     private TopicMapDao topicMapDao;
 
@@ -110,12 +112,12 @@ public class TopicMapService {
         }
         for(TopicAssociation topicAssociation: importedTopicMap.getTopicAssociationList()){
             saveImportedAssociation(topicMapId, topicAssociation);
-
         }
+        topicDao.deleteNonexistingTopicsTags(topicMapId);
     }
 
     private void saveImportedAssociation(int topicMapId, TopicAssociation topicAssociation) {
-        Log.debug(this.getClass().getName(),"Saving imported assosication between " + topicAssociation.getTopicRef().getId() + " and " + topicAssociation.getAssociatedTopicRef().getId());
+        log.debug("Saving imported assosication between " + topicAssociation.getTopicRef().getId() + " and " + topicAssociation.getAssociatedTopicRef().getId());
         topicAssociationDao.addTopicAssociation(topicAssociation);
 
         Topic instanceOf = topicAssociation.getInstanceOf();
@@ -141,7 +143,7 @@ public class TopicMapService {
     }
 
     private void saveImportedTopic(int topicMapId, Topic topic) {
-        Log.debug(this.getClass().getName(),"Saving imported topic: " + topic.getBaseName());
+        log.debug("Saving imported topic: " + topic.getBaseName());
         if (topic.getBaseNames().size() == 0) {
             topic.setBaseName(topic.getId());
         }

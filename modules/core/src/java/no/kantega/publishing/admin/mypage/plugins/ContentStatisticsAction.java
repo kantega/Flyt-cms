@@ -16,8 +16,9 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.content.api.ContentAO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -33,6 +34,8 @@ public class ContentStatisticsAction implements Controller {
 
     private String view;
 
+    @Autowired
+    private ContentAO contentAO;
 
     /**
      *
@@ -43,10 +46,10 @@ public class ContentStatisticsAction implements Controller {
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
-        model.put("contentCount", ContentAO.getContentCount());
-        model.put("linkCount", ContentAO.getLinkCount());
+        model.put("contentCount", contentAO.getContentCount());
+        model.put("linkCount", contentAO.getLinkCount());
         model.put("multimediaCount", MultimediaAO.getMultimediaCount());
-        model.put("contentProducerCount", ContentAO.getContentProducerCount());
+        model.put("contentProducerCount", contentAO.getContentProducerCount());
         return new ModelAndView(view, model);
     }
 

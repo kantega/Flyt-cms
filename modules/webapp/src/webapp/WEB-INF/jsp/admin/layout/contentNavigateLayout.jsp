@@ -66,7 +66,6 @@
         properties['objectTypeAssociation'] = <%=ObjectType.ASSOCIATION%>;
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-contentnavigatelayout.js"/>"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
     <kantega:getsection id="head extras"/>
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
     <script type="text/javascript">

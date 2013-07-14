@@ -28,9 +28,7 @@ var stateHandler;
 $(document).ready(function() {
     stateHandler = new openaksess.admin.StateHandler();
     openaksess.common.debug("common.$(document).ready()");
-    if (window.dwr) {
-        dwr.engine.setHeaders({ "X-Requested-With":"XMLHttpRequest"});
-    }
+
     openaksess.admin.setWindowSize();
     openaksess.admin.ajaxSetup();
     //openaksess.admin.widgetmanager.init({context: '#Content'});

@@ -16,15 +16,17 @@
 
 package no.kantega.publishing.spring;
 
-import org.apache.log4j.LogManager;
+import ch.qos.logback.classic.LoggerContext;
+import ch.qos.logback.classic.util.ContextInitializer;
+import ch.qos.logback.core.util.StatusPrinter;
 import org.apache.commons.io.IOUtils;
-import no.kantega.commons.log.Log;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContextListener;
 import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 import java.io.File;
-import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -32,6 +34,7 @@ import java.io.InputStream;
  */
 public class LogInitListener implements ServletContextListener {
 
+    private LoggerContext loggerContext;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         final File dataDirectory  = (File) servletContextEvent.getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
@@ -45,12 +48,23 @@ public class LogInitListener implements ServletContextListener {
         final File logsDirectory = new File(dataDirectory, "logs");
         logsDirectory.mkdirs();
 
-        final File configFile = new File(new File(dataDirectory, "conf"),  "log4j.xml");
+        final File configFile = new File(new File(dataDirectory, "conf"),  "logback.groovy");
 
         if(!configFile.exists()) {
             writeDefaultConfigFile(configFile);
         }
-        Log.init(configFile, logsDirectory);
+
+        loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+        try {
+            loggerContext.reset();
+            loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
+            ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
+            contextInitializer.configureByResource(configFile.toURI().toURL());
+            LoggerFactory.getLogger(getClass()).info("Configured logging");
+        } catch (Exception je) {
+            je.printStackTrace();
+        }
+        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
     }
 
     /**
@@ -60,23 +74,17 @@ public class LogInitListener implements ServletContextListener {
     private void writeDefaultConfigFile(File configFile) {
         configFile.getParentFile().mkdirs();
 
-        try {
-            InputStream is = getClass().getClassLoader().getResourceAsStream("no/kantega/publishing/log/default-log4j.xml");
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream("oa-logback.groovy");
+             FileOutputStream out = new FileOutputStream(configFile)){
 
-            final FileOutputStream out = new FileOutputStream(configFile);
-            try {
-                IOUtils.copy(is, out);
-            } finally {
-                IOUtils.closeQuietly(out);
-                IOUtils.closeQuietly(is);
-            }
+             IOUtils.copy(is, out);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        LogManager.shutdown();
+        loggerContext.stop();
     }
 
 }

@@ -24,7 +24,7 @@ public class ContentIdentifier {
     private int contextId = -1; // Brukes sammen contentId for å finne en associationId
     private int language = Language.NORWEGIAN_BO;
     private int version = -1;
-    private ContentStatus status = ContentStatus.PUBLISHED;
+    private ContentStatus status = ContentStatus.DRAFT;
 
     public int getContentId() {
         return contentId;

@@ -16,22 +16,23 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.NotAuthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *  Set specified content as current page
  */
 public class UseContentTag  extends ConditionalTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(UseContentTag.class);
     private String contentId = null;
     private String collection = null;
     private Content contentObject = null;
@@ -62,7 +63,7 @@ public class UseContentTag  extends ConditionalTagSupport {
             try {
                 contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId);
             } catch (NotAuthorizedException e) {
-                Log.error(getClass().getName(), e, null, null);
+                log.error("", e);
                 throw new JspTagException(getClass().getName() + ":" + e.getMessage());
 
             }

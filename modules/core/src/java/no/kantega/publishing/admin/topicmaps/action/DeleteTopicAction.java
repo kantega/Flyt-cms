@@ -16,25 +16,19 @@
 
 package no.kantega.publishing.admin.topicmaps.action;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.exception.ExceptionHandler;
 import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
 
 public class DeleteTopicAction implements Controller {
+    private static final Logger log = LoggerFactory.getLogger(DeleteTopicAction.class);
     
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 

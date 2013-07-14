@@ -3,7 +3,6 @@ package no.kantega.publishing.modules.forms.control;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
@@ -20,6 +19,8 @@ import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 import org.kantega.jexmec.PluginManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,6 +33,7 @@ import java.util.Map;
  *
  */
 public class SaveFormSubmissionController implements AksessController {
+    private static final Logger log = LoggerFactory.getLogger(SaveFormSubmissionController.class);
 
     private String description;
     private FormSubmissionBuilder formSubmissionBuilder;
@@ -119,10 +121,8 @@ public class SaveFormSubmissionController implements AksessController {
 
             try {
                 MailSender.send(from, recipient, subject, mailConfirmationTemplate, params);
-            } catch (SystemException e) {
-                Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
-            } catch (ConfigurationException e) {
-                Log.error("Delivering form by email failed. Form Id: " + formsubmission.getForm().getId(), e, null, null);
+            } catch (SystemException | ConfigurationException e) {
+                log.error("", e);
             }
         }
     }
@@ -197,7 +197,7 @@ public class SaveFormSubmissionController implements AksessController {
     }
 
     /**
-     * Adds additional values to or ovverides values in the form,
+     * Adds additional values to or overrides values in the form,
      *
      * @param values a map of values
      * @param request a request

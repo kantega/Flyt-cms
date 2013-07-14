@@ -1,5 +1,5 @@
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters" %>
+<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%--
@@ -44,10 +44,6 @@
     </script>
     <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-commonlayout.js"/>'></script>
     <script type="text/javascript" src='<kantega:expireurl url="/admin/js/jquery-ui-i18n.min.js"/>'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/engine.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentStateHandler.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/UserPreferencesHandler.js'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/dwr/interface/ContentClipboardHandler.js'></script>
 
     <kantega:getsection id="head"/>
     <script type="text/javascript">

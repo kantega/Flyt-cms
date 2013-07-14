@@ -20,12 +20,12 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +39,12 @@ public class DeleteNoteAction  extends SimpleAdminController {
     @Autowired
     NotesDao notesDao;
 
+    @Autowired
+    private ContentAO contentAO;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters params = new RequestParameters(request);
@@ -50,9 +56,8 @@ public class DeleteNoteAction  extends SimpleAdminController {
         int noteId = params.getInt("noteId");
 
         if (!"".equals(url)) {
-            ContentIdentifier cid = null;
             try {
-                cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
 
                 ContentManagementService cms = new ContentManagementService(request);
 
@@ -62,7 +67,7 @@ public class DeleteNoteAction  extends SimpleAdminController {
                         notesDao.removeNote(noteId);
                         int contentId = cid.getContentId();
                         int count = notesDao.getNotesByContentId(contentId).size();
-                        ContentAO.setNumberOfNotes(contentId, count);
+                        contentAO.setNumberOfNotes(contentId, count);
                     }
                 }
             } catch (ContentNotFoundException e) {

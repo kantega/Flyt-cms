@@ -8,7 +8,8 @@ import com.bradmcevoy.http.ResourceFactoryFactory;
 import com.bradmcevoy.http.http11.auth.BasicAuthHandler;
 import com.bradmcevoy.http.webdav.DefaultWebDavResponseHandler;
 import com.bradmcevoy.http.webdav.WebDavResponseHandler;
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  *
  */
 public class AksessResourceFactoryFactory implements ResourceFactoryFactory {
+    private static final Logger log = LoggerFactory.getLogger(AksessResourceFactoryFactory.class);
     private static AuthenticationService authenticationService;
     private static AksessResourceFactory resourceFactory;
 
@@ -29,7 +31,7 @@ public class AksessResourceFactoryFactory implements ResourceFactoryFactory {
     }
 
     public void init() {
-        Log.debug(this.getClass().getName(), "init");
+        log.debug( "init");
         if( authenticationService == null ) {
             List<AuthenticationHandler> authenticationHandlers = new ArrayList<AuthenticationHandler>();
             authenticationHandlers.add(new BasicAuthHandler());

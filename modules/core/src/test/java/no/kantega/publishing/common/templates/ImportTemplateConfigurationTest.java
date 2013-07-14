@@ -16,19 +16,14 @@
 
 package no.kantega.publishing.common.templates;
 
+import junit.framework.TestCase;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory;
-import junit.framework.TestCase;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 2:25:50 PM
- */
 public class ImportTemplateConfigurationTest extends TestCase {
     public void testImportConfiguration() {
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
-        factory.setInputStreamSource(new XMLFileInputStreamSource());
+        factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig.xml"));
         TemplateConfiguration config = factory.getConfiguration();
 
         assertEquals(config.getAssociationCategories().size(), 4);

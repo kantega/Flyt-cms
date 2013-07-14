@@ -16,22 +16,25 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsEditableByUserTag  extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.IsEditableByUserTag";
+    private static final Logger log = LoggerFactory.getLogger(IsEditableByUserTag.class);
+    private static ContentIdHelper contentIdHelper;
     private Content contentObject = null;
 
     protected boolean condition() {
@@ -49,7 +52,10 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             }
             if (contentObject == null) {
                 // Hent denne siden
-                ContentIdentifier ci = ContentIdHelper.fromRequest(request);
+                if(contentIdHelper == null){
+                    contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                }
+                ContentIdentifier ci = contentIdHelper.fromRequest(request);
                 contentObject = cms.getContent(ci, true);
                 RequestHelper.setRequestAttributes(request, contentObject);
             }
@@ -65,7 +71,7 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
         } catch (ContentNotFoundException e) {
             // Normalt
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         } finally {
             reset();
         }

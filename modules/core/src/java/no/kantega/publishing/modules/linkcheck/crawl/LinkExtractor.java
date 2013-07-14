@@ -17,18 +17,19 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import org.cyberneko.html.parsers.SAXParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.*;
 import org.xml.sax.helpers.DefaultHandler;
 
@@ -39,21 +40,21 @@ import java.util.List;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class LinkExtractor {
-    private static final String SOURCE = "aksess.LinkExtractor";
+    private static final Logger log = LoggerFactory.getLogger(LinkExtractor.class);
 
     private SAXParser parser;
     private final EventLog eventLog;
+    private final ContentAO contentAO;
 
-    public LinkExtractor(EventLog eventLog) {
+    public LinkExtractor(EventLog eventLog, ContentAO contentAO) {
         this.eventLog = eventLog;
+        this.contentAO = contentAO;
         parser = new SAXParser();
 
         try {
             parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
             parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-        } catch (SAXNotSupportedException e) {
-            throw new RuntimeException(e);
-        } catch (SAXNotRecognizedException e) {
+        } catch (SAXNotSupportedException | SAXNotRecognizedException e) {
             throw new RuntimeException(e);
         }
 
@@ -67,7 +68,7 @@ public class LinkExtractor {
         if(content.isExternalLink()) {
             linkHandler.contentLinkFound(content, content.getLocation());
         } else {
-            content = ContentAO.getContent(ContentIdentifier.fromContentId(content.getId()), true);
+            content = contentAO.getContent(ContentIdentifier.fromContentId(content.getId()), true);
 
             List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
             for (Attribute attribute : attributes) {
@@ -80,9 +81,8 @@ public class LinkExtractor {
                         }
                     } catch (Throwable e) {
                         eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
-                        Log.error(SOURCE, String.format("contentId: %s, associationid: %s, attribute: %s \n %s",
-                                content.getId(), content.getAssociation().getId(), attrName, html), null, null);
-                        Log.error(SOURCE, e, null, null);
+                        log.error("contentId: {}, associationid: {}, attribute: {} {}",
+                                content.getId(), content.getAssociation().getId(), attrName, html);
                     }
                 } else if (attribute instanceof UrlAttribute) {
                     String link = attribute.getValue();

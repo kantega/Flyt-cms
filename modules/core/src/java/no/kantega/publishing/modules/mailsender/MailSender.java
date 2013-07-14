@@ -19,7 +19,6 @@ package no.kantega.publishing.modules.mailsender;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
@@ -28,6 +27,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.tools.generic.DateTool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
@@ -38,6 +39,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.util.ByteArrayDataSource;
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Date;
@@ -51,7 +53,7 @@ import java.util.Properties;
  * @author Anders Skar, Vidar B. Tilrem
  */
 public class MailSender {
-    private static final String SOURCE = "Aksess.MailSender";
+    private static final Logger log = LoggerFactory.getLogger(MailSender.class);
 
     /**
      * Sends a mail message. The message body is created by using a simple template mechanism. See MailTextReader.
@@ -102,7 +104,7 @@ public class MailSender {
             MimeBodyPart bp = createMimeBodyPartFromStringMessage(content);
             send(from, to, subject, new MimeBodyPart[]{bp});
         } catch (SystemException e) {
-            throw new SystemException("Feil ved utsending av epost", SOURCE, e);
+            throw new SystemException("Feil ved utsending av epost", e);
         }
 
     }
@@ -124,7 +126,7 @@ public class MailSender {
             Configuration config = Aksess.getConfiguration();
             String host = config.getString("mail.host");
             if (host == null) {
-                throw new ConfigurationException("mail.host", SOURCE);
+                throw new ConfigurationException("mail.host");
             }
 
             // I noen tilfeller ønsker vi at all epost skal gå til en testadresse
@@ -172,12 +174,12 @@ public class MailSender {
             eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
 
             // Logg sending
-            Log.debug(SOURCE, "Sending email to " + to + " with subject " + subject, null, null);
+            log.debug( "Sending email to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
             EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
             eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
-            throw new SystemException("Error sending email to : " + to + " with subject " + subject, SOURCE, e);
+            throw new SystemException("Error sending email to : " + to + " with subject " + subject, e);
         }
     }
 
@@ -189,7 +191,7 @@ public class MailSender {
      * @return The result of the merge.
      * @throws SystemException if template handling fails.
      */
-    public static String createStringFromVelocityTemplate(String templateFile, Map parameters) throws SystemException {
+    public static String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) throws SystemException {
         try {
             Velocity.init();
 
@@ -210,7 +212,7 @@ public class MailSender {
 
             return textWriter.toString();
         } catch (Exception e) {
-            throw new SystemException(SOURCE, "Feil ved generering av mailtekst basert på Velocity", e);
+            throw new SystemException("Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }
     }
 
@@ -232,7 +234,7 @@ public class MailSender {
             }
             return bp;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra string", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra string", e);
         }
     }
 
@@ -259,7 +261,33 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra binærfil", e);
+        }
+    }
+
+    /**
+     * Helper method to create a MimeBodyPart from a binary file.
+     *
+     * @param data Data
+     * @param contentType The Mime content type of the file.
+     * @param fileName   The name of the file - as it will appear for the mail recipient.
+     * @return The resulting MimeBodyPart.
+     * @throws SystemException if the MimeBodyPart can't be created.
+     */
+    public static MimeBodyPart createMimeBodyPartFromData(byte[] data, final String contentType, String fileName) throws SystemException {
+        try {
+            MimeBodyPart attachmentPart1 = new MimeBodyPart();
+            ByteArrayDataSource dataSource = new ByteArrayDataSource(data, contentType) {
+                @Override
+                public String getContentType() {
+                    return contentType;
+                }
+            };
+            attachmentPart1.setDataHandler(new DataHandler(dataSource));
+            attachmentPart1.setFileName(fileName);
+            return attachmentPart1;
+        } catch (MessagingException e) {
+            throw new SystemException("Feil ved generering av MimeBodyPart fra data[]", e);
         }
     }
 
@@ -285,7 +313,7 @@ public class MailSender {
             attachmentPart1.setFileName(fileName);
             return attachmentPart1;
         } catch (MessagingException e) {
-            throw new SystemException(SOURCE, "Feil ved generering av MimeBodyPart fra binærfil", e);
+            throw new SystemException("Feil ved generering av MimeBodyPart fra binærfil", e);
         }
     }
 }

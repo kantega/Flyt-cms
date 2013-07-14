@@ -17,9 +17,10 @@
 package no.kantega.publishing.admin.topicmaps.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -27,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class DeleteTopicTypeAction implements Controller {
+    private static final Logger log = LoggerFactory.getLogger(DeleteTopicTypeAction.class);
     private final static String SOURCE = "aksess.DeleteTopicMapAction";
     
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -39,7 +41,7 @@ public class DeleteTopicTypeAction implements Controller {
         if (topicId != null && topicMapId != -1) {
             Topic topic = topicService.getTopic(topicMapId, topicId);
             if (topic != null && topicService.getTopicsByInstance(topic).isEmpty()) {
-                Log.info(SOURCE, "Delete topictype:" + topicId, null, null);
+                log.info( "Delete topictype:" + topicId);
                 topicService.deleteTopic(topic);
             }            
         }

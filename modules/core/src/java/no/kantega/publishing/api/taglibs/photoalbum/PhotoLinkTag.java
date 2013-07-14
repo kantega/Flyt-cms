@@ -28,7 +28,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
 public class PhotoLinkTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.PhotoLinkTag";
 
     private String cssClass = null;
     private static final String DEFAULT_URL = "/multimedia.ap";
@@ -71,7 +70,7 @@ public class PhotoLinkTag extends BodyTagSupport {
                 if (cssClass != null) {
                     out.write(" class=\"" + cssClass + "\"");
                 }
-                if (url.indexOf("?") == -1) {
+                if (!url.contains("?")) {
                     url = url + "?id=" + mm.getId();
                 } else {
                     url = url + "&amp;id=" + mm.getId();
@@ -81,7 +80,7 @@ public class PhotoLinkTag extends BodyTagSupport {
                 out.write("</a>");
             }
         } catch (Exception e) {
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
             url = DEFAULT_URL;

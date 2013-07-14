@@ -1,26 +1,29 @@
 package no.kantega.publishing.webdav.resources;
 
 import com.bradmcevoy.http.*;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
-import java.io.ByteArrayOutputStream;
-import java.util.*;
-
 import com.bradmcevoy.http.exceptions.BadRequestException;
-import com.bradmcevoy.http.exceptions.NotAuthorizedException;
 import com.bradmcevoy.http.exceptions.ConflictException;
-import no.kantega.commons.log.Log;
+import com.bradmcevoy.http.exceptions.NotAuthorizedException;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavMultimediaHelper;
 import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  *
  */
 public class AksessMediaFolderResource extends AbstractAksessMultimediaResource implements LockingCollectionResource, FolderResource {
+    private static final Logger log = LoggerFactory.getLogger(AksessMediaFolderResource.class);
     public AksessMediaFolderResource(Multimedia media, WebDavSecurityHelper webDavSecurityHelper, WebDavMultimediaHelper webDavMultimediaHelper) {
         super(media, webDavSecurityHelper, webDavMultimediaHelper);
     }
@@ -56,16 +59,16 @@ public class AksessMediaFolderResource extends AbstractAksessMultimediaResource 
     }
 
     public CollectionResource createCollection(String folderName) throws NotAuthorizedException, ConflictException {
-        Log.info(this.getClass().getName(), "Create new file:" + folderName);
+        log.info( "Create new file:" + folderName);
         return webDavMultimediaHelper.createNewFolder(media, folderName);
     }
 
     public Resource createNew(String fileName, InputStream inputStream, Long length, String contentType) throws IOException, ConflictException {
         if (fileName.startsWith(".") || !fileName.contains(".")) {
-            Log.info(this.getClass().getName(), "Filename without extension or hidden ignored:" + fileName);
+            log.info( "Filename without extension or hidden ignored:" + fileName);
             return null;
         } else {
-            Log.info(this.getClass().getName(), "Create new file:" + fileName);
+            log.info( "Create new file:" + fileName);
             return webDavMultimediaHelper.createNewFile(media, fileName, inputStream, length);
         }
     }
@@ -75,7 +78,7 @@ public class AksessMediaFolderResource extends AbstractAksessMultimediaResource 
     }
 
     public void delete() {
-        Log.info(this.getClass().getName(), "Delete not supported");
+        log.info( "Delete not supported");
     }
 
     public void sendContent(OutputStream outputStream, Range range, Map<String, String> stringStringMap, String s) throws IOException, NotAuthorizedException, BadRequestException {

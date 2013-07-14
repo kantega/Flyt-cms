@@ -8,6 +8,7 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,6 +59,7 @@ public class GetUrlTagTest {
         // TODO when the project is upgraded to Spring 3.2 we can annotate the test class with @WebAppConfiguration and get this injected.
         WebApplicationContext wac = mock(WebApplicationContext.class);
         when(wac.getBean(UrlPlaceholderResolver.class)).thenReturn(applicationContext.getBean(UrlPlaceholderResolver.class));
+        when(wac.getBean(ContentIdHelper.class)).thenReturn(applicationContext.getBean(ContentIdHelper.class));
 
         mockServletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac);
 

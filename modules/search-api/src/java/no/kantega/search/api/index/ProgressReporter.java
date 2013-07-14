@@ -47,7 +47,7 @@ public class ProgressReporter {
      * Report that processing and submiting of a single document has been performed.
      */
     public void reportProgress(){
-        if(current.incrementAndGet() == total){
+        if(current.incrementAndGet() >= total){
             isFinished.set(true);
         }
     }

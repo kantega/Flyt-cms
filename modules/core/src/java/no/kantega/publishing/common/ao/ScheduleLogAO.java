@@ -25,20 +25,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 15, 2007
- * Time: 10:29:20 AM
- */
 public class ScheduleLogAO {
-    private static String SOURCE = "ScheduleLogAO";
 
     public static Date getLastRun(String service) throws SystemException {
         Date lastRun = null;
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             PreparedStatement st = c.prepareStatement("select * from schedulelog where Service = ?");
             st.setString(1, service);
@@ -49,16 +41,7 @@ public class ScheduleLogAO {
             rs.close();
 
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
+            throw new SystemException("SQL feil", e);
         }
 
         return lastRun;
@@ -69,9 +52,7 @@ public class ScheduleLogAO {
 
         if (lastRun == null) lastRun = new Date();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             PreparedStatement st;
 
@@ -89,16 +70,7 @@ public class ScheduleLogAO {
                 st.execute();
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
+            throw new SystemException("SQL feil", e);
         }
 
     }

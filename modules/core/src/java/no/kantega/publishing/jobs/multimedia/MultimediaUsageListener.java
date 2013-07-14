@@ -16,9 +16,7 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.ao.MultimediaUsageDao;
 import no.kantega.publishing.common.data.Multimedia;
@@ -29,8 +27,12 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -38,8 +40,11 @@ import java.util.List;
  *
  */
 public class MultimediaUsageListener extends ContentEventListenerAdapter {
+    private static final Logger log = LoggerFactory.getLogger(MultimediaUsageListener.class);
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     public void contentSaved(ContentEvent event) {
         // Delete all usages for this content
@@ -57,7 +62,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentExpired(ContentEvent event) {
-        int action = event.getContent().getExpireAction();
+        ExpireAction action = event.getContent().getExpireAction();
 
         if (action == ExpireAction.DELETE) {
             multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
@@ -65,7 +70,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     }
 
     public void contentPermanentlyDeleted(ContentIdentifier cid) {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         int contentId = cid.getContentId();
         multimediaUsageDao.removeUsageForContentId(contentId);
 
@@ -74,7 +79,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
             try {
                 multimediaDao.deleteMultimedia(m.getId());
             } catch (ObjectInUseException e) {
-                Log.error(this.getClass().getName(), e);
+                log.error("", e);
             }
         }
     }

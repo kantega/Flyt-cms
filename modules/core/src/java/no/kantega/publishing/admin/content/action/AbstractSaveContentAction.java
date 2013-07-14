@@ -20,22 +20,23 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
-import no.kantega.publishing.admin.content.util.ContentAliasValidator;
+import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.MultipleEditorInstancesException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -48,13 +49,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractSaveContentAction extends AbstractContentAction {
-    @Autowired
-    private ContentAliasValidator aliasValidator;
+    private static final Logger log = LoggerFactory.getLogger(AbstractSaveContentAction.class);
 
-    abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException;
+    abstract ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException;
     abstract String getView();
     abstract Map<String, Object> getModel(Content content, HttpServletRequest request);
     private boolean updatePublishProperties = true;
+
+    @Autowired
+    private ContentAO contentAO;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
@@ -116,7 +119,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     }
 
 
-    private ValidationErrors updateSubmittedValues(ContentManagementService aksessService, Content content, RequestParameters param) throws InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+    private ValidationErrors updateSubmittedValues(ContentManagementService aksessService, Content content, RequestParameters param) throws InvalidFileException, InvalidTemplateException{
         ValidationErrors errors = new ValidationErrors();
 
         if (updatePublishProperties) {
@@ -215,7 +218,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             try {
                 Date startDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 content.setPublishDate(startDate);
-                if (startDate == null && (!content.isNew()) && ContentAO.hasBeenPublished(content.getId())) {
+                if (startDate == null && (!content.isNew()) && contentAO.hasBeenPublished(content.getId())) {
                     errors.add(null, "aksess.error.publishdatenotset");
                 }
             } catch(Exception e) {
@@ -251,9 +254,9 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             errors.add(null, "aksess.error.date", objects);
         }
 
-        int expireAction = param.getInt("expireaction");
-        if (expireAction != -1) {
-            content.setExpireAction(expireAction);
+        String expireAction = param.getString("expireaction");
+        if (expireAction != null) {
+            content.setExpireAction(ExpireAction.valueOf(expireAction));
         }
 
         if (aksessService.getSecuritySession().isUserInRole(Aksess.getDeveloperRole())) {
@@ -294,7 +297,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     content.setAlias(alias);
                 }
 
-                aliasValidator.validateAlias(alias, content, errors);
+                ValidatorHelper.validateAlias(alias, content, errors);
             }
         }
     }
@@ -323,7 +326,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                             try {
                                 parent = aksessService.getContent(parentCid);
                             } catch (NotAuthorizedException e) {
-                                Log.error(getClass().getName(), "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")", null, null);
+                                log.error( "Could not get parent for " + content.getTitle() + "(" + content.getId() + ")");
                             }
                             if (parent != null) {
                                 content.setGroupId(parent.getGroupId());

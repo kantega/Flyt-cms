@@ -17,12 +17,14 @@
 package no.kantega.publishing.jobs.contentstate;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class ContentStateChangeJob  {
-    private static String SOURCE = "ContentStateChangeJob";
+
+    @Autowired
+    private ContentStateUpdater stateUpdater;
 
     public void execute() {
-        ContentStateUpdater stateUpdater = new ContentStateUpdater();
-
         stateUpdater.expireContent();
         stateUpdater.publishContent();
     }

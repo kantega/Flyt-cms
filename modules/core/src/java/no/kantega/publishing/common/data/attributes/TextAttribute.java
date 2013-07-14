@@ -17,8 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
-import no.kantega.commons.util.RegExp;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateTextAttributeFromRequestBehaviour;
@@ -27,6 +25,8 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Attribute representing plain text.
@@ -57,14 +57,14 @@ public class TextAttribute extends Attribute {
     }
 
 
-    public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+    public void validate(ValidationErrors errors){
         super.validate(errors);
         if (errors.getLength() > 0) {
             return;
         }
 
-        if ((value != null) && (value.length() > 0) && (regexp != null) && (regexp.length() > 0)) {
-            if (!RegExp.matches(regexp, value)) {
+        if (isNotBlank(value) && isNotBlank(regexp)) {
+            if (!value.matches(regexp)) {
                 Map<String, Object> objects = new HashMap<String, Object>();
                 objects.put("field", title);
                 errors.add(name, "aksess.feil.invalidchar", objects);

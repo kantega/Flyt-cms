@@ -25,7 +25,8 @@ import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import no.kantega.publishing.topicmaps.data.TopicMap;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -40,7 +41,7 @@ public class GetTopicsTag extends LoopTagSupport {
 
     private String collection;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(GetTopicsTag.class);
 
     private Iterator i;
     private String associatedid = null;
@@ -128,16 +129,9 @@ public class GetTopicsTag extends LoopTagSupport {
             topicid = null;
             topiclist = null;
 
-        } catch (SystemException e) {
-            log.error(e);
-            throw new JspTagException(e.getMessage());
+        } catch (SystemException | NotAuthorizedException | JspException e) {
+            throw new JspTagException(e);
 
-        } catch (NotAuthorizedException e) {
-            log.error(e);
-            throw new JspTagException(e.getMessage());
-        } catch (JspException e) {
-            log.error(e);
-            throw new JspTagException(e.getMessage());
         }
     }
 

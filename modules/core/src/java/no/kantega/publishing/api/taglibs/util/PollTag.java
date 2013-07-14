@@ -19,11 +19,12 @@ package no.kantega.publishing.api.taglibs.util;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -44,8 +45,8 @@ import java.util.List;
  * Time: 14:21:29
  */
 public class PollTag  extends TagSupport {
+    private static final Logger log = LoggerFactory.getLogger(PollTag.class);
 
-    private static String SOURCE = "aksess.PollTag";
     private JdbcTemplate jdbcTemplate;
     private Content containingPage;
     /**
@@ -63,11 +64,11 @@ public class PollTag  extends TagSupport {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(pollid);
             containingPage = new ContentManagementService(request).getContent(cid);
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspException(SOURCE, e);
+            log.error("Error getting content", e);
+            throw new JspException(e);
         } catch (NotAuthorizedException e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspException(SOURCE, e);
+            log.error("User not authorized", e);
+            throw new JspException(e);
         }
 
         jdbcTemplate = new JdbcTemplate((DataSource) RootContext.getInstance().getBean("aksessDataSource"));

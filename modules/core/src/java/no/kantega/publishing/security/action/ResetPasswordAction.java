@@ -2,7 +2,6 @@ package no.kantega.publishing.security.action;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.password.PasswordValidator;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.login.PostResetPasswordHandler;
@@ -10,6 +9,8 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.DefaultResetPasswordToken;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ResetPasswordAction extends AbstractLoginAction {
-    private static final String SOURCE = "aksess.ResetPassordAction";
+    private static final Logger log = LoggerFactory.getLogger(ResetPasswordAction.class);
 
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;
@@ -94,7 +95,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
                 PostResetPasswordHandler resetHandler = (PostResetPasswordHandler)Class.forName(postResetPasswordHandler).newInstance();
                 resetHandler.handlePostResetPassword(identity, request);
             } catch (Exception e) {
-                Log.error(SOURCE, e, null, null);
+                log.error("", e);
             }
         }
 

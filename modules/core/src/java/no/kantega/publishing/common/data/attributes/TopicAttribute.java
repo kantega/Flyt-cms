@@ -19,6 +19,8 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapTopicAttributeValueToContentPropertyBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.TopicAttributeValueXMLExporter;
+import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -80,6 +82,10 @@ public class TopicAttribute  extends Attribute {
         } else {
             return super.getProperty(property);
         }
+    }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new TopicAttributeValueXMLExporter();
     }
 }
 

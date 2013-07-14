@@ -17,7 +17,6 @@
 package no.kantega.publishing.security.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
@@ -29,6 +28,8 @@ import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -37,16 +38,15 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PermissionsAO {
-    private static final String SOURCE = "aksess.PermissionsAO";
+    private static final Logger log = LoggerFactory.getLogger(PermissionsAO.class);
 
-    public static HashMap<String, List<Permission>> getPermissionMap() throws SystemException {
-        HashMap<String, List<Permission>> permissionSets = new HashMap<String, List<Permission>>();
+    public static Map<String, List<Permission>> getPermissionMap() throws SystemException {
+        Map<String, List<Permission>> permissionSets = new HashMap<String, List<Permission>>();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ResultSet rs = SQLHelper.getResultSet(c, "SELECT ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority FROM objectpermissions ORDER BY ObjectSecurityId, ObjectType, Privilege, Role");
             int prevObjectSecurityId = -1;
             int prevObjectType = -1;
@@ -92,15 +92,7 @@ public class PermissionsAO {
 
 
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
+            throw new SystemException("SQL feil", e);
         }
 
         return permissionSets;
@@ -110,12 +102,10 @@ public class PermissionsAO {
     public static void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
         int securityId = object.getSecurityId();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement st;
 
-            Log.debug(SOURCE, "Setter rettigheter for id:" + object.getId() + ", secid:" + securityId, null, null);
+            log.debug( "Setter rettigheter for id:" + object.getId() + ", secid:" + securityId);
 
             boolean setPermissionsFromParent = false;
             if (permissions != null && permissions.size() == 0) {
@@ -176,24 +166,14 @@ public class PermissionsAO {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                Log.error(SOURCE, e, null, null);
-            }
+            throw new SystemException("SQL feil", e);
         }
     }
 
     public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
         List<ObjectPermissionsOverview> overview = new ArrayList<ObjectPermissionsOverview>();
 
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement st;
 
             if (objectType == ObjectType.MULTIMEDIA) {
@@ -239,15 +219,7 @@ public class PermissionsAO {
 
             return overview;
         } catch (SQLException e) {
-            throw new SystemException("SQL feil", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            throw new SystemException("SQL feil", e);
         }
 
     }

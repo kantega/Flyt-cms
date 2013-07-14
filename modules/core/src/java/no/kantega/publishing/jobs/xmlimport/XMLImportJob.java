@@ -17,13 +17,14 @@
 package no.kantega.publishing.jobs.xmlimport;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ServerType;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 import org.w3c.dom.Document;
 
@@ -31,7 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class XMLImportJob  extends QuartzJobBean {
-    private static final String SOURCE = "aksess.jobs.XMLImportJob";
+    private static final Logger log = LoggerFactory.getLogger(XMLImportJob.class);
     private String id  = null;
     private String url = null;
     private XMLImportValidator validator = new DefaultXMLImportValidator();
@@ -40,15 +41,15 @@ public class XMLImportJob  extends QuartzJobBean {
     protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
         xmlCache = (XmlCache)jobExecutionContext.getMergedJobDataMap().get("xmlCache");
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
 
         if (id == null || url == null) {
-            Log.error(SOURCE, "Missing parameter id or url", null, null);
+            log.error( "Missing parameter id or url");
             throw new JobExecutionException();
         }
-        Log.info(SOURCE, "XMLImport started:" + id + ", url:" + url);
+        log.info( "XMLImport started:" + id + ", url:" + url);
 
         try {
             Document xml = XMLHelper.openDocument(new URL(url));
@@ -59,9 +60,9 @@ public class XMLImportJob  extends QuartzJobBean {
             }
 
         } catch (SystemException | MalformedURLException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
-        Log.info(SOURCE, "XMLImport ended:" + id, null, null);
+        log.info( "XMLImport ended:" + id);
     }
 
     private boolean isValidXML(Document xml) {
@@ -71,7 +72,7 @@ public class XMLImportJob  extends QuartzJobBean {
 
         boolean isValid = validator.isValidXML(xml);
         if (!isValid) {
-            Log.error(SOURCE, "Validator failed, skipping XML import (" + id + ") from URL:" + url);
+            log.error( "Validator failed, skipping XML import (" + id + ") from URL:" + url);
         }
 
         return isValid;

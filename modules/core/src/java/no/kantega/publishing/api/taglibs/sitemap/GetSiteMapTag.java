@@ -17,16 +17,17 @@
 package no.kantega.publishing.api.taglibs.sitemap;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,11 +36,12 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetSiteMapTag  extends TagSupport {
-    private static final String SOURCE = "aksess.GetSiteMapTag";
+    private static final Logger log = LoggerFactory.getLogger(GetSiteMapTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     private String name = "sitemap";
     private int siteId = -1;
-    private String rootId = "";
+    private int rootId = -1;
     private int depth  = -1;
     private int language = -1;
     private int currentId = -1;
@@ -59,7 +61,21 @@ public class GetSiteMapTag  extends TagSupport {
     }
 
     public void setRootid(String rootId) {
-        this.rootId = rootId;
+        if (rootId != null && rootId.length() > 0) {
+            try {
+                this.rootId = Integer.parseInt(rootId);
+            } catch (NumberFormatException e) {
+                try {
+                    if(contentIdHelper == null){
+                        contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier cid = contentIdHelper.fromUrl(rootId);
+                    this.rootId = cid.getAssociationId();
+                } catch (ContentNotFoundException | SystemException e1) {
+                    log.error("", e);
+                }
+            }
+        }
     }
 
 
@@ -139,44 +155,25 @@ public class GetSiteMapTag  extends TagSupport {
 
             SiteMapEntry sitemap;
             if (alwaysIncludeCurrentId) {
-                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, getRootId(content), currentId);
+                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, rootId, currentId);
             } else {
-                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, getRootId(content), -1);
+                sitemap = cms.getSiteMap(siteId, depth, language, associationCategory, rootId, -1);
             }
             request.setAttribute(name, sitemap);
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;
-    }
-
-    private int getRootId(Content content) {
-        int intRootId = -1;
-        if (rootId != null && rootId.length() > 0) {
-            try {
-                intRootId = Integer.parseInt(rootId);
-            } catch (NumberFormatException e) {
-                try {
-                    ContentIdentifier cid = ContentIdHelper.findRelativeContentIdentifier(content, rootId);
-                    if (cid != null) {
-                        intRootId = cid.getAssociationId();
-                    }
-                } catch (ContentNotFoundException | SystemException e1) {
-                    Log.error(SOURCE, e);
-                }
-            }
-        }
-        return intRootId;
     }
 
 
     public int doEndTag() throws JspException {
         name = "sitemap";
         siteId = -1;
-        rootId = "";
+        rootId = -1;
         depth = -1;
         language = -1;
         currentId = -1;

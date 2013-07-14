@@ -16,17 +16,18 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.XMLFilterImpl;
 import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
-import no.kantega.publishing.common.util.MultimediaHelper;
+import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ import java.util.List;
  * Time: 1:26:12 PM
  */
 public class ImgHeightAndWidthFilter extends XMLFilterImpl {        
+    private static final Logger log = LoggerFactory.getLogger(ImgHeightAndWidthFilter.class);
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if(localName.equalsIgnoreCase("img")) {
@@ -69,7 +71,7 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
                     }
 
                 } catch (NumberFormatException e) {
-                    Log.error(getClass().getName(), e, null, null);
+                    log.error("Could not parse number", e);
                 }
             }
 

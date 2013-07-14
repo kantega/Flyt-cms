@@ -16,25 +16,23 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.content.action.AbstractSaveContentAction;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.RegExpSyntaxException;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.common.service.ContentManagementService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 
 public class SaveEmptyAction extends AbstractSaveContentAction {
     private String view;
 
-    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException, RegExpSyntaxException {
+    public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException{
         // No data is editable on this page, return no errors
         ValidationErrors errors  = new ValidationErrors();
 

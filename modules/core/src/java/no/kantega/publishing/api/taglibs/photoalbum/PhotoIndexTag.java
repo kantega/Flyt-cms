@@ -19,10 +19,11 @@ package no.kantega.publishing.api.taglibs.photoalbum;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -33,7 +34,8 @@ import java.io.IOException;
 import java.util.List;
 
 public class PhotoIndexTag extends TagSupport {
-    private static final String SOURCE = "aksess.PhotoImageTag";
+
+    private static ContentIdHelper contentIdHelper;
 
     private int cols   = -1;
     private int max    = -1;
@@ -92,7 +94,10 @@ public class PhotoIndexTag extends TagSupport {
 
                 String url = Aksess.getContextPath() + "/" + Aksess.CONTENT_REQUEST_HANDLER + "?";
                 try {
-                    ContentIdentifier cid = ContentIdHelper.fromRequest(request);
+                    if(contentIdHelper == null){
+                        contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier cid = contentIdHelper.fromRequest(request);
                     url = url + "thisId=" + cid.getAssociationId() + "&amp;language=" + cid.getLanguage();
                 } catch (Exception e) {
                     // Kan skje ved testing at malen ikke er knyttet opp til en side
@@ -160,7 +165,7 @@ public class PhotoIndexTag extends TagSupport {
                 }
             }
         } catch (IOException e) {
-            throw new JspTagException(SOURCE, e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

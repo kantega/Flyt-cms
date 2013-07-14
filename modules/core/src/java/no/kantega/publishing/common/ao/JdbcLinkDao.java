@@ -16,14 +16,16 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.RowMapper;
@@ -34,6 +36,10 @@ import java.util.Date;
 import java.util.List;
 
 public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
+    private static final Logger log = LoggerFactory.getLogger(JdbcLinkDao.class);
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     private SQLDialect sqlDialect;
     private String brokenLinkBasisQuery = "SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion  WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND content.ContentId in (select ContentId from associations where IsDeleted = 0) AND linkoccurrence.linkid=link.id)";
@@ -74,7 +80,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
                         } catch (SQLException e) {
-                            Log.error(this.getClass().getName(), e, null, null);
+                            log.error("Error inserting link occurrence", e);
                         }
                     }
 
@@ -84,7 +90,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                             checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatementAttribute, insOccurrenceStatement, attributeName);
 
                         } catch (SQLException e) {
-                            Log.error(this.getClass().getName(), e, null, null);
+                            log.error("Error inserting link occurrence", e);
                         }
                     }
                 });
@@ -103,7 +109,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
         final String query = term.getQuery("Id, url", sqlDialect.getResultLimitorStrategy());
 
-            Log.debug(this.getClass().getName(), "query=" + query, null, null);
+            log.debug( "query=" + query);
 
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
@@ -138,7 +144,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see LinkDao#getBrokenLinksUnderParent(no.kantega.publishing.api.content.ContentIdentifier, String)
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
-        ContentIdHelper.assureContentIdAndAssociationIdSet(parent);
+        contentIdHelper.assureContentIdAndAssociationIdSet(parent);
         String query = brokenLinkBasisQuery;
         query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)";
         query += getDefaultOrderByClause();

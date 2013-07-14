@@ -19,14 +19,15 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.HearingComment;
 import no.kantega.publishing.common.data.Note;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.SecuritySession;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,12 +41,15 @@ import java.util.Date;
 
 public class SaveHearingCommentAction {
 
-	private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(SaveHearingCommentAction.class);
 	public static final String HEARING_KEY = SaveHearingCommentAction.class.getName() + ".HearingKey";
 	public static final String HEARING_INVITEES_KEY = SaveHearingCommentAction.class.getName() + ".HearingInviteeKey";
 
 	@Autowired
 	private NotesDao notesDao;
+
+    @Autowired
+    private ContentAO contentAO;
 
 	@RequestMapping(value = "/aksess/hearing/SaveHearingComment.action", method = RequestMethod.POST)
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -66,7 +70,7 @@ public class SaveHearingCommentAction {
 
 			if (comment != null && !comment.trim().equals("")) {
 				ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
-				Content content = ContentAO.getContent(cid,false);
+				Content content = contentAO.getContent(cid,false);
 				String name = SecuritySession.getInstance(request).getUser().getName();
 
 				HearingComment hc = new HearingComment();
@@ -83,7 +87,7 @@ public class SaveHearingCommentAction {
 				note.setAuthor(name);
 				notesDao.addNote(note);
 				int count = notesDao.getNotesByContentId(content.getId()).size();
-				ContentAO.setNumberOfNotes(content.getId(), count);
+				contentAO.setNumberOfNotes(content.getId(), count);
 
 			}
 			response.sendRedirect(sourceurl);

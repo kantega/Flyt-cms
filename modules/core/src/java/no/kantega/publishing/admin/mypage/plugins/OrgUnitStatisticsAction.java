@@ -16,37 +16,37 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import no.kantega.publishing.common.ao.ContentAO;
+import no.kantega.publishing.common.ao.TrafficLogDao;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.TrafficLogQuery;
+import no.kantega.publishing.common.data.enums.TrafficOrigin;
+import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.org.OrgUnit;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.common.ao.TrafficLogDao;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.TrafficLogQuery;
-import no.kantega.publishing.common.data.enums.TrafficOrigin;
-import no.kantega.publishing.org.OrgUnit;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.*;
 
 public class OrgUnitStatisticsAction implements Controller {
+    private static final Logger log = LoggerFactory.getLogger(OrgUnitStatisticsAction.class);
 
     private String view;
 
     @Autowired
     private TrafficLogDao trafficLogDao;
 
+    @Autowired
+    private ContentAO contentAO;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
         User user = securitySession.getUser();
@@ -54,8 +54,8 @@ public class OrgUnitStatisticsAction implements Controller {
         if (!orgUnits.isEmpty()) {
             OrgUnit orgUnit = orgUnits.get(0);
             model.put("orgUnit", orgUnit);
-            Content content = ContentAO.getContent(orgUnit);
-            Log.debug(getClass().getName(), "Looked up organization unit with name '" + orgUnit.getName() + "'");
+            Content content = contentAO.getContent(orgUnit);
+            log.debug( "Looked up organization unit with name '" + orgUnit.getName() + "'");
             if (content != null) {
                 Calendar cal = new GregorianCalendar();
                 Date now = cal.getTime();

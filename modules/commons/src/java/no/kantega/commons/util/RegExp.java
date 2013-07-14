@@ -16,28 +16,25 @@
 
 package no.kantega.commons.util;
 
-import no.kantega.commons.exception.RegExpSyntaxException;
-
 import java.util.regex.Pattern;
 
 /**
  *
  */
 public class RegExp {
-    private static String EMAIL =  "^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+([A-Za-z0-9-.]*)+\\.[A-Za-z0-9-]{2,4}$";
+    private static Pattern EMAIL =  Pattern.compile("^[_A-Za-z0-9-]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+([A-Za-z0-9-.]*)+\\.[A-Za-z0-9-]{2,4}$");
 
-    public static boolean matches(String regexp, String input) throws RegExpSyntaxException {
+    public static boolean matches(String regexp, String input) {
         Pattern p = Pattern.compile(regexp);
         return p.matcher(input).matches();
     }
 
-    public static String replace(String regexp, String input, String replacechar) throws RegExpSyntaxException {
+    public static String replace(String regexp, String input, String replacechar) {
         Pattern p = Pattern.compile(regexp);
         return p.matcher(input).replaceAll(replacechar);
     }
 
     public static boolean isEmail(String email) {
-        Pattern p = Pattern.compile(EMAIL);
-        return p.matcher(email).matches();
+        return EMAIL.matcher(email).matches();
     }
 }

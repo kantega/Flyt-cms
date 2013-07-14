@@ -27,7 +27,7 @@ public class AttributeRowMapper implements RowMapper<Attribute> {
         try {
             attribute = attributeFactory.newAttribute(rs.getString("AttributeType"));
         } catch (Exception e) {
-            throw new SystemException("Error creating attribute", this.getClass().getSimpleName(), e);
+            throw new SystemException("Error creating attribute", e);
         }
 
         attribute.setName(rs.getString("Name"));

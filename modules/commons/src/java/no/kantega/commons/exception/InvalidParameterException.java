@@ -20,7 +20,7 @@ package no.kantega.commons.exception;
  *
  */
 public class InvalidParameterException  extends SystemException {
-    public InvalidParameterException(String parameter, String source) {
-        super("Manglende eller feil parameter:" + parameter, source, null);
+    public InvalidParameterException(String parameter) {
+        super("Manglende eller feil parameter:" + parameter, null);
     }
 }

@@ -17,11 +17,12 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -36,11 +37,14 @@ import java.util.Map;
 public class ViewDisplayPeriodAction extends AbstractController {
     private String view;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<String, Object>();
         ContentManagementService cms = new ContentManagementService(request);
         String url = request.getParameter("url");
-        ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
         Content content = cms.getContent(cid, false);
 
         boolean canUpdateSubpages = false;
@@ -50,6 +54,7 @@ public class ViewDisplayPeriodAction extends AbstractController {
         if (content != null) {
             model.put("content", content);
         }
+        model.put("canUpdateSubpages", canUpdateSubpages);
         return new ModelAndView(view, model);
     }
 

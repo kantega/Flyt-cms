@@ -40,7 +40,6 @@ import java.util.List;
 
 
 public class SiteMapWorker {
-    private static final String SOURCE = "aksess.SiteMapWorker";
 
     private static SiteMapEntry getFirst(int parentId, List entries) {
         for (int i = 0; i < entries.size(); i++) {
@@ -72,7 +71,7 @@ public class SiteMapWorker {
         List tmpentries = new ArrayList();
 
         StringBuilder query = new StringBuilder();
-        query.append("select content.ContentId, content.Type, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
+        query.append("select content.ContentId, content.ContentType, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = ").append(ContentStatus.PUBLISHED.getTypeAsInt());
@@ -184,7 +183,7 @@ public class SiteMapWorker {
             }
             rs.close();
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {
@@ -315,7 +314,7 @@ public class SiteMapWorker {
                 }
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         } finally {
             try {
                 if (c != null) {

@@ -17,12 +17,13 @@
 package no.kantega.publishing.controls.userprofile;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +35,9 @@ import java.util.*;
  * Time: 2:14:23 PM
  */
 public class UpdateProfileController implements AksessController {
+    private static final Logger log = LoggerFactory.getLogger(UpdateProfileController.class);
 
-    private static final String SOURCE = "aksess.UpdateProfileController";
-    private int topicMapId = 1;
+        private int topicMapId = 1;
 
     /**
      * @see no.kantega.publishing.controls.AksessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -60,7 +61,7 @@ public class UpdateProfileController implements AksessController {
                     if (topicId != null) {
                         Topic t = topicService.getTopic(topicMapId, topicId);
                         if (t != null) {
-                            Log.debug(SOURCE, "Valgt emne: " + t.getBaseName(), null, null);
+                            log.debug( "Valgt emne: " + t.getBaseName());
                             topicService.addTopicSIDAssociation(t, user);
                             //Legger inn i sesjon også slik at det blir oppdatert nå
                             user.addTopic(t);

@@ -30,7 +30,7 @@ public class AdminRoleInterceptor extends HandlerInterceptorAdapter {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         SecuritySession session = SecuritySession.getInstance(request);
         if (!session.isUserInRole(Aksess.getAdminRole())) {
-            throw new NotAuthorizedException("Needs role: " + Aksess.getAdminRole(), this.getClass().getName());
+            throw new NotAuthorizedException("Needs role: " + Aksess.getAdminRole());
         }
 
         return true;

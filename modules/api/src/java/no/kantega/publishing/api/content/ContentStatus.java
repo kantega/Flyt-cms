@@ -63,6 +63,6 @@ public enum ContentStatus {
             }
         }
 
-        return ContentStatus.DRAFT;
+        return null;
     }
 }

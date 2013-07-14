@@ -46,7 +46,7 @@ public class SubscriptionController implements AksessController {
     private MailSubscriptionService mailSubscriptionService;
 
     public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String epost = ServletRequestUtils.getRequiredStringParameter(request, "epost");
+        String epost = ServletRequestUtils.getStringParameter(request, "epost", "");
 
         int documentType = ServletRequestUtils.getIntParameter(request, "documenttype", -1);
 
@@ -58,24 +58,28 @@ public class SubscriptionController implements AksessController {
             if (validEmail(epost)) {
                 Enumeration parameters = request.getParameterNames();
                 while(parameters.hasMoreElements()){
-                    String paramName = (String)parameters.nextElement();
-                    int channelId = Integer.parseInt(paramName, 10);
-                    String op = ServletRequestUtils.getStringParameter(request, paramName);
-                    if ("av".equalsIgnoreCase(op) || "off".equalsIgnoreCase(op)) {
-                        mailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
-                        model.put("meldtAv", Boolean.TRUE);  // Backwards compability
-                        model.put("unsubscribed", Boolean.TRUE);
-                    } else if ("pa".equalsIgnoreCase(op) || "on".equalsIgnoreCase(op)) {
-                        MailSubscription mailSubscription = new MailSubscription();
-                        mailSubscription.setChannel(channelId);
-                        mailSubscription.setDocumenttype(documentType);
-                        mailSubscription.setEmail(epost);
-                        mailSubscription.setLanguage(Language.NORWEGIAN_BO);
-                        MailSubscriptionInterval interval = MailSubscriptionInterval.valueOf(ServletRequestUtils.getRequiredStringParameter(request, "interval"));
-                        mailSubscription.setInterval(interval);
-                        mailSubscriptionService.addMailSubscription(mailSubscription);
-                        model.put("meldtPa", Boolean.TRUE);  // Backwards compability
-                        model.put("subscribed", Boolean.TRUE);
+                    try{
+                        String paramName = (String)parameters.nextElement();
+                        int channelId = Integer.parseInt(paramName, 10);
+                        String op = ServletRequestUtils.getStringParameter(request, paramName);
+                        if ("av".equalsIgnoreCase(op) || "off".equalsIgnoreCase(op)) {
+                            mailSubscriptionService.removeMailSubscription(epost, channelId, documentType);
+                            model.put("meldtAv", Boolean.TRUE);  // Backwards compability
+                            model.put("unsubscribed", Boolean.TRUE);
+                        } else if ("pa".equalsIgnoreCase(op) || "on".equalsIgnoreCase(op)) {
+                            MailSubscription mailSubscription = new MailSubscription();
+                            mailSubscription.setChannel(channelId);
+                            mailSubscription.setDocumenttype(documentType);
+                            mailSubscription.setEmail(epost);
+                            mailSubscription.setLanguage(Language.NORWEGIAN_BO);
+                            MailSubscriptionInterval interval = MailSubscriptionInterval.valueOf(ServletRequestUtils.getRequiredStringParameter(request, "interval"));
+                            mailSubscription.setInterval(interval);
+                            mailSubscriptionService.addMailSubscription(mailSubscription);
+                            model.put("meldtPa", Boolean.TRUE);  // Backwards compability
+                            model.put("subscribed", Boolean.TRUE);
+                        }
+                    } catch (NumberFormatException e) {
+                        //
                     }
                 }
             } else {

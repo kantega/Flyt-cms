@@ -17,18 +17,17 @@
 package no.kantega.commons.taglib.util;
 
 
-import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Calendar;
 
 
 public class CalendarNavigationTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.CalendarNavitationTag";
 
     private String dir ="next";
     private static final String NEXT = "next";

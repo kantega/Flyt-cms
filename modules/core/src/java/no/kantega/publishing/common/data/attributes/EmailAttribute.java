@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.util.RegExp;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class EmailAttribute extends Attribute {
         super();
     }
 
-    public void validate(ValidationErrors errors) throws RegExpSyntaxException {
+    public void validate(ValidationErrors errors){
         super.validate(errors);
         if (errors.getLength() > 0) {
             return;

@@ -16,15 +16,17 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -33,7 +35,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class EditLinkTag  extends BodyTagSupport {
-    private static final String SOURCE = "aksess.EditLinkTag";
+    private static final Logger log = LoggerFactory.getLogger(EditLinkTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     private String cssStyle = null;
     private String cssClass = null;
@@ -63,8 +66,10 @@ public class EditLinkTag  extends BodyTagSupport {
 
             Content current = (Content)request.getAttribute("aksess_this");
             if (current == null) {
-                // Hent denne siden
-                ContentIdentifier ci = ContentIdHelper.fromRequest(request);
+                if(contentIdHelper == null){
+                    contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                }
+                ContentIdentifier ci = contentIdHelper.fromRequest(request);
                 current = new ContentManagementService(request).getContent(ci, true);
                 RequestHelper.setRequestAttributes(request, current);
             }
@@ -88,8 +93,8 @@ public class EditLinkTag  extends BodyTagSupport {
         } catch (ContentNotFoundException e) {
             // Gjør ingenting her nei, siden er ikke redigerbar
         } catch (Exception e) {
-            Log.error(SOURCE, e);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

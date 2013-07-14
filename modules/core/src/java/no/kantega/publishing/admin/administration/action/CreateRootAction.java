@@ -47,8 +47,6 @@ import java.sql.SQLException;
 
 public class CreateRootAction  extends AbstractController {
 
-    private static String SOURCE = "aksess.CreateRootAction";
-
     private SiteCache siteCache;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -63,7 +61,7 @@ public class CreateRootAction  extends AbstractController {
 
         Site site = siteCache.getSiteById(siteId);
         if (site == null) {
-            throw new InvalidParameterException("siteId", SOURCE);
+            throw new InvalidParameterException("siteId");
         }
 
         Content content = new Content();
@@ -83,18 +81,16 @@ public class CreateRootAction  extends AbstractController {
         content.addAssociation(association);
 
         // Hvis basen ikke inneholder noen sider for siten, kan hjemmesida opprettes
-        Connection c = null;
-        try {
-            c = dbConnectionFactory.getConnection();
+        try(Connection c = dbConnectionFactory.getConnection()) {
 
             ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where SiteId = " + site.getId());
             if (rs.next()) {
-                throw new RootExistsException("Hjemmesiden er allerede opprettet", SOURCE);
+                throw new RootExistsException("Hjemmesiden er allerede opprettet");
             }
 
             rs = SQLHelper.getResultSet(c, "select * from content where Alias = '" + site.getAlias() + "'");
             if (rs.next()) {
-                throw new RootExistsException("Finnes allerede en side med dette aliaset", SOURCE);
+                throw new RootExistsException("Finnes allerede en side med dette aliaset");
             }
 
             // Find homepage
@@ -121,7 +117,7 @@ public class CreateRootAction  extends AbstractController {
                 }
             }
             if (displayTemplate == null) {
-                throw new MissingTemplateException("Can't find display template for site " + site.getAlias(), SOURCE);
+                throw new MissingTemplateException("Can't find display template for site " + site.getAlias());
             }
 
             content.setDisplayTemplateId(displayTemplate.getId());
@@ -132,10 +128,6 @@ public class CreateRootAction  extends AbstractController {
 
             aksessService.checkInContent(content, ContentStatus.PUBLISHED);
 
-        } finally {
-            if (c != null) {
-                c.close();
-            }
         }
     }
 

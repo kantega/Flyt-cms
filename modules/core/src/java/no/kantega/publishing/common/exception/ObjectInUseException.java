@@ -17,7 +17,7 @@
 package no.kantega.publishing.common.exception;
 
 public class ObjectInUseException extends no.kantega.commons.exception.KantegaException {
-    public ObjectInUseException(String message, String source) {
-        super(message, source, null);
+    public ObjectInUseException(String message) {
+        super(message, null);
     }
 }

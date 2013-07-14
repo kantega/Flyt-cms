@@ -19,11 +19,8 @@ package no.kantega.publishing.admin.content.util;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.AssociationHelper;
-import no.kantega.publishing.common.ContentIdHelper;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.data.*;
@@ -38,9 +35,15 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -49,7 +52,11 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class EditContentHelper {
-    private static final String SOURCE = "aksess.admin.EditContentHelper";
+    private static final Logger log = LoggerFactory.getLogger(EditContentHelper.class);
+
+    private static ContentAO contentAO;
+
+    private static ContentIdHelper contentIdHelper;
 
     /**
      * Create a new Content object
@@ -63,7 +70,7 @@ public class EditContentHelper {
      */
     public static Content createContent(SecuritySession securitySession, ContentCreateParameters param) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException {
         if (securitySession == null || !securitySession.isLoggedIn()) {
-            throw new NotAuthorizedException("Not logged in", SOURCE);
+            throw new NotAuthorizedException("Not logged in");
         }
         ContentManagementService aksessService = new ContentManagementService(securitySession);
 
@@ -357,7 +364,7 @@ public class EditContentHelper {
             }
 
             if (titleField == null) {
-                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), SOURCE, null);
+                throw new InvalidTemplateException("The template includes no attributes for the page title.  Add mapto=title on one attribute:" + template.getName(), null);
             }
         }
     }
@@ -409,9 +416,9 @@ public class EditContentHelper {
         try {
             attribute = attributeFactory.newAttribute(type);
         } catch (ClassNotFoundException e) {
-            throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), SOURCE, null);
+            throw new InvalidTemplateException("Feil i skjemadefinisjon, ukjent attributt " + type + ", fil:" + template.getName(), null);
         } catch (Exception e) {
-            throw new SystemException("Feil ved oppretting av klasse for attributt" + type, SOURCE, e);
+            throw new SystemException("Feil ved oppretting av klasse for attributt" + type, e);
         }
 
         attribute.setName(name);
@@ -514,13 +521,18 @@ public class EditContentHelper {
 
             if (name != null && from != null && from.length() > 0) {
                 try {
-                    ContentIdentifier parentCid = ContentIdHelper.findRelativeContentIdentifier(content, from);
-                    Content parent = ContentAO.getContent(parentCid, true);
+                    if(contentAO == null){
+                        ApplicationContext context = RootContext.getInstance();
+                        contentAO = context.getBean(ContentAO.class);
+                        contentIdHelper = context.getBean(ContentIdHelper.class);
+                    }
+                    ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
+                    Content parent = contentAO.getContent(parentCid, true);
                     if (parent != null) {
                         copyProperty(parent, content, name);
                     }
                 } catch (ContentNotFoundException e) {
-                    Log.info(SOURCE, "Template:" + template.getName() + " has reference to none existing content", null, null);
+                    log.info( "Template:" + template.getName() + " has reference to none existing content");
                 }
             }
         }

@@ -17,16 +17,17 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -36,7 +37,9 @@ import java.util.Map;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 public class ContentlistAttribute extends ListAttribute {
-    private static String SOURCE = "aksess.ContentlistAttribute";
+    private static final Logger log = LoggerFactory.getLogger(ContentlistAttribute.class);
+
+    private ContentAO contentAO;
 
     protected String contentTemplateId = null;
     protected int documentTypeId = -1;
@@ -90,7 +93,10 @@ public class ContentlistAttribute extends ListAttribute {
         List<ListOption> options = new ArrayList<ListOption>();
         addEmptyOption(options);
         try {
-            List<Content> all = ContentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false), false);
+            if(contentAO == null){
+                contentAO = RootContext.getInstance().getBean(ContentAO.class);
+            }
+            List<Content> all = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false), false);
             for (Content c : all) {
                 String id = String.valueOf(c.getAssociation().getId());
                 ListOption option = new ListOption();
@@ -99,7 +105,7 @@ public class ContentlistAttribute extends ListAttribute {
                 options.add(option);
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return options;

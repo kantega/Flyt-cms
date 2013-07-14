@@ -2,7 +2,6 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%@ page import="no.kantega.commons.configuration.Configuration,
-                 no.kantega.commons.log.Log,
                  no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.admin.AdminRequestParameters"%>
 <%@ page import="no.kantega.publishing.admin.content.htmlfilter.HTMLEditorHelper"%>
@@ -17,6 +16,8 @@
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="java.util.Locale" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.slf4j.Logger" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -33,6 +34,7 @@
   ~ limitations under the License.
   --%>
 <%
+    Logger log = LoggerFactory.getLogger("no.kantega.openaksess.jsp.htmltext");
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
     Content   content   = (Content)request.getAttribute("content");
     String    fieldName = (String)request.getAttribute("fieldName");
@@ -61,7 +63,7 @@
     String buttons = conf.getString(confPrefix + "buttons");
     if (buttons == null) {
         buttons = conf.getString("editor.default.buttons");
-        Log.error("htmltext.jsp", "Button set not defined:" + confPrefix + "buttons", null, null);
+        log.error("htmltext.jsp", "Button set not defined:" + confPrefix + "buttons", null, null);
     }
     String[] buttonRows = null;
     if (buttons != null) {

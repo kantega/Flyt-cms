@@ -30,7 +30,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class AssociationAOHelper {
-    private static final String SOURCE = "aksess.AssociationAOHelper";
 
     public static void fixDefaultPostings() throws SystemException {
         try (Connection c = dbConnectionFactory.getConnection()) {
@@ -57,7 +56,7 @@ public class AssociationAOHelper {
                 rs = null;
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 
@@ -86,7 +85,7 @@ public class AssociationAOHelper {
                 st.close();
             }
         } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
+            throw new SystemException("SQL Feil ved databasekall", e);
         }
     }
 }

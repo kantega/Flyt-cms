@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
@@ -25,9 +24,12 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -38,7 +40,7 @@ import java.util.List;
  *
  */
 public class ContentAOHelper {
-    private static final String SOURCE = "aksess.ContentAOHelper";
+    private static final Logger log = LoggerFactory.getLogger(ContentAOHelper.class);
 
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
         Content content = new Content();
@@ -60,7 +62,7 @@ public class ContentAOHelper {
         content.setAlias(rs.getString("Alias"));
         content.setPublishDate(rs.getTimestamp("PublishDate"));
         content.setExpireDate(rs.getTimestamp("ExpireDate"));
-        content.setExpireAction(rs.getInt("ExpireAction"));
+        content.setExpireAction(ExpireAction.valueOf(rs.getString("ExpireAction")));
         content.setVisibilityStatus(rs.getInt("VisibilityStatus"));
 
         content.setNumberOfNotes(rs.getInt("NumberOfNotes"));
@@ -146,8 +148,8 @@ public class ContentAOHelper {
                 try {
                     attribute = factory.newAttribute(attributeType);
                 } catch (Exception e) {
-                    Log.error(ContentAOHelper.class.getName(), e);
-                    throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, ContentAOHelper.class.getName(), e);
+                    log.error("Error instantiating attribute " + attributeType, e);
+                    throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, e);
                 }
                 attribute.setParent(parentAttribute);
 

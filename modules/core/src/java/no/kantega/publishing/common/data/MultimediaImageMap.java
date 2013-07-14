@@ -16,14 +16,15 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class MultimediaImageMap {
-    private static final String SOURCE = "aksess.MultimediaImageMap";
+    private static final Logger log = LoggerFactory.getLogger(MultimediaImageMap.class);
     private List<CoordUrlMap> coordUrlMap = new ArrayList<CoordUrlMap>();
     private int multimediaId;
 
@@ -43,7 +44,7 @@ public class MultimediaImageMap {
     }
 
     public CoordUrlMap[] getCoordUrlMap(){
-        return coordUrlMap.toArray(new CoordUrlMap[0]);
+        return coordUrlMap.toArray(new CoordUrlMap[coordUrlMap.size()]);
     }
 
     public class CoordUrlMap {
@@ -123,7 +124,7 @@ public class MultimediaImageMap {
                     return "" + startX + "," + startY + "," + stopX + "," + stopY;
 
                 } catch (NumberFormatException e) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                     return null;
                 }
 

@@ -19,13 +19,13 @@ package no.kantega.publishing.topicmaps.ao;
 import no.kantega.publishing.topicmaps.ao.rowmapper.TopicAssociationRowMapper;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
-import org.springframework.jdbc.core.simple.SimpleJdbcDaoSupport;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements TopicAssociationDao {
+public class JdbcTopicAssociationDao extends JdbcDaoSupport implements TopicAssociationDao {
     private TopicUsageCounter topicUsageCounter;
 
 
@@ -33,7 +33,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
         Topic topicRef   = association.getTopicRef();
         Topic associatedTopicRef = association.getAssociatedTopicRef();
 
-        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND TopicRef = ? AND AssociatedTopicRef = ?",
+        getJdbcTemplate().update("DELETE FROM tmassociation WHERE TopicMapId = ? AND TopicRef = ? AND AssociatedTopicRef = ?",
                 topicRef.getTopicMapId(), topicRef.getId(), associatedTopicRef.getId());
     }
 
@@ -54,7 +54,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
             instanceOf = association.getInstanceOf().getId();
         }
 
-        getSimpleJdbcTemplate().update("INSERT INTO tmassociation VALUES(?,?,?,?,?,?)",
+        getJdbcTemplate().update("INSERT INTO tmassociation VALUES(?,?,?,?,?,?)",
                 topicRef.getTopicMapId(),
                 instanceOf,
                 roleSpec.getId(),
@@ -63,7 +63,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
                 association.isImported() ? 1 : 0
         );
 
-        getSimpleJdbcTemplate().update("UPDATE tmtopic SET IsAssociation = 1 WHERE TopicId = ? AND TopicMapId = ?",
+        getJdbcTemplate().update("UPDATE tmtopic SET IsAssociation = 1 WHERE TopicId = ? AND TopicMapId = ?",
                 instanceOf,
                 topicRef.getTopicMapId());
     }
@@ -100,7 +100,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
         sql += " WHERE (tmassociation.TopicRef = ? AND tmassociation.TopicMapId = ?) ORDER BY tmbasename.Basename";
 
 
-        List<TopicAssociation> associations = getSimpleJdbcTemplate().query(sql, new TopicAssociationRowMapper(topic),
+        List<TopicAssociation> associations = getJdbcTemplate().query(sql, new TopicAssociationRowMapper(topic),
                 topic.getId(),
                 topic.getTopicMapId());
 
@@ -111,7 +111,7 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
         sql += "   INNER JOIN tmassociation ON (tmtopic.TopicId = tmassociation.TopicRef) AND (tmtopic.TopicMapId = tmassociation.TopicMapId) ";
         sql += " WHERE tmassociation.AssociatedTopicRef = ? AND tmtopic.TopicMapId = ? ORDER BY tmbasename.Basename";
 
-        List<Map<String, Object>> rows = getSimpleJdbcTemplate().queryForList(sql, topic.getId(), topic.getTopicMapId());
+        List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql, topic.getId(), topic.getTopicMapId());
         for (Map<String, Object> row : rows) {
             String topicId = (String)row.get("TopicId");
             for (TopicAssociation association : associations) {
@@ -138,11 +138,11 @@ public class JdbcTopicAssociationDao extends SimpleJdbcDaoSupport implements Top
 
     public boolean isTopicAssociatedWithInstanceOf(String topicId, int topicMapId, String instanceOf) {
         String sql = "SELECT count(*) FROM tmassociation WHERE (topicref = ? OR associatedtopicref = ?) AND topicmapid = ? AND instanceof = ?";
-        return  getSimpleJdbcTemplate().queryForInt(sql,topicId,topicId,topicMapId, instanceOf) > 0;
+        return  getJdbcTemplate().queryForInt(sql,topicId,topicId,topicMapId, instanceOf) > 0;
     }
 
     public void deleteTopicAssociations(Topic topic) {
-        getSimpleJdbcTemplate().update("DELETE FROM tmassociation WHERE (TopicRef = ? OR AssociatedTopicRef = ?) AND TopicMapId = ?",
+        getJdbcTemplate().update("DELETE FROM tmassociation WHERE (TopicRef = ? OR AssociatedTopicRef = ?) AND TopicMapId = ?",
                 topic.getId(),
                 topic.getId(),
                 topic.getTopicMapId()

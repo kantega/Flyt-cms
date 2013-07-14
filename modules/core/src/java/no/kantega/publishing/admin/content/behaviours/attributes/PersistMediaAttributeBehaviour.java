@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
@@ -30,9 +29,10 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -42,6 +42,7 @@ import java.util.List;
  *
  */
 public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
+    private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (attribute instanceof MediaAttribute) {
@@ -96,13 +97,9 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     mediaAttr.setImportFile(null);
                 }
             } catch (IllegalStateException e) {
-                Log.info(this.getClass().getName(), "Uploaded file was discarded, has been deleted", null, null);
-            } catch (FileNotFoundException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
-            } catch (IOException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
-            } catch (InvalidImageFormatException e) {
-                throw new SystemException("Feil ved filvedlegg", this.getClass().getName(), e);
+                log.info( "Uploaded file was discarded, has been deleted");
+            } catch (IOException | InvalidImageFormatException e) {
+                throw new SystemException("Feil ved filvedlegg", e);
             }
         }
 

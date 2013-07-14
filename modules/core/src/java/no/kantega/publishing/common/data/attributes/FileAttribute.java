@@ -92,7 +92,7 @@ public class FileAttribute extends Attribute {
         return "file";
     }
 
-    public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
+    public  void validate(ValidationErrors errors) {
         if (mandatory && (value == null || value.length() == 0)) {
             Map<String, Object> objects = new HashMap<String, Object>();
             objects.put("field", title);

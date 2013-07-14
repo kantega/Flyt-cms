@@ -3,8 +3,8 @@ package no.kantega.openaksess.search.taglib.label.resolver;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.content.api.ContentAO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,6 +14,9 @@ public class LocationLabelResolver implements LabelResolver {
 
     @Autowired
     private SiteCache siteCache;
+
+    @Autowired
+    private ContentAO contentAO;
 
     public String handledPrefix() {
         return "location";
@@ -29,7 +32,7 @@ public class LocationLabelResolver implements LabelResolver {
         }else {
             int mostSpecificAssociation = getMostSpecificId(key);
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(mostSpecificAssociation);
-            Content content = ContentAO.getContent(cid, false);
+            Content content = contentAO.getContent(cid, false);
             if (content != null) {
                 retVal = content.getTitle();
             }

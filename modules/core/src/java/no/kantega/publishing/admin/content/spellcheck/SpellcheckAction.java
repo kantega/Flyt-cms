@@ -16,11 +16,12 @@
 
 package no.kantega.publishing.admin.content.spellcheck;
 
-import no.kantega.commons.log.Log;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 @Controller
 public class SpellcheckAction {
+    private static final Logger log = LoggerFactory.getLogger(SpellcheckAction.class);
 
     @Autowired
     private SpellcheckerService spellcheckerService;
@@ -98,7 +100,7 @@ public class SpellcheckAction {
      */
     private JSONObject getJSONObject(HttpServletRequest request) throws IOException, JSONException {
         String json = IOUtils.toString(request.getInputStream(), "utf-8");
-        Log.debug(getClass().getSimpleName(), "String:" + json, null, null);
+        log.debug( "String:" + json);
         return new JSONObject(json);
     }
 
@@ -113,7 +115,7 @@ public class SpellcheckAction {
         } else {
             // illegal method name
             retVal = new ArrayList<String>();
-            Log.debug(getClass().getSimpleName(), "Received '" + method + "' as value for method.", null, null);
+            log.debug( "Received '" + method + "' as value for method.");
         }
         return retVal;
     }
@@ -136,7 +138,7 @@ public class SpellcheckAction {
             try {
                 retVal.add(array.getString(i));
             } catch (JSONException e) {
-                Log.error(getClass().getClass().getName(), e, "toList", null);
+                log.error("", e);
             }
         }
         return retVal;

@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
@@ -26,6 +25,7 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.Role;
@@ -37,6 +37,7 @@ import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.service.SecurityService;
 import no.kantega.publishing.topicmaps.data.TopicMap;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -52,6 +53,9 @@ public class EditPermissionsAction extends AbstractController {
     public final static String PERMISSIONS_LIST = "tmpPermissionsList";
     public final static String PERMISSIONS_OBJECT = "tmpPermissionsObject";
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
@@ -59,7 +63,7 @@ public class EditPermissionsAction extends AbstractController {
         int objectType = param.getInt("type");
         String url = param.getString("url");
         if (objectId == -1 && url != null) {
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+            ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
             objectId = cid.getAssociationId();
         }
 
@@ -102,7 +106,7 @@ public class EditPermissionsAction extends AbstractController {
 
             if (objectType == ObjectType.ASSOCIATION) {
                 ContentManagementService aksessService = new ContentManagementService(request);
-                ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+                ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
                 Content content = aksessService.getContent(cid);
                 title = content.getTitle();
                 objSecurityId = content.getAssociation().getSecurityId();

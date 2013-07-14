@@ -18,11 +18,9 @@ package no.kantega.publishing.api.taglibs.menu;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
@@ -30,10 +28,13 @@ import no.kantega.publishing.api.taglibs.util.CollectionLoopTagStatus;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,7 +47,8 @@ import java.util.List;
 
 
 public abstract class AbstractMenuTag extends BodyTagSupport {
-    private static final String SOURCE = "aksess.AbstractMenuTag";
+    private static final Logger log = LoggerFactory.getLogger(AbstractMenuTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     protected String name = "menu";
     protected int siteId = -1;
@@ -77,8 +79,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     protected abstract void printBody() throws IOException;
     protected abstract void reset();
 
-    private static SiteCache siteCache;
-    private static ContentIdentifierDao contentIdentifierDao;
+    private SiteCache siteCache;
 
     public void setName(String name) {
         this.name = name;
@@ -97,7 +98,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.siteId = site.getId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e1, null, null);
+                    log.error("Could not set siteid " + siteId, e1);
                 }
             }
         }
@@ -121,7 +122,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.rootId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // User not authorized, do nothing
                 }
@@ -164,7 +165,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.defaultId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // Do nothing
                 }
@@ -184,7 +185,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         this.defaultOpenId = c.getAssociation().getAssociationId();
                     }
                 } catch (SystemException e1) {
-                    Log.error(SOURCE, e, null, null);
+                    log.error("", e);
                 } catch (NotAuthorizedException e1) {
                     // Do nothing
                 }
@@ -266,7 +267,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
                         try {
                             isAuthorized = securitySession.isAuthorized(child, Privilege.VIEW_CONTENT);
                         } catch (SystemException e) {
-                            Log.error(SOURCE, e, null, null);
+                            log.error("", e);
                         }
                     }
                     if (isAuthorized || !checkAuthorization) {
@@ -303,8 +304,8 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             status = new CollectionLoopTagStatus(menuitems);
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return doIter();
@@ -340,12 +341,14 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
         if (content == null && defaultId != -1) {
             content = AttributeTagHelper.getContent(pageContext, null, "" + defaultId);
         } else if (content == null && siteId != -1) {
-            if(contentIdentifierDao == null){
-                contentIdentifierDao = RootContext.getInstance().getBean(ContentIdentifierDao.class);
-            }
-            ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(siteId, "/");
-            if (cid != null) {
+            try {
+                if(contentIdHelper == null){
+                    contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                }
+                ContentIdentifier cid = contentIdHelper.fromSiteIdAndUrl(siteId, "/");
                 content = cms.getContent(cid);
+            }  catch (ContentNotFoundException e) {
+                //
             }
         }
 

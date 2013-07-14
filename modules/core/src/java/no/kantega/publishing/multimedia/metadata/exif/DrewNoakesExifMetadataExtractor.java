@@ -6,14 +6,16 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.data.ExifMetadata;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
+    private static final Logger log = LoggerFactory.getLogger(DrewNoakesExifMetadataExtractor.class);
     public List<ExifMetadata> getMetadataForImage(byte[] imageData) {
         List<ExifMetadata> exifMetadatas = new ArrayList<ExifMetadata>();
 
@@ -22,7 +24,7 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
         try {
             exifMetadatas = extractMetadata(inputStream);
         } catch (JpegProcessingException e) {
-            Log.error(getClass().getName(), e);
+            log.error("", e);
         }
 
         return exifMetadatas;
@@ -42,7 +44,7 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
                     }
 
                 } catch (MetadataException e) {
-                    Log.error(this.getClass().getName(), e);
+                    log.error("", e);
                 }
             }
         }

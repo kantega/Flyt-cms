@@ -76,11 +76,18 @@
                 <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
                 <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
                 <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
+                <prop key="/publish/popups/AddAttribute.action">AddAttributeAction</prop>
 
                 <!-- Information -->
                 <prop key="/OpenAksessInformation.action">OpenAksessInformationAction</prop>
 
                 <prop key="/TestPages.action">testPagesAction</prop>
+
+                <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
+
+                <!-- XML Export -->
+                <prop key="Export.action">XmlExportAction</prop>
+
             </props>
         </property>
     </bean>
@@ -207,6 +214,9 @@
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
+                <!-- XML Export -->
+                <prop key="/admin/export/export.action">XmlExportAction</prop>
+
             </props>
         </property>
     </bean>
@@ -218,6 +228,13 @@
 
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping"/>
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"  />
+            <ref bean="adminRoleInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
     <bean id="adminRoleInterceptedMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
@@ -308,6 +325,7 @@
             </bean>
         </property>
     </bean>
+
     <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
         <property name="requestResetPasswordView" value="${security.login.requestresetpassword.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>
@@ -402,9 +420,10 @@
     <bean id="contentNavigatorAjaxAction" class="no.kantega.publishing.admin.content.ajax.NavigatorAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/navigator.jsp"/>
     </bean>
-    <bean id="contentStateHandler" class="no.kantega.publishing.admin.dwr.ContentStateHandler"/>
-    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.dwr.MultimediaClipboardHandler"/>
-    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.dwr.ContentClipboardHandler"/>
+    <bean id="contentStateHandler" class="no.kantega.publishing.admin.ajax.ContentStateHandler"/>
+    <bean id="multimediaClipboardHandler" class="no.kantega.publishing.admin.ajax.MultimediaClipboardHandler"/>
+    <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.ajax.ContentClipboardHandler"/>
+    <bean class="no.kantega.publishing.admin.ajax.UserPreferencesHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
 
     <!-- Search content -->
@@ -534,6 +553,11 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/attachment-edit.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
     </bean>
+
+    <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="AddAttributeAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/addattribute.jsp"/>
+    </bean>
+
     <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
     </bean>
@@ -736,6 +760,7 @@
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
     <!-- Various -->
+    <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
@@ -770,6 +795,8 @@
         <property name="pluginManager" ref="pluginManager"/>
         <property name="prefix" value="no/kantega/openaksess/admin/static/"/>
     </bean>
+
+    <bean id="XmlExportAction" class="no.kantega.publishing.controls.export.XmlExportAction"/>
 
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>

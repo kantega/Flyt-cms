@@ -16,15 +16,16 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class AttributeIfAliasEqualsTag  extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.AttributeIfAliasEqualsTag";
+    private static final Logger log = LoggerFactory.getLogger(AttributeIfAliasEqualsTag.class);
 
     private String value = null;
     private boolean negate = false;
@@ -58,7 +59,7 @@ public class AttributeIfAliasEqualsTag  extends ConditionalTagSupport {
             return negate ? !aliasEquals : aliasEquals;
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error getting content", e);
         }
 
         return false;

@@ -29,6 +29,7 @@
     <style type="text/css">
         #contentWrapper {
             width: 600px;
+            padding: 20px;
         }
 
         form {

@@ -17,18 +17,20 @@
 package no.kantega.publishing.api.taglibs.content;
 
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,8 +40,10 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
+import static no.kantega.commons.util.URLHelper.combinePaths;
+
 public class GetLinkTag extends BodyTagSupport{
-    private static final String SOURCE = "aksess.GetLinkTag";
+    private static final Logger log = LoggerFactory.getLogger(GetLinkTag.class);
 
     private String collection = null;
     private String contentId  = null;
@@ -55,7 +59,8 @@ public class GetLinkTag extends BodyTagSupport{
     private String title = null;
     private String rel = null;
 
-    private SiteCache siteCache;
+    private static SiteCache siteCache;
+    private static ContentIdHelper contentIdHelper;
 
     public void setCollection(String collection) {
         this.collection = collection;
@@ -128,29 +133,34 @@ public class GetLinkTag extends BodyTagSupport{
                 url = contentObject.getUrl(isAdminMode);
 
                 try {
+                    setSiteCacheIfNull();
+                    Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
                     if (url != null && isAdminMode) {
                         Content current = (Content)request.getAttribute("aksess_this");
                         if (current == null) {
-                            // Hent denne siden
-                            ContentIdentifier contentIdentifier = ContentIdHelper.fromRequest(request);
+                            if(contentIdHelper == null){
+                                contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+                            }
+                            ContentIdentifier contentIdentifier = contentIdHelper.fromRequest(request);
                             current = new ContentManagementService(request).getContent(contentIdentifier, true);
                             RequestHelper.setRequestAttributes(request, current);
                         }
                         if (current != null && current.getAssociation().getSiteId() != contentObject.getAssociation().getSiteId()) {
-                            setSiteCacheIfNull();
-                            Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
-
                             List<String> hostnames = site.getHostnames();
-                            if (hostnames.size() > 0) {
-                                String hostname = (String)hostnames.get(0);
+                            if (!hostnames.isEmpty()) {
+                                String hostname = hostnames.get(0);
                                 String scheme = site.getScheme();
                                 int port = request.getServerPort();
                                 if (scheme == null) {
                                     scheme = request.getScheme();
                                 }
-                                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" +port : "") + url;
+                                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             }
                         }
+                    } else if(url != null && url.equals(contentObject.getAlias()) && site.getHostnames().isEmpty()){
+                        // Site does not have its own domain. append site alias to
+                        // distinguish it from same alias on other sites.
+                        url = combinePaths(site.getAlias(), url);
                     }
                 } catch (ContentNotFoundException e) {
                     // Vi vet ikke hvilken site denne siden tilhører, er ikke registrert
@@ -217,8 +227,8 @@ public class GetLinkTag extends BodyTagSupport{
             }
 
         } catch (Exception e) {
-            Log.error(SOURCE, e);
-            throw new JspTagException(SOURCE, e);
+            log.error("Error writing content", e);
+            throw new JspTagException(e);
         } finally {
             bodyContent.clearBody();
         }

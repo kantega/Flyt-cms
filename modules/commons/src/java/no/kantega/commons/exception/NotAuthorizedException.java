@@ -17,7 +17,7 @@
 package no.kantega.commons.exception;
 
 public class NotAuthorizedException extends KantegaException {
-    public NotAuthorizedException(String message, String source) {
-        super(message, source, null);
+    public NotAuthorizedException(String message) {
+        super(message, null);
     }    
 }

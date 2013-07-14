@@ -68,7 +68,7 @@ public class Content extends BaseObject {
     private Date expireDate  = null;
     private Date revisionDate = null;
     private Date changeFromDate = null;
-    private int expireAction = ExpireAction.HIDE;
+    private ExpireAction expireAction = ExpireAction.HIDE;
     private int visibilityStatus = ContentVisibilityStatus.ACTIVE;
     private int numberOfNotes = 0;
 
@@ -299,7 +299,9 @@ public class Content extends BaseObject {
         this.groupId = groupId;
     }
 
-
+    /**
+     * The department owning the content, or blank.
+    */
     public String getOwner() {
         return owner;
     }
@@ -520,17 +522,18 @@ public class Content extends BaseObject {
         this.expireDate = expireDate;
     }
 
-    public int getExpireAction() {
+    public ExpireAction getExpireAction() {
         return expireAction;
     }
 
-    /**
-     * @param expireAction one of {@link ContentVisibilityStatus}
-     */
-    public void setExpireAction(int expireAction) {
+    public void setExpireAction(ExpireAction expireAction) {
         this.expireAction = expireAction;
     }
 
+    /**
+     * @param type AttributeDataType.CONTENT_DATA, AttributeDataType.ANY or AttributeDataType.META_DATA
+     * @return Attributes of given type.
+     */
     public List<Attribute> getAttributes(int type) {
         if (type == AttributeDataType.CONTENT_DATA) {
             return contentAttributes;
@@ -770,6 +773,9 @@ public class Content extends BaseObject {
         return numberOfNotes;
     }
 
+    /**
+     * Person owning the content
+     */
     public String getOwnerPerson() {
         return ownerPerson;
     }
@@ -892,7 +898,7 @@ public class Content extends BaseObject {
         }
     }
 
-    private void doForAttribute(AttributeHandler handler, Attribute attribute) {
+    public void doForAttribute(AttributeHandler handler, Attribute attribute) {
         if (attribute instanceof RepeaterAttribute) {
             RepeaterAttribute repeater = (RepeaterAttribute)attribute;
             int rows = repeater.getNumberOfRows();

@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.util;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
@@ -35,9 +36,9 @@ import java.util.Map;
 
 public class RequestHelper {
     private static SiteCache siteCache;
-    private static BeanFactory context;
+    private static BeanFactory beanFactory;
 
-    public static void setRequestAttributes(HttpServletRequest request, Content content) {
+    public static void setRequestAttributes(HttpServletRequest request, Content content) throws SystemException {
         setSiteCacheIfNull();
         if (content == null) {
             Site site = siteCache.getSiteByHostname(request.getServerName());
@@ -59,14 +60,14 @@ public class RequestHelper {
 
     public static void runTemplateControllers(DisplayTemplate dt, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws Exception {
 
-        Map<String, Object> model = new HashMap<>();
+        Map model = new HashMap();
 
-        setContextIfNotSet(servletContext);
+        setBeanFactoryIfNull(servletContext);
 
         // Run all controllers
         if(dt.getControllers() != null) {
             for (DisplayTemplateControllerId displayTemplateController : dt.getControllers()) {
-                AksessController aksessController = context.getBean(displayTemplateController.getId(), AksessController.class);
+                AksessController aksessController = beanFactory.getBean(displayTemplateController.getId(), AksessController.class);
                 model.putAll(aksessController.handleRequest(request, response));
             }
         }
@@ -78,9 +79,9 @@ public class RequestHelper {
         }
     }
 
-    private static void setContextIfNotSet(ServletContext servletContext) {
-        if (context == null) {
-            context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+    private static void setBeanFactoryIfNull(ServletContext servletContext) {
+        if (beanFactory == null) {
+            beanFactory = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
         }
     }
 

@@ -740,6 +740,10 @@ table.fullWidth {
 
 /************** Form elements and content attributes **************/
 
+.attributeHiddenEmpty {
+    display:none;
+}
+
 .contentAttribute, .contentAttributeRepeater, .formElement {
     margin-bottom: 14px;
 }
@@ -762,9 +766,16 @@ table.fullWidth {
     clear: both;
 }
 
-
 #Content .contentAttributeRepeaterRow .repeaterButtons {
     text-align: right;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterHandle {
+    cursor: move;
+    min-height: 20px;
+}
+
+#Content .contentAttributeRepeaterRow .repeaterButtons a {
     cursor: pointer;
 }
 
@@ -788,6 +799,12 @@ table.fullWidth {
 
 .fullWidth {
     width: 100%;
+}
+
+input.fullWidth, select.fullWidth {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 #Content td .button, #Content td .button:hover {

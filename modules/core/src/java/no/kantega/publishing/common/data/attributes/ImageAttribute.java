@@ -16,9 +16,16 @@
 
 package no.kantega.publishing.common.data.attributes;
 
+import no.kantega.publishing.admin.content.behaviours.attributes.ImageAttributeValueXMLExporter;
+import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
+
 /**
  *
  */
 public class ImageAttribute extends MediaAttribute {
     protected String filter = "image";
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new ImageAttributeValueXMLExporter();
+    }
 }

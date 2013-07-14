@@ -17,11 +17,12 @@
 package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -30,7 +31,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetUserNameTag extends TagSupport {
-    private static final String SOURCE = "aksess.GetUserNameTag";
+    private static final Logger log = LoggerFactory.getLogger(GetUserNameTag.class);
 
     private String userid;
     private boolean useCache;
@@ -61,8 +62,8 @@ public class GetUserNameTag extends TagSupport {
                 out.write(userid);
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

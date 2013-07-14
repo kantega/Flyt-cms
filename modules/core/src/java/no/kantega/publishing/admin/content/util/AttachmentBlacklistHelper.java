@@ -17,12 +17,13 @@
 package no.kantega.publishing.admin.content.util;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.action.AddAttachmentAction;
 import no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction;
 import no.kantega.publishing.admin.multimedia.ajax.ViewUploadMultimediaFormController;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -35,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
  * @see UploadMultimediaAction
  */
 public class AttachmentBlacklistHelper {
+    private static final Logger log = LoggerFactory.getLogger(AttachmentBlacklistHelper.class);
 
     /**
      * Checks if the name of the uploaded file ends with a file type that is
@@ -55,7 +57,7 @@ public class AttachmentBlacklistHelper {
         if (blacklistedFileTypes != null) {
             for (String blacklistedFileType : blacklistedFileTypes) {
                 if (multipartFile.getOriginalFilename().endsWith("." + blacklistedFileType)) {
-                    Log.debug(AttachmentBlacklistHelper.class.getName(), "The file type (" + multipartFile.getOriginalFilename() + ") is blacklisted.");
+                    log.debug( "The file type (" + multipartFile.getOriginalFilename() + ") is blacklisted.");
                     isBlacklisted = true;
                 }
             }
@@ -86,9 +88,7 @@ public class AttachmentBlacklistHelper {
         try {
             blacklistedFileTypes = Aksess.getConfiguration().getStrings("attachment.filetypes.blacklisted");
         } catch (ConfigurationException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
-        } catch (IllegalArgumentException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
+            log.error("Could not get blacklisted filetypes", ex);
         }
 
         return blacklistedFileTypes;
@@ -114,9 +114,7 @@ public class AttachmentBlacklistHelper {
         try {
             errorMessage = Aksess.getConfiguration().getString("attachment.filetypes.blacklisted.errorMessage", errorMessage);
         } catch (ConfigurationException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
-        } catch (IllegalArgumentException ex) {
-            Log.error(AttachmentBlacklistHelper.class.getName(), ex);
+            log.error("Could not get errormessage", ex);
         }
 
         return errorMessage;

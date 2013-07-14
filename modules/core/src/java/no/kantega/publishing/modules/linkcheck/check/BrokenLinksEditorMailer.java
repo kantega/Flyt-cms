@@ -16,21 +16,21 @@
 package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.modules.mailsender.MailSender;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
 public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
+    private static final Logger log = LoggerFactory.getLogger(BrokenLinksEditorMailer.class);
 
-    private Logger log = Logger.getLogger(getClass());
     @Autowired
     private EventLog eventLog;
 
@@ -43,7 +43,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 		try {
 			mailLinksToEditor(params);
 		} catch (ConfigurationException e) {
-		   Log.error(this.getClass().getName(), e, null, null);
+		   log.error("", e);
 		} 
 	}
 

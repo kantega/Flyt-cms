@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.security.SecuritySession;
@@ -26,6 +25,8 @@ import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.topicmaps.data.Topic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,7 +37,7 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetUserTag  extends TagSupport {
-    private static final String SOURCE = "aksess.GetUserTag";
+    private static final Logger log = LoggerFactory.getLogger(GetUserTag.class);
 
     private String name = "currentuser";
     private String userid = null;
@@ -90,8 +91,8 @@ public class GetUserTag  extends TagSupport {
                 request.setAttribute(name, user);
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("Error setting user", e);
+            throw new JspTagException(e);
         }
 
         return SKIP_BODY;

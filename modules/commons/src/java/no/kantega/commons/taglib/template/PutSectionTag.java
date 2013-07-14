@@ -16,7 +16,8 @@
 
 package no.kantega.commons.taglib.template;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -29,7 +30,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 public class PutSectionTag  extends BodyTagSupport {
     private String id = null;
 
-    private Logger log = Logger.getLogger(getClass());
+    private static final Logger log = LoggerFactory.getLogger(PutSectionTag.class);
 
     public void setId(String id) {
         this.id = id;

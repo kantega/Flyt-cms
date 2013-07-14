@@ -22,6 +22,8 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -32,9 +34,7 @@ import javax.servlet.http.HttpSession;
 
 
 public class SelectTemplateAction implements Controller {
-    private static String SOURCE = "aksess.SelectTemplateAction";
-
-    private String view;
+    private static final Logger log = LoggerFactory.getLogger(SelectTemplateAction.class);
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         ContentManagementService cms = new ContentManagementService(request);
@@ -46,7 +46,8 @@ public class SelectTemplateAction implements Controller {
         int category = param.getInt("associationCategory");
 
         if (templateId == null || templateId.length() == 0 || mainParentId == -1) {
-            throw new InvalidParameterException("templateId == -1 || mainParentId == -1", SOURCE);
+            log.error("Missing templateId and mainParentId");
+            throw new InvalidParameterException("templateId == -1 || mainParentId == -1");
         }
 
         int displayTemplateId = -1;

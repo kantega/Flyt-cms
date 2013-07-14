@@ -18,14 +18,16 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.jobs.contentstate.ContentStateUpdater;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,6 +43,13 @@ import java.util.Map;
  */
 @Controller
 public class UpdateDisplayPeriodAction {
+    private static final Logger log = LoggerFactory.getLogger(UpdateDisplayPeriodAction.class);
+
+    @Autowired
+    private ContentStateUpdater stateUpdater;
+
+    @Autowired
+    private ContentIdHelper contentIdHelper;
 
     @RequestMapping("/admin/publish/UpdateDisplayPeriod.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -53,7 +62,7 @@ public class UpdateDisplayPeriodAction {
             int associationId = param.getInt("associationId");
             if (associationId != -1) {
                 ContentIdentifier cid =  ContentIdentifier.fromAssociationId(associationId);
-                ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
+                contentIdHelper.assureContentIdAndAssociationIdSet(cid);
 
                 Date publishDate = param.getDateAndTime("from", Aksess.getDefaultDateFormat());
                 Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());
@@ -64,7 +73,6 @@ public class UpdateDisplayPeriodAction {
                     cms.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
 
                     // Update state of content immediately to not confuse user
-                    ContentStateUpdater stateUpdater = new ContentStateUpdater();
                     stateUpdater.expireContent();
                     stateUpdater.publishContent();
 
@@ -84,7 +92,7 @@ public class UpdateDisplayPeriodAction {
             }
 
         } catch (NotAuthorizedException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+            log.error("", e);
             model.put("error", Boolean.TRUE);
         }
 

@@ -20,7 +20,6 @@ import no.kantega.commons.client.util.ValidationError;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.Aksess;
@@ -29,10 +28,13 @@ import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -45,12 +47,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isBlank;
+
 public class InputScreenRenderer {
-    private static final String SOURCE = "aksess.admin.InputScreenRenderer";
+    private static final Logger log = LoggerFactory.getLogger(InputScreenRenderer.class);
 
     private PageContext pageContext = null;
     private Content content = null;
     private int attributeType = -1;
+    private boolean hiddenAttributes = false;
 
     public InputScreenRenderer(PageContext pageContext, Content content, int attributeType) throws SystemException, InvalidFileException, InvalidTemplateException {
         this.pageContext = pageContext;
@@ -130,31 +135,33 @@ public class InputScreenRenderer {
     private void renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, RepeaterAttribute repeaterAttribute) throws IOException {
 
         try {
-            out.print("\n<div class=\"contentAttributeRepeater\" id=\"" + AttributeHelper.getInputContainerName(repeaterAttribute.getNameIncludingPath()) + "\">\n");
+            out.print("\n<div class=\"contentAttributeRepeater");
+            if (attributeIsHiddenEmpty(repeaterAttribute)) {
+                this.hiddenAttributes = true;
+                out.print(" attributeHiddenEmpty");
+            }
+            out.print("\" id=\"" + AttributeHelper.getInputContainerName(repeaterAttribute.getNameIncludingPath()) + "\" data-title=\"" + repeaterAttribute.getTitle() + "\"\n>\n");
             request.setAttribute("repeater", repeaterAttribute);
             request.setAttribute("repeaterFieldName", AttributeHelper.getInputFieldName(repeaterAttribute.getNameIncludingPath()));
 
-            pageContext.include("/admin/publish/attributes/repeater_row_top.jsp");
+            pageContext.include("/admin/publish/attributes/repeater_start.jsp");
 
             int numberOfRows = repeaterAttribute.getNumberOfRows();
             for (int rowNo = 0; rowNo < numberOfRows; rowNo++) {
-                out.print("<div class=\"contentAttributeRepeaterRow");
-                if (rowNo == 0) {
-                    out.print(" first");
-                }
-                out.print("\">\n");
+                out.print("<div class=\"contentAttributeRepeaterRow\">\n");
                 request.setAttribute("repeaterRowNo", rowNo);
                 pageContext.include("/admin/publish/attributes/repeater_row_start.jsp");
                 List<Attribute> attributes = repeaterAttribute.getRow(rowNo);
                 for (Attribute attribute : attributes) {
                     renderAttribute(out, request, fieldErrors, attribute, repeaterAttribute.getTabIndex());
                 }
+                pageContext.include("/admin/publish/attributes/repeater_row_end.jsp");
                 out.print("</div>\n");
             }
-            pageContext.include("/admin/publish/attributes/repeater_row_bottom.jsp");
+            pageContext.include("/admin/publish/attributes/repeater_end.jsp");
             out.print("</div>");
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
             out.print("<div class=\"errorText\">" + errorMessage + ":" + repeaterAttribute.getTitle() + "</div>\n");
         }
@@ -165,11 +172,19 @@ public class InputScreenRenderer {
         request.setAttribute("fieldName", AttributeHelper.getInputFieldName(attr.getNameIncludingPath()));
 
         try {
+            out.print("\n<div class=\"contentAttribute");
+
             if (fieldErrors.get(attr.getName()) != null) {
-                out.print("\n<div class=\"contentAttribute error\" id=\"" + AttributeHelper.getInputContainerName(attr.getNameIncludingPath()) + "\">\n");
-            } else {
-                out.print("\n<div class=\"contentAttribute\" id=\"" + AttributeHelper.getInputContainerName(attr.getNameIncludingPath()) + "\">\n");
+                out.print(" error");
             }
+
+            if (attributeIsHiddenEmpty(attr)) {
+                this.hiddenAttributes = true;
+                out.print(" attributeHiddenEmpty");
+            }
+
+            out.print("\" id=\"" + AttributeHelper.getInputContainerName(attr.getNameIncludingPath()) + "\" data-title=\"" + attr.getTitle() + "\">\n");
+
             out.print("<div class=\"heading\">" + attr.getTitle());
             if (attr.isMandatory()) {
                 out.print("<span class=\"mandatory\">*</span>");
@@ -192,7 +207,7 @@ public class InputScreenRenderer {
             out.print("</div>\n");
         } catch (Exception e) {
             out.print("</div>\n");
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
             String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
             out.print("<div class=\"errorText\">" + errorMessage + ":" + attr.getTitle() + "</div>\n");
         }
@@ -205,5 +220,32 @@ public class InputScreenRenderer {
         }
 
         return true;
+    }
+
+    private boolean attributeIsHiddenEmpty(Attribute attribute) {
+        AttributeIsEmptyHandler attributeHandler = new AttributeIsEmptyHandler();
+        content.doForAttribute(attributeHandler, attribute);
+
+        return attributeHandler.hasOnlyEmptyValues && attribute.isHideIfEmpty();
+    }
+
+    public boolean hasHiddenAttributes() {
+        return hiddenAttributes;
+    }
+
+    class AttributeIsEmptyHandler implements AttributeHandler{
+        private boolean hasOnlyEmptyValues = true;
+
+
+        @Override
+        public void handleAttribute(Attribute attribute) {
+            if (!isBlank(attribute.getValue())) {
+                hasOnlyEmptyValues = false;
+            }
+        }
+
+        boolean isHasOnlyEmptyValues() {
+            return hasOnlyEmptyValues;
+        }
     }
 }

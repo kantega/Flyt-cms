@@ -16,12 +16,9 @@
 
 package no.kantega.publishing.common.util.database;
 
-import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
-
-import java.sql.ResultSet;
-import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Date;
 

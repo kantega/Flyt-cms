@@ -20,66 +20,38 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PathWorker {
 
-    private static final String SOURCE = "aksess.PathWorker";
+    private static ContentIdHelper contentIdHelper;
 
     public static List<PathEntry> getPathByAssociation(Association association) throws SystemException {
-        List<PathEntry> pathEntries = new ArrayList<PathEntry>();
+        List<PathEntry> pathEntries = new ArrayList<>();
 
         int pathIds[] = association.getPathElementIds();
         if (pathIds == null || pathIds.length == 0) {
             return pathEntries;
         }
 
-        String strIds = "";
-
-        // Legg inn alle element fra path i rekkefølge
-        for (int i = 0; i < pathIds.length; i++) {
-            if (i > 0) {
-                strIds += ",";
-            }
-            strIds += pathIds[i];
+        List<Integer> ids = new ArrayList<>(pathIds.length);
+        for (int pathId : pathIds) {
+            ids.add(pathId);
         }
-
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-            ResultSet rs = SQLHelper.getResultSet(c, "select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
-            while(rs.next()) {
-                String title = rs.getString("Title");
-                int id = rs.getInt("AssociationId");
-                int contentTemplateId = rs.getInt("ContentTemplateId");
-                PathEntry entry = new PathEntry(id, title);
-                entry.setContentTemplateId(contentTemplateId);
-                pathEntries.add(entry);
-            }
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
-
-        return pathEntries;
+        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
     }
 
     /**
@@ -91,92 +63,55 @@ public class PathWorker {
      */
     @Deprecated
     public static List<PathEntry> getPathByContentId(ContentIdentifier cid) throws SystemException {
-        List<PathEntry> pathEntries = new ArrayList<PathEntry>();
+        List<PathEntry> pathEntries = new ArrayList<>();
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
-
-            if (cid == null) {
-                return pathEntries;
-            }
-            ContentIdHelper.assureContentIdAndAssociationIdSet(cid);
-            ResultSet rs = SQLHelper.getResultSet(c, "select Path from associations where UniqueId = " + cid.getAssociationId());
-            if (!rs.next()) {
-                return pathEntries;
-            }
-            String path = rs.getString("Path");
-            rs.close();
-
-            int pathIds[] = StringHelper.getInts(path, "/");
-            if (pathIds.length == 0) {
-                return pathEntries;
-            }
-
-            String strIds = "";
-
-            // Legg inn alle element fra path i rekkefølge
-            for (int i = 0; i < pathIds.length; i++) {
-                if (i > 0) {
-                    strIds += ",";
-                }
-                strIds += pathIds[i];
-            }
-
-            rs = SQLHelper.getResultSet(c, "select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (" + strIds + ")");
-            while(rs.next()) {
-                String title = rs.getString("Title");
-                int id = rs.getInt("AssociationId");
-                pathEntries.add(new PathEntry(id, title));
-            }
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
+        if (cid == null) {
+            return pathEntries;
         }
+        if(contentIdHelper == null){
+            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+        }
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        String path;
+        try {
+            path = dbConnectionFactory.getJdbcTemplate().queryForObject("select Path from associations where UniqueId = ?", String.class, cid.getAssociationId());
+        } catch (DataAccessException e) {
+            return pathEntries;
+        }
+
+        List<Integer> pathIds = StringHelper.getIntsAsList(path, "/");
+        if (pathIds.isEmpty()) {
+            return pathEntries;
+        }
+
+
+        pathEntries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", pathIds),rowMapper);
 
         return pathEntries;
     }
 
 
     public static List<PathEntry> getMultimediaPath(Multimedia mm) throws SystemException {
-        List<PathEntry> pathentries = new ArrayList<PathEntry>();
-
-        Connection c = null;
-
-        int parentId = mm.getParentId();
-
-        try {
-            c = dbConnectionFactory.getConnection();
-            while (parentId != 0) {
-                ResultSet rs = SQLHelper.getResultSet(c, "select Id, ParentId, Name from multimedia where id = " + parentId);
-                if(rs.next()) {
-                    int id = rs.getInt("Id");
-                    parentId = rs.getInt("ParentId");
-                    String title = rs.getString("Name");
-                    PathEntry entry = new PathEntry(id, title);
-                    pathentries.add(0, entry);
-                }
-            }
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", SOURCE, e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
-        }
-
-        return pathentries;
+        return dbConnectionFactory.getJdbcTemplate().query("select Id, ParentId, Name from multimedia where id = ?", rowMapper, mm.getParentId());
     }
+
+    private static final RowMapper<PathEntry> rowMapper = new RowMapper<PathEntry>() {
+        @Override
+        public PathEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
+            String title = rs.getString("Title");
+            int id = rs.getInt("AssociationId");
+            return new PathEntry(id, title);
+        }
+    };
+    private static final RowMapper<PathEntry> rowMapperWithContentTemplateId = new RowMapper<PathEntry>() {
+        @Override
+        public PathEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
+            String title = rs.getString("Title");
+            int id = rs.getInt("AssociationId");
+            int contentTemplateId = rs.getInt("ContentTemplateId");
+            PathEntry entry = new PathEntry(id, title);
+            entry.setContentTemplateId(contentTemplateId);
+            return entry;
+        }
+    };
 }

@@ -16,37 +16,46 @@
 
 package no.kantega.publishing.jobs.alerts;
 
-import no.kantega.publishing.common.ao.ContentAO;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.commons.log.Log;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.security.realm.SecurityRealmFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class RevisionContentAlertJob {
+    private static final Logger log = LoggerFactory.getLogger(RevisionContentAlertJob.class);
     private ContentAlertListener[] listeners;
     private int daysBeforeWarning = 30;
-    private static String SOURCE = "RevisionContentAlertJob";
+
+    @Autowired
+    private ContentAO contentAO;
 
     public void execute() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(SOURCE, "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
         
         try {
-            Log.debug(SOURCE, "Looking for content revision in " + daysBeforeWarning + " days", null, null);
+            log.debug( "Looking for content revision in " + daysBeforeWarning + " days");
 
-            Map users = new HashMap();
+            Multimap<String, Content> users = ArrayListMultimap.create();
 
             // Create query to find all docs with revision
             ContentQuery query = new ContentQuery();
@@ -60,29 +69,19 @@ public class RevisionContentAlertJob {
 
             SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
 
-            List contentList = ContentAO.getContentList(query, -1, sort, false);
+            List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
 
             // Insert docs into hashmap
-            for (int i = 0; i < contentList.size(); i++) {
-                Content content = (Content)contentList.get(i);
-
+            for (Content content : contentList) {
                 String userId = content.getOwnerPerson();
-                if (userId != null && userId.length() > 0) {
-                    List userContentList = (List)users.get(userId);
-                    if (userContentList == null) {
-                        userContentList =  new ArrayList();
-                        users.put(userId, userContentList);
-                    }
-                    userContentList.add(content);
+                if (isNotBlank(userId)) {
+                    users.put(userId, content);
                 }
             }
 
             // Iterate through users
-            Iterator it = users.keySet().iterator();
-            while (it.hasNext()) {
-                String userId = (String)it.next();
-
-                List userContentList = (List)users.get(userId);
+            for (String userId : users.keySet()) {
+                Collection<Content> userContentList = users.get(userId);
 
                 // Lookup user with userid
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
@@ -90,18 +89,17 @@ public class RevisionContentAlertJob {
 
                 // Send message using listeners
                 if (ownerPerson != null) {
-                    Log.debug(SOURCE, "Sending alert to user " + ownerPerson.getId() + " - " + userContentList.size() + " docs for revision", null, null);
-                    for (int j = 0; j < listeners.length; j++) {
-                        ContentAlertListener listener = listeners[j];
-                        listener.sendContentAlert(ownerPerson, userContentList);
+                    log.info("Sending alert to user " + ownerPerson.getId() + " - " + userContentList.size() + " docs for revision");
+                    for (ContentAlertListener listener : listeners) {
+                        listener.sendContentAlert(ownerPerson, new ArrayList<>(userContentList));
                     }
                 } else {
-                    Log.debug(SOURCE, "Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs for revision", null, null);
+                    log.debug("Skipping alert, user unknown " + userId + " - " + userContentList.size() + " docs for revision");
                 }
             }
 
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("Error when seding revision alert", e);
         }
 
     }
@@ -111,7 +109,7 @@ public class RevisionContentAlertJob {
     }
 
     public void setDaysBeforeWarning(Integer days) {
-        daysBeforeWarning = days.intValue();
+        daysBeforeWarning = days;
     }
 }
 

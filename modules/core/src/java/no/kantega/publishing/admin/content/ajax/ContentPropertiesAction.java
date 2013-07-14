@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
@@ -29,7 +28,6 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -40,11 +38,14 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.ContentLock;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,10 +60,12 @@ import java.util.*;
  */
 @Controller
 public class ContentPropertiesAction {
+    private static final Logger log = LoggerFactory.getLogger(ContentPropertiesAction.class);
 
     @Autowired private SiteCache aksessSiteCache;
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
+    @Autowired private ContentIdHelper contentIdHelper;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -71,7 +74,7 @@ public class ContentPropertiesAction {
         ContentManagementService cms = new ContentManagementService(request);
 
         try {
-            ContentIdentifier cid = ContentIdHelper.fromRequestAndUrl(request, url);
+            ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
             Content content = cms.getContent(cid, false);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
@@ -174,7 +177,7 @@ public class ContentPropertiesAction {
                             owner = ownerUnit.getName();
                         }
                     } catch (Exception e) {
-                        Log.info(this.getClass().getName(), "Unable to resolve OrgUnit for orgUnitId: " + owner);
+                        log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
                     }
                 }
             }
@@ -192,14 +195,8 @@ public class ContentPropertiesAction {
             return model;
 
 
-        } catch (ContentNotFoundException e) {
-            // Do nothing
-            return null;
-        } catch (SystemException e) {
-            Log.error(this.getClass().getName(), e, null, null);
-            return null;
-        } catch (NotAuthorizedException e) {
-            Log.error(this.getClass().getName(), e, null, null);
+        } catch (SystemException | NotAuthorizedException | ContentNotFoundException e) {
+            log.error("", e);
             return null;
         }
     }
@@ -217,7 +214,7 @@ public class ContentPropertiesAction {
             SimpleDateFormat sdf = new SimpleDateFormat(dateFormat);
             return sdf.format(date);
         } catch (Exception e) {
-            Log.info(this.getClass().getName(), "Unparseable date: " + date, null, null);
+            log.info( "Unparseable date: " + date);
             return "";
         }
     }

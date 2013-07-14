@@ -16,14 +16,16 @@
 
 package no.kantega.publishing.modules.linkcheck.crawl;
 
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class LinkCrawlerJob {
+    private static final Logger log = LoggerFactory.getLogger(LinkCrawlerJob.class);
 
     private LinkCheckerJob checker;
 
@@ -35,7 +37,7 @@ public class LinkCrawlerJob {
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
-            Log.info(getClass().getName(), "Job is disabled for server type slave", null, null);
+            log.info( "Job is disabled for server type slave");
             return;
         }
 

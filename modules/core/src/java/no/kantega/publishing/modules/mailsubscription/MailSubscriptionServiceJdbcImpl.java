@@ -25,7 +25,7 @@ public class MailSubscriptionServiceJdbcImpl extends NamedParameterJdbcDaoSuppor
     @Override
     public void addMailSubscription(MailSubscription subscription) {
         if (subscription.getEmail() == null || (subscription.getChannel() == -1 && subscription.getDocumenttype() == -1)) {
-            throw new InvalidParameterException("email/channel", "MailSubscriptionService");
+            throw new InvalidParameterException("email/channel");
         }
 
         HashMap<String, Object> paramMap = new HashMap<>();
@@ -58,8 +58,8 @@ public class MailSubscriptionServiceJdbcImpl extends NamedParameterJdbcDaoSuppor
     }
 
     @Override
-    public List<MailSubscription> getAllMailSubscriptions() {
-        return getJdbcTemplate().query("select distinct Email from mailsubscription order by Email", rowMapper);
+    public List<String> getAllMailSubscriptions() {
+        return getJdbcTemplate().queryForList("select distinct Email from mailsubscription order by Email", String.class);
     }
 
     private RowMapper<MailSubscription> rowMapper  = new RowMapper<MailSubscription>() {

@@ -51,7 +51,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
         }  catch (EmptyResultDataAccessException e){
             return null;
         } catch (DataAccessException e) {
-            throw new SystemException(String.format("Could not find ContentIdentifier for siteId %s and alias %s", siteId, alias), "ContentIdentifierDaoJdbcImpl", e);
+            throw new SystemException(String.format("Could not find ContentIdentifier for siteId %s and alias %s", siteId, alias), e);
         }
     }
 
@@ -78,7 +78,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
         } catch (EmptyResultDataAccessException e){
             return null;
         } catch (DataAccessException e) {
-            throw new SystemException(String.format("Could not find ContentIdentifier for siteId %s and associationId %s", siteId, associationId), "ContentIdentifierDaoJdbcImpl", e);
+            throw new SystemException(String.format("Could not find ContentIdentifier for siteId %s and associationId %s", siteId, associationId), e);
         }
     }
 
@@ -94,7 +94,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
         try {
             return getNamedParameterJdbcTemplate().query(sql, parameters, rowMapper);
         } catch (DataAccessException e) {
-            throw new SystemException(String.format("Could not find ContentIdentifier for alias %s", alias), "ContentIdentifierDaoJdbcImpl", e);
+            throw new SystemException(String.format("Could not find ContentIdentifier for alias %s", alias), e);
         }
     }
 }

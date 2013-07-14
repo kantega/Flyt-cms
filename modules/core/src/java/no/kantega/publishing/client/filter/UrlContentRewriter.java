@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.client.filter;
 
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
@@ -24,6 +23,8 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.util.PrettyURLEncoderUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletRequest;
@@ -34,6 +35,7 @@ import java.io.IOException;
 /**
  */
 public class UrlContentRewriter implements ContentRewriter {
+    private static final Logger log = LoggerFactory.getLogger(UrlContentRewriter.class);
     private PrettyURLEncoderUtil prettyURLEncoderUtil;
     private String key;
     private ContentIdentifierDao contentIdentifierDao;
@@ -114,7 +116,7 @@ public class UrlContentRewriter implements ContentRewriter {
                             index = endOfIdIndex;
 
                         } catch (Exception e) {
-                            Log.error(this.getClass().getName(), e, null, null);
+                            log.error("", e);
                         }
 
                     } catch (NumberFormatException e) {

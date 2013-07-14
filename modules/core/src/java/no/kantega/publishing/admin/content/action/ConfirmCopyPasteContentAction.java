@@ -24,7 +24,6 @@ import no.kantega.publishing.admin.model.ClipboardStatus;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
@@ -32,10 +31,12 @@ import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -51,6 +52,9 @@ public class ConfirmCopyPasteContentAction implements Controller {
     private String errorView;
     private String view;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
         Configuration config = Aksess.getConfiguration();
@@ -60,7 +64,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         Map<String, Object> model = new HashMap<String, Object>();
 
         String url = request.getParameter("newParentUrl");
-        ContentIdentifier newParentCid = ContentIdHelper.fromRequestAndUrl(request, url);
+        ContentIdentifier newParentCid = contentIdHelper.fromRequestAndUrl(request, url);
 
         boolean forbidMoveCrossSite = false;
 
@@ -118,7 +122,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (forbidMoveCrossSite) {
             // Template does not exists in site
             error = "aksess.copypaste.crosssite";
-        } else if ((!isCopy) && (newParent.getAssociation().getPath().contains("/" + selectedPageAssociationId + "/"))) {
+        } else if (newParent.getAssociation().getPath().contains("/" + selectedPageAssociationId + "/")) {
             // Will lead to recursion
             error = "aksess.copypaste.recursion";
         } else if (newParent.getAssociation().getId() == selectedContent.getAssociation().getId()) {

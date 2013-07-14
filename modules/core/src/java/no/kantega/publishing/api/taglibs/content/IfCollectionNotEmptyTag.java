@@ -16,7 +16,8 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 
 public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {
-    private static final String SOURCE = "aksess.IfCollectionNotEmptyTag";
+    private static final Logger log = LoggerFactory.getLogger(IfCollectionNotEmptyTag.class);
 
     public int doStartTag() throws JspException {
         try {
@@ -43,8 +44,8 @@ public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {
                 return SKIP_BODY;
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
 
         return EVAL_BODY_TAG;

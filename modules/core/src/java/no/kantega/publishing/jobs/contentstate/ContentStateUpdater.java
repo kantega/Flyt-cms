@@ -18,26 +18,33 @@ package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
-import no.kantega.publishing.common.ao.ContentAO;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContentStateUpdater {
+    private static final Logger log = LoggerFactory.getLogger(ContentStateUpdater.class);
+
+    @Autowired
+    private ContentAO contentAO;
+
     public void expireContent() {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
 
         try {
-            Log.info(this.getClass().getName(), "Looking for content that has expired", null, null);
+            log.info( "Looking for content that has expired");
             int i = 0;
-            while((i = ContentAO.getNextExpiredContentId(i)) > 0) {
+            while((i = contentAO.getNextExpiredContentId(i)) > 0) {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
-                Content content = ContentAO.getContent(cid, false);
+                Content content = contentAO.getContent(cid, false);
                 if (content != null) {
                     int newVisibilityStatus = ContentVisibilityStatus.EXPIRED;
                     if (content.getExpireAction() == ExpireAction.ARCHIVE) {
@@ -49,15 +56,15 @@ public class ContentStateUpdater {
             }
 
             i = 0;
-            while((i = ContentAO.getNextWaitingContentId(i)) > 0) {
+            while((i = contentAO.getNextWaitingContentId(i)) > 0) {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
-                Content content = ContentAO.getContent(cid, false);
+                Content content = contentAO.getContent(cid, false);
                 if (content != null) {
                     cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING);
                 }
             }
         } catch (SystemException e) {
-            Log.error(this.getClass().getName(), e);
+            log.error("", e);
         }
     }
 
@@ -66,25 +73,23 @@ public class ContentStateUpdater {
 
         try {
             int i = 0;
-            Log.info(this.getClass().getName(), "Looking for content that needs activation", null, null);
-            while((i = ContentAO.getNextActivationContentId(i)) > 0) {
+            log.info( "Looking for content that needs activation");
+            while((i = contentAO.getNextActivationContentId(i)) > 0) {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
-                Content content = ContentAO.getContent(cid, true);
+                Content content = contentAO.getContent(cid, true);
                 if (content != null) {
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
-                        Log.debug(this.getClass().getName(), content.getTitle() + " page was made visible due to publish date", null, null);
+                        log.info(content.getTitle() + " page was made visible due to publish date");
                         cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE);
                     } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
-                        Log.debug(this.getClass().getName(), content.getTitle() + " new version was activated due to change from date", null, null);
+                        log.info(content.getTitle() + " new version was activated due to change from date");
                         cms.setContentStatus(cid, ContentStatus.PUBLISHED, "");
                     }
                 }
             }
 
-        } catch (SystemException e) {
-            Log.error(this.getClass().getName(), e);
-        } catch (NotAuthorizedException e) {
-            Log.error(this.getClass().getName(), e);
+        } catch (SystemException | NotAuthorizedException e) {
+            log.error("", e);
         }
     }
 }

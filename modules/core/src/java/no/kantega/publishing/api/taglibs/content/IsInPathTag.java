@@ -17,22 +17,25 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class IsInPathTag extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.IsInPathTag";
+    private static final Logger log = LoggerFactory.getLogger(IsInPathTag.class);
+    private static ContentIdHelper contentIdHelper;
 
     private String contentId = null;
     private Content contentObject = null;
@@ -63,7 +66,10 @@ public class IsInPathTag extends ConditionalTagSupport {
                     if (content == null) {
                         // Ikke hentet side
                         ContentManagementService cs = new ContentManagementService(request);
-                        ContentIdentifier contentIdentifier = ContentIdHelper.fromRequest(request);
+                        if(contentIdHelper == null){
+                            contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                        }
+                        ContentIdentifier contentIdentifier = contentIdHelper.fromRequest(request);
                         content = cs.getContent(contentIdentifier, true);
                         RequestHelper.setRequestAttributes(request, content);
                     }
@@ -79,7 +85,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                         int aId = Integer.parseInt(contentId);
                         cid = ContentIdentifier.fromAssociationId(aId);
                     } catch (NumberFormatException e) {
-                        cid = ContentIdHelper.findRelativeContentIdentifier(content, contentId);
+                        cid = contentIdHelper.fromSiteIdAndUrl(content.getAssociation().getSiteId(), contentId);
                     }
 
 
@@ -103,7 +109,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                 }
             }
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return negate;

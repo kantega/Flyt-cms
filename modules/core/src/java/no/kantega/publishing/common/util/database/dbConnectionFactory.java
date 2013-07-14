@@ -22,13 +22,13 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Logger;
 import org.kantega.openaksess.dbmigrate.DbMigrate;
 import org.kantega.openaksess.dbmigrate.ServletContextScriptSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -48,7 +48,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class dbConnectionFactory {
-    private static final String SOURCE = "aksess.DataBaseConnectionFactory";
 
     private static String dbDriver = null;
     private static String dbUsername = null;
@@ -79,7 +78,7 @@ public class dbConnectionFactory {
 
     private static Configuration configuration;
     private static ServletContext servletContext;
-    private static Logger log = Logger.getLogger(dbConnectionFactory.class);
+    private static final Logger log = LoggerFactory.getLogger(dbConnectionFactory.class);
     private static boolean shouldMigrateDatabase;
 
     public static void loadConfiguration() {
@@ -144,9 +143,9 @@ public class dbConnectionFactory {
             }
 
             if (dbUseTransactions) {
-                Log.info(SOURCE, "Using transactions, database transaction isolation level set to " + dbTransactionIsolationLevel);
+                log.info( "Using transactions, database transaction isolation level set to " + dbTransactionIsolationLevel);
             } else {
-                Log.info(SOURCE, "Not using transactions", null, null);
+                log.info( "Not using transactions");
             }
 
             if(debugConnections) {
@@ -154,8 +153,7 @@ public class dbConnectionFactory {
             }
 
         } catch (Exception e) {
-            Log.debug(SOURCE, "********* Klarte ikke å lese aksess.conf **********", null, null);
-            Log.error(SOURCE, e, null, null);
+            log.error( "********* Klarte ikke å lese aksess.conf **********", e);
         }
 
 
@@ -227,7 +225,7 @@ public class dbConnectionFactory {
                     message +=".";
                 }
             }
-            throw new ConfigurationException(message, SOURCE);
+            throw new ConfigurationException(message);
         }
     }
 
@@ -281,7 +279,7 @@ public class dbConnectionFactory {
                 createTables(dataSource);
             }
         } catch (SQLException e) {
-            throw new SystemException("Can't connect to database, please check configuration", SOURCE, e);
+            throw new SystemException("Can't connect to database, please check configuration", e);
         }
     }
 
@@ -292,7 +290,7 @@ public class dbConnectionFactory {
             productName = c.getMetaData().getDatabaseProductName();
 
         } catch (SQLException e) {
-            throw new SystemException("Error creating tables for Aksess", SOURCE, e);
+            throw new SystemException("Error creating tables for Aksess", e);
         }
 
         String dbType = getDBVendor(productName);
@@ -301,12 +299,12 @@ public class dbConnectionFactory {
 
 
         if(resource != null) {
-            Log.info(SOURCE, "Creating tables from schema definition " + resource, null, null);
+            log.info( "Creating tables from schema definition " + resource);
             final InputStream schema;
             try {
                 schema = resource.openStream();
             } catch (IOException e) {
-                throw new SystemException("Can't load schema resource " + resource, SOURCE, e);
+                throw new SystemException("Can't load schema resource " + resource, e);
             }
             try {
 
@@ -352,18 +350,10 @@ public class dbConnectionFactory {
 
     public static Connection getConnection() throws SystemException {
         try {
-            Connection c;
-            if(debugConnections) {
-                c = proxyDs.getConnection();
-            } else {
-                c = ds.getConnection();
-            }
-
-            return c;
+            return debugConnections ? proxyDs.getConnection() : ds.getConnection();
         } catch (SQLException se) {
-            Log.info(SOURCE, "Unable to connect to database: url=" + dbUrl, null, null);
-            Log.error(SOURCE, se, null, null);
-            throw new DatabaseConnectionException(SOURCE, se);
+            log.error( "Unable to connect to database: url=" + dbUrl, se);
+            throw new DatabaseConnectionException(se);
         }
     }
 
@@ -497,10 +487,10 @@ public class dbConnectionFactory {
                 if(method.getName().equalsIgnoreCase("close")) {
                     if(dbConnectionFactory.connections.get(wrapped) == null) {
                         StackTraceElement[] stackTraceElement = new Throwable().getStackTrace();
-                        Log.error("ConnectionWrapper", "WOOOPS: Connection.close was already called!");
+                        log.error( "WOOOPS: Connection.close was already called!");
                         for (int i = 0; i < stackTraceElement.length && i < 3; i++) {
                             StackTraceElement e = stackTraceElement[i];
-                            Log.error("ConnectionWrapper"," - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
+                            log.error(" - " +  e.getClassName() + "." + e.getMethodName() + " (" + e.getLineNumber() + ") <br>");
                         }
                     } else {
                         dbConnectionFactory.incrementClosedConnections();

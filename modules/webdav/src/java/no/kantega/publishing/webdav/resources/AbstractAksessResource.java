@@ -1,21 +1,21 @@
 package no.kantega.publishing.webdav.resources;
 
 import com.bradmcevoy.http.*;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
-import no.kantega.commons.log.Log;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.webdav.resourcehandlers.util.WebDavSecurityHelper;
 
 /**
  *
  */
 public abstract class AbstractAksessResource implements Resource, PropFindableResource, LockableResource {
-    private static Map<String, LockToken> locks = new HashMap<String, LockToken>();
+    private static final Logger log = LoggerFactory.getLogger(AbstractAksessResource.class);
+    private static Map<String, LockToken> locks = new HashMap<>();
 
     WebDavSecurityHelper webDavSecurityHelper;
     SecuritySession securitySession;
@@ -58,7 +58,7 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
     }
 
     public LockResult lock(LockTimeout lockTimeout, LockInfo lockInfo) {
-        Log.debug(this.getClass().getName(), "lock():" + lockTimeout + ", " + lockInfo + " on " + getName());
+        log.debug( "lock():" + lockTimeout + ", " + lockInfo + " on " + getName());
         LockToken token = new LockToken();
         token.info = lockInfo;
         token.timeout = LockTimeout.parseTimeout("30");
@@ -69,7 +69,7 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
 
     public LockResult refreshLock(String tokenId) {
         LockToken currentLock = locks.get(getUniqueId());
-        Log.debug(this.getClass().getName(), "refreshLock():" + tokenId + " on " + getName());
+        log.debug( "refreshLock():" + tokenId + " on " + getName());
         LockToken token = new LockToken();
         token.info = null;
         token.timeout = LockTimeout.parseTimeout("30");
@@ -78,12 +78,12 @@ public abstract class AbstractAksessResource implements Resource, PropFindableRe
     }
 
     public void unlock(String tokenId) {
-        Log.debug(this.getClass().getName(), "Unlock on " + getName());
+        log.debug( "Unlock on " + getName());
         locks.remove(getUniqueId());
     }
 
     public LockToken getCurrentLock() {
-        Log.debug(this.getClass().getName(), "getCurrentLock on" + getName());
+        log.debug( "getCurrentLock on" + getName());
         return locks.get(getUniqueId());
     }
 

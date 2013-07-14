@@ -17,15 +17,17 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ContentIdHelper;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentIdHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,7 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GetRandomTag  extends BodyTagSupport {
-    private static final String SOURCE = "aksess.GetRandomTag";
+    private static final Logger log = LoggerFactory.getLogger(GetRandomTag.class);
 
     private String name = null;
     private String associationCategory = null;
@@ -49,6 +51,7 @@ public class GetRandomTag  extends BodyTagSupport {
     private int max = 1;
     private List collection = null;
     private int offset = 0;
+    private static ContentIdHelper contentIdHelper;
 
     public void setAssociation(String association) {
         this.associationCategory = association;
@@ -99,8 +102,12 @@ public class GetRandomTag  extends BodyTagSupport {
             } else {
                 // Alias
                 try {
-                    associatedId = ContentIdHelper.fromRequestAndUrl(request, id);
+                    if(contentIdHelper == null){
+                        contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                    }
+                    associatedId = contentIdHelper.fromRequestAndUrl(request, id);
                 } catch (Exception e) {
+                    log.error("Could not set associated id " + id, e);
                 }
             }
         }
@@ -167,7 +174,10 @@ public class GetRandomTag  extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        associatedId = ContentIdHelper.fromRequest(request);
+                        if(contentIdHelper == null){
+                            contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+                        }
+                        associatedId = contentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
                     // Finner ikke noe innhold
@@ -191,8 +201,8 @@ public class GetRandomTag  extends BodyTagSupport {
             tmpcollection = cs.getContentList(query, -1, new SortOrder(orderBy, true));
 
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
-            throw new JspTagException(SOURCE, e);
+            log.error("", e);
+            throw new JspTagException(e);
         }
         if (tmpcollection != null && tmpcollection.size() > 0) {
             max = Math.min(max, tmpcollection.size());

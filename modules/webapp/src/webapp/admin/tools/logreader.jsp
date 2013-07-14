@@ -1,104 +1,114 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
-<%@ page import="no.kantega.commons.client.util.RequestParameters" %>
-<%@ page import="no.kantega.commons.configuration.Configuration" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page import="no.kantega.publishing.security.SecuritySession" %>
-
-<%@ page import="java.io.BufferedReader" %>
-<%@ page import="java.io.File" %>
-<%@ page import="java.io.FileReader" %>
-
-<%
-    SecuritySession securitySession = SecuritySession.getInstance(request);
-
-    if (!securitySession.isUserInRole(Aksess.getAdminRole())) {
-        return;
-    }
-
-    Configuration configuration = Aksess.getConfiguration();
-    String logfile = configuration.getString("logfile.path", configuration.getApplicationDirectory() + "/logs/aksess.log");
-
-    RequestParameters param = new RequestParameters(request);
-
-
-    File src = new File(logfile);
-    BufferedReader reader = new BufferedReader(new FileReader(src));
-
-    boolean download = param.getBoolean("download", false);
-    if (download) {
-        response.setContentType("text/plain");
-        response.addHeader("Content-Disposition", "attachment; filename=\"aksess.log\"");
-    }
-
-    int maxLines = param.getInt("maxLines");
-    if (maxLines <= 0) {
-        maxLines = 400;
-    }
-
-    String[] lines = new String[maxLines];
-    int lastNdx = 0;
-    for (String line=reader.readLine(); line != null; line=reader.readLine()) {
-        if (download) {
-            out.write(line);
-        } else {
-            if (lastNdx == lines.length) {
-                lastNdx = 0;
-            }
-            lines[lastNdx++] = line;
-        }
-    }
-    reader.close();
-
-    src = null;
-
-    if (download) {
-        return;
-    }
-%>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
+<!DOCTYPE html>
 <html>
 <head>
-    <style type="text/css">
-        td {
+    <title>Read OpenAksess logs</title>
+    <link rel="stylesheet" href="<aksess:geturl url="/admin/css/jquery-ui-1.8.1.custom.css"/> " type="text/css"/>
+    <style>
+        body {
+            top: 0;
+            left: 0;
+            position: fixed;
+            width: 98%;
+            height: 95%;
+        }
+        #logfiles{
+            height: 100%;
+        }
+        .ui-tabs-panel {
+            height: 90%;
+            overflow: scroll;
+        }
+        #logfiles div {
             font-family: courier,monospace;
+            font-size: 8px;
         }
 
-        tr.odd {
+        .line:nth-child(even){
             background-color: #eee;
+        }
+        .logheader {
+            font-size: 10px;
+        }
+        #tabheaders a.downloadlogfile {
+            margin-right: 3px;
+            margin-top: 3px;
+            padding: 0;
+            height: 16px;
+            width: 16px;
+            cursor: pointer;
+        }
+
+        #tabheaders a.downloadlogfile {
+            background-image: url('<aksess:geturl url="/admin/bitmaps/common/icons/small/insert.png"/>');
+        }
+
+        #updateCurrentTab {
+            background-image: url('<aksess:geturl url="/admin/bitmaps/common/icons/small/insert.png"/>');
+        }
+
+        .linenumber {
+            font-weight: bold;;
+        }
+
+        #controlls {
+            font-size: 8px;
+            float: right;
+        }
+
+        #controlls input {
+            width: 20px;
         }
     </style>
 </head>
 <body>
+<div id="logfiles">
+    <ul id="tabheaders">
+        <form id="controlls">
+            <label for="numberOfLines">Number of lines</label>
+            <input id="numberOfLines" type="text" value="100">
+            <label for="startLine">First line</label>
+            <input id="startLine" type="text" value="0">
+            <input type="submit" id="updateCurrentTab">
+        </form>
+    </ul>
+</div>
 
-<%
-%>
+<script src="<aksess:geturl url="/admin/js/jquery-2.0.2.min.js"/>"></script>
+<script src="<aksess:geturl url="/admin/js/jquery-ui-1.8.14.custom.min.js"/>"></script><script>
+    var getUrlForFile = function(file, start, number){
+        return '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + file + '.action?numberoflines=' + number + '&startline=' + start;
+    };
+    var tabheaderUl = $('#tabheaders');
+    var filesByIndex = {};
+
+    var numberOfLinesInput = $('#numberOfLines');
+    var startLineInput = $('#startLine');
+
+    $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles.action"/>', function(data){
+        for(var i = 0; i < data.length ; i++){
+            var logfile = data[i];
+            filesByIndex[i + 1] = logfile; // logfilecontainer.index() is 1-indexed.
+            tabheaderUl.append('<li><a class="logheader" href="' + getUrlForFile(logfile, startLineInput.val(), numberOfLinesInput.val())
+                    + '">' + logfile + '</a><a href="<aksess:geturl url="/admin/tools/logreader/logfiles/download/"/>'
+                    + logfile + '.action" class="downloadlogfile"></a></li>')
+        }
+        $('#logfiles').tabs();
 
 
-<form action="logreader.jsp">
-    Vis antall linjer (fra slutten) <input type="text" name="maxLines" value="<%=maxLines%>">
-    <input type="submit" value="Vis">
-
-    <p><a href="?download=true">Last ned hele loggen</a></p>
-
-    <table border="0">
-        <%
-            for (int ndx=lastNdx; ndx != lastNdx-1; ndx++) {
-                if (ndx == lines.length) {
-                    ndx = 0;
-                }
-
-                String clz = "odd";
-                if (ndx % 2 == 0) {
-                    clz = "even";
-                }
-
-                if (lines[ndx] != null) {
-                    out.write("<tr class=\"" + clz + "\"><td>" + lines[ndx] + "</td></tr>");
-                }
-            }
-
-        %>
-    </table>
-</form>
+    });
+    var updateContent = function () {
+        var selected = $('.ui-tabs-selected').index();
+        var panel = $($('.ui-tabs-panel')[selected - 1]);
+        $.getJSON(getUrlForFile(filesByIndex[selected], startLineInput.val(), numberOfLinesInput.val()), function (data) {
+            panel.html(data.reduce(function (previousValue, currentValue) {
+                return previousValue + currentValue;
+            }, ''))
+        });
+        return false;
+    };
+    $('#controlls').submit(updateContent);
+</script>
 </body>
-
 </html>

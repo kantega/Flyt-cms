@@ -1,11 +1,12 @@
 package no.kantega.publishing.modules.forms.validate;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.forms.model.FormValue;
 import no.kantega.publishing.modules.forms.filter.FormSubmissionFillFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class DefaultFormSubmissionValidator implements FormSubmissionValidator {
+    private static final Logger log = LoggerFactory.getLogger(DefaultFormSubmissionValidator.class);
     FormElementValidatorFactory formElementValidatorFactory;
 
     public List<FormError> validate(FormSubmission formSubmission) {
@@ -33,7 +35,7 @@ public class DefaultFormSubmissionValidator implements FormSubmissionValidator {
         try {
             pipeline.filter(new StringReader(formSubmission.getForm().getFormDefinition()), sw);
         } catch (SystemException e) {
-            Log.error(getClass().getName(), e, null, null);
+            log.error("", e);
             return null;
         }
 

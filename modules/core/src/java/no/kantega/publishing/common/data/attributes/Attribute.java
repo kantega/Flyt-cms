@@ -18,7 +18,6 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.api.cache.SiteCache;
@@ -32,6 +31,8 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
@@ -40,12 +41,15 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Representing a single attribute in a Content object.
  */
 public abstract class Attribute {
+    private static final Logger log = LoggerFactory.getLogger(Attribute.class);
+
     private final String FILE_TOKEN = "file:";
 
     protected Attribute parent = null;
@@ -70,6 +74,7 @@ public abstract class Attribute {
     protected int tabIndex = 1;
     protected boolean editable = true;
     protected boolean inheritsFromAncestors = false;
+    protected boolean hideIfEmpty = false;
 
     private String[] showInSites = null; // Angir alias for siter hvor denne attributten skal vises (null = vis for alle)
     private String[] hideInSites = null; // Angir alias for siter hvor denne attributten ikke skal vises (null = vis for alle)
@@ -89,11 +94,11 @@ public abstract class Attribute {
         if (config != null) {
             name = config.getAttribute("name");
             if (name == null) {
-                throw new InvalidTemplateException("name mangler i mal fil", "", null);
+                throw new InvalidTemplateException("name mangler i mal fil", null);
             }
 
             if (name.contains("[") || name.contains("]")) {
-                throw new InvalidTemplateException("[ og ] er ikke tillatt i navn på attributter", "", null);
+                throw new InvalidTemplateException("[ og ] er ikke tillatt i navn på attributter", null);
             }
 
             editable = !(config.getAttribute("editable").equals("false"));
@@ -149,6 +154,10 @@ public abstract class Attribute {
                 }
             }
 
+            if ("true".equalsIgnoreCase(config.getAttribute("hideifempty"))) {
+                hideIfEmpty = true;
+            }
+
             String defaultValue = config.getAttribute("default");
             if (value == null || value.length() == 0 && defaultValue != null) {
                 // Hent defaultverdi fra en fil
@@ -162,7 +171,7 @@ public abstract class Attribute {
                     try {
                         value = IOUtils.toString(resource.getInputStream());
                     } catch (IOException e) {
-                        throw new SystemException("", "Feil ved lesing av default fil:" + file, e);
+                        throw new SystemException("Feil ved lesing av default fil:" + file, e);
                     }
                 } else {
                     if (model != null && model.size() > 0) {
@@ -305,9 +314,9 @@ public abstract class Attribute {
         this.tabIndex = tabIndex;
     }
 
-    public  void validate(ValidationErrors errors) throws no.kantega.commons.exception.RegExpSyntaxException {
-        if (mandatory && editable && (value == null || value.length() == 0)) {
-            Map<String, Object> objects = new HashMap<String, Object>();
+    public  void validate(ValidationErrors errors) {
+        if (mandatory && editable && isBlank(value)) {
+            Map<String, Object> objects = new HashMap<>();
             objects.put("field", title);
             errors.add(name, "aksess.feil.mandatoryfield", objects);
         }
@@ -408,7 +417,7 @@ public abstract class Attribute {
             }
 
         } catch (SystemException e) {
-            Log.error("Attribute:" + name, e, null, null);
+            log.error("Could not determine hidden status", e);
         }
         return isHidden;
     }
@@ -421,6 +430,10 @@ public abstract class Attribute {
         return editableByRole;
     }
 
+    public boolean isHideIfEmpty() {
+        return hideIfEmpty;
+    }
+
     @Override
     public String toString() {
         StringBuilder toString = new StringBuilder(getClass().getSimpleName());
@@ -431,5 +444,9 @@ public abstract class Attribute {
             toString.append(StringUtils.abbreviate(value, 20));
         }
         return toString.toString();
+    }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new SimpleAttributeValueXMLExporter();
     }
 }

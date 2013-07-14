@@ -16,7 +16,8 @@
 
 package no.kantega.commons.util;
 
-import no.kantega.commons.log.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -25,6 +26,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 
 public class LocaleLabels {
+    private static final Logger log = LoggerFactory.getLogger(LocaleLabels.class);
     static public String DEFAULT_BUNDLE = "TextLabels";
 
     private static Map<String, PropertyResourceBundle> bundles = new HashMap<String, PropertyResourceBundle>();
@@ -43,7 +45,7 @@ public class LocaleLabels {
                     }
                     bundles.put(bundleName + "_" + locale, bundle);
                 } catch (MissingResourceException e) {
-                    Log.error("LocaleLabels", e, null, null);
+                    log.error("Could not find resource " + bundle, e);
                 }
             }
         }

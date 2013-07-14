@@ -33,8 +33,7 @@ import java.util.Map;
 /**
  */
 public class EditTopicMapAction extends AbstractController {
-    private static String SOURCE = "aksess.EditTopicMapAction";
-    private String view;
+        private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -50,7 +49,7 @@ public class EditTopicMapAction extends AbstractController {
         if (id != -1) {
             topicMap = topicService.getTopicMap(id);
             if (topicMap == null) {
-                throw new SystemException("Emnekart med id " + id  + " finnes ikke", SOURCE, null);
+                throw new SystemException("Emnekart med id " + id  + " finnes ikke", null);
             }
         } else {
             topicMap = new TopicMap();

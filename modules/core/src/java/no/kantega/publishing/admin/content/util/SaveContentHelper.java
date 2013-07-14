@@ -19,9 +19,7 @@ package no.kantega.publishing.admin.content.util;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.RegExpSyntaxException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.common.data.Content;
@@ -29,11 +27,14 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
 public class SaveContentHelper {
+    private static final Logger log = LoggerFactory.getLogger(SaveContentHelper.class);
 
     private HttpServletRequest request = null;
     private Content content = null;
@@ -46,7 +47,7 @@ public class SaveContentHelper {
     }
 
 
-    public ValidationErrors getHttpParameters(final ValidationErrors errors) throws RegExpSyntaxException {
+    public ValidationErrors getHttpParameters(final ValidationErrors errors){
         final RequestParameters param = new RequestParameters(request, "utf-8");
 
         content.doForEachAttribute(attributeType, new AttributeHandler() {
@@ -67,11 +68,8 @@ public class SaveContentHelper {
                         }
                     }
                 }
-                try {
-                    attr.validate(errors);
-                } catch (RegExpSyntaxException e) {
-                    Log.error(this.getClass().getName(), e);
-                }
+                attr.validate(errors);
+
             }
         });
 

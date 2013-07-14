@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.commons.log.Log;
+import no.kantega.commons.util.FormatHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistMediaAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
@@ -26,6 +26,8 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Element;
 
@@ -37,6 +39,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
  * Attribute referencing a media object.
  */
 public class MediaAttribute extends Attribute {
+    private static final Logger log = LoggerFactory.getLogger(MediaAttribute.class);
     private MultipartFile importFile = null;
 
     protected String defaultMediaFolder = null;
@@ -74,7 +77,8 @@ public class MediaAttribute extends Attribute {
                 || AttributeProperty.LATITUDE.equalsIgnoreCase(property)
                 || AttributeProperty.LONGITUDE.equalsIgnoreCase(property)
                 || AttributeProperty.PARENTID.equalsIgnoreCase(property)
-                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
+                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
+                || AttributeProperty.SIZE.equalsIgnoreCase(property)) {
             try {
                 Multimedia mm = getMultimedia();
                 if(mm == null){
@@ -103,9 +107,16 @@ public class MediaAttribute extends Attribute {
                     return mm.getMimeType().getType();
                 } else if (AttributeProperty.URL.equalsIgnoreCase(property)){
                     return mm.getUrl();
+                } else if (AttributeProperty.SIZE.equalsIgnoreCase(property)) {
+                    int size = mm.getSize();
+                    if (size > 0) {
+                        return FormatHelper.formatSize(size);
+                    } else {
+                        return "";
+                    }
                 }
             } catch (Exception e) {
-                Log.error("Error when getting attribute", e);
+                log.error("Error getting attributevalue", e);
             }
         }
         return returnValue;
@@ -125,7 +136,7 @@ public class MediaAttribute extends Attribute {
             try {
                 id = Integer.parseInt(value);
             } catch (NumberFormatException e) {
-                Log.error("Error when parsing media id", e);
+                log.error("Error parsing " + value, e);
                 return null;
             }
             cachedMultimediaObj = MultimediaAO.getMultimedia(id);

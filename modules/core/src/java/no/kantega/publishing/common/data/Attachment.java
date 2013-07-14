@@ -26,7 +26,6 @@ import java.util.Date;
 import static no.kantega.publishing.common.util.PrettyURLEncoder.encode;
 
 public class Attachment {
-    private static final String SOURCE = "aksess.Attachment";
 
     private int id = -1;
     private int contentId = -1;

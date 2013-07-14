@@ -16,13 +16,14 @@
 
 package no.kantega.publishing.common.util;
 
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.common.Aksess;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
 public class PrettyURLEncoder {
-    private static final String SOURCE = "aksess.PrettyURLEncoder";
+    private static final Logger log = LoggerFactory.getLogger(PrettyURLEncoder.class);
 
     private static char[] space = {' ', '-'};
     private static char[] slash = {'/', '-'};
@@ -46,18 +47,19 @@ public class PrettyURLEncoder {
         if (url == null) {
             return "";
         }
+        String prettyUrl = url.trim();
         for (char[] aMap : map) {
-            if (url.indexOf(aMap[0]) != -1) {
-                url = url.replace(aMap[0], aMap[1]);
+            if (prettyUrl.indexOf(aMap[0]) != -1) {
+                prettyUrl = prettyUrl.replace(aMap[0], aMap[1]);
             }
         }
         try {
-            url = pattern.matcher(url).replaceAll("");
+            prettyUrl = pattern.matcher(prettyUrl).replaceAll("");
         } catch (Exception e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("error replacing illegal chars", e);
         }
 
-        return url;
+        return prettyUrl;
     }
 
     public static String createContentUrl(int associationId, String title) {

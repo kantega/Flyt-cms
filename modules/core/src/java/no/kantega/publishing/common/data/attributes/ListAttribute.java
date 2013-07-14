@@ -17,13 +17,14 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.apache.xpath.XPathAPI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
@@ -34,6 +35,7 @@ import java.util.*;
  *
  */
 public class ListAttribute extends Attribute {
+    private static final Logger log = LoggerFactory.getLogger(ListAttribute.class);
     protected boolean multiple = false;
     protected List<ListOption> options = null;
 
@@ -66,7 +68,7 @@ public class ListAttribute extends Attribute {
                 }
 
             } catch (TransformerException e) {
-                Log.error(getClass().getName(), e);
+                log.error("Error getting list options", e);
             }
         }
     }

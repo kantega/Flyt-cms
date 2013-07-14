@@ -1,13 +1,14 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,6 +18,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 
 public class RepeatAttributesTag extends BodyTagSupport {
+    private static final Logger log = LoggerFactory.getLogger(RepeatAttributesTag.class);
     private String name = null;
     private String contentId = null;
     private String collection = null;
@@ -53,12 +55,12 @@ public class RepeatAttributesTag extends BodyTagSupport {
                         numberOfRows = repeater.getNumberOfRows();
 
                     } else if(attribute != null){
-                        Log.error(this.getClass().getName(), "Attribute:" + name + " is not a RepeaterAttribute");
+                        log.error( "Attribute:" + name + " is not a RepeaterAttribute");
                     }
                 }
             }
         } catch (Exception e) {
-            Log.error(this.getClass().getName(), e);
+            log.error("", e);
         }
 
         return doIter();

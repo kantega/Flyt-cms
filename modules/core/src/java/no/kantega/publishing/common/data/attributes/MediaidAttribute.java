@@ -1,6 +1,8 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.admin.content.behaviours.attributes.MediaidAttributeValueXMLExporter;
+import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.w3c.dom.Element;
 
@@ -42,5 +44,9 @@ public class MediaidAttribute extends Attribute {
 
     public int getMaxitems() {
         return maxitems;
+    }
+
+    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
+        return new MediaidAttributeValueXMLExporter();
     }
 }

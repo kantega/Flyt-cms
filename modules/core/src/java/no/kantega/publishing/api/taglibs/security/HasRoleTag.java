@@ -1,15 +1,16 @@
 package no.kantega.publishing.api.taglibs.security;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.log.Log;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 public class HasRoleTag  extends ConditionalTagSupport {
-    private static final String SOURCE = "aksess.HasRoleTag";
+    private static final Logger log = LoggerFactory.getLogger(HasRoleTag.class);
 
     private String[] roles;
 
@@ -24,7 +25,7 @@ public class HasRoleTag  extends ConditionalTagSupport {
                 }
             }
         } catch (SystemException e) {
-            Log.error(SOURCE, e, null, null);
+            log.error("", e);
         }
 
         return false;
