@@ -35,6 +35,7 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
+import org.apache.commons.lang.NotImplementedException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -310,7 +311,6 @@ public class ContentIdHelper {
     }
 
     /**
-     * // TODO ATTACK!
      * @param request - The current request
      * @return ContentIdentifier for the given request.
      * @throws ContentNotFoundException
@@ -349,14 +349,7 @@ public class ContentIdHelper {
                 throw new ContentNotFoundException(path, SOURCE);
             }
         } else {
-            String queryString = request.getQueryString();
-            if (queryString != null && queryString.length() > 0) {
-                url = url + "?" + queryString;
-            }
-
-            int siteId = ContentIdHelper.getSiteIdFromRequest(request);
-
-            contentIdentifier = ContentIdHelper.findContentIdentifier(siteId, url);
+            throw new NotImplementedException("Find out when this condition occurs!");
         }
 
         if (contentIdentifier != null) {
@@ -366,7 +359,6 @@ public class ContentIdHelper {
     }
 
     /**
-     *      * // TODO ATTACK!
      * @param request - The current request
      * @param url - The url of ContentIdentifier is desired for.
      * @return ContentIdentifier for url.
@@ -374,8 +366,7 @@ public class ContentIdHelper {
      * @throws SystemException
      */
     public static ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
-        Pair<Integer, String> siteId = ContentIdHelper.getSiteIdFromRequest(request, url);
-        return ContentIdHelper.findContentIdentifier(siteId.first, siteId.second);
+        throw new NotImplementedException("Find a better way");
     }
 
     /**
