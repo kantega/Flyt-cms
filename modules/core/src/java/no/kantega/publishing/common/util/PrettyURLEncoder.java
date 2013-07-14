@@ -41,7 +41,9 @@ public class PrettyURLEncoder {
 
     private static char[][] map = { space, slash, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
 
-    private static Pattern pattern = Pattern.compile("[^a-zA-Z_0-9-+\\.:]");
+    public static final String LEGAL_URL_PATTERN = "[\\w\\-+]";
+    public static final String ILLLEGAL_URL_PATTERN = "[^a-zA-Z_0-9-+\\.:]";
+    private static Pattern pattern = Pattern.compile(ILLLEGAL_URL_PATTERN);
 
     public static String encode(String url) {
         if (url == null) {
