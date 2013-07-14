@@ -16,15 +16,18 @@
 
 package no.kantega.publishing.common.templates;
 
-import junit.framework.TestCase;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
 import no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory;
+import org.junit.Test;
 
 import java.util.List;
 
-public class ValidateTemplateConfigurationTest extends TestCase {
+import static org.junit.Assert.assertEquals;
+
+public class ValidateTemplateConfigurationTest {
+    @Test
     public void testValidate() {
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
         factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig.xml"));
