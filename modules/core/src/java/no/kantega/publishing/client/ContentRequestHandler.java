@@ -53,7 +53,6 @@ import java.util.List;
 @Controller
 public abstract class ContentRequestHandler implements ServletContextAware{
     private static Logger LOG = LoggerFactory.getLogger(ContentRequestHandler.class);
-    private static String SOURCE = "ContentRequestHandler";
 
     @Autowired
     private SiteCache siteCache;
@@ -109,7 +108,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             if (content != null) {
                 // Send NOT_FOUND if expired or not published
                 if(!isAdminMode && isExpiredOrNotPublished(content)) {
-                    throw new ContentNotFoundException("", SOURCE);
+                    throw new ContentNotFoundException(request.getRequestURI());
                 }
                 if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
                     return null;
@@ -121,12 +120,12 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                 logTimeSpent(start, content);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                throw new ContentNotFoundException(SOURCE, "");
+                throw new ContentNotFoundException(request.getRequestURI());
             }
 
         } catch (NotAuthorizedException e) {
             // Check if user is logged in
-            SecuritySession secSession = SecuritySession.getInstance(request);
+            SecuritySession secSession = getSecuritySession();
             if (secSession.isLoggedIn()) {
                 RequestHelper.setRequestAttributes(request, null);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -177,7 +176,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
-        LOG.info("Execution time: {} ms ({}, id: {}, template: {})", new Object[]{ (end - start), content.getTitle(), content.getId(), content.getDisplayTemplateId() });
+        LOG.info("Execution time: {} ms ({}, id: {}, template: {})", (end - start), content.getTitle(), content.getId(), content.getDisplayTemplateId());
     }
 
     private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {

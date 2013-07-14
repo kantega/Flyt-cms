@@ -1,6 +1,6 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.commons.client.util.ValidationErrors"%>
+<%@ page import="no.kantega.commons.util.LocaleLabels"%>
 <%@ page import="no.kantega.publishing.admin.content.util.AttributeHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
 
