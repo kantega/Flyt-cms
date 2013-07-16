@@ -19,7 +19,6 @@ package no.kantega.publishing.jobs.alerts;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
@@ -85,14 +84,9 @@ public class ExpireContentAlertJob {
                 SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
                 List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
 
-                String defaultUserEmail = null;
+                Configuration config = Aksess.getConfiguration();
+                String defaultUserEmail = config.getString("mail" + alias + "contentexpire.recipient");
 
-                try {
-                    Configuration config = Aksess.getConfiguration();
-                    defaultUserEmail = config.getString("mail" + alias + "contentexpire.recipient");
-                } catch (ConfigurationException e) {
-                    log.error("", e);
-                }
 
                 Multimap<String, Content> users = ArrayListMultimap.create();
 

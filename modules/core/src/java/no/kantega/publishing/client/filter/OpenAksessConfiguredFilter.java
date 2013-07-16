@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.client.filter;
 
-import no.kantega.commons.exception.ConfigurationException;
-
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Enumeration;
@@ -87,7 +85,7 @@ public class OpenAksessConfiguredFilter implements Filter {
                 }
             });
             
-        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | ConfigurationException e) {
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new ServletException(e);
         }
     }

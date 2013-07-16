@@ -17,7 +17,6 @@
 package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
 
 import javax.servlet.jsp.JspException;
@@ -50,8 +49,6 @@ public class GetConfigTag  extends TagSupport {
             Configuration config = Aksess.getConfiguration();
 
             out.write(config.getString(key, defaultValue));
-        } catch (ConfigurationException e) {
-            throw new JspException("ERROR: GetConfigTag", e);
         } catch (IOException e) {
             throw new JspException("ERROR: GetConfigTag", e);
         }

@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.admin.content.util;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.action.AddAttachmentAction;
 import no.kantega.publishing.admin.multimedia.action.UploadMultimediaAction;
@@ -83,13 +82,7 @@ public class AttachmentBlacklistHelper {
      * @return String array of black-listed file suffixes.
      */
     public static String[] getBlacklistedFileTypes() {
-        String[] blacklistedFileTypes = null;
-        
-        try {
-            blacklistedFileTypes = Aksess.getConfiguration().getStrings("attachment.filetypes.blacklisted");
-        } catch (ConfigurationException ex) {
-            log.error("Could not get blacklisted filetypes", ex);
-        }
+        String[] blacklistedFileTypes = Aksess.getConfiguration().getStrings("attachment.filetypes.blacklisted");
 
         return blacklistedFileTypes;
     }
@@ -111,11 +104,7 @@ public class AttachmentBlacklistHelper {
     public static String getErrorMessage() {
         String errorMessage = LocaleLabels.getLabel("aksess.multimedia.filetype.blacklisted", Aksess.getDefaultAdminLocale());
 
-        try {
-            errorMessage = Aksess.getConfiguration().getString("attachment.filetypes.blacklisted.errorMessage", errorMessage);
-        } catch (ConfigurationException ex) {
-            log.error("Could not get errormessage", ex);
-        }
+        errorMessage = Aksess.getConfiguration().getString("attachment.filetypes.blacklisted.errorMessage", errorMessage);
 
         return errorMessage;
     }

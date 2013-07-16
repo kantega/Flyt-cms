@@ -17,7 +17,6 @@
 package no.kantega.commons.client.util;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
@@ -34,14 +33,7 @@ public class MultipartResolverFactory extends AbstractFactoryBean {
 
     protected Object createInstance() throws Exception {
 
-        int maxSize = 0x4000000;
-
-
-        try {
-            maxSize = aksessConfiguration.getInt("upload.maxsize", maxSize);
-        } catch (ConfigurationException e) {
-            // Finner ikke config fil etc
-        }
+        int maxSize = aksessConfiguration.getInt("upload.maxsize", 0x4000000);
 
         multipartResolver.setMaxUploadSize(maxSize);
 

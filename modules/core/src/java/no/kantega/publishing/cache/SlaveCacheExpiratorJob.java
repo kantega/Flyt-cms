@@ -2,7 +2,6 @@ package no.kantega.publishing.cache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
@@ -40,12 +39,8 @@ public class SlaveCacheExpiratorJob {
             log.error("This job should not run on server type " + Aksess.getServerType());
             return;
         }
-        try {
-            if(!Aksess.getConfiguration().getBoolean("caching.enabled", false)) {
-                return;
-            }
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
+        if(!Aksess.getConfiguration().getBoolean("caching.enabled", false)) {
+            return;
         }
 
         final Ehcache contentCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentCache.name());

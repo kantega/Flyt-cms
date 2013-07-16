@@ -28,11 +28,7 @@ public class LegacySystemConfiguration implements SystemConfiguration {
     private Configuration configuration;
 
     public LegacySystemConfiguration() {
-        try {
-            this.configuration = Aksess.getConfiguration();
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        this.configuration = Aksess.getConfiguration();
     }
 
     public String getString(String name) {

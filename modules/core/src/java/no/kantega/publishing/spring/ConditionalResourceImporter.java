@@ -1,6 +1,5 @@
 package no.kantega.publishing.spring;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,33 +26,26 @@ public class ConditionalResourceImporter implements BeanFactoryPostProcessor, Re
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
 
-        try {
+        if(propertyName == null) {
+            throw new InvalidPropertyException(ConditionalResourceImporter.class, "propertyName", "propertyName cannot be null");
+        }
 
-            if(propertyName == null) {
-                throw new InvalidPropertyException(ConditionalResourceImporter.class, "propertyName", "propertyName cannot be null");
-            }
+        if(resourceLocation == null) {
+            throw new InvalidPropertyException(ConditionalResourceImporter.class, "resourceLocation", "resourceLocation cannot be null");
+        }
 
-            if(resourceLocation == null) {
-                throw new InvalidPropertyException(ConditionalResourceImporter.class, "resourceLocation", "resourceLocation cannot be null");
-            }
+        String actualPropertyValue = Aksess.getConfiguration().getString(propertyName);
 
-            String actualPropertyValue = Aksess.getConfiguration().getString(propertyName);
-            
-            if ((actualPropertyValue == null && propertyValue == null) || propertyValue != null && propertyValue.equals(actualPropertyValue)) {
-                log.info("Loading resources from " + resourceLocation);
+        if ((actualPropertyValue == null && propertyValue == null) || propertyValue != null && propertyValue.equals(actualPropertyValue)) {
+            log.info("Loading resources from " + resourceLocation);
 
-                BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
+            BeanDefinitionRegistry registry = (BeanDefinitionRegistry) beanFactory;
 
-                XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
+            XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
 
-                reader.loadBeanDefinitions(resourceLoader.getResource(resourceLocation));
-            } else {
-                log.info("Skipped loading resources from " + resourceLocation);
-            }
-
-
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
+            reader.loadBeanDefinitions(resourceLoader.getResource(resourceLocation));
+        } else {
+            log.info("Skipped loading resources from " + resourceLocation);
         }
 
     }

@@ -55,9 +55,7 @@ public class ContentEmailAlertListener implements ContentAlertListener {
             log.debug( "Sender varsling til:" + recipient);
 
             MailSender.send(mailFrom, recipient, mailSubject, mailTemplate, param);
-        } catch (SystemException e) {
-            log.error("", e);
-        } catch (ConfigurationException e) {
+        } catch (SystemException | ConfigurationException e) {
             log.error("", e);
         }
     }
