@@ -373,7 +373,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and LastModified > ? order by contentversion.LastModified desc");
             st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setString(2, user.getId());
-            st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()-(long)1000*60*60*24*90));
+            st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()- 1000L *60*60*24*90));
             rs = st.executeQuery();
             int i = 0;
             prevContentId = -1;
@@ -549,7 +549,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
 
         Connection c = null;
-        Content oldContent = null ;
 
         try {
             c = dbConnectionFactory.getConnection();
@@ -563,6 +562,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             addContentTransactionLock(content.getId(), c);
 
             // Get old version if exists
+            Content oldContent = null;
             if (!content.isNew()) {
                 ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
                 oldContent = getContent(oldCid, true);
@@ -571,7 +571,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             boolean isNew = content.isNew();
             boolean newVersionIsActive = false;
 
-            if (content.isNew()) {
+            if (isNew) {
                 // New page, always active
                 newVersionIsActive = true;
             }

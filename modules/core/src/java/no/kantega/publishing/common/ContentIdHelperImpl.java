@@ -181,7 +181,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         }
 
         if (url.indexOf('#') > 0) {
-            url = url.substring(0, url.indexOf("#"));
+            url = url.substring(0, url.indexOf('#'));
         }
 
         url = getPath(url);
@@ -472,7 +472,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             int siteIdPos = url.indexOf("siteId=");
             if (siteIdPos != -1) {
                 String siteIdStr = url.substring(siteIdPos + "siteId=".length(), url.length());
-                int siteIdEndPos = siteIdStr.indexOf("&");
+                int siteIdEndPos = siteIdStr.indexOf('&');
                 if (siteIdEndPos != -1) {
                     siteIdStr = siteIdStr.substring(0, siteIdEndPos);
                 }
@@ -495,7 +495,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                     String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
                         adjustedUrl = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
-                        if(adjustedUrl.equals("")) adjustedUrl = "/";
+                        if(adjustedUrl.isEmpty()) adjustedUrl = "/";
                         siteId = s.getId();
                         break;
                     }
@@ -534,9 +534,9 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
             contentIdentifier.setLanguage(ServletRequestUtils.getIntParameter(request, "language", Language.NORWEGIAN_BO));
 
-        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf("/") == 0) {
+        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf('/') == 0) {
             try {
-                int slashIndex = path.indexOf("/", 1);
+                int slashIndex = path.indexOf('/', 1);
                 if (slashIndex != -1) {
                     contentIdentifier = ContentIdentifier.fromAssociationId(Integer.parseInt(path.substring(1, slashIndex)));
                 }
