@@ -18,7 +18,6 @@ package no.kantega.publishing.common.cache;
 
 import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
@@ -94,36 +93,32 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
 
         Configuration c;
-        try {
-            c = Aksess.getConfiguration();
-            // Get hostnames from database and store in hashmap
+        c = Aksess.getConfiguration();
+        // Get hostnames from database and store in hashmap
 
-            hostnames = new HashMap<>();
-            for (Site site : sites) {
-                // Get hostnames from database
-                List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
-                site.setHostnames(siteHostnames);
+        hostnames = new HashMap<>();
+        for (Site site : sites) {
+            // Get hostnames from database
+            List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
+            site.setHostnames(siteHostnames);
 
-                // Insert into hashmap
-                for (String host : siteHostnames) {
-                    hostnames.put(host, site);
-                }
-
-                // Check if site is disabled
-                String alias = site.getAlias().toLowerCase();
-                alias = alias.replace('/', '.');
-
-                boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
-                if (isDisabled) {
-                    log.info( "Slår av site:" + site.getName());
-                }
-                site.setDisabled(isDisabled);
-
-                String scheme = c.getString("site" + alias + "scheme", null);
-                site.setScheme(scheme);
+            // Insert into hashmap
+            for (String host : siteHostnames) {
+                hostnames.put(host, site);
             }
-        } catch (ConfigurationException e) {
-            throw new SystemException("Configuration error", e);
+
+            // Check if site is disabled
+            String alias = site.getAlias().toLowerCase();
+            alias = alias.replace('/', '.');
+
+            boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
+            if (isDisabled) {
+                log.info( "Disabling site:" + site.getName());
+            }
+            site.setDisabled(isDisabled);
+
+            String scheme = c.getString("site" + alias + "scheme", null);
+            site.setScheme(scheme);
         }
 
     }
@@ -145,8 +140,8 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
     public static DefaultSiteCache getInstance() {
         ApplicationContext context = RootContext.getInstance();
-        Map beans = context.getBeansOfType(DefaultSiteCache.class);
-        return (DefaultSiteCache) beans.values().iterator().next();
+        Map<String, DefaultSiteCache> beans = context.getBeansOfType(DefaultSiteCache.class);
+        return beans.values().iterator().next();
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
