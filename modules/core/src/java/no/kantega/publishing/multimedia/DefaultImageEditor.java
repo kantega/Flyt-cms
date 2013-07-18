@@ -171,7 +171,7 @@ public class DefaultImageEditor implements ImageEditor {
     }
 
     /**
-     * Get dimensions of resized image with correct aspect ratio
+     * Get dimentions of resized image with correct aspect ratio
      * @param originalWidth - original width of image
      * @param originalHeight  - original height of image
      * @param targetWidth - width of resized image
@@ -295,6 +295,9 @@ public class DefaultImageEditor implements ImageEditor {
                 break;
             case CENTERED:
                 croppedImage = cropImage(image, (image.getWidth() - cropWidth) / 2, (image.getHeight() - cropHeight) / 2, cropWidth, cropHeight);
+                break;
+            case TOPCENTER:
+                croppedImage = cropImage(image, (image.getWidth() - cropWidth) / 2, 0, cropWidth, cropHeight);
                 break;
             default:
                 if (cropWidth < image.getWidth() || cropHeight < image.getHeight()){
