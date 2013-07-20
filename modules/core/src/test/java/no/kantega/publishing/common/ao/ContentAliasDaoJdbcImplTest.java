@@ -9,7 +9,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,7 +21,6 @@ public class ContentAliasDaoJdbcImplTest {
     @Test
     public void shouldReturnAllAliases(){
         List<String> allAliases = dao.getAllAliases();
-        assertEquals(1, allAliases.size());
         assertTrue("Did not contain /alias/", allAliases.contains("/alias/"));
     }
 }
