@@ -17,20 +17,24 @@
 package no.kantega.publishing.security.service;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.security.ao.PermissionsAO;
-import no.kantega.publishing.security.data.*;
+import no.kantega.publishing.security.data.Permission;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.SecurityIdentifier;
+import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
+import no.kantega.publishing.spring.RootContext;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class SecurityService {
+    private static PermissionAO permissionAO;
 
     /**
      * Check whether a user with the given role is authorized to do the given privilege on the given object.
@@ -42,9 +46,9 @@ public class SecurityService {
             Content c = (Content)object;
             object = c.getAssociation();
         }
-
-        List<Permission> permissions = PermissionsCache.getPermissions(object);
-        if (permissions == null || permissions.size() == 0) {
+        setPermissionAOIfNotSet();
+        List<Permission> permissions = permissionAO.getPermissions(object);
+        if (permissions.isEmpty()) {
             // Ingen rettigheter definert for dette privilegium, ok
             return true;
         }
@@ -80,9 +84,9 @@ public class SecurityService {
             Content c = (Content)object;
             object = c.getAssociation();
         }
-
-        List<Permission> permissions = PermissionsCache.getPermissions(object);
-        if (permissions == null || permissions.size() == 0) {
+        setPermissionAOIfNotSet();
+        List<Permission> permissions = permissionAO.getPermissions(object);
+        if (permissions.isEmpty()) {
             // Ingen rettigheter definert for dette privilegium, ok
             return true;
         }
@@ -111,8 +115,9 @@ public class SecurityService {
         String ownerPerson = object.getOwnerPerson();
         if ("".equals(ownerPerson)) ownerPerson = null;
 
-        List<Permission> permissions = PermissionsCache.getPermissions(object.getAssociation());
-        if (permissions == null || permissions.size() == 0) {
+        setPermissionAOIfNotSet();
+        List<Permission> permissions = permissionAO.getPermissions(object.getAssociation());
+        if (permissions.isEmpty()) {
             // Ingen rettigheter definert for dette privilegium, ok
             return true;
         }
@@ -226,18 +231,7 @@ public class SecurityService {
             object = c.getAssociation();
         }
 
-        List<Permission> permissions = new ArrayList<Permission>();
-
-        // Klone liste i tilfelle den blir endret
-        List<Permission> tmp = PermissionsCache.getPermissions(object);
-        if (tmp != null) {
-            for (Permission p : tmp) {
-                Permission newP = new Permission(p);
-                permissions.add(newP);
-            }
-        }
-
-        return permissions;
+        return permissionAO.getPermissions(object);
     }
 
 
@@ -250,19 +244,14 @@ public class SecurityService {
             Content c = (Content)object;
             object = c.getAssociation();
         }
-
-        PermissionsAO.setPermissions(object, permissions);
-        // Oppdater cache med nye rettigheter
-        PermissionsCache.reloadCache();
+        setPermissionAOIfNotSet();
+        permissionAO.setPermissions(object, permissions);
     }
 
-    /**
-     * @return Overview of all Permissions for the given ObjectType
-     * @see no.kantega.publishing.common.data.enums.ObjectType
-     * @throws SystemException if loading of the privilegies fails.
-     */
-    public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
-        return PermissionsAO.getPermissionsOverview(objectType);
+    private static void setPermissionAOIfNotSet(){
+        if(permissionAO == null){
+            permissionAO = RootContext.getInstance().getBean(PermissionAO.class);
+        }
     }
 }
 

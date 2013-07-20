@@ -22,3 +22,5 @@ INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailIn
 ALTER TABLE Content ALTER ContentId restart with 11;
 ALTER TABLE ContentVersion ALTER ContentVersionId restart with 11;
 ALTER TABLE Associations ALTER UniqueId restart with 11;
+INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,3,1,'Role','innholdsprodusent',1);
+INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,1,3,'User','ZFG',1);

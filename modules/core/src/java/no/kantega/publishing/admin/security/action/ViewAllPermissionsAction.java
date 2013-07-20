@@ -17,8 +17,9 @@
 package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.data.enums.ObjectType;
-import no.kantega.publishing.security.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -28,21 +29,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
 public class ViewAllPermissionsAction extends AbstractController {
     private String view;
 
+    @Autowired
+    private PermissionAO permissionAO;
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         List permissionsOverview = null;
 
         RequestParameters param = new RequestParameters(request, "utf-8");
         int objectType = param.getInt("objectType");
         if (objectType != -1) {
-            permissionsOverview = SecurityService.getPermissionsOverview(objectType);
+            permissionsOverview = permissionAO.getPermissionsOverview(objectType);
             if (objectType == ObjectType.ASSOCIATION) {
                 model.put("associationSelected", "selected");
             } else if (objectType == ObjectType.MULTIMEDIA) {
