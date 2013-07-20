@@ -205,10 +205,10 @@ public class TemplateConfigurationValidator {
 
     private <PO extends PublicIdObject> Collection<PO> getDuplicates(List<PO> objects) {
         Set<PO> duplicates = new LinkedHashSet<>();
-        Set<PO> uniques = new HashSet<>();
+        Set<Integer> uniques = new HashSet<>();
 
         for(PO t : objects) {
-            if(!uniques.add(t)) {
+            if(!uniques.add(t.getId())) {
                 duplicates.add(t);
             }
         }
