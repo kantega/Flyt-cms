@@ -1,6 +1,6 @@
 package no.kantega.publishing.spring;
 
-import no.kantega.publishing.client.ContentRequestHandler;
+import no.kantega.publishing.client.AliasRequestHandler;
 import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -10,12 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 public class AksessAliasHandlerMappingAdapter implements HandlerAdapter {
     @Override
     public boolean supports(Object handler) {
-        return handler instanceof ContentRequestHandler;
+        return handler instanceof AliasRequestHandler;
     }
 
     @Override
     public ModelAndView handle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        return ((ContentRequestHandler)handler).handleAlias(request, response);
+        return ((AliasRequestHandler)handler).handleAlias(request, response);
     }
 
     @Override

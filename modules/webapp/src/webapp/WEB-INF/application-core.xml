@@ -27,6 +27,8 @@
 
     <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl" scope="session"/>
 
+    <bean id="aliasValidator" class="no.kantega.publishing.admin.content.util.ContentAliasValidator" />
+
     <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
 
     <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
@@ -39,7 +41,6 @@
 
     <bean id="aksessTemplateConfigurationValidator" class="no.kantega.publishing.common.util.templates.TemplateConfigurationValidator"/>
 
-    <bean id="aliasValidator" class="no.kantega.publishing.admin.content.util.ContentAliasValidator" />
 
     <bean id="aksessContentTemplateReader" class="no.kantega.publishing.common.util.templates.ContentTemplateReader">
         <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
