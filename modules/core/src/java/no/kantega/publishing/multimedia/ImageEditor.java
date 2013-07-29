@@ -12,7 +12,7 @@ import java.io.IOException;
 public interface ImageEditor {
     public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException;
 
-        /**
+     /**
      * Legcy method used in crop and resize batch operations from the admin GUI
      * @param multimedia
      * @param targetWidth
@@ -27,6 +27,18 @@ public interface ImageEditor {
      */
     @Deprecated
     public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropX, int cropY, int cropWidth, int cropHeight) throws IOException, InvalidImageFormatException;
+
     public MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight);
+
     public Multimedia resizeMultimedia(Multimedia mm, ImageResizeParameters resizeParameters)  throws IOException, InvalidImageFormatException;
+
+    /**
+     * Rotates a multimedia object cointaining an image.
+     * @param multimedia
+     * @param degrees
+     * @return
+     * @throws InvalidImageFormatException
+     * @throws IOException
+     */
+    public Multimedia rotateMultimedia(Multimedia mm, int degrees) throws IOException, InvalidImageFormatException;
 }
