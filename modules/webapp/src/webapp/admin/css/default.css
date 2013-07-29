@@ -441,6 +441,15 @@ table.fullWidth {
 #ToolsMenu .button .delete {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 10px -795px;
 }
+
+#ToolsMenu .button .rotateccw{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -155px -770px;
+}
+
+#ToolsMenu .button .rotatecw{
+    background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll -155px -1970px;
+}
+
 #ToolsMenu .button span {
     display: inline-block;
     padding-left: 30px;
