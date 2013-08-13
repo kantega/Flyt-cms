@@ -129,15 +129,7 @@ function formEditElement(element) {
     });
 
     $("#form_SaveFormElement").unbind("click").click(function() {
-        var form_FieldName = $("#form_FieldName");
-        var fieldName = form_FieldName.val();
-        if (fieldName == "") {
-            form_FieldName.focus();
-        } else {
-            formSaveElement();
-            $("#EditFormElement").hide();
-
-        }
+        formSaveElement();
     });
 
     handler = formGetElementTypeHandler(type);
@@ -171,7 +163,6 @@ function formEditText(element) {
 
     $("#form_SaveFormText").unbind("click").click(function() {
         formSaveText();
-        $("#EditFormText").hide();
     });
 
     text = $("p", element).html();
@@ -396,15 +387,40 @@ function formSaveElement() {
     var fieldName = $("#form_FieldName").val();
     fieldName = formElementStripUnlegalChars(fieldName);
 
+
+    if (fieldName == "") {
+        $("#form_FieldName").focus();
+        return;
+    }
+    var childNo = $("#form_ChildNo").val();
+
+    var duplicateExists = false;
+    $("#form_FormElements .formElement").each(function(index) {
+        var $label = $("div.heading label", this);
+        if (fieldName == $label.text()) {
+            if (index != childNo) {
+                duplicateExists = true;
+            }
+        }
+    });
+
+    if (duplicateExists) {
+        $("#form_FieldName").focus();
+        alert(properties.formeditor.labels.duplicateName);
+        return;
+    }
+
     var type = $("#form_FieldType").val();
     var helpText = $("#form_HelpText").val();
 
-    var childNo = $("#form_ChildNo").val();
+
 
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
     formRemoveEditor();
     formBindSort();
+
+    $("#EditFormElement").hide();
 }
 
 function formSaveText() {
@@ -416,6 +432,8 @@ function formSaveText() {
 
     formRemoveEditor();
     formBindSort();
+
+    $("#EditFormText").hide();
 }
 
 function formSaveSection() {
@@ -432,30 +450,30 @@ function formBindSort() {
     var numberOfSections = $("div.formSection").size();
     if(numberOfSections > 0){
         $('#form_FormElements').sortable(
-        {
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      ' div.formSection',
-            handle:     'h2'
-        });
+            {
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      ' div.formSection',
+                handle:     'h2'
+            });
 
         $('#form_FormElements .formSection').sortable(
-        {
-            connectWith: '.formSection',
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      'div.formElement, div.formText'
-        });
+            {
+                connectWith: '.formSection',
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      'div.formElement, div.formText'
+            });
     }else{
         $('#form_FormElements').sortable(
-        {
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      'div.formElement, div.formText'
-        });
+            {
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      'div.formElement, div.formText'
+            });
     }
 }
 
@@ -498,58 +516,58 @@ function formBindHover() {
     $("#form_FormElements .formElement, #form_FormElements .formText, #form_FormElements .formSection h2").unbind("hover");
 
     $("#form_FormElements .formElement, #form_FormElements .formText").hover(
-            function () {
-                if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span><span class="delete">' + properties.formeditor.labels.buttonDelete + '</span></span>');
+        function () {
+            if ($(".formElementButtons", this).length == 0) {
+                $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span><span class="delete">' + properties.formeditor.labels.buttonDelete + '</span></span>');
 
-                    $("#form_FormElements .formElement > .formElementButtons .edit").unbind("click");
-                    $("#form_FormElements .formElement > .formElementButtons .delete").unbind("click");
+                $("#form_FormElements .formElement > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formElement > .formElementButtons .delete").unbind("click");
 
-                    $("#form_FormElements .formElement > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formElement");
-                        $(".formElementButtons", elm).remove();
-                        formEditElement(elm);
-                    });
-                    $("#form_FormElements .formElement > .formElementButtons .delete").click(function() {
-                        formDeleteElement($(this).closest("div.formElement"));
-                    });
+                $("#form_FormElements .formElement > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formElement");
+                    $(".formElementButtons", elm).remove();
+                    formEditElement(elm);
+                });
+                $("#form_FormElements .formElement > .formElementButtons .delete").click(function() {
+                    formDeleteElement($(this).closest("div.formElement"));
+                });
 
-                    $("#form_FormElements .formText > .formElementButtons .edit").unbind("click");
-                    $("#form_FormElements .formText > .formElementButtons .delete").unbind("click");
+                $("#form_FormElements .formText > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formText > .formElementButtons .delete").unbind("click");
 
-                    $("#form_FormElements .formText > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formText");
-                        $(".formElementButtons", elm).remove();
-                        formEditText(elm);
-                    });
-                    $("#form_FormElements .formText > .formElementButtons .delete").click(function() {
-                        formDeleteElement($(this).closest("div.formText"));
-                    });
-                }
-            },
-            function () {
-                $(".formElementButtons", this).remove();
+                $("#form_FormElements .formText > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formText");
+                    $(".formElementButtons", elm).remove();
+                    formEditText(elm);
+                });
+                $("#form_FormElements .formText > .formElementButtons .delete").click(function() {
+                    formDeleteElement($(this).closest("div.formText"));
+                });
             }
-            );
+        },
+        function () {
+            $(".formElementButtons", this).remove();
+        }
+    );
 
     $("#form_FormElements .formSection h2").hover(
-            function () {
-                if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span></span>');
+        function () {
+            if ($(".formElementButtons", this).length == 0) {
+                $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span></span>');
 
-                    $("#form_FormElements .formSection h2 > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formSection h2 > .formElementButtons .edit").unbind("click");
 
-                    $("#form_FormElements .formSection h2 > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formSection");
-                        $(".formElementButtons", elm).remove();
-                        formEditSection(elm);
-                    });
-                }
-            },
-            function () {
-                $(".formElementButtons", this).remove();
+                $("#form_FormElements .formSection h2 > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formSection");
+                    $(".formElementButtons", elm).remove();
+                    formEditSection(elm);
+                });
             }
-            );
+        },
+        function () {
+            $(".formElementButtons", this).remove();
+        }
+    );
 }
 
 var formNextId = 0;
