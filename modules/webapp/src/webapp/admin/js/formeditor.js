@@ -19,6 +19,7 @@
  * * formeditor.labels.buttonEdit
  * * formeditor.labels.buttonDelete
  * * formeditor.labels.deleteformdataConfirm
+ * * formeditor.labels.duplicateName
  * * formeditor.labels.typeText
  * * formeditor.labels.typeTextarea
  * * formeditor.labels.typeCheckbox
@@ -128,14 +129,7 @@ function formEditElement(element) {
 
     $("#form_SaveFormElement").unbind("click");
     $("#form_SaveFormElement").click(function() {
-        var fieldName = $("#form_FieldName").val();
-        if (fieldName == "") {
-            $("#form_FieldName").focus();
-        } else {
-            formSaveElement();
-            $("#EditFormElement").hide();
-
-        }
+        formSaveElement();
     });
 
     handler = formGetElementTypeHandler(type);
@@ -392,10 +386,33 @@ function formSaveElement() {
     var fieldName = $("#form_FieldName").val();
     fieldName = formElementStripUnlegalChars(fieldName);
 
+
+    if (fieldName == "") {
+        $("#form_FieldName").focus();
+        return;
+    }
+    var childNo = $("#form_ChildNo").val();
+
+    var duplicateExists = false;
+    $("#form_FormElements .formElement").each(function(index) {
+        var $label = $("div.heading label", this);
+        if (fieldName == $label.text()) {
+            if (index != childNo) {
+                duplicateExists = true;
+            }
+        }
+    });
+
+    if (duplicateExists) {
+        $("#form_FieldName").focus();
+        alert(properties.formeditor.labels.duplicateName);
+        return;
+    }
+
     var type = $("#form_FieldType").val();
     var helpText = $("#form_HelpText").val();
 
-    var childNo = $("#form_ChildNo").val();
+
 
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
