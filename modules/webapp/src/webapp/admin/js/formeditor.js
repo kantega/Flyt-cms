@@ -386,7 +386,6 @@ function formSaveElement() {
     var fieldName = $("#form_FieldName").val();
     fieldName = formElementStripUnlegalChars(fieldName);
 
-
     if (fieldName == "") {
         $("#form_FieldName").focus();
         return;
@@ -412,12 +411,12 @@ function formSaveElement() {
     var type = $("#form_FieldType").val();
     var helpText = $("#form_HelpText").val();
 
-
-
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
     formRemoveEditor();
     formBindSort();
+
+    $("#EditFormElement").hide();
 }
 
 function formSaveText() {
