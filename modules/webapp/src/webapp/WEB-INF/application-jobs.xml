@@ -115,17 +115,17 @@
 
     <bean id="mailSubscriptionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="mailSubscriptionJob"/>
-        <property name="cronExpression" value="50 0/3 * * * ?"/>
+        <property name="cronExpression" value="${mail.subscription.trigger.immediate}"/>
     </bean>
 
     <bean id="mailSubscriptionTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="mailSubscriptionJobDaily"/>
-        <property name="cronExpression" value="0 0 15 * * ?"/>
+        <property name="cronExpression" value="${mail.subscription.trigger.daily}"/>
     </bean>
 
     <bean id="mailSubscriptionTriggerWeekly" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="mailSubscriptionJobWeekly"/>
-        <property name="cronExpression" value="0 0 15 ? * FRI"/>
+        <property name="cronExpression" value="${mail.subscription.trigger.weekly}"/>
     </bean>
 
     <bean name="systemStatusJob" class="org.springframework.scheduling.quartz.JobDetailBean">
