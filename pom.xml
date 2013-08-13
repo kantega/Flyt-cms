@@ -24,12 +24,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.4.26-SNAPSHOT</version>
+    <version>7.4.26</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-7.4.x/</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/openaksess-7.4.x/</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.4.26</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.4.26</developerConnection>
     </scm>
 
     <pluginRepositories>
