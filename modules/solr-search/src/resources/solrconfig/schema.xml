@@ -51,7 +51,7 @@
             </analyzer>
         </fieldType>
 
-        <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField" autoGeneratePhraseQueries="true"/>
+        <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField" />
         <fieldtype name="tlf" stored="true" indexed="true" multiValued="true" class="solr.TextField">
             <analyzer type="index">
                 <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s)" replacement=""/>
@@ -79,15 +79,15 @@
         <field name="altTitle_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
-        <field name="contentTemplateId" type="int" indexed="true" stored="false" docValues="true"/>
+        <field name="contentTemplateId" type="int" indexed="true" stored="false" />
         <field name="contentTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
-        <field name="metaDataTemplateId" type="int" indexed="true" stored="false" docValues="true"/>
-        <field name="displayTemplateId" type="int" indexed="true" stored="false" docValues="true"/>
+        <field name="metaDataTemplateId" type="int" indexed="true" stored="false" />
+        <field name="displayTemplateId" type="int" indexed="true" stored="false" />
         <field name="displayTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
-        <field name="documentTypeId" type="int" indexed="true" stored="false" docValues="true"/>
+        <field name="documentTypeId" type="int" indexed="true" stored="false" />
         <field name="documentTypeName" type="string" indexed="true" stored="false" docValues="true"/>
-        <field name="groupId" type="int" indexed="true" stored="true" docValues="true"/>
-        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false" docValues="true"/>
+        <field name="groupId" type="int" indexed="true" stored="true" />
+        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false" />
         <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>
         <field name="alias" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="createDate" type="date" indexed="true" stored="true"/>
