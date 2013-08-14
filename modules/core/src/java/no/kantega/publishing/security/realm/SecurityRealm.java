@@ -45,7 +45,7 @@ public class SecurityRealm {
     PasswordManager passwordManager;
 
     public List<User> searchUsers(String name) throws SystemException {
-        List<User> results = new ArrayList<User>();
+        List<User> results = new ArrayList<>();
         try {
             SearchResult<Profile> result = profileManager.searchProfiles(name);
             if (result != null) {
@@ -65,7 +65,7 @@ public class SecurityRealm {
 
 
     public List<Role> getAllRoles() throws SystemException {
-        List<Role> results = new ArrayList<Role>();
+        List<Role> results = new ArrayList<>();
 
         Role everyone = new Role();
         everyone.setId(Aksess.getEveryoneRole());
@@ -128,11 +128,10 @@ public class SecurityRealm {
     public List<Role> lookupRolesForUser(String userid) throws SystemException {
         List<Role> roles = new ArrayList<Role>();
         try {
-            Iterator it = roleManager.getRolesForUser(SecurityHelper.createApiIdentity(userid));
+            Iterator<no.kantega.security.api.role.Role> it = roleManager.getRolesForUser(SecurityHelper.createApiIdentity(userid));
             if (it != null) {
                 while (it.hasNext()) {
-                    no.kantega.security.api.role.Role role =  (no.kantega.security.api.role.Role)it.next();
-                    roles.add(SecurityHelper.createAksessRole(role));
+                    roles.add(SecurityHelper.createAksessRole(it.next()));
                 }
             }
 

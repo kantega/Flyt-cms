@@ -133,7 +133,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
         });
         int size = defaultSites.size();
         if(size != 1){
-            throw new IllegalStateException(size + " default sites exists, only 1 permitted");
+            throw new IllegalStateException(size + " default sites exists, only 1 permitted. Add isDefault=\"true\" to one site in aksess-templateconfig.xml");
         }
         return defaultSites.iterator().next();
     }
