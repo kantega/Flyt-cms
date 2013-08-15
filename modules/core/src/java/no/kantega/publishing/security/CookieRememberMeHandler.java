@@ -3,6 +3,7 @@ package no.kantega.publishing.security;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.security.RememberMeHandler;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
 import org.springframework.beans.factory.InitializingBean;
@@ -38,7 +39,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
         hashKey = configuration.getString("security.login.rememberme.key");
         algorithm = configuration.getString("security.login.rememberme.algorithm", "SHA-256");
         useSsl = configuration.getBoolean("security.login.usessl", false);
-        contextPath = configuration.getString("location.contextpath", "/");
+        contextPath = Aksess.getContextPath();
     }
 
     @Override

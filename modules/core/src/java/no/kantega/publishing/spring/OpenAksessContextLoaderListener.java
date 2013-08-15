@@ -99,9 +99,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     private void checkThatRequiredPropertiesPresentAndValid(Properties properties) {
         checkDatabaseConfigured(properties);
-        if(!properties.containsKey("location.contextpath")) {
-            throw new IllegalStateException("Required configuration property 'location.contextpath' not found.");
-        }
     }
 
     private void checkDatabaseConfigured(Properties properties) {
