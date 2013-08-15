@@ -416,8 +416,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 List<Map<String,Object>> ids = getJdbcTemplate().queryForList("SELECT AssociationId, SiteId FROM associations WHERE ContentId = ? AND Type = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", contentId, AssociationType.DEFAULT_POSTING_FOR_SITE);
 
                 for(Map<String, Object> id : ids) {
-                    int tmp = (int) id.get("AssociationId");
-                    int tmpSiteId = (int) id.get("SiteId");
+                    int tmp = ((Number) id.get("AssociationId")).intValue();
+                    int tmpSiteId = ((Number) id.get("SiteId")).intValue();
                     if (associationId == -1 || tmpSiteId == siteId) {
                         associationId = tmp;
                     }
