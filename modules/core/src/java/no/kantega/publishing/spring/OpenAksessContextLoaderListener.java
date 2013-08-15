@@ -196,6 +196,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
                 wac.getEnvironment().setActiveProfiles("useCaching");
             }
 
+            Aksess.setContextPath(servletContext.getContextPath());
             // Set and load configuration on these classes since they are not DI-based (hackish..)
             Aksess.setConfiguration(configuration);
             Aksess.loadConfiguration();
