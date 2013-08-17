@@ -30,6 +30,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
@@ -296,8 +297,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public String getTitleByAssociationId(int associationId) {
-        return getJdbcTemplate().queryForObject("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
+    public String getTitleByAssociationId(int associationId) throws ContentNotFoundException{
+        try {
+            return getJdbcTemplate().queryForObject("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
+        } catch (EmptyResultDataAccessException e) {
+            throw new ContentNotFoundException("Content with associationId " + associationId);
+        }
     }
 
     @Override
