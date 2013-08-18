@@ -434,7 +434,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         int contentId = -1;
 
         try {
-            contentId = getJdbcTemplate().queryForInt("select ContentId from associations where AssociationId = ?", associationId);
+            contentId = getJdbcTemplate().queryForInt("select distinct ContentId from associations where AssociationId = ?", associationId);
         } catch (EmptyResultDataAccessException e) {
             log.error("Could not fint contentid for associationid " + associationId);
         }

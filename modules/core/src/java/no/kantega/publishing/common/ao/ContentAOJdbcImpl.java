@@ -298,10 +298,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public String getTitleByAssociationId(int associationId) throws ContentNotFoundException{
-        try {
-            return getJdbcTemplate().queryForObject("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
-        } catch (EmptyResultDataAccessException e) {
+        // When content it cross published the query result is the same title duplicated.
+        List<String> titles = getJdbcTemplate().queryForList("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and associations.IsDeleted = 0", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
+        if (titles.isEmpty()) {
             throw new ContentNotFoundException("Content with associationId " + associationId);
+        } else {
+            return titles.get(0);
         }
     }
 
@@ -454,7 +456,16 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
-        doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
+        if (sort != null) {
+            contentQuery.setSortOrder(sort);
+        }
+
+        // Query will be faster if we don't get all records
+        contentQuery.setMaxRecords(maxElements);
+
+        ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
+
+        doForEachInContentList(queryWithParameters, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
                 contentMap.put(content.getVersionId(), content);
@@ -465,8 +476,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-            String attrquery = "select * from contentattributes where ContentVersionId in (:cvids) order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery,Collections.singletonMap("cvids", contentMap.keySet()), new RowCallbackHandler() {
+
+            String attrquery = "select * from contentattributes where ContentVersionId in (" + queryWithParameters.getAttributesSql() + ") order by ContentVersionId";
+            getNamedParameterJdbcTemplate().query(attrquery,queryWithParameters.getParams(), new RowCallbackHandler() {
                 @Override
                 public void processRow(ResultSet rs) throws SQLException {
                     int cvid = rs.getInt("ContentVersionId");
@@ -523,7 +535,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         contentQuery.setMaxRecords(maxElements);
 
         ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
+        if (queryWithParameters != null) { // null is returned when querying for attributes, and attribute-value-pair does not exists
+            doForEachInContentList(queryWithParameters, handler);
+        }
+    }
 
+    private void doForEachInContentList(final ContentQuery.QueryWithParameters queryWithParameters, final ContentHandler handler) {
+        final int maxElements = queryWithParameters.getMaxElements();
         getNamedParameterJdbcTemplate().query(queryWithParameters.getQuery(), queryWithParameters.getParams(), new RowCallbackHandler() {
             private int count = 0;
             private ContentRowMapper contentRowMapper = new ContentRowMapper(true);
@@ -531,7 +549,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             @Override
             public void processRow(ResultSet rs) throws SQLException {
                 int contentId = rs.getInt("ContentId");
-                if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + contentQuery.getOffset())){
+                if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + queryWithParameters.getOffset())){
                     Content content = contentRowMapper.mapRow(rs, count++);
                     handler.handleContent(content);
                 }

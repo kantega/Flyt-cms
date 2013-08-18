@@ -59,7 +59,11 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
     @Override
     public Identity getRememberedIdentity(HttpServletRequest request) {
 
-        Cookie rememberMeCookie = getRememberMeCookie(request.getCookies());
+        Cookie[] cookies = request.getCookies();
+        Cookie rememberMeCookie = null;
+        if (cookies != null) {
+            rememberMeCookie = getRememberMeCookie(cookies);
+        }
 
         if (rememberMeCookie == null) {
             return null;

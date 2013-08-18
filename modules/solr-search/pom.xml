@@ -44,6 +44,10 @@
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
                 <!-- Not in Maven Central, and not in use in OA -->
                 <exclusion>
                     <groupId>org.restlet.jee</groupId>

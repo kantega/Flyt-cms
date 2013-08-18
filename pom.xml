@@ -222,7 +222,7 @@
             <plugin>
                 <groupId>org.kantega.openaksess</groupId>
                 <artifactId>generate-project-xml-maven-plugin</artifactId>
-                <version>1.3</version>
+                <version>1.4-SNAPSHOT</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>

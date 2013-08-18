@@ -19,6 +19,7 @@ package no.kantega.publishing.client;
 import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
@@ -99,7 +100,13 @@ public class AttachmentRequestHandler extends HttpServlet {
                 siteId = site.getId();
             }
 
-            Attachment attachment = cs.getAttachment(attachmentId, siteId);
+            Attachment attachment = null;
+            try {
+                 attachment = cs.getAttachment(attachmentId, siteId);
+            } catch (NotAuthorizedException e) {
+                response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                return;
+            }
             if (attachment == null) {
                 // Attachment not found
                 log.error( "Attachment not found. Attachment id requested: " + attachmentId + " on siteId: " + siteId);
