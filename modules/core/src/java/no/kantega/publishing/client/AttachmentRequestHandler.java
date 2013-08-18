@@ -140,7 +140,7 @@ public class AttachmentRequestHandler extends HttpServlet {
                 if (attachment.getSize() > 0) {
  	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
                 }
-                log.info("Sending attachment {}", attachmentId);
+                log.info("Sending attachment {}", attachment.getFilename());
                 cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
                 out.flush();
             } catch (Exception e) {
