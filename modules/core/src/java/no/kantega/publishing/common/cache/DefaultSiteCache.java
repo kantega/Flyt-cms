@@ -22,10 +22,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -125,6 +123,18 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
     @Override
     public no.kantega.publishing.api.model.Site getDefaultSite() {
+        no.kantega.publishing.api.model.Site defaultSite;
+        if (sites.size() > 1) {
+            defaultSite = determineDefaultSite();
+        } else if(sites.size() == 1){
+            defaultSite = sites.get(0);
+        } else {
+            throw new IllegalStateException("No sites configured in aksesstemplate-config.xml");
+        }
+        return defaultSite;
+    }
+
+    private Site determineDefaultSite() {
         Collection<Site> defaultSites = filter(sites, new Predicate<Site>() {
             @Override
             public boolean apply(Site o) {
@@ -132,16 +142,16 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             }
         });
         int size = defaultSites.size();
-        if(size != 1){
-            throw new IllegalStateException(size + " default sites exists, only 1 permitted. Add isDefault=\"true\" to one site in aksess-templateconfig.xml");
+        if(size > 1){
+            throw new IllegalStateException(size + " default sites exists, only 1 permitted. Add isDefault=\"true\" to only one site in aksess-templateconfig.xml");
         }
-        return defaultSites.iterator().next();
-    }
-
-    public static DefaultSiteCache getInstance() {
-        ApplicationContext context = RootContext.getInstance();
-        Map<String, DefaultSiteCache> beans = context.getBeansOfType(DefaultSiteCache.class);
-        return beans.values().iterator().next();
+        Site defaultSite;
+        if (size == 1) {
+            defaultSite = defaultSites.iterator().next();
+        } else {
+            defaultSite = sites.get(0);
+        }
+        return defaultSite;
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {
