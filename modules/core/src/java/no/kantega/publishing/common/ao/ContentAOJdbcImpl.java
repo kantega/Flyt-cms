@@ -52,6 +52,8 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
+import static org.apache.commons.lang3.StringUtils.join;
+
 /**
  *
  */
@@ -456,16 +458,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
-        if (sort != null) {
-            contentQuery.setSortOrder(sort);
-        }
-
-        // Query will be faster if we don't get all records
-        contentQuery.setMaxRecords(maxElements);
-
-        ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
-
-        doForEachInContentList(queryWithParameters, new ContentHandler() {
+        doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
                 contentMap.put(content.getVersionId(), content);
@@ -476,9 +469,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-
-            String attrquery = "select * from contentattributes where ContentVersionId in (" + queryWithParameters.getAttributesSql() + ") order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery,queryWithParameters.getParams(), new RowCallbackHandler() {
+            String attrquery = "select * from contentattributes where ContentVersionId in (" + join(contentMap.keySet(), ',') +") order by ContentVersionId";
+            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), new RowCallbackHandler() {
                 @Override
                 public void processRow(ResultSet rs) throws SQLException {
                     int cvid = rs.getInt("ContentVersionId");
@@ -488,7 +480,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                     }
                 }
             });
-
         }
 
         if (listSize > 0 && getTopics) {
@@ -535,26 +526,22 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         contentQuery.setMaxRecords(maxElements);
 
         ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
-        if (queryWithParameters != null) { // null is returned when querying for attributes, and attribute-value-pair does not exists
-            doForEachInContentList(queryWithParameters, handler);
-        }
-    }
 
-    private void doForEachInContentList(final ContentQuery.QueryWithParameters queryWithParameters, final ContentHandler handler) {
-        final int maxElements = queryWithParameters.getMaxElements();
-        getNamedParameterJdbcTemplate().query(queryWithParameters.getQuery(), queryWithParameters.getParams(), new RowCallbackHandler() {
+        if (queryWithParameters != null) { // null is returned when querying for attributes, and attribute-value-pair does not exists
+            getNamedParameterJdbcTemplate().query(queryWithParameters.getQuery(), queryWithParameters.getParams(), new RowCallbackHandler() {
             private int count = 0;
             private ContentRowMapper contentRowMapper = new ContentRowMapper(true);
             private Set<Integer> handledContentIds = new HashSet<>();
             @Override
             public void processRow(ResultSet rs) throws SQLException {
                 int contentId = rs.getInt("ContentId");
-                if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + queryWithParameters.getOffset())){
+                if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + contentQuery.getOffset())){
                     Content content = contentRowMapper.mapRow(rs, count++);
                     handler.handleContent(content);
                 }
             }
         });
+        }
     }
 
 

@@ -48,8 +48,6 @@ import static java.util.Arrays.asList;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
-    private final static String CONTENTQUERY_SELECT = " content.*, contentversion.*, associations.* from ";
-    private final static String CONTENTATTRIBUTES_SELECT = " contentversion.ContentVersionId from ";
 
     private ContentIdentifier associatedId = null;
     private AssociationCategory associationCategory = null;
@@ -122,7 +120,7 @@ public class ContentQuery {
             query.append("select");
         }
 
-        query.append(CONTENTQUERY_SELECT);
+        query.append(" content.*, contentversion.*, associations.* from ");
         query.append(StringUtils.join(joinTables, ','));
 
 
@@ -162,7 +160,7 @@ public class ContentQuery {
             parameters.put("contentlist", transform(contentList, cidToAssociationIdTransformer));
 
             if (excludedAssociationTypes == null) {
-                excludedAssociationTypes = Collections.singletonList(AssociationType.SHORTCUT);
+                excludedAssociationTypes = asList(AssociationType.SHORTCUT);
             }
         } else if (pathElementIds != null) {
             for (int i = 0; i < pathElementIds.size(); i++) {
@@ -425,21 +423,18 @@ public class ContentQuery {
             }
         }
 
-        String sort;
         if (useSqlSort) {
-            sort = sortOrder.getSqlSort();
+            query.append(sortOrder.getSqlSort());
         } else {
-            sort = " order by ContentVersionId ";
+            query.append(" order by ContentVersionId ");
         }
-        query.append(sort);
-
 
         if (maxRecords != -1 && useSqlSort && driver.contains("mysql") && joinTables.size() == 0) {
             // Only limit if not using join
             query.append(" limit ").append(maxRecords + offset);
         }
 
-        return new QueryWithParameters(query.toString(), parameters, maxRecords, offset, sort);
+        return new QueryWithParameters(query.toString(), parameters);
     }
 
     //  Setter methods only
@@ -739,12 +734,12 @@ public class ContentQuery {
         this.excludedAssociationTypes = excludedAssociationTypes;
     }
 
-private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
-    @Override
-    public Integer apply(ContentIdentifier input) {
-        return input.getAssociationId();
-    }
-};
+    private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
+        @Override
+        public Integer apply(ContentIdentifier input) {
+            return input.getAssociationId();
+        }
+    };
 
 
     /**
@@ -753,16 +748,10 @@ private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer 
     public static class QueryWithParameters {
         private final String query;
         private final Map<String, Object> params;
-        private final int maxElements;
-        private final int offset;
-        private final String sort;
 
-        QueryWithParameters(String query, Map<String, Object> params, int maxElements, int offset, String sort) {
+        QueryWithParameters(String query, Map<String, Object> params) {
             this.query = query;
             this.params = params;
-            this.maxElements = maxElements;
-            this.offset = offset;
-            this.sort = sort;
         }
 
         public String getQuery() {
@@ -771,18 +760,6 @@ private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer 
 
         public Map<String, Object> getParams() {
             return params;
-        }
-
-        public int getMaxElements() {
-            return maxElements;
-        }
-
-        public int getOffset() {
-            return offset;
-        }
-
-        public String getAttributesSql(){
-            return query.replace(CONTENTQUERY_SELECT, CONTENTATTRIBUTES_SELECT).replace(sort, "");
         }
 
         @Override
