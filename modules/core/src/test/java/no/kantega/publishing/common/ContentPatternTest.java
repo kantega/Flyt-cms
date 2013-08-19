@@ -15,9 +15,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class ContentPatternTest {
+    public static final String contentApPattern = "/content.ap" +
+            "((&|\\?)(" +
+            "(thisId=(?<thisId>\\d+))" +
+            "|(contentId=(?<contentId>\\d+))" +
+            "|(version=(?<version>\\d+))" +
+            "|(language=(?<language>\\d+))" +
+            "))+";
+
     @Test
     public void contentApPatternShouldExtractAllTheValues() throws ContentNotFoundException {
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.contentApPattern);
+        Pattern pattern = Pattern.compile(contentApPattern);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
         values.put("/content.ap?thisId=1", asList(new Pair<>("thisId", "1")));
         values.put("/content.ap?thisId=1&contentId=1", asList(new Pair<>("thisId", "1"), new Pair<>("contentId", "1")));
