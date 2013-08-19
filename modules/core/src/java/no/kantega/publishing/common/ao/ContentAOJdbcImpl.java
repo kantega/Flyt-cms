@@ -573,12 +573,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
             // Get old version if exists
             Content oldContent = null;
-            if (!content.isNew()) {
+            boolean isNew = content.isNew();
+            if (!isNew) {
                 ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
                 oldContent = getContent(oldCid, true);
             }
 
-            boolean isNew = content.isNew();
             boolean newVersionIsActive = false;
 
             if (isNew) {
@@ -591,7 +591,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
             deleteTempContentVersion(content);
 
-            if (content.isNew() || newStatus == ContentStatus.PUBLISHED) {
+            if (isNew || newStatus == ContentStatus.PUBLISHED) {
                 newVersionIsActive = true;
             }
 
