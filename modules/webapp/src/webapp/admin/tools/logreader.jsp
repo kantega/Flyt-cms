@@ -178,6 +178,10 @@
         });
     };
     $('#controlls').submit(updateContent);
+
+    window['onscroll'] = function(e, elName) {debug('onscroll ' + e + ' ' + elName)};
+    window['onwheel'] = function(e, elName) {debug('onwheel ' + e + ' ' + elName)};
+    window['onmousewheel'] = function(e, elName) {debug('onmousewheel ' + e + ' ' + elName)};
 </script>
 </body>
 </html>
