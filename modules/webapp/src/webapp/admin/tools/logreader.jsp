@@ -77,28 +77,35 @@
         return '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + file + '.action?numberoflines=' + number + '&startline=' + start;
     };
     var isDownScrollDetect = function(lastScrollTop, currentScroll){
-        return currentScroll < lastScrollTop;
+        return currentScroll > lastScrollTop;
     };
 
     var tabheaderUl = $('#tabheaders');
     var filesByIndex = {};
 
+
     var numberOfLinesInput = $('#numberOfLines');
     var startLineInput = $('#startLine');
-    var currentLine = startLineInput;
+
+    var numberOfLinesToFetch = parseInt(numberOfLinesInput.val());
+    var startLine = parseInt(startLineInput.val());
+    var currentLine = startLine;
 
     $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles.action"/>', function(data){
         for(var i = 0; i < data.length ; i++){
             var logfile = data[i];
             filesByIndex[i + 1] = logfile; // logfilecontainer.index() is 1-indexed.
-            tabheaderUl.append('<li><a class="logheader" href="' + getUrlForFile(logfile, startLineInput.val(), numberOfLinesInput.val())
+            tabheaderUl.append('<li><a class="logheader" href="' + getUrlForFile(logfile, startLine, numberOfLinesToFetch)
                     + '">' + logfile + '</a><a href="<aksess:geturl url="/admin/tools/logreader/logfiles/download/"/>'
                     + logfile + '.action" class="downloadlogfile"></a></li>')
         }
         $('#logfiles').tabs({
             ajaxOptions: {
+                cache : false,
+                dataType : 'html',
                 dataFilter: function(result){
                     var data = $.parseJSON(result);
+                    startLine = parseInt(data.lineNumber) - parseInt(data.numberOfLinesReturned);
                     return data.lines;
                 }
             }
@@ -109,11 +116,11 @@
     var updateContent = function () {
         var selected = $('.ui-tabs-selected').index();
         var panel = $($('.ui-tabs-panel')[selected - 1]);
-        $.getJSON(getUrlForFile(filesByIndex[selected], startLineInput.val(), numberOfLinesInput.val()), function (data) {
+        numberOfLinesToFetch = parseInt(numberOfLinesInput.val());
+        startLine = parseInt(startLineInput.val());
+        $.getJSON(getUrlForFile(filesByIndex[selected], startLine, numberOfLinesToFetch), function (data) {
             currentLine = data.lineNumber;
-            panel.html(data.lines.reduce(function (previousValue, currentValue) {
-                return previousValue + currentValue;
-            }, ''))
+            panel.html(data.lines);
         });
         return false;
     };
@@ -129,24 +136,26 @@
             var isDownScroll = isDownScrollDetect(lastScrollTop, currentScroll);
             if (!isFetchingLines && isDownScroll && (panel[0].scrollTopMax - 20) <= currentScroll){
                 // downward scroll, near bottom - so loading next lines.
-                $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles/"/>'+ filename + '.action?startline=' + (currentLine + numberOfLinesInput), function(data){
+                isFetchingLines = true;
+                $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles/"/>'+ filename + '.action?startline=' + (currentLine + numberOfLinesToFetch), function(data){
                     isFetchingLines = false;
                     currentLine = data.lineNumber;
                     if (data.lines.length > 0) {
                         panel.append(data.lines);
-                        panel.children().slice(0, numberOfLinesInput).remove();
+                        panel.children().slice(0, numberOfLinesToFetch).remove();
                     }
                 })
             } else if(!isFetchingLines && !isDownScroll && currentScroll <= 20){
                 // upward scroll, near top - so loading previous lines.
-                $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles/"/>'+ filename + '.action?startline=' + (currentLine - numberOfLinesInput), function(data){
+                isFetchingLines = true;
+                $.getJSON('<aksess:geturl url="/admin/tools/logreader/logfiles/"/>'+ filename + '.action?startline=' + (currentLine - numberOfLinesToFetch), function(data){
                     isFetchingLines = false;
                     currentLine = data.lineNumber;
                     if (data.lines.length > 0) {
                         panel.prepend(data.lines);
                         var children = panel.children();
                         var childrenLength = children.length;
-                        children.slice(childrenLength - numberOfLinesInput, childrenLength)
+                        children.slice(childrenLength - numberOfLinesToFetch, childrenLength)
                     }
                 })
             }
