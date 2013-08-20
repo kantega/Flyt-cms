@@ -29,8 +29,7 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PathWorker {
 
@@ -79,8 +78,34 @@ public class PathWorker {
             }
         }
 
+       sortByPathEntries(pathEntries, pathIds);
+
         return pathEntries;
     }
+
+
+    private static void sortByPathEntries(List<PathEntry> pathEntries, int[] pathIds) {
+        final List<Integer> pathOrder = convertToListOfIntegers(pathIds);
+        Collections.sort(pathEntries, new Comparator<PathEntry>() {
+            @Override
+            public int compare(PathEntry o1, PathEntry o2) {
+                int positionOfO1 = pathOrder.indexOf(o1.getId());
+                int positionOfO2 = pathOrder.indexOf(o2.getId());
+                return Integer.compare(positionOfO1, positionOfO2);
+            }
+        });
+    }
+
+
+    private static List<Integer> convertToListOfIntegers(int[] pathIds) {
+        final List<Integer> pathOrder = new ArrayList<Integer>();
+        for (int i = 0; i < pathIds.length; i++)
+        {
+            pathOrder.add(pathIds[i]);
+        }
+        return pathOrder;
+    }
+
 
     /**
      *
