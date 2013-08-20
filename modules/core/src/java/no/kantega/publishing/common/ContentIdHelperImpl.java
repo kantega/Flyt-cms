@@ -170,7 +170,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
      * @param siteId - Site
      * @param url    - Url/alias, e.g. /nyheter/
      * @return ContentIdentifier for the given site and url.
-     * @throws ContentNotFoundException
+     * @throws ContentNotFoundException if no Content is found.
      * @throws SystemException
      */
     private ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
@@ -179,7 +179,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         }
         Matcher contentUrlMatcher = CONTENT_URL_PATTERN.matcher(url);
         if(!contentUrlMatcher.matches()){
-            return null;
+            throw new ContentNotFoundException(url);
         }
 
         int contentId = -1;
