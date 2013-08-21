@@ -71,7 +71,7 @@ public class PrettyURLEncoder {
 
     public static String createContentUrl(int associationId, String title, String alias) {
         if (isNotBlank(alias)) {
-            return "/" + alias;
+            return alias.charAt(0) == '/' ? alias : "/" + alias;
         } else {
             return Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
         }
