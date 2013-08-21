@@ -113,11 +113,10 @@
 
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
+        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
+        <a href="#" class="button"><span class="newfile"><kantega:label key="aksess.tools.replacefile"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="imagemap"><kantega:label key="aksess.tools.imagemap"/></span></a>
-        <a href="#" class="button"><span class="newfile"><kantega:label key="aksess.tools.replacefile"/></span></a>
-        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
-
         <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="rotateccw"><kantega:label key="aksess.tools.rotateccw"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="rotatecw"><kantega:label key="aksess.tools.rotatecw"/></span></a>
 
