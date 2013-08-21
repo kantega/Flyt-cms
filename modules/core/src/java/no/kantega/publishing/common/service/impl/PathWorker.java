@@ -51,7 +51,7 @@ public class PathWorker {
         for (int pathId : pathIds) {
             ids.add(pathId);
         }
-        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
+        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids) order by associations.AssociationId desc", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
     }
 
     /**
