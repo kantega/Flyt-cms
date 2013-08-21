@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class PrettyURLEncoder {
     private static final Logger log = LoggerFactory.getLogger(PrettyURLEncoder.class);
 
@@ -68,8 +70,8 @@ public class PrettyURLEncoder {
     }    
 
     public static String createContentUrl(int associationId, String title, String alias) {
-        if (alias != null && alias.length() > 0) {
-            return "/" + Aksess.CONTENT_REQUEST_HANDLER + "?thisId=" + associationId;
+        if (isNotBlank(alias)) {
+            return "/" + alias;
         } else {
             return Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
         }
