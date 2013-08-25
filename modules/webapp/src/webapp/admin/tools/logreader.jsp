@@ -86,7 +86,7 @@
         return url;
     };
     var isDownScrollDetect = function(lastScrollTop, currentScroll){
-        return currentScroll > lastScrollTop;
+        return currentScroll > 0 && currentScroll >= lastScrollTop;
     };
 
     var tabheaderUl = $('#tabheaders');
@@ -138,13 +138,17 @@
     var registerScrollHandler = function(){
         var lastScrollTop = 0;
         var isFetchingLines = false;
-        $('.ui-tabs-panel').scroll(function(){
-            var panel = $(this);
-            var filename = filesByIndex[panel.index()];
+        var scrollhandler = function(){
+            var tab = $('.ui-tabs-active');
+            var index = tab.index();
+            var filename = filesByIndex[index];
+            var panel = $('#ui-tabs-' + index);
+
 
             var currentScroll = panel.scrollTop();
             var isDownScroll = isDownScrollDetect(lastScrollTop, currentScroll);
-            if (!isFetchingLines && isDownScroll && (panel[0].scrollTopMax - 20) <= currentScroll){
+            var distanceToBottom = panel[0].scrollHeight - panel[0].clientHeight - currentScroll;
+            if (!isFetchingLines && isDownScroll && distanceToBottom < 50){
                 debug('downward scroll, near bottom - so loading next lines.');
                 isFetchingLines = true;
                 var downurl = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine + numberOfLinesToFetch);
@@ -158,7 +162,7 @@
                         panel.children().slice(0, data.numberOfLinesReturned).remove();
                     }
                 })
-            } else if(!isFetchingLines && !isDownScroll && currentScroll <= 20){
+            } else if(!isFetchingLines && !isDownScroll && currentScroll <= 50){
                 debug('upward scroll, near top - so loading previous lines.');
                 isFetchingLines = true;
                 var upurl = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine - numberOfLinesToFetch);
@@ -176,7 +180,13 @@
             }
 
             lastScrollTop = currentScroll;
-        });
+        };
+        var handler = function (e, elName) {
+            debug('onscroll ' + e + ' ' + elName)
+        };
+        window.onscroll  = scrollhandler;
+        window.onwheel  = scrollhandler;
+        window.onmousewheel  = scrollhandler;
     };
 
     $('#controlls').submit(function () {
