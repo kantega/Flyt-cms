@@ -72,7 +72,8 @@
 </div>
 
 <script src="<aksess:geturl url="/admin/js/jquery-2.0.2.min.js"/>"></script>
-<script src="<aksess:geturl url="/admin/js/jquery-ui-1.8.14.custom.min.js"/>"></script><script>
+<script src="<aksess:geturl url="/admin/js/jquery-ui-1.10.3.custom.min.js"/>"></script>
+<script>
     var debug = function (msg) {
         if (typeof console != 'undefined') {
             console.log(msg);
@@ -108,31 +109,31 @@
                     + logfile + '.action" class="downloadlogfile"></a></li>')
         }
         $('#logfiles').tabs({
-            ajaxOptions: {
-                cache : false,
-                dataType : 'html',
-                dataFilter: function(result){
+            beforeLoad: function( event, ui ) {
+                ui.ajaxSettings.dataType = 'html';
+                ui.ajaxSettings.dataTypes = ['html'];
+                ui.ajaxSettings.dataFilter = function(result){
                     var data = $.parseJSON(result);
                     startLine = parseInt(data.lineNumber) - parseInt(data.numberOfLinesReturned);
                     currentLine = data.lineNumber;
                     return data.lines;
-                }
+                };
+                ui.jqXHR.fail(function(data, errorname, error) {
+                    debug(errorname + ' ' + error);
+                });
+            },
+            activate: function( event, ui ) {
+                var handler = function (e, elName) {
+                    debug('onscroll ' + e + ' ' + elName)
+                };
+                ui.oldPanel[0]['onscroll']  = handler;
+                ui.oldPanel[0]['onwheel']  = handler;
+                ui.oldPanel[0]['onmousewheel']  = handler;
+
             }
         });
         registerScrollHandler();
     });
-
-    var updateContent = function () {
-        var selected = $('.ui-tabs-selected').index();
-        var panel = $($('.ui-tabs-panel')[selected - 1]);
-        numberOfLinesToFetch = parseInt(numberOfLinesInput.val());
-        startLine = parseInt(startLineInput.val());
-        $.getJSON(getUrlForFile(filesByIndex[selected], startLine, numberOfLinesToFetch), function (data) {
-            currentLine = data.lineNumber;
-            panel.html(data.lines);
-        });
-        return false;
-    };
 
     var registerScrollHandler = function(){
         var lastScrollTop = 0;
@@ -146,9 +147,9 @@
             if (!isFetchingLines && isDownScroll && (panel[0].scrollTopMax - 20) <= currentScroll){
                 debug('downward scroll, near bottom - so loading next lines.');
                 isFetchingLines = true;
-                var url = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine + numberOfLinesToFetch);
-                debug(url);
-                $.getJSON(url, function(data){
+                var downurl = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine + numberOfLinesToFetch);
+                debug(downurl);
+                $.getJSON(downurl, function(data){
                     isFetchingLines = false;
                     currentLine = data.lineNumber;
                     debug('Results from server: currentLine: ' + currentLine + ' numberOfLinesInFile: ' + data.numberOfLinesInFile + ' numberOfLinesReturned:' + data.numberOfLinesReturned);
@@ -160,9 +161,9 @@
             } else if(!isFetchingLines && !isDownScroll && currentScroll <= 20){
                 debug('upward scroll, near top - so loading previous lines.');
                 isFetchingLines = true;
-                var url = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine - numberOfLinesToFetch);
-                debug(url);
-                $.getJSON(url, function(data){
+                var upurl = '<aksess:geturl url="/admin/tools/logreader/logfiles/"/>' + filename + '.action?startline=' + (currentLine - numberOfLinesToFetch);
+                debug(upurl);
+                $.getJSON(upurl, function(data){
                     isFetchingLines = false;
                     currentLine = data.lineNumber;
                     debug('Results from server: currentLine: ' + currentLine + ' numberOfLinesInFile: ' + data.numberOfLinesInFile + ' numberOfLinesReturned:' + data.numberOfLinesReturned);
@@ -177,11 +178,19 @@
             lastScrollTop = currentScroll;
         });
     };
-    $('#controlls').submit(updateContent);
 
-    window['onscroll'] = function(e, elName) {debug('onscroll ' + e + ' ' + elName)};
-    window['onwheel'] = function(e, elName) {debug('onwheel ' + e + ' ' + elName)};
-    window['onmousewheel'] = function(e, elName) {debug('onmousewheel ' + e + ' ' + elName)};
+    $('#controlls').submit(function () {
+        var selected = $('.ui-tabs-selected').index();
+        var panel = $($('.ui-tabs-panel')[selected - 1]);
+        numberOfLinesToFetch = parseInt(numberOfLinesInput.val());
+        startLine = parseInt(startLineInput.val());
+        $.getJSON(getUrlForFile(filesByIndex[selected], startLine, numberOfLinesToFetch), function (data) {
+            currentLine = data.lineNumber;
+            panel.html(data.lines);
+        });
+        return false;
+    });
+
 </script>
 </body>
 </html>
