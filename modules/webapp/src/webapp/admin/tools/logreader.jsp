@@ -121,15 +121,6 @@
                 ui.jqXHR.fail(function(data, errorname, error) {
                     debug(errorname + ' ' + error);
                 });
-            },
-            activate: function( event, ui ) {
-                var handler = function (e, elName) {
-                    debug('onscroll ' + e + ' ' + elName)
-                };
-                ui.oldPanel[0]['onscroll']  = handler;
-                ui.oldPanel[0]['onwheel']  = handler;
-                ui.oldPanel[0]['onmousewheel']  = handler;
-
             }
         });
         registerScrollHandler();
@@ -181,12 +172,20 @@
 
             lastScrollTop = currentScroll;
         };
-        var handler = function (e, elName) {
-            debug('onscroll ' + e + ' ' + elName)
-        };
+
         window.onscroll  = scrollhandler;
         window.onwheel  = scrollhandler;
         window.onmousewheel  = scrollhandler;
+        document.onkeypress = function(event){
+            switch (event.keyCode){
+                case 40:
+                case 38:
+                case 34:
+                case 33:
+                    scrollhandler();
+                    break;
+            }
+        }
     };
 
     $('#controlls').submit(function () {
