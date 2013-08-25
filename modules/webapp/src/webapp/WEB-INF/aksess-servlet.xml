@@ -829,6 +829,12 @@
 
     <metrics:annotation-driven />
 
+    <bean id="exceptionResolver" class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver">
+        <property name="warnLogCategory" value="org.springframework.web.servlet"/>
+        <property name="preventResponseCaching" value="true"/>
+        <property name="order" value="1"/>
+    </bean>
+
     <beans profile="useCaching">
         <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
     </beans>
