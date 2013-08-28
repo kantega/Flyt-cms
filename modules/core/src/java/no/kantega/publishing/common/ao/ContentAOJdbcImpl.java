@@ -138,8 +138,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         try {
             Map<String, Object> values = getJdbcTemplate().queryForMap("select ContentVersionId, IsActive from contentversion where ContentId = ? and Version = ? and Language = ?", id, version, language);
-            int contentVersionId = (int) values.get("ContentVersionId");
-            int isActive = (int) values.get("IsActive");
+            int contentVersionId = ((Number) values.get("ContentVersionId")).intValue();
+            int isActive = ((Number) values.get("IsActive")).intValue();
 
             if (!deleteActiveVersion && isActive == 1) {
                 return;
