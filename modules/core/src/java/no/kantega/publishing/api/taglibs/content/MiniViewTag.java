@@ -21,6 +21,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
+import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.client.DefaultDispatchContext;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -40,6 +41,7 @@ public class MiniViewTag extends TagSupport {
     private static final String SOURCE = "aksess.MiniViewTag";
 
     private String collection = null;
+    private String contentId = null;
     private Content contentObject;
 
     public void setCollection(String collection) {
@@ -50,6 +52,10 @@ public class MiniViewTag extends TagSupport {
         this.contentObject = obj;
     }
 
+    public void setContentid(String contentId) {
+        this.contentId = contentId;
+    }
+
     public int doStartTag() throws JspException {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
         PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
@@ -58,11 +64,14 @@ public class MiniViewTag extends TagSupport {
 
         try {
             Content currentPage = (Content)request.getAttribute("aksess_this");
-            Content content = (contentObject == null) ? (Content)pageContext.getAttribute("aksess_collection_" + collection) : contentObject;
 
-            if (content != null) {
+            if (contentObject == null) {
+                contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, null);
+            }
+
+            if (contentObject != null) {
                 String template = null;
-                DisplayTemplate dt = DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId());
+                DisplayTemplate dt = DisplayTemplateCache.getTemplateById(contentObject.getDisplayTemplateId());
                 if (dt != null) {
                     template = dt.getMiniView();
                 }
@@ -77,7 +86,7 @@ public class MiniViewTag extends TagSupport {
                     request.setAttribute("aksess_containingPage", currentPage);
 
                     // Ved å legge content på request'en med navn aksess_this vil malen kunne bruke standard tagger
-                    RequestHelper.setRequestAttributes(request, content);
+                    RequestHelper.setRequestAttributes(request, contentObject);
                     try {
                         for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
                             for(ContentRequestListener listener : plugin.getContentRequestListeners()) {
@@ -86,7 +95,7 @@ public class MiniViewTag extends TagSupport {
                         }
                         pageContext.include(template);
                     } catch (Exception e) {
-                        Log.error(SOURCE, "Unable to display miniview for: " + content.getTitle(), null, null);
+                        Log.error(SOURCE, "Unable to display miniview for: " + contentObject.getTitle(), null, null);
                         Log.error(SOURCE, e, null, null);
                     }
 
@@ -107,6 +116,8 @@ public class MiniViewTag extends TagSupport {
 
     public int doEndTag() throws JspException {
         collection = null;
+        contentId = null;
+        contentObject = null;
 
         return EVAL_PAGE;
     }
