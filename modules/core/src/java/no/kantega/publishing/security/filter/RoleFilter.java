@@ -67,26 +67,34 @@ public class RoleFilter implements Filter {
         } catch (Exception e) {
             ExceptionHandler handler = new ExceptionHandler();
 
-            Throwable cause = (Throwable) e;
+            Throwable cause = e;
             if (cause instanceof javax.servlet.jsp.JspException) {
                 cause = ((javax.servlet.jsp.JspException) cause).getRootCause();
                 if (cause == null) {
-                    cause = (Throwable) e;
+                    cause = e;
                 }
             }
             if (cause instanceof ServletException) {
                 cause = ((ServletException) cause).getRootCause();
                 if (cause == null) {
-                    cause = (Throwable) e;
+                    cause = e;
                 }
             }
 
             if (cause instanceof java.lang.reflect.InvocationTargetException) {
                 cause = ((java.lang.reflect.InvocationTargetException) cause).getTargetException();
                 if (cause == null) {
-                    cause = (Throwable) e;
+                    cause = e;
                 }
             }
+
+            if (cause instanceof java.lang.reflect.UndeclaredThrowableException) {
+                cause = ((java.lang.reflect.UndeclaredThrowableException) cause).getUndeclaredThrowable();
+                if (cause == null) {
+                    cause = e;
+                }
+            }
+
             e.printStackTrace();
 
             handler.setThrowable(cause, request.getRequestURI());
