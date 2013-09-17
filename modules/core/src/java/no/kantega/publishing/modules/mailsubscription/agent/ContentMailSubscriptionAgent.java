@@ -65,13 +65,13 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
 
             if (groupEmails) {
                 // Send en epost for alle sites
-                log.debug( "Sending mailsubscriptions for all sites");
+                log.info("Sending mailsubscriptions for all sites");
                 emailNewContentForSite(previousRun, interval, null);
             } else {
                 // Send en epost for hver site
                 List<Site> sites = siteCache.getSites();
                 for (Site site : sites) {
-                    log.debug( "Sending mailsubscriptions for site:  " + site.getName());
+                    log.info("Sending mailsubscriptions for site:  " + site.getName());
                     emailNewContentForSite(previousRun, interval, site);
                 }
             }
@@ -98,9 +98,9 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
         for (Content content : allContentList) {
             if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
                 contentList.add(content);
-                log.debug( "New content:" + content.getTitle());
+                log.info("New content:" + content.getTitle());
             } else {
-                log.info( "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
+                log.info("Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
             }
         }
 

@@ -174,7 +174,7 @@ public class MailSender {
             eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
 
             // Logg sending
-            log.debug( "Sending email to " + to + " with subject " + subject);
+            log.info("Sending email to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
             EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
