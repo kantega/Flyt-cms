@@ -34,7 +34,7 @@ public class DeletedItemsAO {
 
         try {
             c = dbConnectionFactory.getConnection();
-            PreparedStatement p = c.prepareStatement("INSERT INTO deleteditems (Title, ObjectType, DeletedDate, DeletedBy) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement p = c.prepareStatement("INSERT INTO deleteditems (Title, ObjectType, DeletedDate, DeletedBy) VALUES (?, ?, ?, ?)", new String[] {"ID"});
 
             p.setString(1, item.getTitle());
             p.setInt(2, item.getObjectType());

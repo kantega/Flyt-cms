@@ -106,7 +106,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", new String[] {"FORMSUBMISSIONID"});
                     p.setInt(1, form.getForm().getId());
                     p.setString(2, form.getSubmittedByName());
                     p.setString(3, userId);
