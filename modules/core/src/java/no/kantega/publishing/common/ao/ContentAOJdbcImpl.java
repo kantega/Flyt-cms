@@ -771,7 +771,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     private void addContentVersion(Connection c, Content content, ContentStatus newStatus, boolean activeVersion) throws SQLException {
         // Insert new version
-        PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",  new String[] {"CONTENTVERSIONID"});
         contentVersionSt.setInt(1, content.getId());
         contentVersionSt.setInt(2, content.getVersion());
         contentVersionSt.setInt(3, newStatus.getTypeAsInt());
@@ -807,7 +807,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         boolean isNew = content.isNew();
         if (isNew) {
-            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
+            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)",  new String[] {"CONTENTID"});
         } else {
             // Update
             contentSt = c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
