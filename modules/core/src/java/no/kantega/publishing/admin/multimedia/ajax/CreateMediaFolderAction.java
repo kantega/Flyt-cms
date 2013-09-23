@@ -47,6 +47,14 @@ public class CreateMediaFolderAction extends AbstractController {
             folder.setParentId(parentId);
             folder.setType(MultimediaType.FOLDER);
             folder.setName(name);
+
+            if (parentId > 0) {
+                Multimedia parent = mediaService.getMultimedia(parentId);
+                if (parent != null) {
+                    folder.setSecurityId(parent.getSecurityId());
+                }
+            }
+
             mediaService.setMultimedia(folder);
             model.put("media", folder);
         }
