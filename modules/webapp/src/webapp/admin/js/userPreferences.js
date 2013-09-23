@@ -36,9 +36,9 @@ var UserPreferencesHandler = new function (){
             type: "GET",
             dataType: "json"
         })
-            .done(function(){
+            .done(function(data){
                 openaksess.common.debug("UserPreferencesHandler.getPreference(): invoking callback" );
-                callback();
+                callback(data);
             })
             .fail(function(jqXHR, textStatus, errorThrown){
                 openaksess.common.debug("UserPreferencesHandler.getPreference(): Failed!" + textStatus + " " + errorThrown );
