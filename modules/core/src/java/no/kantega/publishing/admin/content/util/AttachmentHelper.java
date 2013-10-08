@@ -50,7 +50,7 @@ public class AttachmentHelper {
         attachment.setData(data);
         attachment.setSize(data.length);
 
-        fileAttribute.setValue("" + AttachmentAO.setAttachment(attachment));
+        fileAttribute.setValue(String.valueOf(AttachmentAO.setAttachment(attachment)));
 
         attachment.setData(null);
 

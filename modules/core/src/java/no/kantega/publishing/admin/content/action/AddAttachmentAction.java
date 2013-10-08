@@ -18,15 +18,16 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.media.MimeType;
-import no.kantega.commons.util.LocaleLabels;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.admin.AdminSessionAttributes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -34,9 +35,10 @@ import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
 
 public class AddAttachmentAction implements Controller {
+
+    private static final Logger log = LoggerFactory.getLogger(AddAttachmentAction.class);
 
     private String formView;
     
@@ -51,7 +53,7 @@ public class AddAttachmentAction implements Controller {
         int attachmentId = requestParameters.getInt("attachmentId");
         boolean insertLink = requestParameters.getBoolean("insertLink");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("refresh", new Date().getTime());
         model.put("insertlink", insertLink);
 
@@ -66,6 +68,8 @@ public class AddAttachmentAction implements Controller {
             }
 
             if ((multipartFile != null) && (content != null)) {
+                log.info("Adding attachment {} to content {}", multipartFile.getOriginalFilename(), content.getTitle());
+
                 Attachment attachment = new Attachment();
                 attachment.setContentId(content.getId());
                 attachment.setLanguage(content.getLanguage());
@@ -99,6 +103,8 @@ public class AddAttachmentAction implements Controller {
                     model.put("mimeType", mimeType.getType());
                     model.put("fileExtension", mimeType.getFileExtension());
                 }
+            } else {
+                log.warn("AddAttachmentAction called and (multipartFile != null) && (content != null) was true");
             }
             return new ModelAndView(confirmView, model);
         } else {
