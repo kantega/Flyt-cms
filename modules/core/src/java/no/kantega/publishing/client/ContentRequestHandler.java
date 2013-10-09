@@ -18,6 +18,7 @@ package no.kantega.publishing.client;
 
 import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
@@ -36,7 +37,6 @@ import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -88,7 +88,7 @@ public class ContentRequestHandler extends AbstractController {
                 cid = contentIdHelper.fromRequestAndUrl(request, originalUri);
                 response.setStatus(HttpServletResponse.SC_OK);
 
-                if (request.getMethod().toLowerCase().equals("post") && (request instanceof MultipartHttpServletRequest || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {
+                if (request.getMethod().toLowerCase().equals("post") && (new RequestParameters(request).isMultipart() || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {
                     log.error( "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action");
                 }
             }
