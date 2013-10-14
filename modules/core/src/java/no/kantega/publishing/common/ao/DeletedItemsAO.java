@@ -20,7 +20,10 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.DeletedItem;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
