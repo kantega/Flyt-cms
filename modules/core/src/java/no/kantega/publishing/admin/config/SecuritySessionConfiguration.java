@@ -39,7 +39,7 @@ public class SecuritySessionConfiguration {
         User unauthenticatedUser = new User();
         unauthenticatedUser.setGivenName("Aksess - Unauthenticated");
         unauthenticatedUser.setSurname("CMS");
-        unauthenticatedUser.setId("adminUnauthenticated");
+        unauthenticatedUser.setId("Unauthenticated");
 
         Role role = new Role();
         role.setId(Aksess.getEveryoneRole());

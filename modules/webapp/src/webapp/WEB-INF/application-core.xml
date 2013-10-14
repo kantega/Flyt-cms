@@ -203,6 +203,10 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean id="permissionsAO" class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
     <bean id="systemConfiguration" class="no.kantega.publishing.configuration.LegacySystemConfiguration"/>
 
     <bean id="uiServices" class="no.kantega.publishing.ui.DefaultUIServices"/>

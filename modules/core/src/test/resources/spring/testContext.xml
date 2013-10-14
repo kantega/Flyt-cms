@@ -114,4 +114,8 @@
     <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <bean class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
 </beans>

@@ -17,12 +17,12 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.security.ao.PermissionsAO;
 import no.kantega.publishing.spring.RootContext;
 
 import java.sql.Connection;
@@ -33,6 +33,9 @@ import java.util.List;
 
 public class MultimediaAO {
 
+    private static PermissionAO permissionAO;
+    public static MultimediaDao multimediaDao;
+
     /**
      * Henter multimedia objekt fra basen (unntatt data)
      * @param id - Id til objekt som skal hentes
@@ -41,8 +44,8 @@ public class MultimediaAO {
      */
     @Deprecated
     public static Multimedia getMultimedia(int id) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.getMultimedia(id);
+        setPermissionAOIfNotSet();
+        return multimediaDao.getMultimedia(id);
     }
 
     /**
@@ -54,23 +57,9 @@ public class MultimediaAO {
      */
     @Deprecated
     public static Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.getMultimediaByParentIdAndName(parentId, name);
+        setPermissionAOIfNotSet();
+        return multimediaDao.getMultimediaByParentIdAndName(parentId, name);
     }
-
-    /**
-     * Retrieves an image associated with the user's profile.
-     *
-     * @param userId -
-     * @return
-     * @throws SystemException
-     */
-    @Deprecated
-    public static Multimedia getProfileImageForUser(String userId) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.getProfileImageForUser(userId);
-    }
-
 
     /**
      * Sender multimedia til klienten
@@ -79,8 +68,8 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        dao.streamMultimediaData(id, ish);
+        setPermissionAOIfNotSet();
+        multimediaDao.streamMultimediaData(id, ish);
     }
 
 
@@ -91,8 +80,8 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static List<Multimedia> getMultimediaList(int parentId) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.getMultimediaList(parentId);
+        setPermissionAOIfNotSet();
+        return multimediaDao.getMultimediaList(parentId);
     }
 
     /**
@@ -102,24 +91,9 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int getMultimediaCount() throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.getMultimediaCount();
+        setPermissionAOIfNotSet();
+        return multimediaDao.getMultimediaCount();
     }
-
-    /**
-     * Searches the multimedia-archive for the given criteria
-     *
-     * @param phrase the text to search for. If this is a number it is interpreted as an ID to search for. If not,
-     *               this string is searched for in names, authors, and descriptions.
-     * @param site the site to limit the search by, or -1 for global.
-     * @param parentId the root of the subtree of contents to limit the search by, or -1 for all
-     * @return a list of Multimedia-objects matching the given criteria
-     */
-    public static List<Multimedia> searchMultimedia(String phrase, int site, int parentId) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        return dao.searchMultimedia(phrase, site, parentId);
-    }
-
 
     /**
      * Flytter et multimediaobjekt
@@ -128,8 +102,7 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static void moveMultimedia(int mmId, int newParentId) throws SystemException {
-        MultimediaDao dao = (MultimediaDao)RootContext.getInstance().getBean("aksessMultimediaDao");
-        dao.moveMultimedia(mmId, newParentId);
+        multimediaDao.moveMultimedia(mmId, newParentId);
 
     }
 
@@ -140,12 +113,12 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int setMultimedia(Multimedia mm) throws SystemException {
-        MultimediaDao dao = RootContext.getInstance().getBean("aksessMultimediaDao", MultimediaDao.class);
 
-        dao.setMultimedia(mm);
+        multimediaDao.setMultimedia(mm);
 
         if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
-            PermissionsAO.setPermissions(mm, null);
+            setPermissionAOIfNotSet();
+            permissionAO.setPermissions(mm, null);
             mm.setSecurityId(mm.getId());
         }
 
@@ -193,4 +166,10 @@ public class MultimediaAO {
         setSecurityIdForChildren(c, object.getId(), object.getSecurityId(), securityId);
     }
 
+    private static void setPermissionAOIfNotSet(){
+        if(permissionAO == null){
+            permissionAO = RootContext.getInstance().getBean(PermissionAO.class);
+            multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
+        }
+    }
 }
