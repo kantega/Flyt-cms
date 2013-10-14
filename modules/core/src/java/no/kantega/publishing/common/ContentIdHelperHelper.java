@@ -9,7 +9,7 @@ public class ContentIdHelperHelper {
      * - <code>hostname</code>, the domain name.
      * - <code>port</code>, the defined port, e.g. 8080.
      */
-    public static final String BASE_PATTERN = "((?<protocol>https?)://)?(?<hostname>[\\w\\.\\-]+)(:(?<port>\\d+))?";
+    public static final String BASE_PATTERN = "(((?<protocol>https?)://)?(?<hostname>[\\w\\.\\-]+)(:(?<port>\\d+))?)?";
 
     /**
      * Regexp matching «pretty urls» fragment with the following named groups:
@@ -40,15 +40,27 @@ public class ContentIdHelperHelper {
     public static final String ALIAS_PATTERN = "(?<alias>[\\w\\-\\+=/\\&]*)";
 
     /**
-     * Regexp combining <code>BASE_PATTERN</code>, <code>PRETTY_PATTERN</code>, <code>CONTENT_AP_PATTERN</code>,
-     * and <code>ALIAS_PATTERN</code> and introducing the following named group:
+     * Regexp combining <code>PRETTY_PATTERN</code>, <code>CONTENT_AP_PATTERN</code>,
+     * and <code>ALIAS_PATTERN</code> and introducing the following named groups:
+     * - <code>content</code>, the rest part containing any of the content patterns.
      * - <code>rest</code>, the rest of the url following any of the other patterns.
      * This is supposed to match all urls that lead to <code>Content</code> objects.
      */
-    public static final String FULL_URL_PATTERN = BASE_PATTERN +
-            "(" +
-              PRETTY_PATTERN + "|" +
-              CONTENT_AP_PATTERN + "|" +
-              ALIAS_PATTERN +
+    public static final String CONTENT_PATTERNS = "(?<content>" +
+            PRETTY_PATTERN + "|" +
+            CONTENT_AP_PATTERN + "|" +
+            ALIAS_PATTERN +
             ")(?<rest>.*)?";
+
+    /**
+     * Regexp combining <code>BASE_PATTERN</code>, <code>CONTENT_PATTERNS</code>, with
+     * the given <code>contextPath</code> added.
+     * This is supposed to match all urls that lead to <code>Content</code> objects.
+     */
+    public static String getPatternWithContextPath(String contextPath){
+        return contextPath.equals("/") ?
+                BASE_PATTERN + CONTENT_PATTERNS :
+                BASE_PATTERN + contextPath + CONTENT_PATTERNS;
+
+    }
 }
