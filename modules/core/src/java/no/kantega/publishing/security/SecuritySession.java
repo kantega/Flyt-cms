@@ -69,7 +69,7 @@ public class SecuritySession {
 
 
     /**
-     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i søfall User og Identity objektet
+     * Henter en sikkerhetssesjon - Sjekker om en bruker er innlogget, setter i såfall User og Identity objektet
      * @param request
      * @return
      * @throws SystemException

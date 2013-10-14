@@ -294,6 +294,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Has been moved to spring-test in spring-3.2-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test-mvc</artifactId>
+            <version>1.0.0.M2</version>
+            <scope>test</scope>
+        </dependency>
+
         <!--
             cglib is included by Hibernate.
             Adding a dependency to the cglib version used by Hibernate 3.6.2.
