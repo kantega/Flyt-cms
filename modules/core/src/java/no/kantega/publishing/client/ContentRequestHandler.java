@@ -24,7 +24,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.services.ContentManagmentService;
@@ -64,10 +63,9 @@ public abstract class ContentRequestHandler implements ServletContextAware{
 
     @Autowired
     private SiteCache siteCache;
+
     @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
-    @Autowired
-    private ContentIdentifierDao contentIdentifierDao;
 
     @Autowired
     private ContentIdHelper contentIdHelper;
@@ -99,14 +97,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
         return handleFromContentIdentifier(cid, request, response);
     }
 
-    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String alias = (String) request.getAttribute(AksessAliasHandlerMapping.HANDLED_OA_ALIAS);
-
-        ContentIdentifier cid = getBestMatchingAlias(alias, request.getServerName());
-        return handleFromContentIdentifier(cid, request, response);
-    }
-
-    private ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
         SecuritySession securitySession = getSecuritySession();
 
@@ -170,21 +161,6 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     private boolean isExpiredOrNotPublished(Content content) {
         int visibilityStatus = content.getVisibilityStatus();
         return (visibilityStatus != ContentVisibilityStatus.ACTIVE && visibilityStatus != ContentVisibilityStatus.ARCHIVED);
-    }
-
-    private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
-        Site site = siteCache.getSiteByHostname(serverName);
-        ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(site.getId(), alias);
-        if(cid == null){
-            List<ContentIdentifier> cids = contentIdentifierDao.getContentIdentifiersByAlias(alias);
-            if(cids.size() > 0){
-                cid = cids.get(0);
-                if(cids.size() > 1){
-                    LOG.warn("More than one ContentIdentifier matched alias {}", alias);
-                }
-            }
-        }
-        return cid;
     }
 
     protected abstract SecuritySession getSecuritySession();

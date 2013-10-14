@@ -297,6 +297,8 @@
         <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
+    <bean class="no.kantega.publishing.client.AliasRequestHandler" />
+
     <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
         <property name="multimediaRequestHandlerHelper">
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />

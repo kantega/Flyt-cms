@@ -11,6 +11,7 @@
         <property name="siteCache" ref="aksessSiteCache"/>
         <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
+    <bean class="no.kantega.publishing.client.AliasRequestHandler" />
 
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping" />
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
@@ -20,4 +21,6 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
     <bean class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
+
+    <bean class="no.kantega.publishing.spring.RootContext"/>
 </beans>

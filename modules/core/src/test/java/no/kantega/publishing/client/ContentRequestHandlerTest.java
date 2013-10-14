@@ -1,5 +1,12 @@
 package no.kantega.publishing.client;
 
+import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.content.api.ContentAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +19,10 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Collections;
+
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -26,9 +37,29 @@ public class ContentRequestHandlerTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private SiteCache siteCache;
+
+    @Autowired
+    private ContentAO contentAO;
+
+    @Autowired
+    private ContentIdentifierDao contentIdentifierDao;
+
     @Before
     public void setUp() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
+        Site site = new Site();
+        site.setId(1);
+        when(siteCache.getSiteByHostname("localhost")).thenReturn(site);
+        when(siteCache.getSiteById(isA(Integer.class))).thenReturn(site);
+
+        final Content content = new Content();
+        Association association = new Association();
+        association.setSiteId(1);
+        content.setAssociations(Collections.singletonList(association));
+        when(contentAO.getContent(isA(ContentIdentifier.class), isA(Boolean.class))).thenReturn(content);
+        when(contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(isA(Integer.class), isA(String.class))).thenReturn(ContentIdentifier.fromAssociationId(1));
     }
 
     @Test

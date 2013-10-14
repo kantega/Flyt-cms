@@ -1,27 +1,27 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.content.ContentAliasDao;
-import no.kantega.publishing.client.ContentRequestHandler;
+import no.kantega.publishing.client.AliasRequestHandler;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 public class AksessAliasHandlerMapping extends ContentEventListenerAdapter implements HandlerMapping {
+    private static Logger LOG = LoggerFactory.getLogger(AksessAliasHandlerMapping.class);
 
     public static final String HANDLED_OA_ALIAS = AksessAliasHandlerMapping.class.getName() + "_HANDLED_OA_ALIAS";
 
     @Autowired
-    private ContentRequestHandler requestHandler;
+    private AliasRequestHandler requestHandler;
 
     @Autowired
     private ContentAliasDao contentAliasDao;
@@ -38,11 +38,13 @@ public class AksessAliasHandlerMapping extends ContentEventListenerAdapter imple
 
     @Override
     public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+        LOG.debug("Checking request {} for match on alias", request.getRequestURI());
         HandlerExecutionChain handlerExecutionChain = null;
         String lookupPath = urlPathHelper.getPathWithinServletMapping(request);
         lookupPath = addTrailingSlash(lookupPath);
 
         if(aliases.contains(lookupPath)){
+            LOG.debug("{} matches alias", lookupPath);
             handlerExecutionChain = new HandlerExecutionChain(requestHandler);
             request.setAttribute(HANDLED_OA_ALIAS, lookupPath);
         }
