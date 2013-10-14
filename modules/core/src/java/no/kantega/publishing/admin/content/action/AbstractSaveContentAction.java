@@ -26,6 +26,7 @@ import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
