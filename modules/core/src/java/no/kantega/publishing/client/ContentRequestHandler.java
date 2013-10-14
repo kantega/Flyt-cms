@@ -16,9 +16,6 @@
 
 package no.kantega.publishing.client;
 
-import com.yammer.metrics.annotation.Metered;
-import com.yammer.metrics.annotation.Timed;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
@@ -26,8 +23,6 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.api.services.ContentManagmentService;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -37,8 +32,6 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import no.kantega.publishing.spring.AksessAliasHandlerMapping;
-import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -149,9 +142,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                     e = sex.getRootCause();
                 }
             }
-            log.error( request.getRequestURI());
-            log.error("", e);
-            LOG.error("Error when dispatching content", e);
+            log.error(request.getRequestURI(), e);
             throw new ServletException(e);
         }
 
