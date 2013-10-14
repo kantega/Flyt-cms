@@ -31,6 +31,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * User: Anders Skar, Kantega AS
+ * Date: May 3, 2007
+ * Time: 1:39:44 PM
+ */
 public class MapTopiclistAttributeValueToContentPropertyBehaviour implements MapAttributeValueToContentPropertyBehaviour {
     private static final Logger log = LoggerFactory.getLogger(MapTopiclistAttributeValueToContentPropertyBehaviour.class);
     public void mapAttributeValue(RequestParameters param, Content content, Attribute attribute, String field, ValidationErrors errors) {

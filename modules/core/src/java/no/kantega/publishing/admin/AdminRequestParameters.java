@@ -50,5 +50,4 @@ public class AdminRequestParameters {
 
     public static final String MINI_ADMIN_MODE = "currentFolder";
 
-    public static final String PARENT_ID = "parentId";
 }

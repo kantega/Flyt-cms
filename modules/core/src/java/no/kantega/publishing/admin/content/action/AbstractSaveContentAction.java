@@ -23,9 +23,8 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
-import no.kantega.publishing.admin.content.util.ContentAliasValidator;
+import no.kantega.publishing.admin.content.util.ValidatorHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
@@ -299,7 +298,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     content.setAlias(alias);
                 }
 
-                ContentAliasValidator.validateAlias(alias, content, errors);
+                ValidatorHelper.validateAlias(alias, content, errors);
             }
         }
     }

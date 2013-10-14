@@ -35,6 +35,11 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
+/**
+ * Author: Kristian Lier Selnæs, Kantega AS
+ * Date: 30.mai.2008
+ * Time: 12:20:05
+ */
 public class CreateTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(CreateTag.class);
 

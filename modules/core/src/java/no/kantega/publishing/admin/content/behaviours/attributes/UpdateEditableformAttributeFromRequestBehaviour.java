@@ -29,6 +29,10 @@ import org.slf4j.LoggerFactory;
 import java.io.StringReader;
 import java.io.StringWriter;
 
+/**
+ * Date: Apr 14, 2010
+ * Time: 11:53:33 AM
+ */
 public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     private static final Logger log = LoggerFactory.getLogger(UpdateEditableformAttributeFromRequestBehaviour.class);
 

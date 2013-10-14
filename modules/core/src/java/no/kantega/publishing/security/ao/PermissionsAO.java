@@ -17,12 +17,12 @@
 package no.kantega.publishing.security.ao;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
 import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
@@ -30,30 +30,82 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implements PermissionAO {
-    private static final Logger log = LoggerFactory.getLogger(PermissionsAOJDBCImpl.class);
+public class PermissionsAO {
+    private static final Logger log = LoggerFactory.getLogger(PermissionsAO.class);
 
-    @Override
-    @CacheEvict(value = "permissionCache", key = "#object.securityId")
-    public void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
+    public static Map<String, List<Permission>> getPermissionMap() throws SystemException {
+        Map<String, List<Permission>> permissionSets = new HashMap<String, List<Permission>>();
+
+        try (Connection c = dbConnectionFactory.getConnection()) {
+            ResultSet rs = SQLHelper.getResultSet(c, "SELECT ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority FROM objectpermissions ORDER BY ObjectSecurityId, ObjectType, Privilege, Role");
+            int prevObjectSecurityId = -1;
+            int prevObjectType = -1;
+
+            List<Permission> permissionSet = null;
+            while(rs.next()) {
+                Permission permission = new Permission();
+
+                int objectSecurityId = rs.getInt("ObjectSecurityId");
+                int objectType = rs.getInt("ObjectType");
+                if (objectSecurityId != prevObjectSecurityId || objectType != prevObjectType) {
+                    if (permissionSet != null) {
+                        String key = String.format("%s/%s", prevObjectSecurityId, prevObjectType);
+                        permissionSets.put(key, permissionSet);
+                    }
+                    permissionSet = new ArrayList<Permission>();
+                }
+                prevObjectSecurityId = objectSecurityId;
+                prevObjectType = objectType;
+
+                permission.setPrivilege(rs.getInt("Privilege"));
+
+                String roleType = rs.getString("RoleType");
+                SecurityIdentifier identifier;
+                if (roleType.equalsIgnoreCase(new User().getType())) {
+                    identifier = new User();
+                } else {
+                    identifier = new Role();
+                }
+                identifier.setId(rs.getString("Role"));
+                permission.setSecurityIdentifier(identifier);
+                if (permission.getPrivilege() >= Privilege.APPROVE_CONTENT) {
+                    NotificationPriority priority = NotificationPriority.getNotificationPriorityAsEnum(rs.getInt("NotificationPriority")); 
+                    permission.setNotificationPriority(priority);
+                }
+
+                permissionSet.add(permission);
+            }
+
+            if (permissionSet != null) {
+                permissionSets.put("" + prevObjectSecurityId + "/" + prevObjectType, permissionSet);
+            }
+
+
+        } catch (SQLException e) {
+            throw new SystemException("SQL feil", e);
+        }
+
+        return permissionSets;
+    }
+
+
+    public static void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
         int securityId = object.getSecurityId();
 
         try (Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement st;
 
-            log.debug( "Setting permissions for id: {}, securityId: {}", object.getId(), securityId);
+            log.debug( "Setter rettigheter for id:" + object.getId() + ", secid:" + securityId);
 
             boolean setPermissionsFromParent = false;
             if (permissions != null && permissions.size() == 0) {
@@ -118,9 +170,8 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
         }
     }
 
-    @Override
-    public List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
-        List<ObjectPermissionsOverview> overview = new ArrayList<>();
+    public static List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
+        List<ObjectPermissionsOverview> overview = new ArrayList<ObjectPermissionsOverview>();
 
         try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement st;
@@ -135,7 +186,7 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
             st.setInt(1, objectType);
             ResultSet rs = st.executeQuery();
 
-            List<Permission> permissions = new ArrayList<>();
+            List<Permission> permissions = new ArrayList<Permission>();
             int prev = -1;
             while(rs.next()) {
                 String name = rs.getString("Name");
@@ -143,7 +194,7 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
                 if (id != prev) {
                     ObjectPermissionsOverview opo = new ObjectPermissionsOverview();
                     opo.setName(name);
-                    permissions = new ArrayList<>();
+                    permissions = new ArrayList<Permission>();
                     opo.setPermissions(permissions);
                     overview.add(opo);
                     prev = id;
@@ -172,32 +223,4 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
         }
 
     }
-
-    @Override
-    @Cacheable(value = "permissionCache", key = "#object.securityId")
-    public List<Permission> getPermissions(BaseObject object) {
-        return getJdbcTemplate().query("SELECT ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority FROM objectpermissions where ObjectSecurityId = ?",
-                rowMapper, object.getId());
-    }
-
-    public final RowMapper<Permission> rowMapper = new RowMapper<Permission>() {
-        @Override
-        public Permission mapRow(ResultSet rs, int rowNum) throws SQLException {
-            Permission permission = new Permission();
-
-            permission.setObjectSecurityId(rs.getInt("ObjectSecurityId"));
-            permission.setObjectType(rs.getInt("ObjectType"));
-            permission.setPrivilege(rs.getInt("Privilege"));
-            String roleType = rs.getString("RoleType");
-            SecurityIdentifier identifier = roleType.equalsIgnoreCase(RoleType.USER) ? new User() : new Role();
-            identifier.setId(rs.getString("Role"));
-            permission.setSecurityIdentifier(identifier);
-            if (permission.getPrivilege() >= Privilege.APPROVE_CONTENT) {
-                NotificationPriority priority = NotificationPriority.getNotificationPriorityAsEnum(rs.getInt("NotificationPriority"));
-                permission.setNotificationPriority(priority);
-            }
-            return permission;
-        }
-    };
-
 }

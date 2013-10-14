@@ -19,15 +19,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:cache="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <context:annotation-config/>
-
-    <context:component-scan base-package="no.kantega.publishing.admin.config"/>
-
-    <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl" scope="session"/>
-
-    <bean id="aliasValidator" class="no.kantega.publishing.admin.content.util.ContentAliasValidator" />
 
     <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
 
@@ -200,10 +194,6 @@
     <bean id="runtimeMode" class="no.kantega.publishing.spring.RuntimeModeFactoryBean"/>
 
     <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
-        <property name="dataSource" ref="aksessDataSource"/>
-    </bean>
-
-    <bean id="permissionsAO" class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 

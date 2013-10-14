@@ -18,6 +18,7 @@ package no.kantega.useradmin.controls;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.profile.DefaultProfile;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.role.DefaultRoleId;

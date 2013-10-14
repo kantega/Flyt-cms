@@ -27,6 +27,11 @@ import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Author: Steinar Line, Kantega
+ * Date: 06.sep.2007
+ * Time: 09:19:45
+ */
 public class PrintQuickMenuTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(PrintQuickMenuTag.class);
 

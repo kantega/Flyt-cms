@@ -27,6 +27,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
+/**
+ * User: Anders Skar, Kantega AS
+ * Date: Oct 20, 2008
+ * Time: 11:13:54 AM
+ */
 public class ContentRewriteFilter implements Filter {
     private ServletContext servletContext;
 

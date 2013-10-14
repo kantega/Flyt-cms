@@ -17,7 +17,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mock.web.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.web.context.ServletContextAware;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.jsp.JspException;
@@ -37,9 +36,6 @@ public class GetUrlTagTest {
 
     @Autowired // mock sitecache defined in TestConfiguration
     private SiteCache siteCache;
-
-    @Autowired
-    private ContentIdHelper contentIdHelper;
 
     private GetUrlTag getUrlTag;
 
@@ -67,10 +63,6 @@ public class GetUrlTagTest {
 
         mockServletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, wac);
 
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.setContextPath("/");
-
-        ((ServletContextAware)contentIdHelper).setServletContext(servletContext);
     }
 
     @Test

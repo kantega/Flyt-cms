@@ -31,7 +31,12 @@ import org.xml.sax.helpers.XMLFilterImpl;
 
 import java.util.List;
 
-public class ImgHeightAndWidthFilter extends XMLFilterImpl {
+/**
+ * User: Anders Skar, Kantega AS
+ * Date: Apr 28, 2009
+ * Time: 1:26:12 PM
+ */
+public class ImgHeightAndWidthFilter extends XMLFilterImpl {        
     private static final Logger log = LoggerFactory.getLogger(ImgHeightAndWidthFilter.class);
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {

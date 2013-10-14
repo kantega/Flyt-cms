@@ -1,14 +1,15 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.exception.ExceptionHandler,
-                 no.kantega.publishing.security.SecuritySession"%>
-<%@ page import="org.slf4j.Logger"%>
-<%@ page import="org.slf4j.LoggerFactory"%>
-<%@ page import="java.io.IOException"%>
-<%@ page import="java.text.DateFormat"%>
-<%@ page import="java.text.SimpleDateFormat"%>
+                 no.kantega.publishing.common.Aksess"%>
 <%@ page import="java.util.Date"%>
-<%@ page import="java.util.Properties" %>
+<%@ page import="java.text.SimpleDateFormat"%>
+<%@ page import="java.text.DateFormat"%>
+<%@ page import="no.kantega.publishing.security.SecuritySession"%>
+<%@ page import="java.util.Properties"%>
+<%@ page import="java.io.IOException"%>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.slf4j.Logger" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

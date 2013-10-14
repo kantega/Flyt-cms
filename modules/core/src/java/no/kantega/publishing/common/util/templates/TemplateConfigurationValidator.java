@@ -20,7 +20,10 @@ import no.kantega.publishing.api.model.PublicIdObject;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class TemplateConfigurationValidator {
 
@@ -43,21 +46,22 @@ public class TemplateConfigurationValidator {
     }
 
     private List<TemplateConfigurationValidationError> validateAssociationCategories(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
-        Collection<AssociationCategory> duplicates = getDuplicates(configuration.getAssociationCategories());
-        for (AssociationCategory category : duplicates) {
+        List duplicates = getDuplicates(configuration.getAssociationCategories());
+        for (int i = 0; i < duplicates.size(); i++) {
+            AssociationCategory category = (AssociationCategory)duplicates.get(i);
             errors.add(new TemplateConfigurationValidationError(category.getName(), "aksess.templateconfig.error.duplicateid", category.toString()));
         }
         return errors;
     }
 
     private List<TemplateConfigurationValidationError> validateSites(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
         for (Site site : configuration.getSites()) {
             if (site.getId() < 0) {
-                errors.add(new TemplateConfigurationValidationError(site.getName(), "aksess.templateconfig.error.missingdatabaseid", String.valueOf(site.getId())));
+                errors.add(new TemplateConfigurationValidationError(site.getName(), "aksess.templateconfig.error.missingdatabaseid", "" + site.getId()));
             }
         }
 
@@ -65,16 +69,17 @@ public class TemplateConfigurationValidator {
     }
 
     private List<TemplateConfigurationValidationError> validateDocumentTypes(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
-        Collection<DocumentType> duplicates = getDuplicates(configuration.getDocumentTypes());
-        for (DocumentType dt: duplicates) {
+        List duplicates = getDuplicates(configuration.getDocumentTypes());
+        for (int i = 0; i < duplicates.size(); i++) {
+            DocumentType dt = (DocumentType)duplicates.get(i);
             errors.add(new TemplateConfigurationValidationError(dt.getName(), "aksess.templateconfig.error.duplicateid", dt.toString()));
         }
         
         for (DocumentType dt : configuration.getDocumentTypes()) {
             if (dt.getId() < 0) {
-                errors.add(new TemplateConfigurationValidationError(dt.getName(), "aksess.templateconfig.error.missingdatabaseid", String.valueOf(dt.getId())));
+                errors.add(new TemplateConfigurationValidationError(dt.getName(), "aksess.templateconfig.error.missingdatabaseid", "" + dt.getId()));
             }
         }
 
@@ -82,24 +87,25 @@ public class TemplateConfigurationValidator {
     }
 
     private List<TemplateConfigurationValidationError> validateDisplayTemplates(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
-        Collection<DisplayTemplate> duplicates = getDuplicates(configuration.getDisplayTemplates());
-        for (DisplayTemplate dt : duplicates) {
+        List duplicates = getDuplicates(configuration.getDisplayTemplates());
+        for (int i = 0; i < duplicates.size(); i++) {
+            DisplayTemplate dt = (DisplayTemplate)duplicates.get(i);
             errors.add(new TemplateConfigurationValidationError(dt.getName(), "aksess.templateconfig.error.duplicateid", dt.toString()));
         }
 
         for (DisplayTemplate displayTemplate : configuration.getDisplayTemplates()) {
             if (displayTemplate.getId() < 0) {
-                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", String.valueOf(displayTemplate.getId())));
+                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", "" + displayTemplate.getId()));
             }
 
             if (!objectExistsUpdateId(configuration.getContentTemplates(),  displayTemplate.getContentTemplate())) {
-                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.invalidreferencetocontenttemplate", String.valueOf(displayTemplate.getContentTemplate())));
+                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.invalidreferencetocontenttemplate", "" + displayTemplate.getContentTemplate()));
             }
 
             if (!objectExistsUpdateId(configuration.getMetadataTemplates(),  displayTemplate.getMetaDataTemplate())) {
-                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.invalidreferencetocontenttemplate", String.valueOf(displayTemplate.getMetaDataTemplate())));
+                errors.add(new TemplateConfigurationValidationError(displayTemplate.getName(), "aksess.templateconfig.error.invalidreferencetocontenttemplate", "" + displayTemplate.getMetaDataTemplate()));
             }
 
 
@@ -115,28 +121,29 @@ public class TemplateConfigurationValidator {
     }
 
     private List<TemplateConfigurationValidationError> validateContentTemplates(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
-        Collection<ContentTemplate> duplicates = getDuplicates(configuration.getContentTemplates());
-        for (ContentTemplate ct : duplicates) {
+        List duplicates = getDuplicates(configuration.getContentTemplates());
+        for (int i = 0; i < duplicates.size(); i++) {
+            ContentTemplate ct = (ContentTemplate)duplicates.get(i);
             errors.add(new TemplateConfigurationValidationError(ct.getName(), "aksess.templateconfig.error.duplicateid", ct.toString()));
         }
 
         for (ContentTemplate contentTemplate : configuration.getContentTemplates()) {
             if (contentTemplate.getId() < 0) {
-                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", String.valueOf(contentTemplate.getId())));
+                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", "" + contentTemplate.getId()));
             }
 
             // Check reference to document type
             if (contentTemplate.getDocumentType() != null) {
                 if (!objectExistsUpdateId(configuration.getDocumentTypes(), contentTemplate.getDocumentType())) {
-                    errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetodocumenttype", String.valueOf(contentTemplate.getDocumentType())));
+                    errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetodocumenttype", "" + contentTemplate.getDocumentType()));
                 }
             }
 
             if (contentTemplate.getDocumentTypeForChildren() != null) {
                 if (!objectExistsUpdateId(configuration.getDocumentTypes(), contentTemplate.getDocumentTypeForChildren())) {
-                    errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetodocumenttype", String.valueOf(contentTemplate.getDocumentTypeForChildren())));
+                    errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetodocumenttype", "" + contentTemplate.getDocumentTypeForChildren()));
                 }
             }
 
@@ -148,7 +155,7 @@ public class TemplateConfigurationValidator {
             }
 
             if (!objectExistsUpdateId(configuration.getAssociationCategories(), contentTemplate.getDefaultAssociationCategory())) {
-                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetoassociationcategory", String.valueOf(contentTemplate.getDefaultAssociationCategory())));
+                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.invalidreferencetoassociationcategory", "" + contentTemplate.getDefaultAssociationCategory()));
             }
 
 
@@ -166,28 +173,30 @@ public class TemplateConfigurationValidator {
     }
 
     private List<TemplateConfigurationValidationError> validateMetadataTemplates(TemplateConfiguration configuration) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
 
-        Collection<ContentTemplate> duplicates = getDuplicates(configuration.getMetadataTemplates());
-        for (ContentTemplate ct : duplicates) {
+        List duplicates = getDuplicates(configuration.getMetadataTemplates());
+        for (int i = 0; i < duplicates.size(); i++) {
+            ContentTemplate ct = (ContentTemplate)duplicates.get(i);
             errors.add(new TemplateConfigurationValidationError(ct.getName(), "aksess.templateconfig.error.duplicateid", ct.toString()));
         }
 
         for (ContentTemplate contentTemplate : configuration.getMetadataTemplates()) {
             if (contentTemplate.getId() < 0) {
-                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", String.valueOf(contentTemplate.getId())));
+                errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.missingdatabaseid", "" + contentTemplate.getId()));
             }
         }
 
         return errors;
     }
 
-    private boolean objectExistsUpdateId(List<? extends PublicIdObject> objects, PublicIdObject object) {
+    private boolean objectExistsUpdateId(List objects, PublicIdObject object) {
         if (object == null) {
             return true;
         }
 
-        for (PublicIdObject o : objects) {
+        for (int i = 0; i < objects.size(); i++) {
+            PublicIdObject o = (PublicIdObject)objects.get(i);
             if (o.getId() == object.getId()) {
                 return true;
             }
@@ -203,16 +212,32 @@ public class TemplateConfigurationValidator {
     }
 
 
-    private <PO extends PublicIdObject> Collection<PO> getDuplicates(List<PO> objects) {
-        Set<PO> duplicates = new LinkedHashSet<>();
-        Set<Integer> uniques = new HashSet<>();
+    private List<PublicIdObject> getDuplicates(List objects) {
+        List<PublicIdObject> duplicates = new ArrayList<PublicIdObject>();
 
-        for(PO t : objects) {
-            if(!uniques.add(t.getId())) {
-                duplicates.add(t);
+        Map<Integer, PublicIdObject> ids = new HashMap<Integer, PublicIdObject>();
+        Map<String, PublicIdObject> publicIds = new HashMap<String, PublicIdObject>();
+        
+        for (int i = 0; i < objects.size(); i++) {
+            boolean isDuplicate = false;
+            PublicIdObject o = (PublicIdObject)objects.get(i);
+            if (ids.containsKey(o.getId())) {
+                duplicates.add(o);
+                isDuplicate = true;
+            } else {
+                ids.put(o.getId(), o);
+            }
+
+            if (o.getPublicId() != null && o.getPublicId().length() > 0) {
+                if (publicIds.containsKey(o.getPublicId())) {
+                    if (!isDuplicate) {
+                        duplicates.add(o);
+                    }
+                } else {
+                    publicIds.put(o.getPublicId(), o);
+                }
             }
         }
-
         return duplicates;
     }
 }

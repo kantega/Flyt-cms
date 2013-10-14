@@ -18,12 +18,12 @@ package no.kantega.publishing.security.data;
 
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 
+import java.io.Serializable;
+
 public class Permission {
     private int privilege = -1;
     private NotificationPriority notificationPriority;
     private SecurityIdentifier securityIdentifier = null;
-    private int objectType;
-    private int objectSecurityId;
 
     public Permission() {
     }
@@ -56,24 +56,5 @@ public class Permission {
 
     public void setNotificationPriority(NotificationPriority notificationPriority) {
         this.notificationPriority = notificationPriority;
-    }
-
-    public void setObjectType(int objectType) {
-        this.objectType = objectType;
-    }
-
-    /**
-     * @return one of <code>no.kantega.publishing.common.data.enums.ObjectType</code>
-     */
-    public int getObjectType() {
-        return objectType;
-    }
-
-    public void setObjectSecurityId(int objectSecurityId) {
-        this.objectSecurityId = objectSecurityId;
-    }
-
-    public int getObjectSecurityId() {
-        return objectSecurityId;
     }
 }
