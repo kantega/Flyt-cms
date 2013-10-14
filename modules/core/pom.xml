@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.6.7-SNAPSHOT</version>
+        <version>7.7.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -291,14 +291,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <version>${springframework.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <!-- Has been moved to spring-test in spring-3.2-->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test-mvc</artifactId>
-            <version>1.0.0.M2</version>
             <scope>test</scope>
         </dependency>
 
