@@ -24,6 +24,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.services.ContentManagmentService;
@@ -37,14 +38,14 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import no.kantega.publishing.spring.AksessAliasHandlerMapping;
+import org.apache.commons.lang.NotImplementedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.ServletContextAware;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
-import org.springframework.web.multipart.support.MultipartFilter;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.ServletContext;
@@ -54,11 +55,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-
 /**
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
+@Controller
 public abstract class ContentRequestHandler implements ServletContextAware{
     private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
 
@@ -67,96 +67,71 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
     @Autowired
+    private ContentIdentifierDao contentIdentifierDao;
+
+    @Autowired
     private ContentIdHelper contentIdHelper;
     private ServletContext servletContext;
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
-    public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response){
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
-        SecuritySession securitySession = getSecuritySession();
-        return null;
+        return handleFromContentIdentifier(cid, request, response);
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response){
-        return handlePrettyUrl(thisId, request, response);
+    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        return handleFromContentIdentifier(ContentIdentifier.fromAssociationId(thisId), request, response);
     }
 
+    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String alias = (String) request.getAttribute(AksessAliasHandlerMapping.HANDLED_OA_ALIAS);
 
-    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response){
-        SecuritySession securitySession = getSecuritySession();
-        return null;
+        ContentIdentifier cid = getBestMatchingAlias(alias, request.getServerName());
+        return handleFromContentIdentifier(cid, request, response);
     }
 
-    protected abstract SecuritySession getSecuritySession();
-
-    @Metered
-    @Timed
-    protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    private ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
+        SecuritySession securitySession = getSecuritySession();
 
-        boolean isAdminMode = HttpHelper.isAdminMode(request);
+        if("hearing".equals(request.getParameter("status"))) {
+            cid.setStatus(ContentStatus.HEARING);
+        }
 
-        // Force getting a session since Tomcat does not always create a session
-        request.getSession(true);
-
+        ContentManagementService cms = new ContentManagementService(securitySession);
         try {
-            ContentManagementService cms = new ContentManagementService(request);
-
-            ContentIdentifier cid;
-            String originalUri = (String)request.getAttribute("javax.servlet.error.request_uri");
-            if (originalUri == null) {
-                // Direct call
-                cid = contentIdHelper.fromRequest(request);
+            Content content = cms.getContent(cid, true);
+            // Send NOT_FOUND if expired or not published
+            boolean isAdminMode = HttpHelper.isAdminMode(request);
+            if (content != null) {
+                // Send NOT_FOUND if expired or not published
+                if(!isAdminMode && (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE && content.getVisibilityStatus() != ContentVisibilityStatus.ARCHIVED)) {
+                    throw new ContentNotFoundException("", SOURCE);
+                }
+                if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
+                    return null;
+                }
+                if (isAdminMode) {
+                    response.setDateHeader("Expires", 0);
+                }
+                contentRequestDispatcher.dispatchContentRequest(content, servletContext, request, response);
+                logTimeSpent(start, content);
             } else {
-                // Called via 404 mechanism, eg. could be a page alias
-                // request_uri contains contextpath, must remove contextpath
-                String contextPath = Aksess.getContextPath();
-                if (isNotBlank(contextPath) && originalUri.contains(contextPath)) {
-                    originalUri = originalUri.substring(contextPath.length(), originalUri.length());
-                }
-                cid = contentIdHelper.fromRequestAndUrl(request, originalUri);
-                response.setStatus(HttpServletResponse.SC_OK);
-
-                if (request.getMethod().toLowerCase().equals("post") && (new RequestParameters(request).isMultipart() || request.getAttribute("MultipartFilter" + MultipartFilter.ALREADY_FILTERED_SUFFIX) != null)) {
-                    log.error( "multipart/form-data forms cannot post to aliases. Use contentId=${aksess_this.id} in form action");
-                }
+                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                throw new ContentNotFoundException(SOURCE, "");
             }
 
-            if("hearing".equals(request.getParameter("status"))) {
-                cid.setStatus(ContentStatus.HEARING);
-            }
-            try {
-                Content content = cms.getContent(cid, true);
-                if (content != null) {
-                    // Send NOT_FOUND if expired or not published
-                    if(!isAdminMode && (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE && content.getVisibilityStatus() != ContentVisibilityStatus.ARCHIVED)) {
-                        throw new ContentNotFoundException(cid.toString());
-                    }
-                    if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){
-                        return null;
-                    }
-                    if (isAdminMode) {
-                        response.setDateHeader("Expires", 0);
-                    }
-                    contentRequestDispatcher.dispatchContentRequest(content, servletContext, request, response);
-                    logTimeSpent(start, content);
-                } else {
-                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                    throw new ContentNotFoundException(cid.toString());
-                }
-            } catch (NotAuthorizedException e) {
-                // Check if user is logged in
-                SecuritySession secSession = SecuritySession.getInstance(request);
-                if (secSession.isLoggedIn()) {
-                    RequestHelper.setRequestAttributes(request, null);
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    request.getRequestDispatcher("/403.jsp").forward(request, response);
-                } else {
-                    // Start login process (redirect)
-                    secSession.initiateLogin(request, response);
-                }
-
+        } catch (NotAuthorizedException e) {
+            // Check if user is logged in
+            SecuritySession secSession = SecuritySession.getInstance(request);
+            if (secSession.isLoggedIn()) {
+                RequestHelper.setRequestAttributes(request, null);
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                request.getRequestDispatcher("/403.jsp").forward(request, response);
+            } else {
+                // Start login process (redirect)
+                secSession.initiateLogin(request, response);
             }
         } catch (ContentNotFoundException e) {
             try {
@@ -176,8 +151,25 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             log.error("", e);
             throw new ServletException(e);
         }
+
         return null;
     }
+
+    private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
+        /*List<ContentIdentifier> contentIdentifiersByAlias = contentIdentifierDao.getContentIdentifiersByAlias(alias);
+        if(contentIdentifiersByAlias.size() == 1){
+            return contentIdentifiersByAlias.get(0);
+        } else {
+            ContentIdentifier bestMatch = contentIdentifiersByAlias.remove(0);
+            for (ContentIdentifier cids : contentIdentifiersByAlias) {
+
+            }
+            return bestMatch;
+        }*/
+        throw new NotImplementedException();
+    }
+
+    protected abstract SecuritySession getSecuritySession();
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
@@ -229,6 +221,11 @@ public abstract class ContentRequestHandler implements ServletContextAware{
         this.siteCache = siteCache;
     }
 
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
     private String createRedirectUrlWithIncomingParameters(HttpServletRequest request, String url) {
         String params = HttpHelper.createQueryStringFromRequestParameters(request);
         if (params.length() > 0) {
@@ -239,10 +236,5 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             }
         }
         return url;
-    }
-
-    @Override
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
     }
 }

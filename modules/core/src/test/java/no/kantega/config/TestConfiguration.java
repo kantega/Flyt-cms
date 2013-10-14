@@ -2,6 +2,7 @@ package no.kantega.config;
 
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentAliasDao;
+import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.templates.XMLFileInputStreamSource;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -47,6 +48,11 @@ public class TestConfiguration {
         ContentAliasDao mock = mock(ContentAliasDao.class);
         when(mock.getAllAliases()).thenReturn(asList("/alias/", "/alias2", "/alias/alias/"));
         return mock;
+    }
+
+    @Bean
+    public ContentIdentifierDao getContentIdentifierDao(){
+        return mock(ContentIdentifierDao.class);
     }
 
     @Bean
