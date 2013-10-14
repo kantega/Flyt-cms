@@ -75,7 +75,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
     private void executeTemplate(DispatchContext context) {
         String template = context.getTemplateUrl();
         if (template.contains(".")) {
-            String groovyPath = template.substring(0, template.lastIndexOf(".")) + ".groovy";
+            String groovyPath = template.substring(0, template.lastIndexOf('.')) + ".groovy";
 
 
             try {
@@ -83,7 +83,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 final URL resource = servletContext.getResource(groovyPath);
                 if (resource != null) {
 
-                    Map<Class, Object> allowedParameters = new HashMap<Class, Object>();
+                    Map<Class, Object> allowedParameters = new HashMap<>();
                     allowedParameters.put(Content.class, context.getRequest().getAttribute("aksess_this"));
                     allowedParameters.put(HttpServletRequest.class, context.getRequest());
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
@@ -93,7 +93,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     synchronized (scripts) {
                         if (!scripts.containsKey(groovyPath) || getLastModified(resource) > scripts.get(groovyPath).getLastModified()) {
                             Class clazz = classLoader.parseClass(new GroovyCodeSource(resource));
-                            Method method = getMethod(clazz, groovyPath, allowedParameters);
+                            Method method = getMethod(clazz, allowedParameters);
                             Object script = clazz.newInstance();
                             scripts.put(groovyPath, new ExecutionContext(method, script, getLastModified(resource)));
                         }
@@ -169,7 +169,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
         return parameters;
     }
 
-    private Method getMethod(Class clazz, String groovyPath, Map<Class, Object> allowedParameters) {
+    private Method getMethod(Class clazz, Map<Class, Object> allowedParameters) {
 
         Method[] methods = clazz.getDeclaredMethods();
 

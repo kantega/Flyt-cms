@@ -61,22 +61,17 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
     public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval) {
         if (previousRun != null) {
             // Send ut epost med alle nye meldinger
-            boolean groupEmails = false;
-            try {
-                groupEmails = Aksess.getConfiguration().getBoolean("mail.subscription.groupemails", false);
-            } catch (ConfigurationException e) {
-                log.info( "Unable to read configuration value for 'mail.subscription.groupemails'");
-            }
+            boolean groupEmails = Aksess.getConfiguration().getBoolean("mail.subscription.groupemails", false);
 
             if (groupEmails) {
                 // Send en epost for alle sites
-                log.debug( "Sending mailsubscriptions for all sites");
+                log.info("Sending mailsubscriptions for all sites");
                 emailNewContentForSite(previousRun, interval, null);
             } else {
                 // Send en epost for hver site
                 List<Site> sites = siteCache.getSites();
                 for (Site site : sites) {
-                    log.debug( "Sending mailsubscriptions for site:  " + site.getName());
+                    log.info("Sending mailsubscriptions for site:  " + site.getName());
                     emailNewContentForSite(previousRun, interval, site);
                 }
             }
@@ -98,19 +93,14 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
         Role everyone = new Role();
         everyone.setId(Aksess.getEveryoneRole());
 
-        boolean sendProtectedContent = false;
-        try {
-            sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
-        } catch (ConfigurationException e) {
-            log.info( "Unable to read configuration value for 'mail.subscription.sendprotectedcontent'");
-        }
+        boolean sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
 
         for (Content content : allContentList) {
             if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
                 contentList.add(content);
-                log.debug( "New content:" + content.getTitle());
+                log.info("New content:" + content.getTitle());
             } else {
-                log.info( "Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
+                log.info("Content was not sent due to permissions:" + content.getTitle() + " (set mail.subscription.sendprotectedcontent=true to send all content)");
             }
         }
 

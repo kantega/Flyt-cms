@@ -70,7 +70,7 @@ public class AttachmentAO {
                 }
             } else {
                 if (data != null) {
-                    PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize) values(?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize) values(?,?,?,?,?,?)", new String[] {"ID"});
                     st.setInt(1, attachment.getContentId());
                     st.setInt(2, attachment.getLanguage());
                     st.setString(3, attachment.getFilename());

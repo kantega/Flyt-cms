@@ -22,6 +22,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class PrettyURLEncoder {
     private static final Logger log = LoggerFactory.getLogger(PrettyURLEncoder.class);
 
@@ -41,9 +43,8 @@ public class PrettyURLEncoder {
 
     private static char[][] map = { space, slash, aa, AA, auml, Auml, aelig, Aelig, oslash, Oslash, ouml, Ouml};
 
-    public static final String LEGAL_URL_PATTERN = "[\\w\\-+]";
-    public static final String ILLLEGAL_URL_PATTERN = "[^a-zA-Z_0-9-+\\.:]";
-    private static Pattern pattern = Pattern.compile(ILLLEGAL_URL_PATTERN);
+    public static final String LEGAL_URL_PATTERN = "[^a-zA-Z_0-9-+\\.:]";
+    private static Pattern pattern = Pattern.compile(LEGAL_URL_PATTERN);
 
     public static String encode(String url) {
         if (url == null) {
@@ -69,8 +70,8 @@ public class PrettyURLEncoder {
     }    
 
     public static String createContentUrl(int associationId, String title, String alias) {
-        if (alias != null && alias.length() > 0) {
-            return "/" + Aksess.CONTENT_REQUEST_HANDLER + "?thisId=" + associationId;
+        if (isNotBlank(alias)) {
+            return alias.charAt(0) == '/' ? alias : "/" + alias;
         } else {
             return Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
         }

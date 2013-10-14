@@ -55,6 +55,9 @@ public class IsInPathTag extends ConditionalTagSupport {
 
     protected boolean condition() {
         try {
+            if(contentIdHelper == null){
+                contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
+            }
             HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();
             HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
 
@@ -66,9 +69,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                     if (content == null) {
                         // Ikke hentet side
                         ContentManagementService cs = new ContentManagementService(request);
-                        if(contentIdHelper == null){
-                            contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
-                        }
+
                         ContentIdentifier contentIdentifier = contentIdHelper.fromRequest(request);
                         content = cs.getContent(contentIdentifier, true);
                         RequestHelper.setRequestAttributes(request, content);

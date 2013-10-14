@@ -77,6 +77,21 @@
                 openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.tools.replacefile"/>', href: "${pageContext.request.contextPath}/admin/multimedia/ViewUploadMultimediaForm.action?id=${media.id}", width: 450, height:200});
             });
         </c:if>
+
+            <c:if test="${canEdit}">
+            $("#ToolsMenu .button .rotateccw").click(function(){
+                location.href = "ImageRotate.action?id=${media.id}&direction=ccw";
+            });
+            </c:if>
+            <c:if test="${canEdit}">
+            $("#ToolsMenu .button .rotatecw").click(function(){
+                location.href = "ImageRotate.action?id=${media.id}&direction=cw";
+            });
+            </c:if>
+
+
+
+
         }
 
         openaksess.multimedia.onDeleteConfirm = function() {
@@ -98,10 +113,13 @@
 
 <kantega:section id="toolsMenu">
     <div class="buttonGroup">
+        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
+        <a href="#" class="button"><span class="newfile"><kantega:label key="aksess.tools.replacefile"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="crop"><kantega:label key="aksess.tools.crop"/></span></a>
         <a href="#" class="button <c:if test="${!(canEdit && isImage)}">disabled</c:if>"><span class="imagemap"><kantega:label key="aksess.tools.imagemap"/></span></a>
-        <a href="#" class="button"><span class="newfile"><kantega:label key="aksess.tools.replacefile"/></span></a>
-        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="delete"><kantega:label key="aksess.tools.delete"/></span></a>
+        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="rotateccw"><kantega:label key="aksess.tools.rotateccw"/></span></a>
+        <a href="#" class="button <c:if test="${!(canEdit)}">disabled</c:if>"><span class="rotatecw"><kantega:label key="aksess.tools.rotatecw"/></span></a>
+
     </div>
 </kantega:section>
 

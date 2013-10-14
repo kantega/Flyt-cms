@@ -154,7 +154,10 @@ public class MultimediaAO {
         int securityId = object.getId();
         if (setFromParent) {
             Multimedia mm = (Multimedia)object;
-            securityId = mm.getParentId();
+            Multimedia parent = getMultimedia(mm.getParentId());
+            if (parent != null) {
+                securityId = parent.getSecurityId();
+            }
         }
         PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?");
         st.setInt(1, securityId);

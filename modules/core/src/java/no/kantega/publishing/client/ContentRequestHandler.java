@@ -17,6 +17,7 @@
 package no.kantega.publishing.client;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -50,7 +51,7 @@ import java.util.List;
  */
 @Controller
 public abstract class ContentRequestHandler implements ServletContextAware{
-    private static Logger LOG = LoggerFactory.getLogger(ContentRequestHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
 
     @Autowired
     private SiteCache siteCache;
@@ -125,8 +126,11 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                 secSession.initiateLogin(request, response);
             }
         } catch (ContentNotFoundException e) {
-            RequestHelper.setRequestAttributes(request, null);
-
+            try {
+                RequestHelper.setRequestAttributes(request, null);
+            } catch (SystemException e1) {
+                log.error("Could not set request attributes", e1);
+            }
             request.getRequestDispatcher("/404.jsp").forward(request, response);
         } catch (Throwable e) {
             if (e instanceof ServletException) {
@@ -135,7 +139,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                     e = sex.getRootCause();
                 }
             }
-            LOG.error("Error when dispatching content", e);
+            log.error(request.getRequestURI(), e);
             throw new ServletException(e);
         }
 
@@ -151,7 +155,16 @@ public abstract class ContentRequestHandler implements ServletContextAware{
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
-        LOG.info("Execution time: {} ms ({}, id: {}, template: {})", (end - start), content.getTitle(), content.getId(), content.getDisplayTemplateId());
+        StringBuilder message = new StringBuilder("Execution time: ");
+        message.append((end - start));
+        message.append(" ms (");
+        message.append(content.getTitle());
+        message.append(", id: ");
+        message.append(content.getId());
+        message.append(", template:");
+        message.append(content.getDisplayTemplateId());
+        message.append(")");
+        log.info( message.toString());
     }
 
     private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {

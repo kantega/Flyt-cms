@@ -37,6 +37,30 @@ public class DefaultImageEditor implements ImageEditor {
         return resizeAndCropMultimedia(multimedia, targetWidth, targetHeight, -1, -1, -1, -1);
     }
 
+
+    /**
+     * {@inheritDoc}
+     */
+    public Multimedia rotateMultimedia(Multimedia multimedia, int degrees) throws InvalidImageFormatException, IOException {
+
+        BufferedImage image = getImageFromMultimedia(multimedia);
+
+        // Because of rounding, images that have odd pixel sizes, will be cropped by 1px
+        int width = image.getWidth() % 2 == 0? image.getWidth() : image.getWidth() -1;
+        int height = image.getHeight() % 2 == 0? image.getHeight(): image.getHeight() -1;
+        BufferedImage newImage = new BufferedImage(height, width, image.getType());
+        Graphics2D g2 = newImage.createGraphics();
+
+        // applying transforms
+        g2.rotate(Math.toRadians(degrees), height/2, width/2);
+        g2.translate((height - width) / 2, (width - height) / 2);
+        g2.drawRenderedImage(image, null);
+        g2.dispose();
+
+        Multimedia mm = updateMultimedia(newImage, multimedia);
+        return mm;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -171,7 +195,7 @@ public class DefaultImageEditor implements ImageEditor {
     }
 
     /**
-     * Get dimensions of resized image with correct aspect ratio
+     * Get dimentions of resized image with correct aspect ratio
      * @param originalWidth - original width of image
      * @param originalHeight  - original height of image
      * @param targetWidth - width of resized image
@@ -295,6 +319,9 @@ public class DefaultImageEditor implements ImageEditor {
                 break;
             case CENTERED:
                 croppedImage = cropImage(image, (image.getWidth() - cropWidth) / 2, (image.getHeight() - cropHeight) / 2, cropWidth, cropHeight);
+                break;
+            case TOPCENTER:
+                croppedImage = cropImage(image, (image.getWidth() - cropWidth) / 2, 0, cropWidth, cropHeight);
                 break;
             default:
                 if (cropWidth < image.getWidth() || cropHeight < image.getHeight()){

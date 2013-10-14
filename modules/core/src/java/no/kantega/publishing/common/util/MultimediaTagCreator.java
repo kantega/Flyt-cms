@@ -122,7 +122,7 @@ public class MultimediaTagCreator {
                 }
 
                 if (cropping != Cropping.CONTAIN){
-                    url +="&cropping=" + cropping.getTypeAsString();
+                    url +="&amp;cropping=" + cropping.getTypeAsString();
                 }
 
 

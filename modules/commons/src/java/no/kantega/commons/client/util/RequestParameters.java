@@ -19,7 +19,9 @@ package no.kantega.commons.client.util;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.ServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -189,9 +191,9 @@ public class RequestParameters  {
 
     public MultipartFile getFile(String wantedname) {
         MultipartFile file = null;
-                 
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)request;
+
+        MultipartHttpServletRequest multipart = getMultipartHttpServletRequest();
+        if(multipart != null) {
             file = multipart.getFile(wantedname);
             if (file != null && file.isEmpty()) {
                 file = null;
@@ -204,13 +206,31 @@ public class RequestParameters  {
     public List<MultipartFile> getFiles(String wantedname) {
         List<MultipartFile> files = new ArrayList<MultipartFile>();
 
-        if (request instanceof MultipartHttpServletRequest) {
-            MultipartHttpServletRequest multipart = (MultipartHttpServletRequest)request;
+        MultipartHttpServletRequest multipart = getMultipartHttpServletRequest();
+        if (request != null) {
             files = multipart.getFiles(wantedname);
         }
 
         return files;
     }
 
+    public MultipartHttpServletRequest getMultipartHttpServletRequest() {
+        MultipartHttpServletRequest multipart;
+        HttpServletRequest req = request;
+        while(!(req instanceof MultipartHttpServletRequest) && req instanceof ServletRequestWrapper) {
+            req = (HttpServletRequest) ((ServletRequestWrapper)req).getRequest();
+        }
+
+        if (req instanceof MultipartHttpServletRequest) {
+            multipart = (MultipartHttpServletRequest) req;
+        } else {
+            multipart = null;
+        }
+        return multipart;
+    }
+
+    public boolean isMultipart() {
+        return getMultipartHttpServletRequest() != null;
+    }
 }
 

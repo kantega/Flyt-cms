@@ -19,7 +19,7 @@ import java.security.SecureRandom;
 public class GroovyAuthorizationController {
 
 
-    private String authorizationView = "org/kantega/openaksess/plugins/groovyconsole/views/authorization.vm";
+    private String authorizationView = "org/kantega/openaksess/plugins/groovyconsole/views/authorization";
 
     private File authorizationTokenFile;
 

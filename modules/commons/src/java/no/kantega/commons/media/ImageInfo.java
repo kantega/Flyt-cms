@@ -465,17 +465,6 @@ public class ImageInfo {
 			if ((marker & 0xff00) != 0xff00) {
 				return false; // not a valid marker
 			}
-			if (marker == 0xffe0) { // APPx
-				if (size < 14) {
-					return false; // APPx header must be >= 14 bytes
-				}
-				if (read(data, 0, 12) != 12) {
-					return false;
-				}
-				final byte[] APP0_ID = {0x4a, 0x46, 0x49, 0x46, 0x00};
-				skip(size - 14);
-			}
-			else
 			if (collectComments && size > 2 && marker == 0xfffe) { // comment
 				size -= 2;
 				byte[] chars = new byte[size];

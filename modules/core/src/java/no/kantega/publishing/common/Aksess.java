@@ -19,7 +19,6 @@ package no.kantega.publishing.common;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.enums.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,13 +133,6 @@ public class Aksess {
     public static void loadConfiguration() {
 
         try {
-            contextPath = c.getString("location.contextpath", "");
-            if (contextPath.length() > 0) {
-                if (contextPath.contains("/")) {
-                    // Fjern ekstra / start eller slutt av adresse
-                    contextPath = StringHelper.replace(contextPath, "/", "");
-                }
-            }
 
             baseUrl = c.getString("location.baseurl");
             if (baseUrl == null && c.getString("location.applicationurl") != null) {
@@ -293,9 +285,7 @@ public class Aksess {
             }
 
         } catch (ConfigurationException e) {
-            log.debug( "********* Couldn't read aksess.conf **********");
-            log.error("", e);
-            System.out.println("********* Couldn't read aksess.conf **********" + e);
+            log.error("********* Couldn't read aksess.conf **********", e);
         }
 
         log.info( "location.contextpath=" + contextPath);
@@ -312,7 +302,7 @@ public class Aksess {
             webappVersionInfo.load(Aksess.class.getResourceAsStream("/aksess-webapp-version.properties"));
             return webappVersionInfo.getProperty("revision");
         } catch (IOException e) {
-            throw new RuntimeException("/aksess-webapp-version.properties not found");
+            throw new RuntimeException("/aksess-webapp-version.properties not found", e);
         }
 
     }
@@ -336,6 +326,10 @@ public class Aksess {
         } else {
             return "/" + contextPath;
         }
+    }
+
+    public static void setContextPath(String contextPath) {
+        Aksess.contextPath = contextPath;
     }
 
     public static String getStartPage() {
@@ -454,7 +448,7 @@ public class Aksess {
         return topicMapsEnabled;
     }
 
-    public static Configuration getConfiguration() throws ConfigurationException {
+    public static Configuration getConfiguration() {
         return c;
     }
 

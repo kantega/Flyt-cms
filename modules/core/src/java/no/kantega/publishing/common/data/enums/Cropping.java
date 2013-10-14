@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 public enum Cropping {
     CONTAIN("contain"),
     TOPLEFT("topleft"),
-    CENTERED("centered");
+    CENTERED("centered"),
+    TOPCENTER("topcenter");
 
     private String typeAsString;
     private static final Logger log = LoggerFactory.getLogger(Cropping.class);

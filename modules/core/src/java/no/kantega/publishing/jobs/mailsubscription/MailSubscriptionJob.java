@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.jobs.mailsubscription;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.common.Aksess;
@@ -47,12 +46,8 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
             return;
         }
 
-        boolean jobDisabled = false;
-        try {
-            jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
-        } catch (ConfigurationException e) {
-            log.error( "Unable to read aksess configuration");
-        }
+        boolean jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
+
         if(jobDisabled){
             log.info( "Mailsubscriptionjob disabled");
         }else{

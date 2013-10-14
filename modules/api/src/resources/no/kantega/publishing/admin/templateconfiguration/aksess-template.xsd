@@ -405,6 +405,7 @@
             <xs:attribute name="name" use="required" type="xs:string"/>
             <xs:attribute name="minoccurs" type="xs:integer"/>
             <xs:attribute name="maxoccurs" type="xs:integer"/>
+            <xs:attribute name="title" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 

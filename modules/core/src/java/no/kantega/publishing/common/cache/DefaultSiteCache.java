@@ -18,15 +18,12 @@ package no.kantega.publishing.common.cache;
 
 import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.HostnamesDao;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -94,42 +91,50 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
 
 
         Configuration c;
-        try {
-            c = Aksess.getConfiguration();
-            // Get hostnames from database and store in hashmap
+        c = Aksess.getConfiguration();
+        // Get hostnames from database and store in hashmap
 
-            hostnames = new HashMap<>();
-            for (Site site : sites) {
-                // Get hostnames from database
-                List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
-                site.setHostnames(siteHostnames);
+        hostnames = new HashMap<>();
+        for (Site site : sites) {
+            // Get hostnames from database
+            List<String> siteHostnames = hostnamesDao.getHostnamesForSiteId(site.getId());
+            site.setHostnames(siteHostnames);
 
-                // Insert into hashmap
-                for (String host : siteHostnames) {
-                    hostnames.put(host, site);
-                }
-
-                // Check if site is disabled
-                String alias = site.getAlias().toLowerCase();
-                alias = alias.replace('/', '.');
-
-                boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
-                if (isDisabled) {
-                    log.info( "Slår av site:" + site.getName());
-                }
-                site.setDisabled(isDisabled);
-
-                String scheme = c.getString("site" + alias + "scheme", null);
-                site.setScheme(scheme);
+            // Insert into hashmap
+            for (String host : siteHostnames) {
+                hostnames.put(host, site);
             }
-        } catch (ConfigurationException e) {
-            throw new SystemException("Configuration error", e);
+
+            // Check if site is disabled
+            String alias = site.getAlias().toLowerCase();
+            alias = alias.replace('/', '.');
+
+            boolean isDisabled = c.getBoolean("site" + alias + "disabled", false);
+            if (isDisabled) {
+                log.info( "Disabling site:" + site.getName());
+            }
+            site.setDisabled(isDisabled);
+
+            String scheme = c.getString("site" + alias + "scheme", null);
+            site.setScheme(scheme);
         }
 
     }
 
     @Override
     public no.kantega.publishing.api.model.Site getDefaultSite() {
+        no.kantega.publishing.api.model.Site defaultSite;
+        if (sites.size() > 1) {
+            defaultSite = determineDefaultSite();
+        } else if(sites.size() == 1){
+            defaultSite = sites.get(0);
+        } else {
+            throw new IllegalStateException("No sites configured in aksesstemplate-config.xml");
+        }
+        return defaultSite;
+    }
+
+    private Site determineDefaultSite() {
         Collection<Site> defaultSites = filter(sites, new Predicate<Site>() {
             @Override
             public boolean apply(Site o) {
@@ -137,16 +142,16 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
             }
         });
         int size = defaultSites.size();
-        if(size != 1){
-            throw new IllegalStateException(size + " default sites exists, only 1 permitted");
+        if(size > 1){
+            throw new IllegalStateException(size + " default sites exists, only 1 permitted. Add isDefault=\"true\" to only one site in aksess-templateconfig.xml");
         }
-        return defaultSites.iterator().next();
-    }
-
-    public static DefaultSiteCache getInstance() {
-        ApplicationContext context = RootContext.getInstance();
-        Map beans = context.getBeansOfType(DefaultSiteCache.class);
-        return (DefaultSiteCache) beans.values().iterator().next();
+        Site defaultSite;
+        if (size == 1) {
+            defaultSite = defaultSites.iterator().next();
+        } else {
+            defaultSite = sites.get(0);
+        }
+        return defaultSite;
     }
 
     public void setTemplateConfigurationCache(TemplateConfigurationCache templateConfigurationCache) {

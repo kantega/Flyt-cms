@@ -17,7 +17,6 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,17 +35,13 @@ public class PropertyReplacer implements BeanFactoryPostProcessor {
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
 
-        try {
-            PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-            Properties properties = new Properties(Aksess.getConfiguration().getProperties());
+        PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
+        Properties properties = new Properties(Aksess.getConfiguration().getProperties());
 
-            properties.setProperty("appDir", Configuration.getApplicationDirectory());
+        properties.setProperty("appDir", Configuration.getApplicationDirectory());
 
-            cfg.setProperties(properties);
-            cfg.postProcessBeanFactory(configurableListableBeanFactory);
+        cfg.setProperties(properties);
+        cfg.postProcessBeanFactory(configurableListableBeanFactory);
 
-        } catch (ConfigurationException e) {
-            log.error( "Error getting configuration", e);
-        }
     }
 }

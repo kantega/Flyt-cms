@@ -9,9 +9,12 @@ import org.kantega.jexmec.PluginManagerListener;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,7 +23,7 @@ import java.util.Set;
 public class StalePluginClassLoaderFilter implements Filter {
     private RuntimeMode runtimeMode;
 
-    private Set<JavaCompilingPluginClassLoader> classLoaders = new HashSet<JavaCompilingPluginClassLoader>();
+    private Map<String, JavaCompilingPluginClassLoader> classLoaders = new HashMap<String, JavaCompilingPluginClassLoader>();
     private PluginHotDeployProvider provider;
     private ThreadLocalPluginLoaderErrors pluginLoadingErrors;
 
@@ -38,7 +41,8 @@ public class StalePluginClassLoaderFilter implements Filter {
             public void beforeClassLoaderAdded(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader) {
                 if (classLoader instanceof JavaCompilingPluginClassLoader) {
                     synchronized (this) {
-                        classLoaders.add((JavaCompilingPluginClassLoader) classLoader);
+                        JavaCompilingPluginClassLoader loader = (JavaCompilingPluginClassLoader) classLoader;
+                        classLoaders.put(loader.getPluginInfo().getKey(), loader);
                     }
                 }
             }
@@ -47,20 +51,23 @@ public class StalePluginClassLoaderFilter implements Filter {
             public void afterClassLoaderRemoved(PluginManager<OpenAksessPlugin> pluginManager, ClassLoaderProvider classLoaderProvider, ClassLoader classLoader) {
                 if (classLoader instanceof JavaCompilingPluginClassLoader) {
                     synchronized (this) {
-                        classLoaders.remove((JavaCompilingPluginClassLoader) classLoader);
+                        JavaCompilingPluginClassLoader loader = (JavaCompilingPluginClassLoader) classLoader;
+                        classLoaders.remove(loader.getPluginInfo().getKey());
                     }
                 }
             }
+
         });
     }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        if (runtimeMode == RuntimeMode.DEVELOPMENT) {
-            HttpServletResponse resp = (HttpServletResponse) response;
+        HttpServletRequest req = (HttpServletRequest) request;
+        HttpServletResponse resp = (HttpServletResponse) response;
+        if(!"/PluginDeployment.action".equals(req.getServletPath()) && runtimeMode == RuntimeMode.DEVELOPMENT) {
             Set<JavaCompilingPluginClassLoader> copy = new HashSet<JavaCompilingPluginClassLoader>();
 
             synchronized (this) {
-                copy.addAll(classLoaders);
+                copy.addAll(classLoaders.values());
             }
 
             for (JavaCompilingPluginClassLoader loader : copy) {

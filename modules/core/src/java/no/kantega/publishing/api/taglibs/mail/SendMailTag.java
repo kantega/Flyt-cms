@@ -57,11 +57,7 @@ public class SendMailTag extends BodyTagSupport {
 
             MailSender.send(from, to, subject, sw.toString());
 
-        } catch (IOException e) {
-            log.error(e.getMessage(), e);
-        } catch (SystemException e) {
-            log.error(e.getMessage(), e);
-        } catch (ConfigurationException e) {
+        } catch (IOException | ConfigurationException | SystemException e) {
             log.error(e.getMessage(), e);
         }
 

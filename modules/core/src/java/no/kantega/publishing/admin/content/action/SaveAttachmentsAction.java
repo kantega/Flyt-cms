@@ -32,17 +32,17 @@ public class SaveAttachmentsAction extends AbstractSaveContentAction {
     }
 
     public Map<String, Object> getModel(Content content, HttpServletRequest request) {
-        Map<String, Object> model =  new HashMap<String, Object>();
+        Map<String, Object> model =  new HashMap<>();
 
         ContentManagementService cms = new ContentManagementService(request);
 
         List<Attachment> attachments;
-        if (!content.isNew()) {
-            ContentIdentifier cid =  ContentIdentifier.fromContentId(content.getId());
+        if (content.isNew()) {
+            attachments = content.getAttachments();
+        } else {
+            ContentIdentifier cid = ContentIdentifier.fromContentId(content.getId());
             cid.setLanguage(content.getLanguage());
             attachments = cms.getAttachmentList(cid);
-        } else {
-            attachments = content.getAttachments();
         }
 
         model.put("attachments", attachments);

@@ -295,8 +295,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 List<Map<String,Object>> ids = getJdbcTemplate().queryForList("SELECT AssociationId, SiteId FROM associations WHERE ContentId = ? AND Type = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", contentId, AssociationType.DEFAULT_POSTING_FOR_SITE);
 
                 for(Map<String, Object> id : ids) {
-                    int tmp = (int) id.get("AssociationId");
-                    int tmpSiteId = (int) id.get("SiteId");
+                    int tmp = ((Number) id.get("AssociationId")).intValue();
+                    int tmpSiteId = ((Number) id.get("SiteId")).intValue();
                     if (associationId == -1 || tmpSiteId == siteId) {
                         associationId = tmp;
                     }
@@ -351,7 +351,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null) {
                 siteId = site.getId();
-
             }
             if(url != null) {
                 List<Site> sites = siteCache.getSites();
@@ -359,7 +358,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                     String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
                     if(url.startsWith(siteAliasWithoutTrailingSlash)){
                         adjustedUrl = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
-                        if(adjustedUrl.equals("")) adjustedUrl = "/";
+                        if(adjustedUrl.isEmpty()) adjustedUrl = "/";
                         siteId = s.getId();
                         break;
                     }
@@ -398,9 +397,9 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
             contentIdentifier.setLanguage(ServletRequestUtils.getIntParameter(request, "language", Language.NORWEGIAN_BO));
 
-        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf("/") == 0) {
+        } else if (url.startsWith(Aksess.CONTENT_URL_PREFIX) && path != null && path.indexOf('/') == 0) {
             try {
-                int slashIndex = path.indexOf("/", 1);
+                int slashIndex = path.indexOf('/', 1);
                 if (slashIndex != -1) {
                     contentIdentifier = ContentIdentifier.fromAssociationId(Integer.parseInt(path.substring(1, slashIndex)));
                 }
@@ -466,6 +465,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
     @Override
     public void setServletContext(ServletContext servletContext) {
-        CONTENT_URL_PATTERN = Pattern.compile(ContentIdHelperHelper.getPatternWithContextPath(servletContext.getContextPath()));
+        CONTENT_URL_PATTERN = Pattern.compile(ContentPatterns.getPatternWithContextPath(servletContext.getContextPath()));
     }
 }

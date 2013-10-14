@@ -734,18 +734,18 @@ public class ContentQuery {
         this.excludedAssociationTypes = excludedAssociationTypes;
     }
 
-private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
-    @Override
-    public Integer apply(ContentIdentifier input) {
-        return input.getAssociationId();
-    }
-};
+    private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
+        @Override
+        public Integer apply(ContentIdentifier input) {
+            return input.getAssociationId();
+        }
+    };
 
 
     /**
      * Class representing an instance of a query, that is the query string and the parameters to be set.
      */
-    public class QueryWithParameters {
+    public static class QueryWithParameters {
         private final String query;
         private final Map<String, Object> params;
 

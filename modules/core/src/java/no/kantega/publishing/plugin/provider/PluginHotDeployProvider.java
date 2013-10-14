@@ -104,10 +104,15 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
 
     public void undeployPlugin(PluginInfo pluginInfo) {
         logger.info("Undeploying plugin " + pluginInfo.getKey());
-        ClassLoader classLoader = loaders.get(pluginInfo.getKey()).getClassLoader();
-        closeClassLoader(classLoader);
-        registry.remove(singleton(classLoader));
-        loaders.remove(pluginInfo.getKey());
+        DeployedPlugin deployedPlugin = loaders.get(pluginInfo.getKey());
+        if(deployedPlugin == null) {
+            log.info("Can't undeploy plugin with key " + pluginInfo.getKey() +". No such plugin is currently deployed.");
+        } else {
+            ClassLoader classLoader = deployedPlugin.getClassLoader();
+            closeClassLoader(classLoader);
+            registry.remove(singleton(classLoader));
+            loaders.remove(pluginInfo.getKey());
+        }
     }
 
     private void closeClassLoader(ClassLoader classLoader) {

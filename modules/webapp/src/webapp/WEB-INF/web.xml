@@ -15,7 +15,8 @@
   ~ limitations under the License.
   -->
 
-<web-app>
+<web-app> <!-- Yes, there should be no namespaces here, aksess-maven-plugin will
+not work if you try adding them -->
     <display-name>Aksess</display-name>
     <description>Kantega Aksess Publisering for Java</description>
 

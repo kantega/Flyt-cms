@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.spring;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +37,6 @@ public class SecurityBeanLoader implements BeanFactoryPostProcessor, ResourceLoa
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory context) throws BeansException {
 
-        try {
             String securityDefinitionResource = Aksess.getConfiguration().getString("security.definition");
 
             if (securityDefinitionResource == null) {
@@ -53,11 +51,6 @@ public class SecurityBeanLoader implements BeanFactoryPostProcessor, ResourceLoa
             XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(registry);
 
             reader.loadBeanDefinitions(resourceLoader.getResource(securityDefinitionResource));
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-
-
     }
 
 

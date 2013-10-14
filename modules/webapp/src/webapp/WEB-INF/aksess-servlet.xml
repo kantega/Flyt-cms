@@ -191,6 +191,7 @@
                 <prop key="/admin/multimedia/CreateMediaFolder.action">CreateMediaFolderAction</prop>
                 <prop key="/admin/multimedia/ImageCrop.action">ImageCropAction</prop>
                 <prop key="/admin/multimedia/ImageMap.action">ImageMapAction</prop>
+                <prop key="/admin/multimedia/ImageRotate.action">ImageRotateAction</prop>
                 <prop key="/admin/multimedia/EditMultimedia.action">EditMultimediaAction</prop>
                 <prop key="/admin/multimedia/UploadMultimedia.action">UploadMultimediaAction</prop>
                 <prop key="/admin/multimedia/UpdateMediaName.action">UpdateMediaNameAction</prop>
@@ -615,10 +616,16 @@
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/ajax/media.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.multimedia.action.DeleteMultimediaAction" id="DeleteMultimediaAction"/>
+
     <bean class="no.kantega.publishing.admin.multimedia.action.ImageCropAction" id="ImageCropAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagecrop.jsp"/>
         <property name="imageEditor" ref="aksessImageEditor"/>
     </bean>
+
+    <bean class="no.kantega.publishing.admin.multimedia.action.ImageRotateAction" id="ImageRotateAction">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+    </bean>
+
 
     <bean class="no.kantega.publishing.admin.multimedia.action.ImageMapAction" id="ImageMapAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/imagemap.jsp"/>

@@ -5,6 +5,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 
@@ -69,8 +70,9 @@ public interface ContentAO {
     /**
      * @param associationId identifying Content
      * @return title of the page with gived associationId.
+     * @throws ContentNotFoundException if content with associationId was not found.
      */
-    String getTitleByAssociationId(int associationId);
+    String getTitleByAssociationId(int associationId) throws ContentNotFoundException;
 
     /**
      * @param contentQuery specifying the content wanted.

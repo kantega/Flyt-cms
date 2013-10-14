@@ -21,6 +21,6 @@ package no.kantega.publishing.common.exception;
  */
 public class ContentNotFoundException extends no.kantega.commons.exception.KantegaException {
     public ContentNotFoundException(String url) {
-        super("Finner ikke noe innhold tilhørende URL'en:" + url, null);
+        super("Could not find content for the url:" + url, null);
     }
 }

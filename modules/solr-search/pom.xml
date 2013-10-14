@@ -3,7 +3,7 @@
     <parent>
         <artifactId>openaksess</artifactId>
         <groupId>org.kantega.openaksess</groupId>
-        <version>7.6.0-SNAPSHOT</version>
+        <version>7.7.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -13,7 +13,7 @@
 
     <name>OpenAksess search - Solr</name>
     <properties>
-        <solr.version>4.3.0</solr.version>
+        <solr.version>4.4.0</solr.version>
     </properties>
 
     <dependencies>
@@ -30,6 +30,10 @@
             <exclusions>
                 <exclusion>
                     <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
                     <artifactId>slf4j-jdk14</artifactId>
                 </exclusion>
                 <exclusion>
@@ -39,6 +43,19 @@
                 <exclusion>
                     <groupId>com.google.guava</groupId>
                     <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+                <!-- Not in Maven Central, and not in use in OA -->
+                <exclusion>
+                    <groupId>org.restlet.jee</groupId>
+                    <artifactId>org.restlet</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.restlet.jee</groupId>
+                    <artifactId>org.restlet.ext.servlet</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>

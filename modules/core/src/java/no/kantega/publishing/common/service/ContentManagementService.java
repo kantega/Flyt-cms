@@ -20,7 +20,6 @@ import com.google.common.base.Predicate;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
@@ -108,11 +107,8 @@ public class ContentManagementService {
 
         contentAO = context.getBean(ContentAO.class);
         contentIdHelper = context.getBean(ContentIdHelper.class);
-        try {
-            cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
+
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {

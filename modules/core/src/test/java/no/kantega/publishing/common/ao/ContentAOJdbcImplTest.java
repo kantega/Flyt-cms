@@ -10,6 +10,7 @@ import no.kantega.publishing.common.data.attributes.UrlAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentAO;
 import org.apache.commons.collections.Predicate;
 import org.junit.Test;
@@ -119,7 +120,7 @@ public class ContentAOJdbcImplTest {
     }
 
     @Test
-    public void shouldGetPublishedContentVersionTitle(){
+    public void shouldGetPublishedContentVersionTitle() throws ContentNotFoundException {
         assertEquals("Nyhetsarkiv", contentAO.getTitleByAssociationId(1));
     }
 

@@ -99,9 +99,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     private void checkThatRequiredPropertiesPresentAndValid(Properties properties) {
         checkDatabaseConfigured(properties);
-        if(!properties.containsKey("location.contextpath")) {
-            throw new IllegalStateException("Required configuration property 'location.contextpath' not found.");
-        }
     }
 
     private void checkDatabaseConfigured(Properties properties) {
@@ -196,6 +193,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
                 wac.getEnvironment().setActiveProfiles("useCaching");
             }
 
+            Aksess.setContextPath(servletContext.getContextPath());
             // Set and load configuration on these classes since they are not DI-based (hackish..)
             Aksess.setConfiguration(configuration);
             Aksess.loadConfiguration();

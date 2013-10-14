@@ -28,11 +28,13 @@ import no.kantega.publishing.spring.RootContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class PathWorker {
@@ -51,7 +53,30 @@ public class PathWorker {
         for (int pathId : pathIds) {
             ids.add(pathId);
         }
-        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
+        List<PathEntry> entries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
+        sortByPathEntries(pathEntries, pathIds);
+        return entries;
+    }
+
+    private static void sortByPathEntries(List<PathEntry> pathEntries, int[] pathIds) {
+        final List<Integer> pathOrder = convertToListOfIntegers(pathIds);
+        Collections.sort(pathEntries, new Comparator<PathEntry>() {
+            @Override
+            public int compare(PathEntry o1, PathEntry o2) {
+                int positionOfO1 = pathOrder.indexOf(o1.getId());
+                int positionOfO2 = pathOrder.indexOf(o2.getId());
+                return Integer.compare(positionOfO1, positionOfO2);
+            }
+        });
+    }
+
+
+    private static List<Integer> convertToListOfIntegers(int... pathIds) {
+        final List<Integer> pathOrder = new ArrayList<>();
+        for (int pathId : pathIds) {
+            pathOrder.add(pathId);
+        }
+        return pathOrder;
     }
 
     /**
@@ -84,15 +109,27 @@ public class PathWorker {
             return pathEntries;
         }
 
-
         pathEntries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", pathIds),rowMapper);
 
         return pathEntries;
     }
 
-
     public static List<PathEntry> getMultimediaPath(Multimedia mm) throws SystemException {
-        return dbConnectionFactory.getJdbcTemplate().query("select Id, ParentId, Name from multimedia where id = ?", rowMapper, mm.getParentId());
+        List<PathEntry> pathEntries = new ArrayList<>();
+
+        int parentId = mm.getParentId();
+
+        while (parentId != 0) {
+            SqlRowSet rs = dbConnectionFactory.getJdbcTemplate().queryForRowSet("select Id, ParentId, Name from multimedia where id = ?", parentId);
+            if(rs.next()) {
+                int id = rs.getInt("Id");
+                parentId = rs.getInt("ParentId");
+                PathEntry entry = new PathEntry(id, rs.getString("Name"));
+                pathEntries.add(0, entry);
+            }
+        }
+
+        return pathEntries;
     }
 
     private static final RowMapper<PathEntry> rowMapper = new RowMapper<PathEntry>() {
@@ -103,6 +140,7 @@ public class PathWorker {
             return new PathEntry(id, title);
         }
     };
+
     private static final RowMapper<PathEntry> rowMapperWithContentTemplateId = new RowMapper<PathEntry>() {
         @Override
         public PathEntry mapRow(ResultSet rs, int rowNum) throws SQLException {

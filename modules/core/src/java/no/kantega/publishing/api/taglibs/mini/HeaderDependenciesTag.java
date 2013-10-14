@@ -34,6 +34,8 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
+        String scrollTo = (String)request.getAttribute("scrollTo");
+
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro-oa/miniaksess.css\">\n");
         out.write("<script type=\"text/javascript\">\n" +
                 "        var properties = {\n" +
@@ -41,7 +43,23 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "            debug : "+Aksess.isJavascriptDebugEnabled()+",\n" +
                 "            contentRequestHandler : '"+ Aksess.CONTENT_REQUEST_HANDLER+"',\n" +
                 "            thisId : '"+ AdminRequestParameters.THIS_ID+"'\n" +
-                "        };\n" +
+                "        };\n");
+        if (scrollTo != null) {
+            out.write("  function scrollTo() {\n" +
+                    "            var elementPosition = $(\"#" + scrollTo + " .buttonGroup:last\").offset().top;\n" +
+                    "            $(\"body\").scrollTop(elementPosition);\n" +
+                    "        }\n" +
+                    "\n");
+            out.write("  $(document).ready(function(){\n" +
+                    "       setTimeout(scrollTo, 500);\n" +
+                    "    });");
+        } else {
+            out.write("  $(document).ready(function(){\n" +
+                    "       // Set focus to first input field in form\n" +
+                    "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
+                    "    }");
+        }
+        out.write("" +
                 "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +
                 "        $.datepicker.setDefaults($.datepicker.regional['" + Aksess.getDefaultAdminLocale().getCountry() + "']);\n" +
                 "        $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});" +

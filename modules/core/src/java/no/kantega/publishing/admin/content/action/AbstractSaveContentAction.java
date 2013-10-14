@@ -73,7 +73,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         Map<String, Object> model = getModel(content, request);
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
-            // Submit from user
+            log.info("Submit from user on content " + content.getTitle());
 
             boolean isModified = param.getBoolean("isModified");
 
@@ -107,13 +107,14 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             }
 
         } else {
+            log.info("Get from user");
             return goBackToEditPage(request, aksessService, content, model);
         }
     }
 
     private String getScrollTo(String rowPath) {
         if (rowPath.contains("[")) {
-            rowPath = rowPath.substring(0, rowPath.indexOf("["));
+            rowPath = rowPath.substring(0, rowPath.indexOf('['));
         }
         return AttributeHelper.getInputContainerName(rowPath);
     }
@@ -222,7 +223,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                     errors.add(null, "aksess.error.publishdatenotset");
                 }
             } catch(Exception e) {
-                Map<String, Object> objects = new HashMap<String, Object>();
+                Map<String, Object> objects = new HashMap<>();
                 objects.put("dateFormat", Aksess.getDefaultDateFormat());
                 errors.add(null, "aksess.error.date", objects);
             }
@@ -233,7 +234,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
                 Date expireDate = param.getDateAndTime("end", Aksess.getDefaultDateFormat());
                 content.setExpireDate(expireDate);
             } catch (Exception e) {
-                Map<String, Object> objects = new HashMap<String, Object>();
+                Map<String, Object> objects = new HashMap<>();
                 objects.put("dateFormat", Aksess.getDefaultDateFormat());
                 errors.add(null, "aksess.error.date", objects);
             }
@@ -249,7 +250,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             Date changeDate = param.getDateAndTime("change", Aksess.getDefaultDateFormat());
             content.setChangeFromDate(changeDate);
         } catch (Exception e) {
-            Map<String, Object> objects = new HashMap<String, Object>();
+            Map<String, Object> objects = new HashMap<>();
             objects.put("dateFormat", Aksess.getDefaultDateFormat());
             errors.add(null, "aksess.error.date", objects);
         }

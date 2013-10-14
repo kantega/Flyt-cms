@@ -33,7 +33,7 @@ public class ContentPatternTest {
 
     @Test
     public void contentApPatternShouldExtractAllTheValues() throws ContentNotFoundException {
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.CONTENT_AP_PATTERN);
+        Pattern pattern = Pattern.compile(ContentPatterns.CONTENT_AP_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("/content.ap?thisId=1", asList(thisId));
@@ -57,7 +57,7 @@ public class ContentPatternTest {
 
     @Test
     public void basePatternShouldExtractProtocolHostAndPort(){
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.BASE_PATTERN);
+        Pattern pattern = Pattern.compile(ContentPatterns.BASE_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("https://sub.domain.no", asList(https, subDomain, noPort));
@@ -79,8 +79,8 @@ public class ContentPatternTest {
     }
 
     @Test
-    public void prettyUrlPatternSHouldExtractThisId(){
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.PRETTY_PATTERN);
+    public void prettyUrlPatternShouldExtractThisId(){
+        Pattern pattern = Pattern.compile(ContentPatterns.PRETTY_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("/content/1234/TittelHer", asList(prettyThisId));
@@ -90,7 +90,7 @@ public class ContentPatternTest {
 
     @Test
     public void aliasPatternShouldExtractAlias(){
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.ALIAS_PATTERN);
+        Pattern pattern = Pattern.compile(ContentPatterns.ALIAS_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("/alias/", asList(new Pair<>("alias", "/alias/")));
@@ -106,7 +106,7 @@ public class ContentPatternTest {
 
     @Test
     public void fullPatternShouldExtractEverything(){
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.getPatternWithContextPath(""));
+        Pattern pattern = Pattern.compile(ContentPatterns.getPatternWithContextPath(""));
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("http://domain.no/content.ap?thisId=1", asList(http, domain, thisId));
@@ -153,7 +153,7 @@ public class ContentPatternTest {
 
     @Test
     public void fullPatternWithContextPathShouldExtractEverything(){
-        Pattern pattern = Pattern.compile(ContentIdHelperHelper.getPatternWithContextPath("/contextpath"));
+        Pattern pattern = Pattern.compile(ContentPatterns.getPatternWithContextPath("/contextpath"));
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
         values.put("http://domain.no/contextpath/content.ap?thisId=1", asList(http, domain, thisId));

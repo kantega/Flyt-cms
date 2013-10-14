@@ -27,7 +27,7 @@ public class SolrConfiguration {
     @Bean(destroyMethod = "shutdown")
     public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         File solrConfigFile = initSolrConfigIfAbsent(solrHome, disableUpdateSolrHome);
-        CoreContainer container = new CoreContainer(solrHome.getAbsolutePath(), solrConfigFile);
+        CoreContainer container = CoreContainer.createAndLoad(solrHome.getAbsolutePath(), solrConfigFile);
 
         return new EmbeddedSolrServer(container, "oacore");
     }

@@ -10,14 +10,14 @@
         <fieldType name="double" class="solr.TrieDoubleField" precisionStep="0" positionIncrementGap="0"/>
         <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true"/>
         <fieldType name="date" class="solr.TrieDateField" precisionStep="0" positionIncrementGap="0"/>
-        <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
             <analyzer>
                 <charFilter class="solr.HTMLStripCharFilterFactory"/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
                 <filter class="solr.LowerCaseFilterFactory"/>
             </analyzer>
         </fieldType>
-        <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_en" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
             <analyzer type="index">
                 <charFilter class="solr.HTMLStripCharFilterFactory"/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
@@ -35,13 +35,14 @@
                 <filter class="solr.PorterStemFilterFactory"/>
             </analyzer>
         </fieldType>
-        <fieldType name="text_no" class="solr.TextField" positionIncrementGap="100">
+        <fieldType name="text_no" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
             <analyzer>
                 <charFilter class="solr.HTMLStripCharFilterFactory"/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
                 <filter class="solr.LowerCaseFilterFactory"/>
                 <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_no.txt" format="snowball" enablePositionIncrements="true"/>
                 <filter class="solr.SnowballPorterFilterFactory" language="Norwegian"/>
+                <filter class="solr.NorwegianLightStemFilterFactory"/>
             </analyzer>
         </fieldType>
         <fieldType name="text_path" class="solr.TextField" positionIncrementGap="100">
@@ -50,14 +51,14 @@
             </analyzer>
         </fieldType>
 
-        <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField"/>
+        <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField" />
         <fieldtype name="tlf" stored="true" indexed="true" multiValued="true" class="solr.TextField">
             <analyzer type="index">
-                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\w)" replacement=""/>
+                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s)" replacement=""/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
             </analyzer>
             <analyzer type="query">
-                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\w)" replacement=""/>
+                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s)" replacement=""/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
             </analyzer>
         </fieldtype>
@@ -67,9 +68,9 @@
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
-        <field name="parentId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
-        <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
-        <field name="contentType" type="string" indexed="true" stored="true"/>
+        <field name="parentId" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
+        <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
+        <field name="contentType" type="string" indexed="true" stored="true" docValues="true"/>
         <field name="uid" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="language" type="string" indexed="true" stored="true" required="true" multiValued="false"/>
         <field name="title_no" type="text_no" indexed="true" stored="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
@@ -78,15 +79,15 @@
         <field name="altTitle_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
-        <field name="contentTemplateId" type="int" indexed="true" stored="false"/>
-        <field name="contentTemplateName" type="string" indexed="true" stored="false"/>
-        <field name="metaDataTemplateId" type="int" indexed="true" stored="false"/>
-        <field name="displayTemplateId" type="int" indexed="true" stored="false"/>
-        <field name="displayTemplateName" type="string" indexed="true" stored="false"/>
-        <field name="documentTypeId" type="int" indexed="true" stored="false"/>
-        <field name="documentTypeName" type="string" indexed="true" stored="false"/>
-        <field name="groupId" type="int" indexed="true" stored="true"/>
-        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false"/>
+        <field name="contentTemplateId" type="int" indexed="true" stored="false" />
+        <field name="contentTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
+        <field name="metaDataTemplateId" type="int" indexed="true" stored="false" />
+        <field name="displayTemplateId" type="int" indexed="true" stored="false" />
+        <field name="displayTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
+        <field name="documentTypeId" type="int" indexed="true" stored="false" />
+        <field name="documentTypeName" type="string" indexed="true" stored="false" docValues="true"/>
+        <field name="groupId" type="int" indexed="true" stored="true" />
+        <field name="siteId" type="int" indexed="true" stored="true" multiValued="false" />
         <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>
         <field name="alias" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="createDate" type="date" indexed="true" stored="true"/>

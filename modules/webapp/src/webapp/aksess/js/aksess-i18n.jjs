@@ -32,6 +32,7 @@ properties.formeditor.labels = {
     buttonEdit : '<kantega:label key="aksess.button.edit" escapeJavascript="true"/>',
     buttonDelete : '<kantega:label key="aksess.button.delete" escapeJavascript="true"/>',
     deleteformdataConfirm : '<kantega:label key="aksess.formeditor.deleteformdata.confirm" escapeJavascript="true"/>',
+    duplicateName : '<kantega:label key="aksess.formeditor.duplicatename" escapeJavascript="true"/>',
     typeText : '<kantega:label key="aksess.formeditor.type.text" escapeJavascript="true"/>',
     typeTextarea : '<kantega:label key="aksess.formeditor.type.textarea" escapeJavascript="true"/>',
     typeCheckbox : '<kantega:label key="aksess.formeditor.type.checkbox" escapeJavascript="true"/>',

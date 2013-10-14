@@ -105,7 +105,7 @@ public class AssociationAO  {
             }
         }
 
-        PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"UNIQUEID"});
         st.setInt(1, a.getAssociationId());
         st.setInt(2, a.getContentId());
         st.setInt(3, a.getParentAssociationId());

@@ -30,6 +30,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
@@ -50,6 +51,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
+
+import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  *
@@ -135,8 +138,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         try {
             Map<String, Object> values = getJdbcTemplate().queryForMap("select ContentVersionId, IsActive from contentversion where ContentId = ? and Version = ? and Language = ?", id, version, language);
-            int contentVersionId = (int) values.get("ContentVersionId");
-            int isActive = (int) values.get("IsActive");
+            int contentVersionId = ((Number) values.get("ContentVersionId")).intValue();
+            int isActive = ((Number) values.get("IsActive")).intValue();
 
             if (!deleteActiveVersion && isActive == 1) {
                 return;
@@ -296,8 +299,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public String getTitleByAssociationId(int associationId) {
-        return getJdbcTemplate().queryForObject("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and content.ContentId = associations.ContentId and associations.IsDeleted = 0 ", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
+    public String getTitleByAssociationId(int associationId) throws ContentNotFoundException{
+        // When content it cross published the query result is the same title duplicated.
+        List<String> titles = getJdbcTemplate().queryForList("select contentversion.title from content, contentversion, associations where content.ContentId = contentversion.ContentId and associations.AssociationId=? and contentversion.Status in (?) and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and associations.IsDeleted = 0", String.class, associationId, ContentStatus.PUBLISHED.getTypeAsInt());
+        if (titles.isEmpty()) {
+            throw new ContentNotFoundException("Content with associationId " + associationId);
+        } else {
+            return titles.get(0);
+        }
     }
 
     @Override
@@ -373,7 +382,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             st = c.prepareStatement("select * from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.Status = ? and content.ContentId = associations.ContentId and associations.IsDeleted = 0 and contentversion.LastModifiedBy = ? and LastModified > ? order by contentversion.LastModified desc");
             st.setInt(1, ContentStatus.PUBLISHED.getTypeAsInt());
             st.setString(2, user.getId());
-            st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()-(long)1000*60*60*24*90));
+            st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()- 1000L *60*60*24*90));
             rs = st.executeQuery();
             int i = 0;
             prevContentId = -1;
@@ -460,8 +469,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-            String attrquery = "select * from contentattributes where ContentVersionId in (:cvids) order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery,Collections.singletonMap("cvids", contentMap.keySet()), new RowCallbackHandler() {
+            String attrquery = "select * from contentattributes where ContentVersionId in (" + join(contentMap.keySet(), ',') +") order by ContentVersionId";
+            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), new RowCallbackHandler() {
                 @Override
                 public void processRow(ResultSet rs) throws SQLException {
                     int cvid = rs.getInt("ContentVersionId");
@@ -471,7 +480,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                     }
                 }
             });
-
         }
 
         if (listSize > 0 && getTopics) {
@@ -519,7 +527,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
 
-        getNamedParameterJdbcTemplate().query(queryWithParameters.getQuery(), queryWithParameters.getParams(), new RowCallbackHandler() {
+        if (queryWithParameters != null) { // null is returned when querying for attributes, and attribute-value-pair does not exists
+            getNamedParameterJdbcTemplate().query(queryWithParameters.getQuery(), queryWithParameters.getParams(), new RowCallbackHandler() {
             private int count = 0;
             private ContentRowMapper contentRowMapper = new ContentRowMapper(true);
             private Set<Integer> handledContentIds = new HashSet<>();
@@ -532,6 +541,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 }
             }
         });
+        }
     }
 
 
@@ -549,7 +559,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
 
         Connection c = null;
-        Content oldContent = null ;
 
         try {
             c = dbConnectionFactory.getConnection();
@@ -563,15 +572,16 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             addContentTransactionLock(content.getId(), c);
 
             // Get old version if exists
-            if (!content.isNew()) {
+            Content oldContent = null;
+            boolean isNew = content.isNew();
+            if (!isNew) {
                 ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
                 oldContent = getContent(oldCid, true);
             }
 
-            boolean isNew = content.isNew();
             boolean newVersionIsActive = false;
 
-            if (content.isNew()) {
+            if (isNew) {
                 // New page, always active
                 newVersionIsActive = true;
             }
@@ -581,7 +591,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
             deleteTempContentVersion(content);
 
-            if (content.isNew() || newStatus == ContentStatus.PUBLISHED) {
+            if (isNew || newStatus == ContentStatus.PUBLISHED) {
                 newVersionIsActive = true;
             }
 
@@ -761,7 +771,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     private void addContentVersion(Connection c, Content content, ContentStatus newStatus, boolean activeVersion) throws SQLException {
         // Insert new version
-        PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+        PreparedStatement contentVersionSt = c.prepareStatement("insert into contentversion (ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",  new String[] {"CONTENTVERSIONID"});
         contentVersionSt.setInt(1, content.getId());
         contentVersionSt.setInt(2, content.getVersion());
         contentVersionSt.setInt(3, newStatus.getTypeAsInt());
@@ -797,7 +807,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         boolean isNew = content.isNew();
         if (isNew) {
-            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)", Statement.RETURN_GENERATED_KEYS);
+            contentSt = c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)",  new String[] {"CONTENTID"});
         } else {
             // Update
             contentSt = c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
