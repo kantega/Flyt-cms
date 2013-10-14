@@ -39,6 +39,8 @@
 
     <bean id="aksessTemplateConfigurationValidator" class="no.kantega.publishing.common.util.templates.TemplateConfigurationValidator"/>
 
+    <bean id="aliasValidator" class="no.kantega.publishing.admin.content.util.ContentAliasValidator" />
+
     <bean id="aksessContentTemplateReader" class="no.kantega.publishing.common.util.templates.ContentTemplateReader">
         <property name="contentTemplateResourceLoader" ref="contentTemplateResourceLoader"/>
     </bean>
