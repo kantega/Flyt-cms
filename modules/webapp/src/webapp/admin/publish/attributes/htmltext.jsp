@@ -15,9 +15,9 @@
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
 <%@ page import="no.kantega.publishing.spring.RootContext" %>
-<%@ page import="java.util.Locale" %>
-<%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="org.slf4j.Logger" %>
+<%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~

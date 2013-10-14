@@ -26,10 +26,6 @@ import java.util.List;
 
 /**
  * Gets collection from database, shows body if collection not empty
- *
- * User: Anders Skar, Kantega AS
- * Date: Feb 21, 2007
- * Time: 10:02:04 AM
  */
 
 public class IfCollectionNotEmptyTag extends AbstractGetCollectionTag {

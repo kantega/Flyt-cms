@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ValidatorHelper {
-    private static final Logger log = LoggerFactory.getLogger(ValidatorHelper.class);
+public class ContentAliasValidator {
+    private static final Logger log = LoggerFactory.getLogger(ContentAliasValidator.class);
 
     private static  final Pattern ALIAS_PATTERN = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
 

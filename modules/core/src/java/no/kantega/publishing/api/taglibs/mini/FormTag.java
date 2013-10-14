@@ -33,11 +33,6 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * User: Kristian Selnæs
- * Date: 23.mar.2010
- * Time: 09:22:16
- */
 public class FormTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(FormTag.class);
 

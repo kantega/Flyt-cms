@@ -32,11 +32,6 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.SimpleTagSupport;
 import java.io.IOException;
 
-/**
- * User: Kristian Selnæs
- * Date: 23.mar.2010
- * Time: 12:22:03
- */
 public class InputScreenTag extends SimpleTagSupport {
     private static final Logger log = LoggerFactory.getLogger(InputScreenTag.class);
 
@@ -55,11 +50,7 @@ public class InputScreenTag extends SimpleTagSupport {
             if (screenRenderer.hasHiddenAttributes()) {
                 pageContext.include("/WEB-INF/jsp/admin/layout/fragments/addattributebutton.jsp");
             }
-        } catch (InvalidFileException e) {
-            log.error("", e);
-        } catch (InvalidTemplateException e) {
-            log.error("", e);
-        } catch (ServletException e) {
+        } catch (InvalidFileException | ServletException | InvalidTemplateException e) {
             log.error("", e);
         }
     }
