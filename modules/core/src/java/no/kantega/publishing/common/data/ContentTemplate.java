@@ -123,7 +123,7 @@ public class ContentTemplate implements PublicIdObject {
 
     public List<AssociationCategory> getAssociationCategories() {
         if (associationCategories == null) {
-            associationCategories = new ArrayList<AssociationCategory>();
+            associationCategories = new ArrayList<>();
         }
         return associationCategories;
     }
@@ -134,7 +134,7 @@ public class ContentTemplate implements PublicIdObject {
 
     public List<ContentTemplate> getAllowedParentTemplates() {
         if (allowedParentTemplates == null) {
-            allowedParentTemplates = new ArrayList<ContentTemplate>();
+            allowedParentTemplates = new ArrayList<>();
         }
         return allowedParentTemplates;
     }
