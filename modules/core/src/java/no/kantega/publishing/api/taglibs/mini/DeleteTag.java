@@ -30,11 +30,6 @@ import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 30.mai.2008
- * Time: 12:20:25
- */
 public class DeleteTag extends AbstractSimpleEditTag {
 
     private String associationId = null;
