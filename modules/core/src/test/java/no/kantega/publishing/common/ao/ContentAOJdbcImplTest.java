@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.Assert.*;
 import static org.apache.commons.collections.CollectionUtils.select;
@@ -160,7 +157,7 @@ public class ContentAOJdbcImplTest {
 
     private Content createAndCheckInContentObject(ContentStatus contentStatus) {
         Content c = new Content();
-        c.setAlias("/new/");
+        c.setAlias("/new/" + new Random().nextLong());
         c.setContentTemplateId(1);
         c.setDisplayTemplateId(1);
         c.setDescription("Bra innhold!");
