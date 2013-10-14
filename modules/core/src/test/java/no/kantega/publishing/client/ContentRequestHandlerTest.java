@@ -2,20 +2,33 @@ package no.kantega.publishing.client;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.test.web.server.MockMvc;
-import org.springframework.test.web.server.ResultActions;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
-import static org.springframework.test.web.server.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.server.setup.MockMvcBuilders.standaloneSetup;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = "classpath:spring/controllerTestContext.xml")
+@WebAppConfiguration
 public class ContentRequestHandlerTest {
+
+    @Autowired
+    private WebApplicationContext wac;
 
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception {
-        mockMvc = standaloneSetup(new ContentRequestHandler()).build();
+        mockMvc = MockMvcBuilders.webAppContextSetup(wac).build();
     }
 
     @Test

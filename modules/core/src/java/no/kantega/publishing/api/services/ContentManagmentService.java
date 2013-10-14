@@ -22,8 +22,6 @@ public interface ContentManagmentService {
      * @return Content object associated with the ContentIdentifier or null if the content does not exist.
      * @throws no.kantega.commons.exception.SystemException - System error
      * @throws NotAuthorizedException - if the user is not authorized to update the content.
-     * @throws no.kantega.commons.exception.InvalidFileException - The template
-     * @throws no.kantega.publishing.common.exception.InvalidTemplateException - invalid template
      * @throws no.kantega.publishing.common.exception.ObjectLockedException - if the Content object is already checked out.
      */
     public Content checkOutContent(ContentIdentifier id) throws NotAuthorizedException, ObjectLockedException, ContentNotFoundException;

@@ -18,6 +18,7 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
@@ -107,7 +108,7 @@ public class SiteMapWorker {
                 boolean isSearchable = rs.getInt(p++) == 1;
                 int contentTemplateId = rs.getInt(p++);
                 int displayTemplateId = rs.getInt(p++);
-                int status  = rs.getInt(p++);
+                ContentStatus status  = ContentStatus.getContentStatusAsEnum(rs.getInt(p++));
                 String title = rs.getString(p++);
                 String altTitle = rs.getString(p++);
                 Date lastModified = rs.getDate(p++);
@@ -118,7 +119,7 @@ public class SiteMapWorker {
                 int aType = rs.getInt(p++);
                 int aCategory = rs.getInt(p++);
                 int aSecId = rs.getInt(p++);
-                int groupId = rs.getInt(p++);
+                int groupId = rs.getInt(p);
                 if (aType == AssociationType.SHORTCUT) {
                     type = ContentType.SHORTCUT;
                 }

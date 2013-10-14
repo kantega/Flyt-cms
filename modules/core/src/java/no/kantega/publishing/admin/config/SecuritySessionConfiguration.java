@@ -10,23 +10,26 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Configuration
 public class SecuritySessionConfiguration {
+    private final SecuritySession unauthenticatedInstance = createNewUnauthenticatedInstance();
     @Autowired
     private SecurityRealm securityRealm;
 
     @Bean
     @Scope("request")
-    public SecuritySession getSecuritySession(HttpSession session){
+    public SecuritySession securitySession(HttpServletRequest request){
         SecuritySession securitySession;
+        HttpSession session = request.getSession(false);
         if(session == null){
-            securitySession = createNewUnauthenticatedInstance();
+            securitySession = unauthenticatedInstance;
         }else {
             securitySession = (SecuritySession) session.getAttribute("aksess.securitySession");
             if(securitySession == null){
-                securitySession = createNewUnauthenticatedInstance();
+                securitySession = unauthenticatedInstance;
             }
         }
         return securitySession;
