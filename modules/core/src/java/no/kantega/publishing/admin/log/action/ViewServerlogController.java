@@ -31,27 +31,37 @@ public class ViewServerlogController {
     }
 
     @RequestMapping(value = "/logfiles/{logfile}.action", method = RequestMethod.GET)
-    public @ResponseBody List<String> getLogLines(@PathVariable String logfile,
-                                                  @RequestParam(required = false, defaultValue = "0") int startline,
-                                                  @RequestParam(required = false, defaultValue = "50") int numberoflines){
+    public
+    @ResponseBody
+    ServerLogResponse getLogLines(@PathVariable String logfile,
+                                  @RequestParam(required = false, defaultValue = "-1", value = "startline") int startlineParam,
+                                  @RequestParam(required = false, defaultValue = "50") int numberoflines) {
         List<String> lines = new ArrayList<>(numberoflines);
-        try(BufferedReader br = new BufferedReader(new FileReader(new File(logFilesDir, logfile)))){
+        File file = new File(logFilesDir, logfile);
+        int numberOfLinesInFile = getNumberOfLines(file);
+        ServerLogResponse response = new ServerLogResponse();
+        response.setNumberOfLinesInFile(numberoflines);
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int lineNumber = 0;
+            int startline = determineStartline(startlineParam, numberoflines, numberOfLinesInFile);
             int endline = startline + numberoflines;
             while ((line = br.readLine()) != null) {
-                if(startline <= lineNumber){
+                if (startline <= lineNumber) {
                     lines.add("<div class=\"line\"><span class=\"linenumber\">" + lineNumber + "</span>" + line + "</div>");
                 }
                 lineNumber++;
-                if(lineNumber > endline){
+                if (lineNumber > endline) {
                     break;
                 }
             }
+            response.setLineNumber(lineNumber);
+            response.setLines(lines);
         } catch (IOException e) {
             log.error("Error reading log file", e);
         }
-        return lines;
+        return response;
     }
 
     @RequestMapping(value = "/logfiles/download/{logfile}.action", method = RequestMethod.GET)
@@ -73,4 +83,49 @@ public class ViewServerlogController {
             return input.getName();
         }
     };
+
+    private int determineStartline(int startlineParam, int numberoflinesToGet, int numberOfLinesInFile) {
+        return startlineParam >= 0 ? startlineParam : (numberOfLinesInFile - numberoflinesToGet);
+    }
+
+    private int getNumberOfLines(File file){
+        try (LineNumberReader  lnr = new LineNumberReader(new FileReader(file))){
+            while(lnr.skip(Long.MAX_VALUE) > 0) {}
+            return lnr.getLineNumber();
+        } catch (IOException e){
+            log.error("Error counting lines", e);
+            return 0;
+        }
+    }
+
+    public class ServerLogResponse {
+
+        private int numberOfLinesInFile;
+        private int lineNumber;
+        private List<String> lines;
+
+        public void setNumberOfLinesInFile(int numberOfLinesInFile) {
+            this.numberOfLinesInFile = numberOfLinesInFile;
+        }
+
+        public int getNumberOfLinesInFile() {
+            return numberOfLinesInFile;
+        }
+
+        public void setLineNumber(int lineNumber) {
+            this.lineNumber = lineNumber;
+        }
+
+        public int getLineNumber() {
+            return lineNumber;
+        }
+
+        public void setLines(List<String> lines) {
+            this.lines = lines;
+        }
+
+        public List<String> getLines() {
+            return lines;
+        }
+    }
 }
