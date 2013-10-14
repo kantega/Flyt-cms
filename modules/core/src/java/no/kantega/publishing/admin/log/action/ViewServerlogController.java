@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,20 +35,22 @@ public class ViewServerlogController {
     ServerLogResponse getLogLines(@PathVariable String logfile,
                                   @RequestParam(required = false, defaultValue = "-1", value = "startline") int startlineParam,
                                   @RequestParam(required = false, defaultValue = "50") int numberoflines) {
-        List<String> lines = new ArrayList<>(numberoflines);
+        StringBuilder lines = new StringBuilder();
         File file = new File(logFilesDir, logfile);
         int numberOfLinesInFile = getNumberOfLines(file);
         ServerLogResponse response = new ServerLogResponse();
-        response.setNumberOfLinesInFile(numberoflines);
+        response.setNumberOfLinesInFile(numberOfLinesInFile);
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
             int lineNumber = 0;
+            int numberOfLinesReturned = 0;
             int startline = determineStartline(startlineParam, numberoflines, numberOfLinesInFile);
             int endline = startline + numberoflines;
             while ((line = br.readLine()) != null) {
                 if (startline <= lineNumber) {
-                    lines.add("<div class=\"line\"><span class=\"linenumber\">" + lineNumber + "</span>" + line + "</div>");
+                    numberOfLinesReturned++;
+                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber).append("</span>").append(line).append("</div>");
                 }
                 lineNumber++;
                 if (lineNumber > endline) {
@@ -57,7 +58,8 @@ public class ViewServerlogController {
                 }
             }
             response.setLineNumber(lineNumber);
-            response.setLines(lines);
+            response.setNumberOfLinesReturned(numberOfLinesReturned);
+            response.setLines(lines.toString());
         } catch (IOException e) {
             log.error("Error reading log file", e);
         }
@@ -102,7 +104,8 @@ public class ViewServerlogController {
 
         private int numberOfLinesInFile;
         private int lineNumber;
-        private List<String> lines;
+        private String lines;
+        private int numberOfLinesReturned;
 
         public void setNumberOfLinesInFile(int numberOfLinesInFile) {
             this.numberOfLinesInFile = numberOfLinesInFile;
@@ -120,12 +123,20 @@ public class ViewServerlogController {
             return lineNumber;
         }
 
-        public void setLines(List<String> lines) {
+        public void setLines(String lines) {
             this.lines = lines;
         }
 
-        public List<String> getLines() {
+        public String getLines() {
             return lines;
+        }
+
+        public void setNumberOfLinesReturned(int numberOfLinesReturned) {
+            this.numberOfLinesReturned = numberOfLinesReturned;
+        }
+
+        public int getNumberOfLinesReturned() {
+            return numberOfLinesReturned;
         }
     }
 }
