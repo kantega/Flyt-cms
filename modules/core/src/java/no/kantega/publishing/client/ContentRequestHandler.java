@@ -59,38 +59,36 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 /**
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
-public class ContentRequestHandler implements ServletContextAware {
+public abstract class ContentRequestHandler implements ServletContextAware{
     private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
 
+    @Autowired
     private SiteCache siteCache;
+    @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
     @Autowired
     private ContentIdHelper contentIdHelper;
     private ServletContext servletContext;
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
-    public ModelAndView handlePrettyUrl(@PathVariable int thisId, ContentManagmentService contentService){
-
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response){
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
+        SecuritySession securitySession = getSecuritySession();
         return null;
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId, ContentManagmentService contentService){
+    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response){
+        return handlePrettyUrl(thisId, request, response);
+    }
 
+
+    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response){
+        SecuritySession securitySession = getSecuritySession();
         return null;
     }
 
-    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleAlias(@PathVariable String alias, ContentManagmentService contentService){
-
-        return null;
-    }
-
-    @RequestMapping("/{alias:[a-zA-Z0-9-.+]+}/{secondAlias:[a-zA-Z0-9-.+]+}")
-    public ModelAndView handleDoubleAlias(@PathVariable String alias, @PathVariable String secondAlias, ContentManagmentService contentService){
-        return handleAlias(alias + "/" + secondAlias, contentService);
-    }
-
+    protected abstract SecuritySession getSecuritySession();
 
     @Metered
     @Timed
