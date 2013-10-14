@@ -2,8 +2,8 @@ package no.kantega.publishing.api.services;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.ContentStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 
