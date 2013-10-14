@@ -80,8 +80,23 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     }
 
     @RequestMapping("/content.ap")
-    public ModelAndView handleContent_Ap(@RequestParam int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        return handleFromContentIdentifier(ContentIdentifier.fromAssociationId(thisId), request, response);
+    public ModelAndView handleContent_Ap(@RequestParam(required = false, defaultValue = "-1") int thisId,
+                                         @RequestParam(required = false, defaultValue = "-1") int contentId,
+                                         @RequestParam(required = false, defaultValue = "-1") int version,
+                                         @RequestParam(required = false, defaultValue = "-1") int language,
+                                         @RequestParam(required = false, defaultValue = "published") ContentStatus contentStatus,
+                                         @RequestParam(required = false, defaultValue = "-1") int siteId,
+                                         @RequestParam(required = false, defaultValue = "-1") int contextId,
+                                         HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
+        cid.setContentId(contentId);
+        cid.setVersion(version);
+        cid.setLanguage(language);
+        cid.setStatus(contentStatus);
+        cid.setSiteId(siteId);
+        cid.setContextId(contextId);
+        return handleFromContentIdentifier(cid, request, response);
     }
 
     public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -94,10 +109,6 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     private ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
         SecuritySession securitySession = getSecuritySession();
-
-        if("hearing".equals(request.getParameter("status"))) {
-            cid.setStatus(ContentStatus.HEARING);
-        }
 
         ContentManagementService cms = new ContentManagementService(securitySession);
         try {
@@ -149,6 +160,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             }
             log.error( request.getRequestURI());
             log.error("", e);
+            LOG.error("Error when dispatching content", e);
             throw new ServletException(e);
         }
 
@@ -156,17 +168,18 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     }
 
     private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
-        /*List<ContentIdentifier> contentIdentifiersByAlias = contentIdentifierDao.getContentIdentifiersByAlias(alias);
-        if(contentIdentifiersByAlias.size() == 1){
-            return contentIdentifiersByAlias.get(0);
-        } else {
-            ContentIdentifier bestMatch = contentIdentifiersByAlias.remove(0);
-            for (ContentIdentifier cids : contentIdentifiersByAlias) {
-
+        Site site = siteCache.getSiteByHostname(serverName);
+        ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(site.getId(), alias);
+        if(cid == null){
+            List<ContentIdentifier> cids = contentIdentifierDao.getContentIdentifiersByAlias(alias);
+            if(cids.size() > 0){
+                cid = cids.get(0);
+                if(cids.size() > 1){
+                    LOG.warn("More than one ContentIdentifier matched alias {}", alias);
+                }
             }
-            return bestMatch;
-        }*/
-        throw new NotImplementedException();
+        }
+        return cid;
     }
 
     protected abstract SecuritySession getSecuritySession();
@@ -191,9 +204,9 @@ public abstract class ContentRequestHandler implements ServletContextAware{
             // Send user to correct domain if page is from other site
             String url = content.getUrl();
             Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
-            List hostnames = site.getHostnames();
+            List<String> hostnames = site.getHostnames();
             if (hostnames.size() > 0) {
-                String hostname = (String)hostnames.get(0);
+                String hostname = hostnames.get(0);
                 int port = request.getServerPort();
                 String scheme = site.getScheme();
                 if (scheme == null) {

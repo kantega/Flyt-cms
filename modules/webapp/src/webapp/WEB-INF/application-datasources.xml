@@ -32,6 +32,10 @@
         <property name="dataSource" ref="aksessDataSource" />
     </bean>
 
+    <bean id="contentAliasDao" class="no.kantega.publishing.common.ao.ContentAliasDaoJdbcImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
+    </bean>
+
     <bean id="aksessHostnamesDao" class="no.kantega.publishing.common.ao.JdbcHostnamesDao">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
