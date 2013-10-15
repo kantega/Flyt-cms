@@ -12,7 +12,6 @@ INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, Dat
 INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (66, 2, 'text', 0, 'tittel', 'Nyhetsarkivet');
 INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (67, 2, 'text', 0, 'ingress', 'Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Pellentesque quis dui non ligula ultrices convallis. Fusce aliquam, velit sed varius adipiscing, eros orci cursus diam, vel malesuada sem urna nec tortor.');
 INSERT INTO associationcategory (AssociationId, AssociationName, Description, PublicId, LastModified) VALUES (1, 'Hovedmeny', 'Venstremeny', null, '2009-12-18 13:12:23');
-INSERT INTO sites (SiteId, Name, Alias) VALUES (1, 'Site', '/alias/');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (10, 1, -1, 0, 'mailz@gmail.com', 'daily');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (20, 2, -1, 0, 'mailz2@gmail.com', 'daily');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (30, 1, -1, 0, 'mailz3@broadpark.no', 'immediate');
