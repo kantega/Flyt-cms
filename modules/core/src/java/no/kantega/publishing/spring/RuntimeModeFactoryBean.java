@@ -16,16 +16,16 @@
 
 package no.kantega.publishing.spring;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-import org.springframework.web.context.ServletContextAware;
-
-import javax.servlet.ServletContext;
 
 /**
- *
+ * Factory creating the appropriate <code>RuntimeMode</code> based on
+ * whether the system property development is defined.
  */
-public class RuntimeModeFactoryBean extends AbstractFactoryBean implements ServletContextAware{
-    private ServletContext servletContext;
+public class RuntimeModeFactoryBean extends AbstractFactoryBean {
+    private static final Logger logger = LoggerFactory.getLogger(RuntimeModeFactoryBean.class);
 
     @Override
     public Class getObjectType() {
@@ -34,15 +34,13 @@ public class RuntimeModeFactoryBean extends AbstractFactoryBean implements Servl
 
     @Override
     protected Object createInstance() throws Exception {
-
+        RuntimeMode runtimeMode;
         if(System.getProperty("development") != null) {
-            return RuntimeMode.DEVELOPMENT;
+            runtimeMode = RuntimeMode.DEVELOPMENT;
         } else {
-            return RuntimeMode.PRODUCTION;
+            runtimeMode = RuntimeMode.PRODUCTION;
         }
-    }
-
-    public void setServletContext(ServletContext servletContext) {
-        this.servletContext = servletContext;
+        logger.info("Runtimemode: " + runtimeMode);
+        return runtimeMode;
     }
 }
