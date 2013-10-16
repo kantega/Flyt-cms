@@ -24,6 +24,8 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -45,6 +47,7 @@ public class GetMetaDataTag  extends TagSupport {
     private String property = AttributeProperty.HTML;
     private Content contentObject = null;
     private String repeater = null;
+    private static WebApplicationContext webApplicationContext;
 
     private boolean inheritFromAncestors = false;
 
@@ -92,6 +95,10 @@ public class GetMetaDataTag  extends TagSupport {
         JspWriter out;
 
         try {
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
             out = pageContext.getOut();
             try {
                 if (contentObject == null) {
@@ -105,7 +112,6 @@ public class GetMetaDataTag  extends TagSupport {
                 cmd.setAttributeType(AttributeDataType.META_DATA);
                 cmd.setFormat(format);
 
-                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
                 String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
                 if (result != null) {
                     out.write(result);
@@ -113,7 +119,6 @@ public class GetMetaDataTag  extends TagSupport {
             } catch (NotAuthorizedException e) {
                 HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();
                 HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
-                SecuritySession session = SecuritySession.getInstance(request);
                 if (session.isLoggedIn()) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 } else {

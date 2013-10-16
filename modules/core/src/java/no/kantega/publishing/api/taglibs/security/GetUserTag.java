@@ -23,10 +23,11 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
-import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -38,6 +39,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetUserTag  extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     private String name = "currentuser";
     private String userid = null;
@@ -49,19 +51,21 @@ public class GetUserTag  extends TagSupport {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         try {
-            User user = null;
 
-            SecuritySession session = SecuritySession.getInstance(request);
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            User user = null;
             if(!isBlank(userid)) {
-                SecurityRealm realm = SecurityRealmFactory.getInstance();
+                SecurityRealm realm = webApplicationContext.getBean(SecurityRealm.class);
                 try {
                     user = realm.lookupUser(userid, useCache);
 
                     if (user != null) {
                         if (getRoles || getRoleTopics) {
-                            List roles = realm.lookupRolesForUser(user.getId());
-                            for (int i = 0; i < roles.size(); i++) {
-                                Role role =  (Role)roles.get(i);
+                            List<Role> roles = realm.lookupRolesForUser(user.getId());
+                            for (Role role : roles) {
                                 user.addRole(role);
                             }
                             if (getRoleTopics && Aksess.isTopicMapsEnabled()) {
@@ -69,11 +73,10 @@ public class GetUserTag  extends TagSupport {
                                 TopicMapService topicService = new TopicMapService(request);
 
                                 if (user.getRoles() != null) {
-                                    for (int i = 0; i < roles.size(); i++) {
-                                        Role role =  (Role)roles.get(i);
-                                        List tmp = topicService.getTopicsBySID(role);
-                                        for (int j = 0; j < tmp.size(); j++) {
-                                            user.addTopic((Topic)tmp.get(j));
+                                    for (Role role : roles) {
+                                        List<Topic> tmp = topicService.getTopicsBySID(role);
+                                        for (Topic aTmp : tmp) {
+                                            user.addTopic(aTmp);
                                         }
                                     }
                                 }

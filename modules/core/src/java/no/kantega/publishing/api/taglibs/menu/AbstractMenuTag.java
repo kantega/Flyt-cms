@@ -35,6 +35,7 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ import java.util.List;
 public abstract class AbstractMenuTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractMenuTag.class);
     private static ContentIdHelper contentIdHelper;
+    private static WebApplicationContext webApplicationContext;
 
     protected String name = "menu";
     protected int siteId = -1;
@@ -289,8 +291,11 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
     public int doStartTag() throws JspException {
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-            ContentManagementService cms = new ContentManagementService(request);
-            SecuritySession securitySession = SecuritySession.getInstance(request);
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            ContentManagementService cms = new ContentManagementService(session);
 
             Content content = setContent(cms);
             setLanguage(request, content);
@@ -300,7 +305,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
 
             SiteMapEntry sitemap = setSiteMap(cms, depth);
 
-            setOpenElement(securitySession, sitemap);
+            setOpenElement(session, sitemap);
             status = new CollectionLoopTagStatus(menuitems);
 
         } catch (Exception e) {

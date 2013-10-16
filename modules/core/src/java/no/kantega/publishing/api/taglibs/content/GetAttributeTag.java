@@ -25,6 +25,8 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,6 +59,7 @@ public class GetAttributeTag extends TagSupport {
     private int width  = -1;
     private int maxlen = -1;
     private Cropping cropping = Cropping.CONTAIN;
+    private static WebApplicationContext webApplicationContext;
 
     public void setName(String name) {
         this.name = name.toLowerCase();
@@ -130,7 +133,10 @@ public class GetAttributeTag extends TagSupport {
 
     public int doStartTag() throws JspException {
         JspWriter out;
-
+        if (webApplicationContext == null) {
+            webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+        }
+        SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
         try {
             out = pageContext.getOut();
             try {
@@ -150,7 +156,6 @@ public class GetAttributeTag extends TagSupport {
                     contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, repeater);
                 }
 
-                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
                 String result = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
 
                 if (defaultValue != null && (result == null || result.length() == 0)) {
@@ -174,7 +179,6 @@ public class GetAttributeTag extends TagSupport {
             } catch (NotAuthorizedException e) {
                 HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();
                 HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
-                SecuritySession session = SecuritySession.getInstance(request);
                 if (session.isLoggedIn()) {
                     response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 } else {

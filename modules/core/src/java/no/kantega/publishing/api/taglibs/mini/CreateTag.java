@@ -28,6 +28,8 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -37,6 +39,7 @@ import java.io.IOException;
 
 public class CreateTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(CreateTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     private int displayTemplateId = -1;
     private int contentTemplateId = -1;
@@ -51,14 +54,17 @@ public class CreateTag extends AbstractSimpleEditTag {
             JspWriter out = bodyContent.getEnclosingWriter();
             String body = bodyContent.getString();
 
-            StringBuffer link = new StringBuffer();
+            StringBuilder link = new StringBuilder();
 
             if (content == null) {
                 content = AttributeTagHelper.getContent(pageContext, collection, parentId);
             }
 
-            SecuritySession securitySession = SecuritySession.getInstance(request);
-            if (content != null && securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            if (content != null && session.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 // Is authorized to edit page
                 link.append("<a");
                 if (cssclass != null) {

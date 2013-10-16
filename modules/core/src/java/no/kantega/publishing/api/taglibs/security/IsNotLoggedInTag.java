@@ -19,25 +19,28 @@ package no.kantega.publishing.api.taglibs.security;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 public class IsNotLoggedInTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsNotLoggedInTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     public int doStartTag() throws JspException {
         return EVAL_BODY_TAG;
     }
 
-    public int doAfterBody() throws JspException
-    {
-        HttpServletRequest  request  = (HttpServletRequest)pageContext.getRequest();
+    public int doAfterBody() throws JspException {
 
         try {
-            SecuritySession session = SecuritySession.getInstance(request);
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
             if (!session.isLoggedIn()) {
                 bodyContent.writeOut(getPreviousOut());
             }
