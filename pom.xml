@@ -270,7 +270,7 @@
         <guava.version>13.0.1</guava.version>
         <taglibs-standard.version>1.1.2</taglibs-standard.version>
         <metrics.version>2.2.0</metrics.version>
-        <groovy.version>2.1.6</groovy.version>
+        <groovy.version>2.1.7</groovy.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
         <logback.version>1.0.13</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
