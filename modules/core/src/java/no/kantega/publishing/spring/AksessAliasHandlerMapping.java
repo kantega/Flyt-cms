@@ -41,7 +41,7 @@ public class AksessAliasHandlerMapping extends ContentEventListenerAdapter imple
     public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
         LOG.debug("Checking request {} for match on alias", request.getRequestURI());
         HandlerExecutionChain handlerExecutionChain = null;
-        String lookupPath = urlPathHelper.getPathWithinServletMapping(request);
+        String lookupPath = urlPathHelper.getLookupPathForRequest(request);
         lookupPath = addTrailingSlash(lookupPath);
 
         if(aliases.contains(lookupPath)){
