@@ -216,7 +216,6 @@
                 <ref local="mailSubscriptionTrigger"/>
                 <ref local="mailSubscriptionTriggerDaily"/>
                 <ref local="mailSubscriptionTriggerWeekly"/>
-                <ref local="systemStatusTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="brokenLinkEventTrigger" />
