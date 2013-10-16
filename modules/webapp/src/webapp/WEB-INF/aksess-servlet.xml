@@ -314,9 +314,8 @@
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AttachmentRequestHandler">
-        <property name="servletClass" value="no.kantega.publishing.client.AttachmentRequestHandler"/>
-        <property name="servletName" value="AttachmentRequestHandler"/>
+    <bean id="AttachmentRequestHandler" class="no.kantega.publishing.client.AttachmentRequestHandler">
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">

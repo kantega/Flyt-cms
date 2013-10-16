@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.client;
 
-import com.yammer.metrics.annotation.Timed;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.util.HttpHelper;
@@ -27,18 +25,20 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletException;
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Handles requests for attachments.
@@ -46,113 +46,102 @@ import java.util.regex.Pattern;
  * - /attachment.ap?id=${id}
  * - /attachment/${id}/filename
  */
-public class AttachmentRequestHandler extends HttpServlet {
+@Controller
+public abstract class AttachmentRequestHandler {
     private static final Logger log = LoggerFactory.getLogger(AttachmentRequestHandler.class);
 
-    private final Pattern urlPattern = Pattern.compile("/(\\d+)/.*");
-
+    @Autowired
     private SiteCache siteCache;
+    private int expire;
 
-    @Timed
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestParameters param = new RequestParameters(request, "utf-8");
+    @PostConstruct
+    public void init(){
+        Configuration config = Aksess.getConfiguration();
+        expire = config.getInt("attachments.expire", -1);
+    }
 
-        if(siteCache == null){
-            siteCache = RootContext.getInstance().getBean(SiteCache.class);
-        }
-        try {
-            ContentManagementService cs = new ContentManagementService(request);
+    @RequestMapping("/attachment/{id:[0-9]+}/*")
+    public void handleAttachment(@PathVariable int id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        doHandleAttachment(id, request, response);
+    }
 
-            int attachmentId = -1;
+    @RequestMapping("/attachment.ap")
+    public void handleAttachment_Ap(@RequestParam(required = false, defaultValue = "-1") int id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        id = tryGetFromRequestAttribute(id, request);
+        doHandleAttachment(id, request, response);
+    }
 
-            String id = (String)request.getAttribute("attachment-id");
-            if (id != null) {
-                try {
-                    attachmentId = Integer.parseInt(id);
-                } catch (NumberFormatException e) {
-                    log.error( "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
-                }
-            } else {
-                attachmentId = param.getInt("id");
-                String info = request.getPathInfo();
-                if(attachmentId == -1 && info != null) {
-                    try {
-                        Matcher matcher = urlPattern.matcher(info);
-                        if (matcher.matches()){
-                            attachmentId = Integer.parseInt(matcher.group(1));
-                        }
-                    } catch (NumberFormatException e) {
-                        log.error( "Invalid attachment request " + info);
-                    }
-                }
-            }
-
-            if (attachmentId == -1) {
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-            }
-
-            String anchor = param.getString("anchor");
-
-            int siteId = -1;
-
-            Site site = siteCache.getSiteByHostname(request.getServerName());
-            if (site != null) {
-                siteId = site.getId();
-            }
-
-            Attachment attachment = null;
+    private int tryGetFromRequestAttribute(int id, HttpServletRequest request) {
+        if (id == -1) {
+            String idAttribute = (String)request.getAttribute("attachment-id");
             try {
-                 attachment = cs.getAttachment(attachmentId, siteId);
-            } catch (NotAuthorizedException e) {
-                response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
+                id = Integer.parseInt(idAttribute);
+            } catch (NumberFormatException e) {
+                log.error( "Attachment request from ContentRequestDispatcher contained non parsable attachment-id: " + id);
             }
-            if (attachment == null) {
-                // Attachment not found
-                log.error( "Attachment not found. Attachment id requested: " + attachmentId + " on siteId: " + siteId);
-                response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return;
-            }
+        }
+        return id;
+    }
 
-            String mimetype = attachment.getMimeType().getType();
-            response.setContentType(mimetype);
-            String filename = attachment.getFilename();
-            if (anchor == null) {
-                // Dont send filename if anchor is used, gives problem in browser with filename
-                String contentDisposition = param.getString("contentdisposition");
-                
-                contentDisposition = "inline".equals(contentDisposition) ? "inline" : "attachment";
-                response.addHeader("Content-Disposition", contentDisposition +"; filename=\"" + filename + "\"");
-            }
+    private void doHandleAttachment(int id, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (id == -1) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+            return;
+        }
 
-            if (HttpHelper.isInClientCache(request, response, String.valueOf(attachmentId), attachment.getLastModified())) {
-                // Found in browser cache
-                response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-                return;
-            }
+        int siteId = -1;
 
-            // Add cache control headers
-            Configuration config = Aksess.getConfiguration();
-            int expire = config.getInt("attachments.expire", -1);
-            HttpHelper.addCacheControlHeaders(response, expire);
-            
-            try (ServletOutputStream out = response.getOutputStream()){
-                if (attachment.getSize() > 0) {
- 	  	            response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
-                }
-                log.info("Sending attachment {}", attachment.getFilename());
-                cs.streamAttachmentData(attachmentId, new InputStreamHandler(out));
-                out.flush();
-            } catch (Exception e) {
-                // Client has aborted / connection closed
+        Site site = siteCache.getSiteByHostname(request.getServerName());
+        if (site != null) {
+            siteId = site.getId();
+        }
+        Attachment attachment;
+        ContentManagementService cs = new ContentManagementService(getSecuritySession());
+        try {
+            attachment = cs.getAttachment(id, siteId);
+        } catch (NotAuthorizedException e) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        if (attachment == null) {
+            // Attachment not found
+            log.error( "Attachment not found. Attachment id requested: " + id + " on siteId: " + siteId);
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        String mimetype = attachment.getMimeType().getType();
+        response.setContentType(mimetype);
+        String filename = attachment.getFilename();
+        if (request.getParameter("anchor") == null) {
+            // Dont send filename if anchor is used, gives problem in browser with filename
+            String contentDisposition = request.getParameter("contentdisposition");
+
+            contentDisposition = "inline".equals(contentDisposition) ? "inline" : "attachment";
+            response.addHeader("Content-Disposition", contentDisposition +"; filename=\"" + filename + "\"");
+        }
+
+        if (HttpHelper.isInClientCache(request, response, String.valueOf(id), attachment.getLastModified())) {
+            // Found in browser cache
+            response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
+            return;
+        }
+
+        // Add cache control headers
+        HttpHelper.addCacheControlHeaders(response, expire);
+
+        try (ServletOutputStream out = response.getOutputStream()){
+            if (attachment.getSize() > 0) {
+                response.addHeader("Content-Length", String.valueOf(attachment.getSize()));
             }
+            log.info("Sending attachment {}", attachment.getFilename());
+            cs.streamAttachmentData(id, new InputStreamHandler(out));
+            out.flush();
         } catch (Exception e) {
-            log.error("Error streaming attachment", e);
+            // Client has aborted / connection closed
         }
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setStatus(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
-    }
+    protected abstract SecuritySession getSecuritySession();
 }
 
