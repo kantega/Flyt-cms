@@ -47,7 +47,7 @@ public class SystemStatusJob {
     }
 
     @Scheduled(cron = "${SystemStatusJob.cron:30 0/5 * * * ?}")
-    public void execute() {
+    public void executeSystemStatusJob() {
         StringBuilder msg = new StringBuilder();
 
         msg.append("connections: {");

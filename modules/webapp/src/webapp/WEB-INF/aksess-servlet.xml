@@ -98,7 +98,7 @@
     <bean id="adminUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors" ref="adminViewInterceptor"/>
-        <property name="order" value="3"/>
+        <property name="order" value="4"/>
         <property name="mappings">
             <props>
                 <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
@@ -227,6 +227,7 @@
     
     <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
         <property name="pluginManager" ref="pluginManager"/>
+        <property name="order" value="3"/>
     </bean>
 
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping">
@@ -249,6 +250,7 @@
                 <ref bean="adminViewInterceptor"/>
             </list>
         </property>
+        <property name="order" value="5"/>
         <property name="mappings">
             <props>
                 <!-- Administrator controllers -->
