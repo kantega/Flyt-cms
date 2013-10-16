@@ -60,11 +60,7 @@ public class LegacySystemConfiguration implements SystemConfiguration {
     }
 
     public int getInt(String name, int defaultValue) {
-        try {
-            return configuration.getInt(name, defaultValue);
-        } catch (ConfigurationException e) {
-            throw new RuntimeException(e);
-        }
+        return configuration.getInt(name, defaultValue);
     }
 
     public Locale getDefaultAdminLocale() {

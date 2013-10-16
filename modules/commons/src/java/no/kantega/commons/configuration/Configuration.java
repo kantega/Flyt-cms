@@ -17,6 +17,8 @@
 package no.kantega.commons.configuration;
 
 import no.kantega.commons.exception.ConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -28,17 +30,19 @@ import java.util.Properties;
  */
 public class Configuration {
 
+    private static final Logger log = LoggerFactory.getLogger(Configuration.class);
+
     private static File applicationDirectory;
 
     private Properties properties = null;
 
-    private List<ConfigurationListener> listeners = new ArrayList<ConfigurationListener>();
+    private List<ConfigurationListener> listeners = new ArrayList<>();
 
     public Configuration(Properties properties) {
         this.properties = properties;
     }
 
-    public static String getConfigDirectory() throws ConfigurationException {
+    public static String getConfigDirectory() {
         return appendSlash(new File(applicationDirectory, "conf"));
     }
 
@@ -129,16 +133,18 @@ public class Configuration {
     }
 
 
-    public int getInt(String name, int defaultValue) throws ConfigurationException, IllegalArgumentException {
-        try {
-            String val = getString(name);
-            if (val  == null) {
-                return defaultValue;
-            } else {
+    public int getInt(String name, int defaultValue) {
+        String val = getString(name);
+        if (val  == null) {
+            return defaultValue;
+        } else {
+            try {
+
                 return Integer.parseInt(val);
+            } catch (NumberFormatException e) {
+                log.warn("NumberFormatException when trying to parse {} as {}, returning default value {}", val, name, defaultValue);
+                return defaultValue;
             }
-        } catch (NumberFormatException e) {
-            throw new ConfigurationException("Forventet int: " + name, e);
         }
     }
 

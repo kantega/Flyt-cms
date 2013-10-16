@@ -143,14 +143,7 @@
         <property name="cronExpression" value="${mail.subscription.trigger.weekly}"/>
     </bean>
 
-    <bean name="systemStatusJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.systemstatus.SystemStatusJob"/>
-    </bean>
-
-    <bean id="systemStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="systemStatusJob"/>
-        <property name="cronExpression" value="30 0/5 * * * ?"/>
-    </bean>
+    <bean name="systemStatusJob" class="no.kantega.publishing.jobs.systemstatus.SystemStatusJob" />
 
     <bean id="databaseCleanupJob" class="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
 
