@@ -4,6 +4,7 @@ import com.google.gdata.util.common.base.Pair;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -193,6 +194,8 @@ public class ContentPatternTest {
         values.put("http://domain.no:8080/contextpath/alias", asList(http, domain, port8080, new Pair<>("alias", "/alias")));
         values.put("http://domain.no:8080/contextpath/alias/aliaspart2/", asList(http, port8080, domain, new Pair<>("alias", "/alias/aliaspart2/")));
         values.put("http://domain.no:8080/contextpath/alias/aliaspart2", asList(http, domain, port8080, new Pair<>("alias", "/alias/aliaspart2")));
+
+        values.put("/", Collections.<Pair<String,String>>emptyList());
 
         testPatternWithValues(pattern, values);
     }

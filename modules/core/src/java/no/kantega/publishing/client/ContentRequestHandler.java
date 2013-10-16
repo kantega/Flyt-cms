@@ -28,6 +28,7 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ import java.util.List;
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
 @Controller
-public abstract class ContentRequestHandler implements ServletContextAware{
+public abstract class ContentRequestHandler implements ServletContextAware {
     private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
 
     @Autowired
@@ -59,7 +60,16 @@ public abstract class ContentRequestHandler implements ServletContextAware{
     @Autowired
     private ContentRequestDispatcher contentRequestDispatcher;
 
+    @Autowired
+    private ContentIdHelper contentIdHelper;
+
     private ServletContext servletContext;
+
+    @RequestMapping("/")
+    public ModelAndView handleRoot(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "/");
+        return handleFromContentIdentifier(cid, request, response);
+    }
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
     public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -72,7 +82,7 @@ public abstract class ContentRequestHandler implements ServletContextAware{
                                          @RequestParam(required = false, defaultValue = "-1") int contentId,
                                          @RequestParam(required = false, defaultValue = "-1") int version,
                                          @RequestParam(required = false, defaultValue = "-1") int language,
-                                         @RequestParam(required = false, defaultValue = "published") ContentStatus contentStatus,
+                                         @RequestParam(required = false, defaultValue = "PUBLISHED") ContentStatus contentStatus,
                                          @RequestParam(required = false, defaultValue = "-1") int siteId,
                                          @RequestParam(required = false, defaultValue = "-1") int contextId,
                                          HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

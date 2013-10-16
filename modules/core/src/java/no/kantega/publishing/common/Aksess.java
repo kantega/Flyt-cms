@@ -323,6 +323,8 @@ public class Aksess {
     public static String getContextPath() {
         if (contextPath.length() == 0) {
             return "";
+        } else if (contextPath.startsWith("/")){
+            return contextPath;
         } else {
             return "/" + contextPath;
         }

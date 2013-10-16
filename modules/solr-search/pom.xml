@@ -12,6 +12,7 @@
     <artifactId>openaksess-search-solr</artifactId>
 
     <name>OpenAksess search - Solr</name>
+
     <properties>
         <solr.version>4.4.0</solr.version>
     </properties>

@@ -51,6 +51,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper, ServletContextAware {
@@ -220,7 +221,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             assureContentIdAndAssociationIdSet(cid);
             return cid;
         } else {
-            url = contentUrlMatcher.group("content");
+            url = defaultIfBlank(contentUrlMatcher.group("content"), "/");
             if (siteId != -1) {
                 if ("/".equalsIgnoreCase(url)) {
                     Site site = siteCache.getSiteById(siteId);

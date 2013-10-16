@@ -6,6 +6,7 @@ import no.kantega.publishing.event.ContentEventListenerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.UrlPathHelper;
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AksessAliasHandlerMapping extends ContentEventListenerAdapter implements HandlerMapping {
+public class AksessAliasHandlerMapping extends ContentEventListenerAdapter implements HandlerMapping, Ordered {
     private static Logger LOG = LoggerFactory.getLogger(AksessAliasHandlerMapping.class);
 
     public static final String HANDLED_OA_ALIAS = AksessAliasHandlerMapping.class.getName() + "_HANDLED_OA_ALIAS";
@@ -29,11 +30,11 @@ public class AksessAliasHandlerMapping extends ContentEventListenerAdapter imple
     private UrlPathHelper urlPathHelper = new UrlPathHelper();
 
     private Set<String> aliases;
+    private int order;
 
     @PostConstruct
     public void init(){
         aliases = new HashSet<>(contentAliasDao.getAllAliases());
-
     }
 
     @Override
@@ -56,5 +57,14 @@ public class AksessAliasHandlerMapping extends ContentEventListenerAdapter imple
             lookupPath += "/";
         }
         return lookupPath;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

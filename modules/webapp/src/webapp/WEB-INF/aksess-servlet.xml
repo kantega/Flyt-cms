@@ -21,11 +21,13 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:metrics="http://www.yammer.com/schema/metrics"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd">
 
     <context:annotation-config/>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
+    <mvc:default-servlet-handler/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -37,8 +39,8 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
-
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping" >
+        <property name="order" value="1"/>
         <property name="alwaysUseFullPath" value="true"/>
 
         <property name="mappings">
@@ -96,7 +98,7 @@
     <bean id="adminUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors" ref="adminViewInterceptor"/>
-
+        <property name="order" value="3"/>
         <property name="mappings">
             <props>
                 <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
@@ -227,7 +229,9 @@
         <property name="pluginManager" ref="pluginManager"/>
     </bean>
 
-    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping"/>
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping">
+        <property name="order" value="2"/>
+    </bean>
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
 
     <mvc:interceptors>

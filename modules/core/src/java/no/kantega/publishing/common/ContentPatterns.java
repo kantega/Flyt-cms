@@ -58,7 +58,7 @@ public class ContentPatterns {
     public static String getPatternWithContextPath(String contextPath){
         return contextPath.equals("/") ?
                 BASE_PATTERN + CONTENT_PATTERNS :
-                BASE_PATTERN + contextPath + CONTENT_PATTERNS;
+                BASE_PATTERN + "(" + contextPath + ")?" + CONTENT_PATTERNS;
 
     }
 }
