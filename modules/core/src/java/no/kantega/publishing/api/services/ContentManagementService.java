@@ -9,7 +9,7 @@ import no.kantega.publishing.common.exception.ObjectLockedException;
 
 import java.util.List;
 
-public interface ContentManagmentService {
+public interface ContentManagementService {
 
     public Content getContentDoNotLog(ContentIdentifier id) throws NotAuthorizedException, ContentNotFoundException;
 
