@@ -307,6 +307,7 @@
         <property name="multimediaRequestHandlerHelper">
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
         </property>
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>

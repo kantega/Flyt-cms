@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.client;
 
-import com.yammer.metrics.annotation.Timed;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.util.HttpHelper;
@@ -25,63 +24,58 @@ import no.kantega.publishing.common.data.ImageResizeParameters;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.util.InputStreamHandler;
+import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.Controller;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-public class MultimediaRequestHandler implements Controller {
+@Controller
+public abstract class MultimediaRequestHandler {
     private static final Logger log = LoggerFactory.getLogger(MultimediaRequestHandler.class);
 
     private MultimediaRequestHandlerHelper helper;
+    private int expire;
 
-    @Timed
-    public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @PostConstruct
+    public void init(){
+        Configuration config = Aksess.getConfiguration();
+        expire = config.getInt("multimedia.expire", -1);
+    }
+
+    @RequestMapping("/multimedia/{id:[0-9]+}/*")
+    public void handleMultimedia(@PathVariable int id, HttpServletRequest request, HttpServletResponse response){
+        handleRequest(id, request, response);
+    }
+
+    @RequestMapping("/multimedia.ap")
+    public void handleMultimedia_Ap(@RequestParam int id, HttpServletRequest request, HttpServletResponse response){
+        handleRequest(id, request, response);
+    }
+
+
+    private void handleRequest(int id, HttpServletRequest request, HttpServletResponse response) {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         try {
-            MultimediaService mediaService = new MultimediaService(request);
+            MultimediaService mediaService = new MultimediaService(getSecuritySession());
 
-            int mmId = param.getInt("id");
-            if(mmId == -1) {
-                try {
-                    String info = request.getPathInfo();
-                    // URL can be specified in the following formats:
-                    // http://localhost/multimedia/1.jpg
-                    // http://localhost/multimedia/1/filename.jpg
-                    int dotIndex = info.indexOf(".", 1);
-                    int slashIndex = info.indexOf("/", 1);
-                    if (slashIndex != -1) {
-                        mmId = Integer.parseInt(info.substring(1, slashIndex));
-                    } else if (dotIndex != -1) {
-                        mmId = Integer.parseInt(info.substring(1, dotIndex));
-                    }
-
-                } catch (Exception e) {
-                    log.error("Error parsing multimedia id", e);
-                }
-            }
-
-
-            if (mmId == -1) {
-                log.error("Multimedia id was -1");
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST);
-                return null;
-            }
-
-            Multimedia mm = mediaService.getMultimediaCheckAuthorization(mmId);
+            Multimedia mm = mediaService.getMultimediaCheckAuthorization(id);
             if (mm == null) {
-                log.error("Multimedia with id {} not found", mmId);
+                log.error("Multimedia with id {} not found", id);
                 response.sendError(HttpServletResponse.SC_NOT_FOUND);
-                return null;
+                return;
             }
 
-            log.info( "Sender mediaobjekt (" + mm.getName() + ", id:" + mm.getId() + ")");
+            log.info( "Sending media object (" + mm.getName() + ", id:" + mm.getId() + ")");
 
             String contentDisposition = param.getString("contentdisposition");
             if (!"attachment".equals(contentDisposition)) {
@@ -93,17 +87,14 @@ public class MultimediaRequestHandler implements Controller {
 
             ImageResizeParameters resizeParams = new ImageResizeParameters(param);
 
-            String key = getCacheKey(mmId, mm, resizeParams);
+            String key = getCacheKey(id, mm, resizeParams);
             if (HttpHelper.isInClientCache(request, response, key, mm.getLastModified())) {
                 response.setContentType(mimetype);
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
                 response.sendError(HttpServletResponse.SC_NOT_MODIFIED);
-                return null;
+                return;
             }
 
-            // Add cache control headers
-            Configuration config = Aksess.getConfiguration();
-            int expire = config.getInt("multimedia.expire", -1);
             HttpHelper.addCacheControlHeaders(response, expire);
 
             if (shouldResize(mimetype, resizeParams)) {
@@ -122,7 +113,7 @@ public class MultimediaRequestHandler implements Controller {
                     response.addHeader("Content-Length", String.valueOf(mm.getSize()));
                 }
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
-                mediaService.streamMultimediaData(mmId, new InputStreamHandler(out));
+                mediaService.streamMultimediaData(id, new InputStreamHandler(out));
             }
 
             out.flush();
@@ -130,7 +121,6 @@ public class MultimediaRequestHandler implements Controller {
         } catch (Exception e) {
             log.error("", e);
         }
-        return null;
     }
 
     private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
@@ -150,4 +140,6 @@ public class MultimediaRequestHandler implements Controller {
     public void setMultimediaRequestHandlerHelper(MultimediaRequestHandlerHelper helper){
         this.helper = helper;
     }
+
+    protected abstract SecuritySession getSecuritySession();
 }

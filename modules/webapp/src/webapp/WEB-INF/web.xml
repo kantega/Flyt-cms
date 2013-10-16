@@ -219,46 +219,7 @@ not work if you try adding them -->
         <servlet-name>aksess</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/content.ap</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/content/*</url-pattern>
-    </servlet-mapping>    
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>*.asp</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/attachment.ap</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/attachment/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/multimedia.ap</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/multimedia/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/rss.ap</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>*.action</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/export.ap</url-pattern>
-    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/oasearch/*</url-pattern>
@@ -281,27 +242,12 @@ not work if you try adding them -->
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
-        <url-pattern>*.jnlp</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>jsp</servlet-name>
         <url-pattern>*.jjs</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
         <url-pattern>*.jsp</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/sitemap.xml</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/robots.txt</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
