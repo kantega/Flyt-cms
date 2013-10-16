@@ -252,7 +252,7 @@
         <httpclient.version>3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <nekohtml.version>1.9.14</nekohtml.version>
-        <springframework.version>3.2.2.RELEASE</springframework.version>
+        <springframework.version>3.2.4.RELEASE</springframework.version>
         <securityapi.version>2.6</securityapi.version>
         <securityapi.openimpl.version>2.10</securityapi.openimpl.version>
         <xalan.version>2.7.1</xalan.version>
