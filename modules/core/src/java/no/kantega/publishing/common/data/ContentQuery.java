@@ -276,7 +276,7 @@ public class ContentQuery {
 
         }
         if (ownerPerson != null) {
-            query.append(" and content.OwnerPerson in (:ownerpersons");
+            query.append(" and content.OwnerPerson in (:ownerpersons)");
             parameters.put("ownerpersons", asList(ownerPerson.split(",")));
 
         }
