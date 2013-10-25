@@ -37,7 +37,11 @@ public class AliasRequestHandler {
 
     private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
         Site site = siteCache.getSiteByHostname(serverName);
-        ContentIdentifier cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(site.getId(), alias);
+
+        ContentIdentifier cid = null;
+        if (site != null) {
+            cid = contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(site.getId(), alias);
+        }
         if(cid == null){
             List<ContentIdentifier> cids = contentIdentifierDao.getContentIdentifiersByAlias(alias);
             if(cids.size() > 0){
