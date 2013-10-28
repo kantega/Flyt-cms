@@ -16,14 +16,14 @@
 
 package no.kantega.publishing.security.filter;
 
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.common.exception.ExceptionHandler;
+import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.*;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**

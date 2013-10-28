@@ -31,11 +31,12 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
     private boolean useSsl;
     private String contextPath;
     private final String invalidCookieValue = "invalid";
+    private int TWO_WEEKS = 1209600;
 
 
     public void afterPropertiesSet() {
         cookieName = configuration.getString("security.login.rememberme.cookieName", "no.kantega.openaksess.remember");
-        cookieMaxAge = configuration.getInt("security.login.rememberme.period", 1209600); // 1209600 == Two weeks
+        cookieMaxAge = configuration.getInt("security.login.rememberme.period", TWO_WEEKS);
         hashKey = configuration.getString("security.login.rememberme.key");
         algorithm = configuration.getString("security.login.rememberme.algorithm", "SHA-256");
         useSsl = configuration.getBoolean("security.login.usessl", false);
@@ -59,11 +60,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
     @Override
     public Identity getRememberedIdentity(HttpServletRequest request) {
 
-        Cookie[] cookies = request.getCookies();
-        Cookie rememberMeCookie = null;
-        if (cookies != null) {
-            rememberMeCookie = getRememberMeCookie(cookies);
-        }
+        Cookie rememberMeCookie = getRememberMeCookie(request.getCookies());
 
         if (rememberMeCookie == null) {
             return null;

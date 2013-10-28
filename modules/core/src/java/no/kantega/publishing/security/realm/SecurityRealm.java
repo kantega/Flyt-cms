@@ -126,7 +126,7 @@ public class SecurityRealm {
     }
 
     public List<Role> lookupRolesForUser(String userid) throws SystemException {
-        List<Role> roles = new ArrayList<Role>();
+        List<Role> roles = new ArrayList<>();
         try {
             Iterator<no.kantega.security.api.role.Role> it = roleManager.getRolesForUser(SecurityHelper.createApiIdentity(userid));
             if (it != null) {
@@ -147,7 +147,7 @@ public class SecurityRealm {
     }
 
     public List<String> lookupUsersWithRole(String roleId) throws SystemException {
-        List<String> userIds = new ArrayList<String>();
+        List<String> userIds = new ArrayList<>();
         try {
             Iterator<Identity> it = roleManager.getUsersWithRole(SecurityHelper.createApiRole(roleId));
             if (it != null) {

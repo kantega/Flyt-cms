@@ -23,8 +23,9 @@ import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
@@ -32,18 +33,19 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 public class GetUserNameTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserNameTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     private String userid;
     private boolean useCache;
 
     public int doStartTag() throws JspException {
-        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
-        JspWriter out;
         try {
-            User user = null;
 
-            SecuritySession session = SecuritySession.getInstance(request);
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            User user = null;
             if (userid != null) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
@@ -55,7 +57,7 @@ public class GetUserNameTag extends TagSupport {
                 user = session.getUser();
             }
 
-            out = pageContext.getOut();
+            JspWriter out = pageContext.getOut();
             if (user != null) {
                 out.write(user.getName());
             } else if (userid != null) {

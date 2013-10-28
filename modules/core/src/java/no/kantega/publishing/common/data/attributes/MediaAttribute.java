@@ -60,66 +60,85 @@ public class MediaAttribute extends Attribute {
         }
     }
 
-    public String getProperty(String property) {
+    public String getProperty(String prop) {
         String returnValue = value;
-        if (value == null || value.length() == 0) {
-            return "";
-        }
 
-        if (AttributeProperty.HTML.equalsIgnoreCase(property)
-                || AttributeProperty.URL.equalsIgnoreCase(property)
-                || AttributeProperty.WIDTH.equalsIgnoreCase(property)
-                || AttributeProperty.HEIGHT.equalsIgnoreCase(property)
-                || AttributeProperty.NAME.equalsIgnoreCase(property)
-                || AttributeProperty.ALTNAME.equalsIgnoreCase(property)
-                || AttributeProperty.AUTHOR.equalsIgnoreCase(property)
-                || AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)
-                || AttributeProperty.LATITUDE.equalsIgnoreCase(property)
-                || AttributeProperty.LONGITUDE.equalsIgnoreCase(property)
-                || AttributeProperty.PARENTID.equalsIgnoreCase(property)
-                || AttributeProperty.MIMETYPE.equalsIgnoreCase(property)
-                || AttributeProperty.SIZE.equalsIgnoreCase(property)) {
+        String property = prop.toLowerCase();
+        if (isKnownProperty(property)) {
             try {
                 Multimedia mm = getMultimedia();
                 if(mm == null){
-                    return "";
-                } else if (AttributeProperty.HTML.equalsIgnoreCase(property)) {
-                    return MultimediaTagCreator.mm2HtmlTag(mm, null, -1, -1, null);
-                } else if (AttributeProperty.WIDTH.equalsIgnoreCase(property)) {
-                    return String.valueOf(mm.getWidth());
-                } else if (AttributeProperty.HEIGHT.equalsIgnoreCase(property)) {
-                    return String.valueOf(mm.getHeight());
-                } else if (AttributeProperty.AUTHOR.equalsIgnoreCase(property)) {
-                    return mm.getAuthor();
-                } else if (AttributeProperty.NAME.equalsIgnoreCase(property)) {
-                    return mm.getName();
-                } else if (AttributeProperty.ALTNAME.equalsIgnoreCase(property)) {
-                    return mm.getAltname();
-                } else if (AttributeProperty.DESCRIPTION.equalsIgnoreCase(property)) {
-                    return mm.getDescription();
-                } else if (AttributeProperty.PARENTID.equalsIgnoreCase(property)) {
-                    return String.valueOf(mm.getParentId());
-                } else if (AttributeProperty.LATITUDE.equalsIgnoreCase(property)) {
-                    return Double.toString(mm.getGpsLatitudeAsDouble());
-                } else if (AttributeProperty.LONGITUDE.equalsIgnoreCase(property)) {
-                    return Double.toString(mm.getGpsLongitudeAsDouble());
-                } else if (AttributeProperty.MIMETYPE.equalsIgnoreCase(property)) {
-                    return mm.getMimeType().getType();
-                } else if (AttributeProperty.URL.equalsIgnoreCase(property)){
-                    return mm.getUrl();
-                } else if (AttributeProperty.SIZE.equalsIgnoreCase(property)) {
-                    int size = mm.getSize();
-                    if (size > 0) {
-                        return FormatHelper.formatSize(size);
-                    } else {
-                        return "";
+                    returnValue = "";
+                } else{
+                    switch (property) {
+                        case AttributeProperty.HTML:
+                            returnValue = MultimediaTagCreator.mm2HtmlTag(mm, null, -1, -1, null);
+                            break;
+                        case AttributeProperty.WIDTH:
+                            returnValue = String.valueOf(mm.getWidth());
+                            break;
+                        case AttributeProperty.HEIGHT:
+                            returnValue = String.valueOf(mm.getHeight());
+                            break;
+                        case AttributeProperty.AUTHOR:
+                            returnValue = mm.getAuthor();
+                            break;
+                        case AttributeProperty.NAME:
+                            returnValue = mm.getName();
+                            break;
+                        case AttributeProperty.ALTNAME:
+                            returnValue = mm.getAltname();
+                            break;
+                        case AttributeProperty.DESCRIPTION:
+                            returnValue = mm.getDescription();
+                            break;
+                        case AttributeProperty.PARENTID:
+                            returnValue = String.valueOf(mm.getParentId());
+                            break;
+                        case AttributeProperty.LATITUDE:
+                            returnValue = Double.toString(mm.getGpsLatitudeAsDouble());
+                            break;
+                        case AttributeProperty.LONGITUDE:
+                            returnValue = Double.toString(mm.getGpsLongitudeAsDouble());
+                            break;
+                        case AttributeProperty.MIMETYPE:
+                            returnValue = mm.getMimeType().getType();
+                            break;
+                        case AttributeProperty.URL:
+                            returnValue = mm.getUrl();
+                            break;
+                        case AttributeProperty.SIZE:
+                            int size = mm.getSize();
+                            if (size > 0) {
+                                returnValue = FormatHelper.formatSize(size);
+                            } else {
+                                returnValue = "";
+                            }
                     }
                 }
             } catch (Exception e) {
                 log.error("Error getting attributevalue", e);
             }
+        } else {
+            returnValue = value;
         }
         return returnValue;
+    }
+
+    private boolean isKnownProperty(String property) {
+        return AttributeProperty.HTML.equals(property)
+                || AttributeProperty.URL.equals(property)
+                || AttributeProperty.WIDTH.equals(property)
+                || AttributeProperty.HEIGHT.equals(property)
+                || AttributeProperty.NAME.equals(property)
+                || AttributeProperty.ALTNAME.equals(property)
+                || AttributeProperty.AUTHOR.equals(property)
+                || AttributeProperty.DESCRIPTION.equals(property)
+                || AttributeProperty.LATITUDE.equals(property)
+                || AttributeProperty.LONGITUDE.equals(property)
+                || AttributeProperty.PARENTID.equals(property)
+                || AttributeProperty.MIMETYPE.equals(property)
+                || AttributeProperty.SIZE.equals(property);
     }
 
     public MultipartFile getImportFile() {

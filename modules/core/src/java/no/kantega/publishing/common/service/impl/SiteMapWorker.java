@@ -119,7 +119,7 @@ public class SiteMapWorker {
                 int aType = rs.getInt(p++);
                 int aCategory = rs.getInt(p++);
                 int aSecId = rs.getInt(p++);
-                int groupId = rs.getInt(p++);
+                int groupId = rs.getInt(p);
                 if (aType == AssociationType.SHORTCUT) {
                     type = ContentType.SHORTCUT;
                 }

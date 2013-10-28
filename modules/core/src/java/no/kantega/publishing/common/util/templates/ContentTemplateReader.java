@@ -45,7 +45,7 @@ public class ContentTemplateReader {
      * @return
      */
     public List<TemplateConfigurationValidationError> updateContentTemplateFromTemplateFile(ContentTemplate contentTemplate) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
 
         contentTemplate.setAttributeElements(new ArrayList<Element>());
         contentTemplate.setPropertyElements(new ArrayList<Element>());

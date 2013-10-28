@@ -20,6 +20,7 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.common.ContentPatterns;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.spring.RootContext;
@@ -29,10 +30,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.regex.Pattern;
 
-public class ValidatorHelper {
-    private static final Logger log = LoggerFactory.getLogger(ValidatorHelper.class);
+public class ContentAliasValidator {
+    private static final Logger log = LoggerFactory.getLogger(ContentAliasValidator.class);
 
-    private static  final Pattern ALIAS_PATTERN = Pattern.compile("^[\\w\\.\\-\\+=/\\&]*$");
+    private static final Pattern ALIAS_PATTERN = Pattern.compile(ContentPatterns.ALIAS_PATTERN);
 
     public static void validateAlias(String alias, Content content, ValidationErrors errors) {
 

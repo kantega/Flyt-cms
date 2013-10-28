@@ -17,7 +17,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
     <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
 
@@ -143,14 +143,7 @@
         <property name="cronExpression" value="${mail.subscription.trigger.weekly}"/>
     </bean>
 
-    <bean name="systemStatusJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.systemstatus.SystemStatusJob"/>
-    </bean>
-
-    <bean id="systemStatusTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="systemStatusJob"/>
-        <property name="cronExpression" value="30 0/5 * * * ?"/>
-    </bean>
+    <bean name="systemStatusJob" class="no.kantega.publishing.jobs.systemstatus.SystemStatusJob" />
 
     <bean id="databaseCleanupJob" class="no.kantega.publishing.jobs.cleanup.DatabaseCleanupJob"/>
 
@@ -223,7 +216,6 @@
                 <ref local="mailSubscriptionTrigger"/>
                 <ref local="mailSubscriptionTriggerDaily"/>
                 <ref local="mailSubscriptionTriggerWeekly"/>
-                <ref local="systemStatusTrigger"/>
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="brokenLinkEventTrigger" />

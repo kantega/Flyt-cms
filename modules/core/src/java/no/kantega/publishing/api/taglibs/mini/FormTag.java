@@ -25,6 +25,8 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -33,13 +35,9 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.Locale;
 
-/**
- * User: Kristian Selnæs
- * Date: 23.mar.2010
- * Time: 09:22:16
- */
 public class FormTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(FormTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     private boolean allowDraft = false;
     private boolean hideInfoMessages = false;
@@ -53,8 +51,11 @@ public class FormTag extends BodyTagSupport {
 
         Boolean hearingEnabled = (Boolean)request.getAttribute("hearingEnabled");
 
-        SecuritySession securitySession = SecuritySession.getInstance(request);
-        boolean canApprove = securitySession.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
+        if (webApplicationContext == null) {
+            webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+        }
+        SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+        boolean canApprove = session.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
         ContentStatus contentStatus = (canApprove) ? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
 
         if (action == null) {

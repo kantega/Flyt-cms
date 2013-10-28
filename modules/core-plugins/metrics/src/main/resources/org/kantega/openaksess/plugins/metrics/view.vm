@@ -191,8 +191,8 @@
         plot7.draw();
     }
     function update() {
-        $.getJSON(
-                '${pageContext.request.contextPath}/admin/metrics',
+        jQuery.getJSON(
+                '${contextPath}/admin/metrics',
                 function(data) {
                     var memory = data.jvm.memory;
                     var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
@@ -215,7 +215,7 @@
         return "<div style='font-size:10pt; text-align:center; padding:1px; color:white;'>" + label + "<br/>" + Math.round(series.percent) + "%</div>";
     }
 
-    var plot = $.plot("#placeholder", [ {data: requestValues, label: "Active Requests"} ],{
+    var plot = jQuery.plot("#placeholder", [ {data: requestValues, label: "Active Requests"} ],{
         series: {
             shadowSize: 0	// Drawing is faster without shadows
         },
@@ -227,7 +227,7 @@
             mode: "time"
         }
     });
-    var plot2 = $.plot("#memory", [
+    var plot2 = jQuery.plot("#memory", [
         {data: memoryMax, label: "Max"},
         {data: memoryInit, label: "Init"},
         {data: memoryCommitted, label: "Committed"},
@@ -244,7 +244,7 @@
             mode: "time"
         }
     });
-    var plot3 = $.plot("#heap", [
+    var plot3 = jQuery.plot("#heap", [
         {data: heapMax, label: "Max"},
         {data: heapInit, label: "Init"},
         {data: heapCommitted, label: "Committed"},
@@ -261,7 +261,7 @@
             mode: "time"
         }
     });
-    var plot4 = $.plot("#db", [
+    var plot4 = jQuery.plot("#db", [
         {data: maxConnections, label: "Max"},
         {data: idleConnections, label: "Idle"},
         {data: openConnections, label: "Open"}
@@ -278,7 +278,7 @@
         }
     });
 
-    var plot5 = $.plot('#heapusage', [ { label: "Heap used", data: 50},
+    var plot5 = jQuery.plot('#heapusage', [ { label: "Heap used", data: 50},
         { label:"Heap available", data: 50 } ], {
         series: {
             pie: {
@@ -303,7 +303,7 @@
             show: false
         }
     });
-    var plot6 = $.plot('#memoryusage', [ { label: "Memory used", data: 50},
+    var plot6 = jQuery.plot('#memoryusage', [ { label: "Memory used", data: 50},
         { label:"Memory available", data: 50 } ], {
         series: {
             pie: {
@@ -328,7 +328,7 @@
             show: false
         }
     });
-    var plot7 = $.plot('#responses', [
+    var plot7 = jQuery.plot('#responses', [
         { label: "Bad requests", data: 50},
         { label: "Created", data: 50 },
         { label: "No content", data: 50 },

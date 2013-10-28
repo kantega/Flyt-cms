@@ -37,34 +37,41 @@ public class LogInitListener implements ServletContextListener {
     private LoggerContext loggerContext;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
-        final File dataDirectory  = (File) servletContextEvent.getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
+        if (notAksessRun()) {
+            final File dataDirectory  = (File) servletContextEvent.getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
 
-        if(dataDirectory == null) {
-            throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
-                    +" was not set");
+            if(dataDirectory == null) {
+                throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
+                        +" was not set");
+            }
+
+            // Ensure log directory exists
+            final File logsDirectory = new File(dataDirectory, "logs");
+            logsDirectory.mkdirs();
+
+            final File configFile = new File(new File(dataDirectory, "conf"),  "logback.groovy");
+
+            if(!configFile.exists()) {
+                writeDefaultConfigFile(configFile);
+            }
+
+            loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
+            try {
+                loggerContext.reset();
+                loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
+                ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
+                contextInitializer.configureByResource(configFile.toURI().toURL());
+                LoggerFactory.getLogger(getClass()).info("Configured logging");
+            } catch (Exception je) {
+                je.printStackTrace();
+            }
+            StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
         }
+    }
 
-        // Ensure log directory exists
-        final File logsDirectory = new File(dataDirectory, "logs");
-        logsDirectory.mkdirs();
-
-        final File configFile = new File(new File(dataDirectory, "conf"),  "logback.groovy");
-
-        if(!configFile.exists()) {
-            writeDefaultConfigFile(configFile);
-        }
-
-        loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
-        try {
-            loggerContext.reset();
-            loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
-            ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
-            contextInitializer.configureByResource(configFile.toURI().toURL());
-            LoggerFactory.getLogger(getClass()).info("Configured logging");
-        } catch (Exception je) {
-            je.printStackTrace();
-        }
-        StatusPrinter.printInCaseOfErrorsOrWarnings(loggerContext);
+    private boolean notAksessRun() {
+        boolean notDevelopment = System.getProperty("notDevelopment", null) != null;
+        return notDevelopment;
     }
 
     /**

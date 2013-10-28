@@ -2,6 +2,7 @@ package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import org.kantega.jexmec.PluginManager;
+import org.springframework.core.Ordered;
 import org.springframework.web.servlet.HandlerExecutionChain;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -11,12 +12,13 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  */
-public class PluginDelegatingHandlerMapping implements HandlerMapping {
+public class PluginDelegatingHandlerMapping implements HandlerMapping, Ordered {
 
 
     private PluginManager<OpenAksessPlugin> pluginManager;
 
     public static final String DELEGATED_PLUGIN_ATTR = PluginDelegatingHandlerMapping.class.getName() +"_DELEGATED_PLUGIN_ATTR";
+    private int order;
 
 
     public HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
@@ -46,5 +48,14 @@ public class PluginDelegatingHandlerMapping implements HandlerMapping {
 
     public void setPluginManager(PluginManager<OpenAksessPlugin> pluginManager) {
         this.pluginManager = pluginManager;
+    }
+
+    @Override
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }

@@ -21,11 +21,13 @@
        xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:cache="http://www.springframework.org/schema/cache"
        xmlns:metrics="http://www.yammer.com/schema/metrics"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd">
+        http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd http://www.yammer.com/schema/metrics http://www.yammer.com/schema/metrics/metrics.xsd">
 
     <context:annotation-config/>
 
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+
+    <mvc:default-servlet-handler/>
 
     <mvc:annotation-driven>
         <mvc:message-converters>
@@ -37,8 +39,8 @@
         </mvc:message-converters>
     </mvc:annotation-driven>
 
-    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping">
-
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping" id="urlMapping" >
+        <property name="order" value="1"/>
         <property name="alwaysUseFullPath" value="true"/>
 
         <property name="mappings">
@@ -96,7 +98,7 @@
     <bean id="adminUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors" ref="adminViewInterceptor"/>
-
+        <property name="order" value="4"/>
         <property name="mappings">
             <props>
                 <prop key="/admin/oap/static/**">PluginStaticAdminContentController</prop>
@@ -225,7 +227,20 @@
     
     <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
         <property name="pluginManager" ref="pluginManager"/>
+        <property name="order" value="3"/>
     </bean>
+
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping">
+        <property name="order" value="2"/>
+    </bean>
+    <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/**"  />
+            <ref bean="adminRoleInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
 
     <bean id="adminRoleInterceptedMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
@@ -235,6 +250,7 @@
                 <ref bean="adminViewInterceptor"/>
             </list>
         </property>
+        <property name="order" value="5"/>
         <property name="mappings">
             <props>
                 <!-- Administrator controllers -->
@@ -284,19 +300,22 @@
     <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler">
         <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
         <property name="siteCache" ref="aksessSiteCache"/>
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
+
+    <bean class="no.kantega.publishing.client.AliasRequestHandler" />
 
     <bean class="no.kantega.publishing.client.MultimediaRequestHandler" id="MultimediaRequestHandler">
         <property name="multimediaRequestHandlerHelper">
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
         </property>
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
 
-    <bean class="org.springframework.web.servlet.mvc.ServletWrappingController" id="AttachmentRequestHandler">
-        <property name="servletClass" value="no.kantega.publishing.client.AttachmentRequestHandler"/>
-        <property name="servletName" value="AttachmentRequestHandler"/>
+    <bean id="AttachmentRequestHandler" class="no.kantega.publishing.client.AttachmentRequestHandler">
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
     </bean>
 
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">

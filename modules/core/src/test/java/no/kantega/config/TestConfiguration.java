@@ -34,7 +34,7 @@ public class TestConfiguration {
         return templateConfigurationCache;
     }
 
-    @Bean
+    @Bean(name = "aksessSiteCache")
     public SiteCache getSiteCache(){
         return mock(SiteCache.class);
     }

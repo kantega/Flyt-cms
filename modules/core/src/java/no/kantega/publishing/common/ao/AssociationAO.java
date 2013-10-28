@@ -17,22 +17,28 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.AssociationHelper;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.security.ao.PermissionsAO;
+import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AssociationAO  {
     private static final Logger log = LoggerFactory.getLogger(AssociationAO.class);
+
+    private static PermissionAO permissionAO;
 
     public static Association getAssociationFromRS(ResultSet rs) throws SQLException {
         Association association = new Association();
@@ -139,7 +145,8 @@ public class AssociationAO  {
 
         // Sett defaultrettigheter pø startside, alle kan gjøre alt
         if (a.getSecurityId() == -1 && a.getParentAssociationId() == 0) {
-            PermissionsAO.setPermissions(a, null);
+            if(permissionAO == null) permissionAO = RootContext.getInstance().getBean(PermissionAO.class);
+            permissionAO.setPermissions(a, null);
             a.setSecurityId(a.getId());
         }
     }

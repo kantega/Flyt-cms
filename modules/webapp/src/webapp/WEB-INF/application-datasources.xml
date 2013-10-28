@@ -17,7 +17,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:cache="http://www.springframework.org/schema/cache"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd">
 
     <bean name="dialectFactory" class="no.kantega.commons.sqlsearch.dialect.SQLDialectFactory">
         <property name="dialectClassname" value="${sqlsearch.sqldialect}"/>
@@ -30,6 +30,10 @@
 
     <bean id="contentIdentifierDao" class="no.kantega.publishing.common.ao.ContentIdentifierDaoJdbcImpl">
         <property name="dataSource" ref="aksessDataSource" />
+    </bean>
+
+    <bean id="contentAliasDao" class="no.kantega.publishing.common.ao.ContentAliasDaoJdbcImpl">
+        <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
     <bean id="aksessHostnamesDao" class="no.kantega.publishing.common.ao.JdbcHostnamesDao">

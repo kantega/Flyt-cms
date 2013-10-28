@@ -7,8 +7,9 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
@@ -25,7 +26,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
     private Content contentObject = null;
     private String repeater;
     private boolean inheritFromAncestors = false;
-    private final String CATEGORY = getClass().getName();
+    private static WebApplicationContext webApplicationContext;
 
     public void setName(String name) {
         this.name = name.toLowerCase();
@@ -80,12 +81,15 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
                 cmd.setProperty(AttributeProperty.VALUE);
                 cmd.setAttributeType(attributeType);
 
-                SecuritySession session = SecuritySession.getInstance((HttpServletRequest)pageContext.getRequest());
+                if (webApplicationContext == null) {
+                    webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+                }
+                SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
                 String attributeValue = AttributeTagHelper.getAttribute(session, contentObject, cmd, inheritFromAncestors);
 
                 result = evaluateCondition(attributeValue);
             } else {
-                log.debug( "Content object was null. ContentId:" + contentId);
+                log.debug( "Content object was null. ContentId: {}", contentId);
             }
         } catch (Exception e) {
             log.error("", e);

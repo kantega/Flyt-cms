@@ -24,6 +24,8 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -31,13 +33,9 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 
-/**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 30.mai.2008
- * Time: 12:20:05
- */
 public class EditTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(EditTag.class);
+    private static WebApplicationContext webApplicationContext;
 
     private String associationId = null;
     private String action;
@@ -51,8 +49,11 @@ public class EditTag extends AbstractSimpleEditTag {
             if (content == null) {
                 content = AttributeTagHelper.getContent(pageContext, collection, associationId);
             }
-            SecuritySession securitySession = SecuritySession.getInstance(request);
-            if (content != null && securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
+            if (webApplicationContext == null) {
+                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+            }
+            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            if (content != null && session.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
 
                 StringBuilder link = new StringBuilder();
                 link.append("<a");

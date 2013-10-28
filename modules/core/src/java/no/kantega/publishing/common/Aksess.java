@@ -18,7 +18,6 @@ package no.kantega.publishing.common;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.common.data.enums.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,161 +131,154 @@ public class Aksess {
 
     public static void loadConfiguration() {
 
-        try {
+        baseUrl = c.getString("location.baseurl");
+        if (baseUrl == null && c.getString("location.applicationurl") != null) {
+            // For kompabilitet med de som har satt kun applicationurl
+            baseUrl = c.getString("location.applicationurl");
 
-            baseUrl = c.getString("location.baseurl");
-            if (baseUrl == null && c.getString("location.applicationurl") != null) {
-                // For kompabilitet med de som har satt kun applicationurl
-                baseUrl = c.getString("location.applicationurl");
+        }
 
-            }
+        dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
 
-            dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
+        // Format and quality in images
+        outputImageFormat = c.getString("default.thumbnailformat", outputImageFormat);
+        outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
 
-            // Format and quality in images
-            outputImageFormat = c.getString("default.thumbnailformat", outputImageFormat);
-            outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
+        defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
+        defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
 
-            defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
-            defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
+        maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
+        maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
 
-            maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
-            maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
+        flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
+        flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
+        flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
+        flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
 
-            flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
-            flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
-            flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
-            flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
+        isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
 
-            isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
+        historyMaxVersions = c.getInt("history.maxversions", 20);
 
-            historyMaxVersions = c.getInt("history.maxversions", 20);
+        // Sikkerhetsconfig
+        loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
 
-            // Sikkerhetsconfig
-            loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
+        securityAllowPasswordReset = c.getBoolean("security.allowpasswordreset", true);
 
-            securityAllowPasswordReset = c.getBoolean("security.allowpasswordreset", true);
+        defaultSecurityDomain = c.getString("security.defaultdomain", "ldap");
+        log.info( "Using default security domain:" + defaultSecurityDomain);
 
-            defaultSecurityDomain = c.getString("security.defaultdomain", "ldap");
-            log.info( "Using default security domain:" + defaultSecurityDomain);
+        securityRealm = c.getString("security.realm", defaultSecurityDomain + "Realm");
+        log.info( "Using security realm:" + securityRealm);
 
-            securityRealm = c.getString("security.realm", defaultSecurityDomain + "Realm");
-            log.info( "Using security realm:" + securityRealm);
+        securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
 
-            securitySessionTimeout = c.getInt("security.sessiontimeout", 7200);
+        // Rewrite URLs to userfriendly URLS
+        urlRewritingEnabled = c.getBoolean("links.rewrite.enabled", true);
 
-            // Rewrite URLs to userfriendly URLS
-            urlRewritingEnabled = c.getBoolean("links.rewrite.enabled", true);
+        // Open external links in new window
+        openLinksInNewWindow = c.getBoolean("openlinksinnewwindow", false);
 
-            // Open external links in new window
-            openLinksInNewWindow = c.getBoolean("openlinksinnewwindow", false);
+        // Insert smartlinks as default ?
+        smartLinksDefaultChecked = c.getBoolean("links.smartlinksdefaultchecked", false);
 
-            // Insert smartlinks as default ?
-            smartLinksDefaultChecked = c.getBoolean("links.smartlinksdefaultchecked", false);
+        // Custom redirect page for links
+        customUrlRedirector = c.getString("links.customurlredirector", null);
 
-            // Custom redirect page for links
-            customUrlRedirector = c.getString("links.customurlredirector", null);
+        // Tilleggsmoduler
+        trafficLogEnabled = c.getBoolean("trafficlog.enabled", false);
+        if (trafficLogEnabled) {
+            log.info( "Module enabled: Traffic log");
+        }
+        trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
+        deletedItemsMaxAge = c.getInt("deleteditems.maxage", deletedItemsMaxAge);
+        xmlCacheMaxAge = c.getInt("xmlcache.maxage", xmlCacheMaxAge);
 
-            // Tilleggsmoduler
-            trafficLogEnabled = c.getBoolean("trafficlog.enabled", false);
-            if (trafficLogEnabled) {
-                log.info( "Module enabled: Traffic log");
-            }
-            trafficLogMaxAge = c.getInt("trafficlog.maxage", trafficLogMaxAge);
-            deletedItemsMaxAge = c.getInt("deleteditems.maxage", deletedItemsMaxAge);
-            xmlCacheMaxAge = c.getInt("xmlcache.maxage", xmlCacheMaxAge);
+        internalIpSegment = c.getStrings("trafficlog.internalipsegment", "172.16.1");
 
-            internalIpSegment = c.getStrings("trafficlog.internalipsegment", "172.16.1");
+        eventLogEnabled = c.getBoolean("eventlog.enabled", false);
+        if (eventLogEnabled) {
+            log.info( "Module enabled: Event log");
+        }
+        searchLogEnabled = c.getBoolean("searchlog.enabled", false);
+        if (searchLogEnabled) {
+            log.info( "Module enabled: searchlog");
+        }
 
-            eventLogEnabled = c.getBoolean("eventlog.enabled", false);
-            if (eventLogEnabled) {
-                log.info( "Module enabled: Event log");
-            }
-            searchLogEnabled = c.getBoolean("searchlog.enabled", false);
-            if (searchLogEnabled) {
-                log.info( "Module enabled: searchlog");
-            }
+        eventLogMaxAge = c.getInt("eventlog.maxage", eventLogMaxAge);
 
-            eventLogMaxAge = c.getInt("eventlog.maxage", eventLogMaxAge);
+        topicMapsEnabled = c.getBoolean("topicmaps.enabled", false);
+        if (topicMapsEnabled) {
+            log.info( "Module enabled: Topic maps");
+        }
 
-            topicMapsEnabled = c.getBoolean("topicmaps.enabled", false);
-            if (topicMapsEnabled) {
-                log.info( "Module enabled: Topic maps");
-            }
+        linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
+        if (linkCheckerEnabled) {
+            log.info( "Module enabled: Link checker");
+        }
 
-            linkCheckerEnabled = c.getBoolean("linkchecker.enabled", true);
-            if (linkCheckerEnabled) {
-                log.info( "Module enabled: Link checker");
-            }
+        // Roller
+        roleAdmin = c.getString("security.role.admin", "admin");
+        roleAuthor = c.getStrings("security.role.author", "innholdsprodusent");
+        roleForms = c.getStrings("security.role.forms", roleAdmin);
+        roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin);
+        roleUnit = c.getString("security.role.unit", "enhet*");
+        roleDeveloper = c.getString("security.role.developer", "developer");
+        roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");
+        rolePhotographer = c.getStrings("security.role.photographer", "photographer");
 
-            // Roller
-            roleAdmin = c.getString("security.role.admin", "admin");
-            roleAuthor = c.getStrings("security.role.author", "innholdsprodusent");
-            roleForms = c.getStrings("security.role.forms", roleAdmin);
-            roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin);
-            roleUnit = c.getString("security.role.unit", "enhet*");
-            roleDeveloper = c.getString("security.role.developer", "developer");
-            roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");
-            rolePhotographer = c.getStrings("security.role.photographer", "photographer");            
+        // ContentLock
+        lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
 
-            // ContentLock
-            lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
+        // Setting aksess language. Use no_NO if locale isn't defined
+        language = c.getString("admin.locale.language", "no");
+        country = c.getString("admin.locale.country", "NO");
 
-            // Setting aksess language. Use no_NO if locale isn't defined
-            language = c.getString("admin.locale.language", "no");
-            country = c.getString("admin.locale.country", "NO");
+        javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
 
-            javascriptDebugEnabled = c.getBoolean("javascript.debug", false);
+        // Format of alt and title-attributes
+        multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
+        multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
 
-            // Format of alt and title-attributes
-            multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
-            multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
+        multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
 
-            multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
+        csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
 
-            csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
+        serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.name()).toUpperCase());
+        log.info( "Server type:" + serverType);
 
-            serverType = ServerType.valueOf(c.getString("server.type", ServerType.MASTER.name()).toUpperCase());
-            log.info( "Server type:" + serverType);
-
-            if (serverType == ServerType.SLAVE) {
-                // Caching of database only lasts 15 minutes for slave servers
-                databaseCacheTimeout = 900000;
-            }
-            databaseCacheTimeout = c.getInt("database.cache.timeout", databaseCacheTimeout);
+        if (serverType == ServerType.SLAVE) {
+            // Caching of database only lasts 15 minutes for slave servers
+            databaseCacheTimeout = 900000;
+        }
+        databaseCacheTimeout = c.getInt("database.cache.timeout", databaseCacheTimeout);
 
 
-            queryStringEncoding = c.getString("querystring.encoding", "iso-8859-1");
-            log.info( "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
+        queryStringEncoding = c.getString("querystring.encoding", "iso-8859-1");
+        log.info( "Using " + queryStringEncoding + " query string encoding.  Set querystring.encoding to match web server setting if necessary");
 
-            // Load version from file in classpath
-            {
-                try {
-                    URL versionResource = Aksess.class.getResource("aksessVersion.properties");
-                    if(versionResource == null) {
-                        throw new IllegalStateException("Couldn't find version information file aksessVersion.properties");
-                    }
-
-                    Properties versionProps = new Properties();
-
-                    versionProps.load(versionResource.openStream());
-
-                    String theVersion = versionProps.getProperty("version");
-
-                    if(theVersion != null) {
-                        version = theVersion;
-                    } else {
-                        throw new RuntimeException("'version' property not found in version file " + versionResource);
-                    }
-
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+        // Load version from file in classpath
+        {
+            try {
+                URL versionResource = Aksess.class.getResource("aksessVersion.properties");
+                if(versionResource == null) {
+                    throw new IllegalStateException("Couldn't find version information file aksessVersion.properties");
                 }
-            }
 
-        } catch (ConfigurationException e) {
-            log.debug("********* Couldn't read aksess.conf **********");
-            log.error("", e);
+                Properties versionProps = new Properties();
+
+                versionProps.load(versionResource.openStream());
+
+                String theVersion = versionProps.getProperty("version");
+
+                if(theVersion != null) {
+                    version = theVersion;
+                } else {
+                    throw new RuntimeException("'version' property not found in version file " + versionResource);
+                }
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
         log.info( "location.contextpath=" + contextPath);
@@ -322,7 +314,13 @@ public class Aksess {
     }
 
     public static String getContextPath() {
-        return contextPath;
+        if (contextPath.length() == 0) {
+            return "";
+        } else if (contextPath.startsWith("/")){
+            return contextPath;
+        } else {
+            return "/" + contextPath;
+        }
     }
 
     public static void setContextPath(String contextPath) {
@@ -331,6 +329,10 @@ public class Aksess {
 
     public static String getStartPage() {
         return startPage;
+    }
+
+    public static String getContentFrameRef() {
+        return null;
     }
 
     public static String getSecurityRealmName() {

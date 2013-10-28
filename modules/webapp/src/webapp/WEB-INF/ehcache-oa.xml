@@ -109,5 +109,16 @@
            statistics="true" >
         <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
     </cache>
+    <cache name="permissionCache"
+           maxElementsInMemory="100"
+           eternal="true"
+           overflowToDisk="true"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           diskPersistent="true"
+           statistics="true" >
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
 
 </ehcache>

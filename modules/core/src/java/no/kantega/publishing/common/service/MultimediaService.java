@@ -105,7 +105,7 @@ public class MultimediaService {
     public List<Multimedia> getMultimediaList(int parentId) throws SystemException {
         List<Multimedia> list = multimediaDao.getMultimediaList(parentId);
 
-        List<Multimedia> approved = new ArrayList<Multimedia>();
+        List<Multimedia> approved = new ArrayList<>();
         // Vis alle bilder + kun de mapper som brukeren har tilgang til
         for (Multimedia m : list) {
             if (m.getType() != MultimediaType.FOLDER || securitySession.isAuthorized(m, Privilege.VIEW_CONTENT)) {

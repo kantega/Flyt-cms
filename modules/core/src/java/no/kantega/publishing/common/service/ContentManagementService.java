@@ -661,7 +661,7 @@ public class ContentManagementService {
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
 
-        List<Content> approved = new ArrayList<Content>();
+        List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
         for (Content content : list) {

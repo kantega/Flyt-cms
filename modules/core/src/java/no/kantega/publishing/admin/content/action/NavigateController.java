@@ -98,7 +98,7 @@ public class NavigateController extends AbstractContentAction {
 
 
         String currentUrl = current.getUrl();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         if (editedContent != null && editedContent.isModified()) {
             // User is editing a page and has modified it, show preview 
             currentUrl = request.getContextPath() + "/admin/publish/ViewContentPreviewFrame.action?thisId=";

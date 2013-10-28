@@ -1,9 +1,8 @@
+<%@ page import="no.kantega.commons.util.FormatHelper" %>
 <%@ page import="no.kantega.publishing.common.data.Attachment" %>
-<%@ page import="java.util.Date" %>
 <%@ page import="java.text.DateFormat" %>
 <%@ page import="java.text.SimpleDateFormat" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
-<%@ page import="no.kantega.commons.util.FormatHelper" %>
+<%@ page import="java.util.Date" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
