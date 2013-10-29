@@ -269,12 +269,14 @@ not work if you try adding them -->
         <session-timeout>15</session-timeout>
     </session-config>
 
-    <!-- Matches 404 requests back to ContentRequestHandler.
-        This is needed for page aliases.
-    -->
     <error-page>
         <error-code>404</error-code>
         <location>/content.ap</location>
+    </error-page>
+
+    <error-page>
+        <exception-type>no.kantega.commons.exception.NotAuthorizedException</exception-type>
+        <location>/403.jsp</location>
     </error-page>
 
     <jsp-config>
