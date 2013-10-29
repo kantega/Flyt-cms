@@ -28,7 +28,9 @@ public class LocationLabelResolver implements LabelResolver {
             String siteIdString = StringUtils.substringAfter(key, "/");
             int siteId = Integer.parseInt(siteIdString);
             Site site = siteCache.getSiteById(siteId);
-            retVal = site.getName();
+            if (site != null) {
+                retVal = site.getName();
+            }
         }else {
             int mostSpecificAssociation = getMostSpecificId(key);
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(mostSpecificAssociation);
