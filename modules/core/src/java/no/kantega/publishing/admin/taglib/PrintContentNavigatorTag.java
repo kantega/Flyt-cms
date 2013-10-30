@@ -35,8 +35,11 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
 
         JspWriter out = getJspContext().getOut();
 
+        StringBuilder href = new StringBuilder();
+        href.append("/content.ap?");
+        href.append(AdminRequestParameters.THIS_ID).append("=").append(currentItem.getId()).append("&amp;");
+        href.append(AdminRequestParameters.CONTENT_ID).append("=").append(currentItem.getContentId());
 
-        String href = PrettyURLEncoder.createContentUrl(item.getId(), currentItem.getName());
         if (currentItem.isHasChildren()) {
             String openState = currentItem.isOpen()? "open": "closed";
             out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");

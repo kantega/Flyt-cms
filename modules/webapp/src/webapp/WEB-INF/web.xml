@@ -265,14 +265,13 @@ not work if you try adding them -->
         <url-pattern>/admin/metrics</url-pattern>
     </servlet-mapping>
 
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>
-
-    <error-page>
-        <error-code>404</error-code>
-        <location>/content.ap</location>
-    </error-page>
 
     <error-page>
         <exception-type>no.kantega.commons.exception.NotAuthorizedException</exception-type>
