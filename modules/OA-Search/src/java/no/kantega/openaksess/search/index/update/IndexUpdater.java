@@ -51,7 +51,16 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             uids.add(attachmentTransformer.generateUniqueID(attachment));
         }
         documentIndexer.deleteById(uids);
+    }
 
+    @Override
+    public void contentExpired(ContentEvent event) {
+        contentDeleted(event);
+    }
+
+    @Override
+    public void contentActivated(ContentEvent event) {
+        updateIndex(event.getContent());
     }
 
     public void attachmentUpdated(ContentEvent event) {
