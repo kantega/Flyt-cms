@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.htmlfilter;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -26,6 +27,7 @@ import java.io.StringWriter;
 import static org.junit.Assert.assertEquals;
 
 public class RemoveNestedSpanTagsFilterTest {
+    @Ignore
     @Test
     public void shouldRemoveSimpleNestedTag() throws SystemException {
         FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
