@@ -23,6 +23,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
@@ -34,24 +35,20 @@ public class PrintContentNavigatorTag extends PrintNavigatorTag {
 
         JspWriter out = getJspContext().getOut();
 
-        StringBuilder href = new StringBuilder();
-        href.append("?");
-        href.append(AdminRequestParameters.THIS_ID).append("=").append(currentItem.getId()).append("&amp;");
-        href.append(AdminRequestParameters.CONTENT_ID).append("=").append(currentItem.getContentId());
 
+        String href = PrettyURLEncoder.createContentUrl(item.getId(), currentItem.getName());
         if (currentItem.isHasChildren()) {
             String openState = currentItem.isOpen()? "open": "closed";
             out.write("<span class=\"openState\"><a href=\"" + href + "\" class=\"" + openState + "\"></a></span>");
         } else {
             out.write("<span class=\"openState\"><span class=\"noChildren\"></span></span>");
-        }        
-
+        }
 
         ContentType type = currentItem.getType();
         String title = NavigatorUtil.getNavigatorTitle(type, currentItem.getTitle());
 
-        String iconText = "";
-        String iconClass = "";
+        String iconText;
+        String iconClass;
         int visibilityStatus = currentItem.getVisibilityStatus();
         if (currentItem.getParentId() == 0) {
             iconClass = "root";

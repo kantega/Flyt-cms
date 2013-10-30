@@ -235,7 +235,7 @@ openaksess.content = {
         },
 
         openInNewWindow : function(url) {
-            window.open(properties.contextPath + "/content.ap?" + url);
+            window.open(properties.contextPath + url);
         },
 
         newSubpage : function(url) {

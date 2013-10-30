@@ -209,8 +209,7 @@ openaksess.navigate = {
                 menu: 'ContextMenu-'+type
             },
             function(action, el, pos) {
-                var splitHref = $(el).attr("href").split("?");
-                var href = splitHref[splitHref.length-1];           // Work-around for IE7's faulty implementation of getAttribute('href')
+                var href = $(el).attr("href");
                 openaksess.common.debug("openaksess.navigate.setContextMenu(): clicked url: "+ href);
                 eval("openaksess.navigate.handleContextMenuClick_"+type+"(action, href)");
             }
