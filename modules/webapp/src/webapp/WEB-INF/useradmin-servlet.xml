@@ -64,6 +64,8 @@
 
     <bean id="searchRolesController" class="no.kantega.useradmin.controls.SearchRolesController" parent="useradminController"/>
 
+    <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
+
     <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/useradmin/"/>
         <property name="suffix" value=".jsp"/>
