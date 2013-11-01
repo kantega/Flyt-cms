@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 /**
  * Print the value of the property string with the given key.
  * If the String attribute locale is set this locale will be used, else
@@ -61,7 +63,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
             if (key != null) {
                 Locale locale;
-                if (this.locale != null){
+                if (isNotBlank(this.locale)){
                     String[] localePair = this.locale.split("_");
                     locale = new Locale(localePair[0], localePair[1]);
                 } else {
@@ -74,7 +76,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                 }
                 out.print(textLabel);
             } else {
-                out.print("ERROR: LabelTag, missing key");
+                out.print("ERROR: LabelTag, missing key " + key);
             }
             params = null;
             escapeJavascript = false;
@@ -82,7 +84,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
             bundle = LocaleLabels.DEFAULT_BUNDLE;
             locale = null;
         } catch (IOException e) {
-            throw new JspException("ERROR: LabelTag:" + e);
+            throw new JspException("ERROR: LabelTag:" + e.getMessage(), e);
         }
 
         return SKIP_BODY;
@@ -95,7 +97,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
 
     public void setDynamicAttribute(String uri, String localname, Object o) throws JspException {
         if (params == null) {
-            params = new HashMap<String, Object>();
+            params = new HashMap<>();
         }
         params.put(localname, o);
     }
