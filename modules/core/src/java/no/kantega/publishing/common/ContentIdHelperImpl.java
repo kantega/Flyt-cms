@@ -56,6 +56,7 @@ import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper, ServletContextAware {
     private static final Logger log = LoggerFactory.getLogger(ContentIdHelperImpl.class);
+    private static final Pattern dotPattern = Pattern.compile("\\.\\.");
 
     private final int defaultContentID = -1;
     private final int defaultSiteId = -1;
@@ -95,7 +96,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             }
 
             int[] pathElements = StringHelper.getInts(path, "/");
-            String[] exprPathElements = expr.split("\\.\\.");
+            String[] exprPathElements = dotPattern.split(expr);
             int exprLength = exprPathElements.length - 1;
             if (exprLength > pathElements.length) {
                 throw new ContentNotFoundException(expr);
@@ -171,8 +172,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
      * @param siteId - Site
      * @param url    - Url/alias, e.g. /nyheter/
      * @return ContentIdentifier for the given site and url.
-     * @throws ContentNotFoundException if no Content is found.
-     * @throws SystemException
+     * @throws no.kantega.publishing.common.exception.ContentNotFoundException if no Content is found.
+     * @throws no.kantega.commons.exception.SystemException
      */
     private ContentIdentifier findContentIdentifier(int siteId, String url) throws ContentNotFoundException, SystemException {
         if (url == null) {
