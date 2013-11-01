@@ -177,7 +177,7 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
     @Cacheable(value = "permissionCache", key = "#object.securityId")
     public List<Permission> getPermissions(BaseObject object) {
         return getJdbcTemplate().query("SELECT ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority FROM objectpermissions where ObjectSecurityId = ?",
-                rowMapper, object.getId());
+                rowMapper, object.getSecurityId());
     }
 
     public final RowMapper<Permission> rowMapper = new RowMapper<Permission>() {
