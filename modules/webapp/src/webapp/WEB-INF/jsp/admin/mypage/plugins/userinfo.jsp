@@ -38,7 +38,13 @@
                     <c:when test="${not empty currentUser.roles}">
                         <ul>
                             <c:forEach items="${currentUser.roles}" var="role">
-                                <li><c:out value="${role.key}"/></li>
+                                <li>
+                                    <c:choose>
+                                        <c:when test="${not empty role.value.name}"><c:out value="${role.value.name}"/></c:when>
+                                        <c:otherwise><c:out value="${role.value.id}"/></c:otherwise>
+                                    </c:choose>
+
+                                </li>
                             </c:forEach>
                         </ul>
                     </c:when>
