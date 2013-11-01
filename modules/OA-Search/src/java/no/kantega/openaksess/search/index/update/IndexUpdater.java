@@ -44,7 +44,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     @Override
     public void contentDeleted(ContentEvent event) {
         Content content = event.getContent();
-        List<String> uids = new ArrayList<String>();
+        List<String> uids = new ArrayList<>();
         uids.add(contentTransformer.generateUniqueID(content));
 
         for (Attachment attachment : AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
@@ -71,6 +71,8 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     }
 
     private void updateIndex(Content content) {
-        documentIndexer.indexDocumentAndCommit(contentTransformer.transform(content));
+        if (content.isSearchable()) {
+            documentIndexer.indexDocumentAndCommit(contentTransformer.transform(content));
+        }
     }
 }

@@ -38,7 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -46,6 +46,8 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -314,12 +316,21 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     private int findContentIdFromAssociationId(int associationId) throws SystemException {
         int contentId = -1;
 
-        try {
-            contentId = getJdbcTemplate().queryForObject("select ContentId from associations where AssociationId = ?", Integer.class, associationId);
-        } catch (EmptyResultDataAccessException e) {
+        List<Pair<Integer, Integer>> contentIdAndTypes = getJdbcTemplate().query("select ContentId, Type from associations where AssociationId = ?", associationContentIdAndTypeMapper, associationId);
+        if(contentIdAndTypes.size() == 1){
+            contentId = contentIdAndTypes.get(0).first;
+        } else if( contentIdAndTypes.size() > 1){
+            log.warn("Got several results for select ContentId, Type from associations where AssociationId = {}: {}", associationId, contentIdAndTypes);
+            for (Pair<Integer, Integer> contentIdAndType : contentIdAndTypes) {
+                if(contentIdAndType.second != AssociationType.SHORTCUT){
+                    contentId = contentIdAndType.first;
+                    break;
+                }
+            }
+
+        } else {
             log.error("Could not fint contentid for associationid " + associationId);
         }
-
         return contentId;
     }
 
@@ -469,4 +480,11 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     public void setServletContext(ServletContext servletContext) {
         CONTENT_URL_PATTERN = Pattern.compile(ContentPatterns.getPatternWithContextPath(servletContext.getContextPath()));
     }
+
+    private static final RowMapper<Pair<Integer, Integer>> associationContentIdAndTypeMapper = new RowMapper<Pair<Integer, Integer>>() {
+        @Override
+        public Pair<Integer, Integer> mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new Pair<>(rs.getInt("ContentId"), rs.getInt("Type"));
+        }
+    };
 }
