@@ -249,7 +249,7 @@
         <commons-pool.version>1.5.4</commons-pool.version>
         <commons-logging.version>1.1</commons-logging.version>
         <dbcp.version>1.4</dbcp.version>
-        <httpclient.version>3.1</httpclient.version>
+        <httpclient.version>4.3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <nekohtml.version>1.9.14</nekohtml.version>
         <springframework.version>3.2.4.RELEASE</springframework.version>

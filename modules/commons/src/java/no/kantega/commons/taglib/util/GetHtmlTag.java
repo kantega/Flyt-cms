@@ -16,8 +16,12 @@
 
 package no.kantega.commons.taglib.util;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,11 +30,6 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 
-/**
- * User: Espen Høe / Kantega AS
- * Date: 03.sep.2007
- * Time: 13:20:17
- */
 public class GetHtmlTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetHtmlTag.class);
 
@@ -38,19 +37,19 @@ public class GetHtmlTag extends TagSupport {
 
 
     public int doStartTag() throws JspException {
-        HttpClient client = new HttpClient();
-        try {
-            GetMethod m = new GetMethod(url);
-            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-            m.setRequestHeader("User-Agent", request.getHeader("User-Agent"));
+        HttpGet get = new HttpGet(url);
+        HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
+        get.setHeader("User-Agent", request.getHeader("User-Agent"));
 
-            client.executeMethod(m);
-            String html = m.getResponseBodyAsString();
-            pageContext.getOut().write(html);
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        try(CloseableHttpResponse response = httpclient.execute(get)){
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                pageContext.getOut().write(IOUtils.toString(entity.getContent()));
+            }
         } catch (IOException e) {
-            log.error("Error writing to stream", e);
+            log.error("Error getting html", e);
         }
-
         return SKIP_BODY;
     }
 
