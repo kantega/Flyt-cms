@@ -17,5 +17,20 @@
 package no.kantega.publishing.common.data.enums;
 
 public enum ExpireAction {
-    HIDE, REMIND, DELETE, ARCHIVE
+    /**
+     * Previous value «0»
+     */
+    HIDE,
+    /**
+     * Previous value «1»
+     */
+    REMIND,
+    /**
+     * Previous value «2»
+     */
+    DELETE,
+    /**
+     * Previous value «3»
+     */
+    ARCHIVE
 }
