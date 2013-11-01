@@ -69,15 +69,15 @@ public class LinkEmitter {
                         linkExtractor.extractLinks(content, new LinkHandler() {
                             public void contentLinkFound(Content content, String link) {
                                 if(isValidLink(link)) {
+                                    log.debug("Extracted {} from content with id {}", link, content.getId());
                                     contentLinkCount.increment();
                                     handler.contentLinkFound(content, link);
                                 }
                             }
 
-
-
                             public void attributeLinkFound(Content content, String link, String attributeName) {
                                 if(isValidLink(link)) {
+                                    log.debug("Extracted {} from attribute {}", link, attributeName);
                                     attributeLinkCount.increment();
                                     handler.attributeLinkFound(content,  link, attributeName);
                                 }

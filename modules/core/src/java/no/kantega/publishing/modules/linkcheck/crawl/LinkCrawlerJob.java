@@ -36,6 +36,7 @@ public class LinkCrawlerJob {
     private LinkEmitter emitter;
 
     public void execute() {
+        log.info("Executing LinkCrawlerJob");
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
@@ -45,8 +46,11 @@ public class LinkCrawlerJob {
             return;
         }
         linkDao.saveAllLinks(emitter);
+        log.info("Saved all links");
         checker.execute();
+        log.info("Checking links");
 
+        log.info("Execution of LinkCrawlerJob finished");
     }
 
     public void setChecker(LinkCheckerJob checker) {
