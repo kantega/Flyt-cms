@@ -57,6 +57,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see LinkDao#saveAllLinks(no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter)
      */
     public void saveAllLinks(final LinkEmitter emitter) {
+        log.debug("Saving all links");
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
 
@@ -73,11 +74,11 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
                 emitter.emittLinks(new no.kantega.publishing.modules.linkcheck.crawl.LinkHandler() {
                     public void contentLinkFound(Content content, String link) {
+                        log.debug("Contentlink found {}", link);
                         try {
                             int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
 
                             checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatement, insOccurrenceStatement, null);
-
 
                         } catch (SQLException e) {
                             log.error("Error inserting link occurrence", e);
@@ -85,6 +86,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                     }
 
                     public void attributeLinkFound(Content content, String link, String attributeName) {
+                        log.debug("Attributelink for {} found {}", attributeName, link);
                         try {
                             int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
                             checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatementAttribute, insOccurrenceStatement, attributeName);
@@ -94,7 +96,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                         }
                     }
                 });
-
+                log.info("Done emitting links");
                 return null;
             }
         });
@@ -105,11 +107,9 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see no.kantega.publishing.common.ao.LinkDao#doForEachLink(no.kantega.commons.sqlsearch.SearchTerm, no.kantega.publishing.modules.linkcheck.check.LinkHandler)
      */
     public void doForEachLink(SearchTerm term, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
-
-
         final String query = term.getQuery("Id, url", sqlDialect.getResultLimitorStrategy());
 
-            log.debug( "query=" + query);
+        log.debug( "query={}", query);
 
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
@@ -191,6 +191,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
     private static int checkLinkInserted(String link, PreparedStatement checkLinkStatement, PreparedStatement insLinkStatement) throws SQLException {
+        log.debug("Inserting link {}", link);
         // Check if link is registred, if not add the link.
         checkLinkStatement.setString(1, link);
         ResultSet rs = checkLinkStatement.executeQuery();
