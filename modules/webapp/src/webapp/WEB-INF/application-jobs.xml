@@ -164,7 +164,7 @@
 
     <bean id="linkCrawlTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="linkCrawlJobDetail"/>
-        <property name="cronExpression" value="0 10 3 * * ?"/>
+        <property name="cronExpression" value="${jobs.linkCrawl.trigger}"/>
     </bean>
 
     <bean id="brokenLinkEventListeners" class="org.springframework.beans.factory.config.ListFactoryBean">
