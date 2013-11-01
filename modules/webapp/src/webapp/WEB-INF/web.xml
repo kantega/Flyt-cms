@@ -167,6 +167,10 @@ not work if you try adding them -->
         <listener-class>com.yammer.metrics.reporting.MetricsServletContextListener</listener-class>
     </listener>
 
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
     <servlet>
         <servlet-name>aksess</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
