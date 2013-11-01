@@ -68,6 +68,10 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging-api</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>juni</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
