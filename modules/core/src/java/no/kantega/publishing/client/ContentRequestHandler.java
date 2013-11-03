@@ -33,6 +33,7 @@ import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -64,6 +65,9 @@ public abstract class ContentRequestHandler implements ServletContextAware {
     private ContentIdHelper contentIdHelper;
 
     private ServletContext servletContext;
+
+    @Value("${addPagetypeToResponseHeader:false}")
+    private boolean addPagetypeToResponseHeader;
 
     @RequestMapping("/")
     public ModelAndView handleRoot(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
@@ -117,6 +121,11 @@ public abstract class ContentRequestHandler implements ServletContextAware {
                 if (isAdminMode) {
                     response.setDateHeader("Expires", 0);
                 }
+
+                if(addPagetypeToResponseHeader){
+                    response.addHeader("PageType", String.valueOf(content.getDisplayTemplateId()));
+                }
+
                 contentRequestDispatcher.dispatchContentRequest(content, servletContext, request, response);
                 logTimeSpent(start, content);
             } else {

@@ -29,6 +29,7 @@ import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,6 +54,9 @@ public abstract class AttachmentRequestHandler {
     @Autowired
     private SiteCache siteCache;
     private int expire;
+
+    @Value("${addPagetypeToResponseHeader:false}")
+    private boolean addPagetypeToResponseHeader;
 
     @PostConstruct
     public void init(){
@@ -129,6 +133,10 @@ public abstract class AttachmentRequestHandler {
 
         // Add cache control headers
         HttpHelper.addCacheControlHeaders(response, expire);
+
+        if(addPagetypeToResponseHeader){
+            response.addHeader("PageType", "Attachment");
+        }
 
         try (ServletOutputStream out = response.getOutputStream()){
             if (attachment.getSize() > 0) {
