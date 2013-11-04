@@ -112,6 +112,10 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
      */
     private Cookie getRememberMeCookie(Cookie[] cookies) {
         Cookie rememberMeCookie = null;
+        if (cookies == null) {
+            return null;
+        }
+
         for (Cookie c : cookies) {
             if (cookieName.equals(c.getName()) && !invalidCookieValue.equals(c.getValue())) {
                 rememberMeCookie = c;
