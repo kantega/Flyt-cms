@@ -52,12 +52,12 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                     "\n");
             out.write("  $(document).ready(function(){\n" +
                     "       setTimeout(scrollTo, 500);\n" +
-                    "    });");
+                    "    });\n");
         } else {
             out.write("  $(document).ready(function(){\n" +
                     "       // Set focus to first input field in form\n" +
                     "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
-                    "    }");
+                    "    });\n");
         }
         out.write("" +
                 "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +
