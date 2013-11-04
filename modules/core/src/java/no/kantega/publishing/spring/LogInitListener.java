@@ -91,7 +91,9 @@ public class LogInitListener implements ServletContextListener {
     }
 
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        loggerContext.stop();
+        if (loggerContext != null) {
+            loggerContext.stop();
+        }
     }
 
 }
