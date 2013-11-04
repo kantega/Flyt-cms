@@ -37,6 +37,7 @@ public class LogInitListener implements ServletContextListener {
     private LoggerContext loggerContext;
 
     public void contextInitialized(ServletContextEvent servletContextEvent) {
+        loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
         if (notAksessRun()) {
             final File dataDirectory  = (File) servletContextEvent.getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
 
@@ -55,13 +56,12 @@ public class LogInitListener implements ServletContextListener {
                 writeDefaultConfigFile(configFile);
             }
 
-            loggerContext = (LoggerContext) LoggerFactory.getILoggerFactory();
             try {
                 loggerContext.reset();
                 loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
                 ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
                 contextInitializer.configureByResource(configFile.toURI().toURL());
-                LoggerFactory.getLogger(getClass()).info("Configured logging");
+                LoggerFactory.getLogger(getClass()).info("Configured logging using ");
             } catch (Exception je) {
                 je.printStackTrace();
             }
@@ -70,8 +70,7 @@ public class LogInitListener implements ServletContextListener {
     }
 
     private boolean notAksessRun() {
-        boolean notDevelopment = System.getProperty("notDevelopment", null) != null;
-        return notDevelopment;
+        return System.getProperty("development", null) == null;
     }
 
     /**
