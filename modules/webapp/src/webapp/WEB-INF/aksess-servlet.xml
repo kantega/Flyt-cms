@@ -301,6 +301,7 @@
         <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
         <property name="siteCache" ref="aksessSiteCache"/>
         <lookup-method name="getSecuritySession" bean="securitySession"/>
+        <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
     <bean class="no.kantega.publishing.client.AliasRequestHandler" />
@@ -310,12 +311,14 @@
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
         </property>
         <lookup-method name="getSecuritySession" bean="securitySession"/>
+        <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
     <bean id="RssRequestHandler" class="no.kantega.publishing.client.RssRequestHandler"/>
 
     <bean id="AttachmentRequestHandler" class="no.kantega.publishing.client.AttachmentRequestHandler">
         <lookup-method name="getSecuritySession" bean="securitySession"/>
+        <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">

@@ -10,6 +10,7 @@
         <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
         <property name="siteCache" ref="aksessSiteCache"/>
         <lookup-method name="getSecuritySession" bean="securitySession"/>
+        <property name="addPagetypeToResponseHeader" value="false"/>
     </bean>
     <bean class="no.kantega.publishing.client.AliasRequestHandler" />
 
