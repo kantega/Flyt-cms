@@ -107,32 +107,29 @@ public class InputScreenRenderer {
         int tabIndex = 100; // Tab index for attribute
         List<Attribute> attributes = content.getAttributes(attributeType);
         for (Attribute attribute : attributes) {
-            renderAttribute(out, request, fieldErrors, attribute, tabIndex);
-            tabIndex += 10;
+            tabIndex = renderAttribute(out, request, fieldErrors, attribute, tabIndex);
         }
     }
 
-    private void renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attribute, int tabIndex) throws IOException {
+    private int renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attribute, int tabIndex) throws IOException {
         if (attribute.isEditable() && !attribute.isHidden(content) && roleCanEdit(attribute, request)) {
             String value = attribute.getValue();
             if (value == null || value.length() == 0) {
                 attribute.setValue("");
             }
 
-            tabIndex += 10;
-
-            // Print field by including JSP for attribute
-            attribute.setTabIndex(tabIndex);
-
             if (attribute instanceof RepeaterAttribute) {
-                renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute);
+                renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute, tabIndex);
             } else {
+                tabIndex += 10;
+                attribute.setTabIndex(tabIndex);
                 renderNormalAttribute(out, request, fieldErrors, attribute);
             }
         }
+        return tabIndex;
     }
 
-    private void renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, RepeaterAttribute repeaterAttribute) throws IOException {
+    private int renderRepeaterAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, RepeaterAttribute repeaterAttribute, Integer tabIndex) throws IOException {
 
         try {
             out.print("\n<div class=\"contentAttributeRepeater");
@@ -147,13 +144,14 @@ public class InputScreenRenderer {
             pageContext.include("/admin/publish/attributes/repeater_start.jsp");
 
             int numberOfRows = repeaterAttribute.getNumberOfRows();
+
             for (int rowNo = 0; rowNo < numberOfRows; rowNo++) {
                 out.print("<div class=\"contentAttributeRepeaterRow\">\n");
                 request.setAttribute("repeaterRowNo", rowNo);
                 pageContext.include("/admin/publish/attributes/repeater_row_start.jsp");
                 List<Attribute> attributes = repeaterAttribute.getRow(rowNo);
                 for (Attribute attribute : attributes) {
-                    renderAttribute(out, request, fieldErrors, attribute, repeaterAttribute.getTabIndex());
+                    tabIndex = renderAttribute(out, request, fieldErrors, attribute, tabIndex);
                 }
                 pageContext.include("/admin/publish/attributes/repeater_row_end.jsp");
                 out.print("</div>\n");
@@ -165,6 +163,8 @@ public class InputScreenRenderer {
             String errorMessage = LocaleLabels.getLabel("aksess.editcontent.exception", Aksess.getDefaultAdminLocale());
             out.print("<div class=\"errorText\">" + errorMessage + ":" + repeaterAttribute.getTitle() + "</div>\n");
         }
+
+        return tabIndex;
     }
 
     public void renderNormalAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attr) throws IOException {
