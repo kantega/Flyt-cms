@@ -24,6 +24,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
@@ -32,8 +33,10 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 @Component
 public class ContentTransformer implements DocumentTransformer<Content> {
     private final Logger log = LoggerFactory.getLogger(getClass());
-
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
+
+    private static final Pattern KEYWORDS_PATTERN = Pattern.compile("[,\\s]");
+    private static final Pattern TITLE_OR_DESCRIPTION = Pattern.compile("title|description");
 
     @Autowired
     private TopicDao topicDao;
@@ -83,7 +86,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
-                if(value.isSearchable() && !value.getName().matches("title|description")){
+                if(value.isSearchable() && !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches()){
                     String fieldName = getFieldName(value, language);
 
                     indexableDocument.addAttribute(fieldName, getValue(value));
@@ -125,10 +128,10 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     }
 
     private List<String> getKeywords(Content content) {
-        List<String> filteredKeywords = new ArrayList<String>();
+        List<String> filteredKeywords = new ArrayList<>();
         String contentKeywords = content.getKeywords();
         if (contentKeywords != null) {
-            String[] keywords = contentKeywords.split("[,\\s]");
+            String[] keywords = KEYWORDS_PATTERN.split(contentKeywords);
             for (String keyword : keywords) {
                 if(isNotBlank(keyword) && !keyword.equalsIgnoreCase("null")){
                     filteredKeywords.add(keyword);

@@ -34,7 +34,7 @@ public class ContentSearchController implements AksessController {
     @Autowired
     private AksessSearchContextCreator aksessSearchContextCreator;
 
-    @Value("${oa.usefuzzysearch:true}")
+    @Value("${oa.usefuzzysearch:false}")
     private boolean useFuzzySearch;
 
     private boolean searchAllSites = false;
@@ -118,6 +118,7 @@ public class ContentSearchController implements AksessController {
         addFacetFields(request, searchQuery);
 
         searchQuery.setGroupField(getGroupField(request));
+        searchQuery.setGroupQueries(getGroupQueries(request));
         return searchQuery;
     }
 
@@ -132,6 +133,10 @@ public class ContentSearchController implements AksessController {
 
     private String getGroupField(HttpServletRequest request) {
         return ServletRequestUtils.getStringParameter(request, "groupfield", null);
+    }
+
+    private String[] getGroupQueries(HttpServletRequest request) {
+        return ServletRequestUtils.getStringParameters(request, "groupqueries");
     }
 
     private List<String> getFacetFields(HttpServletRequest request, boolean excludeDefaultFacets) {

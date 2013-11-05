@@ -11,7 +11,6 @@ import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
-import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
@@ -59,15 +57,14 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             indexableDocument.addAttribute("location",
                     String.format("%s/%s", locationWithoutTrailingSlash(association), association.getId()));
 
-            OutputStream fileStream = null;
             try {
                 File attachmentFile = File.createTempFile(attachment.getFilename(), "indexer");
-                AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(new FileOutputStream(attachmentFile)));
-                indexableDocument.setFileContent(attachmentFile);
+                try (FileOutputStream out = new FileOutputStream(attachmentFile)){
+                    AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(out));
+                    indexableDocument.setFileContent(attachmentFile);
+                }
             } catch (IOException e) {
                 log.error("Error streaming file", e);
-            }finally {
-                IOUtils.closeQuietly(fileStream);
             }
         }
 
