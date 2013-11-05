@@ -8,9 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static junit.framework.Assert.assertEquals;
 import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 import static org.apache.commons.collections.CollectionUtils.select;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -27,9 +27,9 @@ public class GroupingIntegrationTest {
 
         SearchResponse search = searcher.search(q);
 
-        assertEquals("Wrong number of content types", 3, search.getGroupResultResponses().size());
+        assertEquals("Wrong number of content types", 4, search.getGroupResultResponses().size());
 
-        assertEquals("Wrong number of results", 13, search.getNumberOfHits());
+        assertEquals("Wrong number of results", 17, search.getNumberOfHits());
         GroupResultResponse aksessDocument = (GroupResultResponse) select(search.getGroupResultResponses(), getGroupValuePredicate("aksess-document")).iterator().next();
         assertEquals("Wrong number of results", 6, aksessDocument.getNumFound().intValue());
 

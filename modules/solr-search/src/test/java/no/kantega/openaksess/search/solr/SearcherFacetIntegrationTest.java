@@ -130,10 +130,10 @@ public class SearcherFacetIntegrationTest {
 
         SearchResponse search = searcher.search(q);
 
-        assertEquals(12, search.getNumberOfHits().intValue());
+        assertEquals(16, search.getNumberOfHits().intValue());
         Collection<FacetResult> location = search.getFacets().get("location");
         assertEquals(4, location.size());
-        assertEquals(1, select(location, getPredicate("/1", 12L)).size());
+        assertEquals(1, select(location, getPredicate("/1", 16L)).size());
         assertEquals(1, select(location, getPredicate("/1/1", 3L)).size());
         assertEquals(1, select(location, getPredicate("/1/2", 2L)).size());
         assertEquals(1, select(location, getPredicate("/1/3", 1L)).size());
