@@ -74,8 +74,8 @@ public class LogInitListener implements ServletContextListener {
     }
 
     /**
-     * Read the default log4.xml file from classpath and write it out to disk.
-     * @param configFile where to write the default log4.xml
+     * Read the default logback.groovy file from classpath and write it out to disk.
+     * @param configFile where to write the default logback.groovy
      */
     private void writeDefaultConfigFile(File configFile) {
         configFile.getParentFile().mkdirs();
