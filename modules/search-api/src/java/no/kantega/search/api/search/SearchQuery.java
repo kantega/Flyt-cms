@@ -158,7 +158,7 @@ public class SearchQuery {
     }
 
     public boolean getResultsAreGrouped() {
-        return groupField != null || groupQueries != null ;
+        return getGroupField() != null || !getGroupQueries().isEmpty();
     }
 
     public void setGroupQueries(String... query) {

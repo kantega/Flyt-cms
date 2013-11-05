@@ -136,7 +136,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private String[] getGroupQueries(HttpServletRequest request) {
-        return ServletRequestUtils.getStringParameters(request, "groupqueries");
+        return ServletRequestUtils.getStringParameters(request, "groupquery");
     }
 
     private List<String> getFacetFields(HttpServletRequest request, boolean excludeDefaultFacets) {
