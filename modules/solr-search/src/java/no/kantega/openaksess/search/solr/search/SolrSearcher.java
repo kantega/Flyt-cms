@@ -12,6 +12,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.*;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.apache.solr.common.params.DisMaxParams;
 import org.apache.solr.common.params.GroupParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
 import org.slf4j.Logger;
@@ -105,7 +106,9 @@ public class SolrSearcher implements Searcher {
 
         addResultGrouping(query, solrQuery);
 
-
+        if (query.isBoostByPublishDate()) {
+            solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
+        }
         return solrQuery;
     }
 

@@ -12,7 +12,6 @@ import no.kantega.search.api.search.Searcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -22,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.springframework.web.bind.ServletRequestUtils.*;
 
 /**
  * Performs search for Aksess content.
@@ -86,7 +86,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private String getQorTerm(HttpServletRequest request) {
-        return ServletRequestUtils.getStringParameter(request, "q", request.getParameter("term"));
+        return getStringParameter(request, "q", request.getParameter("term"));
     }
 
     /**
@@ -111,19 +111,20 @@ public class ContentSearchController implements AksessController {
     private SearchQuery getSearchQuery(HttpServletRequest request, String query, AksessSearchContext searchContext) {
         SearchQuery searchQuery = new SearchQuery(searchContext, query, getFilterQueries(request, searchContext));
         searchQuery.setFuzzySearch(useFuzzySearch);
-        searchQuery.setPageNumber(ServletRequestUtils.getIntParameter(request, "page", 0));
-        searchQuery.setResultsPerPage(ServletRequestUtils.getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
-        searchQuery.setOffset(ServletRequestUtils.getIntParameter(request, "offset", 0));
+        searchQuery.setPageNumber(getIntParameter(request, "page", 0));
+        searchQuery.setResultsPerPage(getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
+        searchQuery.setOffset(getIntParameter(request, "offset", 0));
 
         addFacetFields(request, searchQuery);
 
         searchQuery.setGroupField(getGroupField(request));
         searchQuery.setGroupQueries(getGroupQueries(request));
+        searchQuery.setBoostByPublishDate(getBooleanParameter(request, "boostByPublishDate", false));
         return searchQuery;
     }
 
     private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery) {
-        boolean excludeDefaultFacets = ServletRequestUtils.getBooleanParameter(request, "excludedefaultfacets", false);
+        boolean excludeDefaultFacets = getBooleanParameter(request, "excludedefaultfacets", false);
         searchQuery.setFacetFields(getFacetFields(request, excludeDefaultFacets));
 
         if (!excludeDefaultFacets) {
@@ -132,16 +133,16 @@ public class ContentSearchController implements AksessController {
     }
 
     private String getGroupField(HttpServletRequest request) {
-        return ServletRequestUtils.getStringParameter(request, "groupfield", null);
+        return getStringParameter(request, "groupfield", null);
     }
 
     private String[] getGroupQueries(HttpServletRequest request) {
-        return ServletRequestUtils.getStringParameters(request, "groupquery");
+        return getStringParameters(request, "groupquery");
     }
 
     private List<String> getFacetFields(HttpServletRequest request, boolean excludeDefaultFacets) {
         List<String> fields = excludeDefaultFacets? Collections.<String>emptyList() : facetFields;
-        String parameterfacetFields = ServletRequestUtils.getStringParameter(request, "facetFields", null);
+        String parameterfacetFields = getStringParameter(request, "facetFields", null);
         if(parameterfacetFields != null){
             fields = Arrays.asList(parameterfacetFields.split(","));
         }
@@ -149,9 +150,9 @@ public class ContentSearchController implements AksessController {
     }
 
     private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
-        List<String> filterQueries = new ArrayList<>(Arrays.asList(ServletRequestUtils.getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
+        List<String> filterQueries = new ArrayList<>(Arrays.asList(getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
-        addSiteFilter(searchContext, filterQueries, ServletRequestUtils.getBooleanParameter(request, "includeContentWithoutSite", false));
+        addSiteFilter(searchContext, filterQueries, getBooleanParameter(request, "includeContentWithoutSite", false));
 
         addVisibilityFilter(filterQueries);
 
@@ -187,11 +188,11 @@ public class ContentSearchController implements AksessController {
     }
 
     private String getQuery(HttpServletRequest request) {
-        return ServletRequestUtils.getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
+        return getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
     }
 
     private boolean includeLinks(HttpServletRequest request) {
-        return !ServletRequestUtils.getBooleanParameter(request, "excludelinks", false);
+        return !getBooleanParameter(request, "excludelinks", false);
     }
 
     private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {

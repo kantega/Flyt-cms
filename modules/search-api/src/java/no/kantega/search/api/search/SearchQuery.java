@@ -24,6 +24,7 @@ public class SearchQuery {
     private List<String> groupQueries;
     private int offset = 0;
     private boolean fuzzySearch = true;
+    private boolean boostByPublishDate = false;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -184,5 +185,16 @@ public class SearchQuery {
 
     public void setFuzzySearch(boolean fuzzySearch) {
         this.fuzzySearch = fuzzySearch;
+    }
+
+    /**
+     * If set, adds boost query that adds boost to newer documents
+     */
+    public boolean isBoostByPublishDate() {
+        return boostByPublishDate;
+    }
+
+    public void setBoostByPublishDate(boolean boostByPublishDate) {
+        this.boostByPublishDate = boostByPublishDate;
     }
 }

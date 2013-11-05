@@ -12,9 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Collection;
 import java.util.List;
 
-import static junit.framework.Assert.*;
 import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 import static org.apache.commons.collections.CollectionUtils.select;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
@@ -44,9 +44,14 @@ public class SearcherIntegrationTest {
     }
 
     private SearchResponse doSearch(String query, String filter, String indexedContentType){
+        return doSearch(query, filter, indexedContentType, false);
+    }
+
+    private SearchResponse doSearch(String query, String filter, String indexedContentType, boolean dateBoost){
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, query, filter, indexedContentType);
         q.setHighlightSearchResultDescription(true);
+        q.setBoostByPublishDate(dateBoost);
         return searcher.search(q);
     }
 
@@ -81,7 +86,7 @@ public class SearcherIntegrationTest {
                 return ((SearchResult) o).getTitle().contains("Accando");
             }
         });
-        assertTrue("Should have size one", accando.size() == 1);
+        assertEquals("Should have size one", 1, accando.size());
     }
 
     @Test
@@ -112,7 +117,7 @@ public class SearcherIntegrationTest {
         SearchResponse searchResponse = doSearchSiteOne(originalQuery);
         doForAllhits(new Assertion() {
             public void doAssert(SearchResult searchResult) {
-                assertTrue("Document was not Content", searchResult.getIndexedContentType().equals("aksess-document"));
+                assertEquals("Document was not Content", "aksess-document", searchResult.getIndexedContentType());
             }
         }, searchResponse);
     }
@@ -214,6 +219,16 @@ public class SearcherIntegrationTest {
         assertEquals(7, searchHits.get(2).getId());
     }
 
+    @Test
+    public void publishDataShouldDetermineOrderOfEqualDocuments(){
+        SearchResponse kantega = doSearch("LALALAL", "", "indexedContentType:databoost-document", true);
+        List<SearchResult> searchHits = kantega.getSearchHits();
+        assertEquals("Wrong number of search results", 4, searchHits.size());
+        assertEquals(6, searchHits.get(0).getId());
+        assertEquals(5, searchHits.get(1).getId());
+        assertEquals(7, searchHits.get(2).getId());
+        assertEquals(8, searchHits.get(3).getId());
+    }
 
     private void doForAllhits(Assertion assertion, SearchResponse searchResponse){
 
