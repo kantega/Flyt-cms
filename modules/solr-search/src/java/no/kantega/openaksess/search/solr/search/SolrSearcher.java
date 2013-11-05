@@ -30,6 +30,7 @@ public class SolrSearcher implements Searcher {
     private final Logger log  = LoggerFactory.getLogger(getClass());
 
     private final String DESCRIPTION_HIHLIGHTING_FIELD = "all_text_unanalyzed";
+
     @Autowired
     private SolrServer solrServer;
 
@@ -52,17 +53,17 @@ public class SolrSearcher implements Searcher {
 
     private SearchResponse createSearchReponse(SearchQuery query, QueryResponse queryResponse) {
         SearchResponse searchResponse = null;
-        if (!query.getResultsAreGrouped()) {
-            SolrDocumentList results = queryResponse.getResults();
-            searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
-        } else {
+        if (query.getResultsAreGrouped()) {
             GroupResponse groupResponse = queryResponse.getGroupResponse();
             List<GroupCommand> values = groupResponse.getValues();
+            List<GroupResultResponse> groupResultResponses = new ArrayList<>(values.size());
+
+            int matches = 0;
             for (GroupCommand value : values) {
                 List<Group> groups = value.getValues();
-                int matches = value.getMatches();
+                matches = value.getMatches();
 
-                List<GroupResultResponse> groupResultResponses = new ArrayList<>(groups.size());
+
                 for (Group group : groups) {
                     String groupValue = group.getGroupValue();
                     SolrDocumentList result = group.getResult();
@@ -70,8 +71,11 @@ public class SolrSearcher implements Searcher {
                     groupResultResponses.add(new GroupResultResponse(groupValue, numFound, addSearchResults(query, queryResponse, result)));
                 }
 
-                searchResponse = new SearchResponse(query, matches, queryResponse.getQTime(), groupResultResponses);
             }
+            searchResponse = new SearchResponse(query, matches, queryResponse.getQTime(), groupResultResponses);
+        } else {
+            SolrDocumentList results = queryResponse.getResults();
+            searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
         }
 
         setSpellResponse(searchResponse, queryResponse);
@@ -97,23 +101,6 @@ public class SolrSearcher implements Searcher {
         addResultGrouping(query, solrQuery);
 
         return solrQuery;
-    }
-
-    private String addFuzzyTermsIfSet(SearchQuery query) {
-        String queryString = query.getOriginalQuery();
-        if(query.isFuzzySearch()){
-            StringBuilder fuzzyQuery = new StringBuilder();
-            for (String token : boundary.split(queryString)) {
-                // Search for exact string and fuzzy string since search for only fuzzy string does not return exact matches
-                fuzzyQuery.append("(");
-                fuzzyQuery.append(token);
-                fuzzyQuery.append(" OR ");
-                fuzzyQuery.append(token);
-                fuzzyQuery.append("~) ");
-            }
-            queryString = fuzzyQuery.toString();
-        }
-         return queryString;
     }
 
     public List<String> suggest(SearchQuery query) {
@@ -233,7 +220,7 @@ public class SolrSearcher implements Searcher {
     }
 
     private String[] splitOnFirstColon(String facetQueryString) {
-        int firstColon = facetQueryString.indexOf(":");
+        int firstColon = facetQueryString.indexOf(':');
 
         return new String[]{facetQueryString.substring(0, firstColon), facetQueryString.substring(firstColon + 1)};
     }
@@ -256,7 +243,7 @@ public class SolrSearcher implements Searcher {
     }
 
     private List<SearchResult> addSearchResults(SearchQuery query, QueryResponse queryResponse, SolrDocumentList results) {
-        List<SearchResult> searchResults = new ArrayList<>();
+        List<SearchResult> searchResults = new ArrayList<>(results.size());
         for (SolrDocument result : results) {
             try {
                 searchResults.add(createSearchResult(result, queryResponse, query));
@@ -270,7 +257,7 @@ public class SolrSearcher implements Searcher {
     private void setSpellResponse(SearchResponse searchResponse, QueryResponse queryResponse) {
         SpellCheckResponse spellCheckResponse = queryResponse.getSpellCheckResponse();
         if(spellCheckResponse != null && !spellCheckResponse.isCorrectlySpelled()){
-            List<String> suggestionStrings = new ArrayList<String>();
+            List<String> suggestionStrings = new ArrayList<>();
             // Remove duplicate suggestions caused by searching for both exact and fuzzy words
             for (String s : getSpellSuggestions(spellCheckResponse)) {
                 if (!suggestionStrings.contains(s)) {
@@ -298,7 +285,7 @@ public class SolrSearcher implements Searcher {
         String languageSuffix = getLanguageSuffix(language);
         TitleAndDescription titleAndDescription = getHighlightedTitleAndDescriptionIfEnabled(result, queryResponse, query, languageSuffix);
 
-        SearchResultDecorator decorator = resultDecoratorMap.get(indexedContentType);
+        SearchResultDecorator<?> decorator = resultDecoratorMap.get(indexedContentType);
         if(decorator == null){
             decorator = defaultSearchResultDecorator;
         }
@@ -345,7 +332,7 @@ public class SolrSearcher implements Searcher {
     }
 
     @Autowired
-    public void setResultDecorators(Collection<SearchResultDecorator> resultDecorators) {
+    public void setResultDecorators(Collection<SearchResultDecorator<?>> resultDecorators) {
         this.resultDecoratorMap = new HashMap<>();
         for (SearchResultDecorator<?> resultDecorator : resultDecorators) {
             for(String handledindexedContentType : resultDecorator.handledindexedContentTypes()){
@@ -367,7 +354,7 @@ public class SolrSearcher implements Searcher {
         }
     }
 
-    private class TitleAndDescription {
+    private static class TitleAndDescription {
         final String title;
         final String description;
 
@@ -375,5 +362,22 @@ public class SolrSearcher implements Searcher {
             this.title = title;
             this.description = description;
         }
+    }
+
+    private String addFuzzyTermsIfSet(SearchQuery query) {
+        String queryString = query.getOriginalQuery();
+        if(query.isFuzzySearch()){
+            StringBuilder fuzzyQuery = new StringBuilder();
+            for (String token : boundary.split(queryString)) {
+                // Search for exact string and fuzzy string since search for only fuzzy string does not return exact matches
+                fuzzyQuery.append("(");
+                fuzzyQuery.append(token);
+                fuzzyQuery.append(" OR ");
+                fuzzyQuery.append(token);
+                fuzzyQuery.append("~) ");
+            }
+            queryString = fuzzyQuery.toString();
+        }
+        return queryString;
     }
 }
