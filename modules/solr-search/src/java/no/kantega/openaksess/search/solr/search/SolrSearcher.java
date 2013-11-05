@@ -54,25 +54,7 @@ public class SolrSearcher implements Searcher {
     private SearchResponse createSearchReponse(SearchQuery query, QueryResponse queryResponse) {
         SearchResponse searchResponse = null;
         if (query.getResultsAreGrouped()) {
-            GroupResponse groupResponse = queryResponse.getGroupResponse();
-            List<GroupCommand> values = groupResponse.getValues();
-            List<GroupResultResponse> groupResultResponses = new ArrayList<>(values.size());
-
-            int matches = 0;
-            for (GroupCommand value : values) {
-                List<Group> groups = value.getValues();
-                matches = value.getMatches();
-
-
-                for (Group group : groups) {
-                    String groupValue = group.getGroupValue();
-                    SolrDocumentList result = group.getResult();
-                    long numFound = result.getNumFound();
-                    groupResultResponses.add(new GroupResultResponse(groupValue, numFound, addSearchResults(query, queryResponse, result)));
-                }
-
-            }
-            searchResponse = new SearchResponse(query, matches, queryResponse.getQTime(), groupResultResponses);
+            searchResponse = createGroupSearchResponse(query, queryResponse);
         } else {
             SolrDocumentList results = queryResponse.getResults();
             searchResponse = new SearchResponse(query, results.getNumFound(), queryResponse.getQTime(), addSearchResults(query, queryResponse, results));
@@ -82,6 +64,29 @@ public class SolrSearcher implements Searcher {
 
         addFacetResults(searchResponse, queryResponse);
 
+        return searchResponse;
+    }
+
+    private SearchResponse createGroupSearchResponse(SearchQuery query, QueryResponse queryResponse) {
+        SearchResponse searchResponse;GroupResponse groupResponse = queryResponse.getGroupResponse();
+        List<GroupCommand> values = groupResponse.getValues();
+        List<GroupResultResponse> groupResultResponses = new ArrayList<>(values.size());
+
+        int matches = 0;
+        for (GroupCommand value : values) {
+            List<Group> groups = value.getValues();
+            matches = value.getMatches();
+
+
+            for (Group group : groups) {
+                String groupValue = group.getGroupValue();
+                SolrDocumentList result = group.getResult();
+                long numFound = result.getNumFound();
+                groupResultResponses.add(new GroupResultResponse(groupValue, numFound, addSearchResults(query, queryResponse, result)));
+            }
+
+        }
+        searchResponse = new SearchResponse(query, matches, queryResponse.getQTime(), groupResultResponses);
         return searchResponse;
     }
 
@@ -99,6 +104,7 @@ public class SolrSearcher implements Searcher {
         addFacetQueryInformation(query, solrQuery);
 
         addResultGrouping(query, solrQuery);
+
 
         return solrQuery;
     }
