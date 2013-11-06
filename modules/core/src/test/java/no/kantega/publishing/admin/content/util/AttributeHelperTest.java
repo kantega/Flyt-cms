@@ -20,8 +20,8 @@ public class AttributeHelperTest {
     }
 
     @Test
-    public void shouldReplaceDotWith$() {
-        String expected = "contentAttribute_A_0_$image";
+    public void shouldReplaceDotWith_dot_() {
+        String expected = "contentAttribute_A_0__dot_image";
         assertEquals(expected, AttributeHelper.getInputContainerName("A[0].image"));
     }
 

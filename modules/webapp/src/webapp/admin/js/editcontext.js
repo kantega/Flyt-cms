@@ -124,7 +124,7 @@ openaksess.editcontext = function()  {
                     var rows = $(ui.item).parent().find(".contentAttributeRepeaterRow");
                     rows.each(function(index) {
                         var html = $(this).html();
-                        html = html.replace(/(_\d_\$)/g, "_" + index + "_$");
+                        html = html.replace(/(_\d__dot_)/g, "_" + index + "__dot_");
                         $(this).html(html);
                     });
                 }

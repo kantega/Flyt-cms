@@ -23,12 +23,12 @@ public class AttributeHelper {
 
 
     public static String getInputFieldName(String name) {
-        name = name.replace(".", "$");
+        name = name.replace(".", "_dot_");
         return "attributeValue_" + ILLEGAL_PATTERN.matcher(name).replaceAll("_");
     }
 
     public static String getInputContainerName(String name) {
-        name = name.replace(".", "$");
+        name = name.replace(".", "_dot_");
         return "contentAttribute_" + ILLEGAL_PATTERN.matcher(name).replaceAll("_");
 
     }

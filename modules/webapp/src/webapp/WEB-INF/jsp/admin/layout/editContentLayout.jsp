@@ -44,9 +44,12 @@
                     // This fails if a delay is not added
                     setTimeout(scrollTo, 500);
                 </c:when>
+                <c:when test="${errors != null && errors.length > 0}">
+                    // Error, do nothing
+                </c:when>
                 <c:otherwise>
-                    // Set focus to first input field in form
-                    $("#EditContentForm input[type='text']:first").focus();
+                    // Set focus to first attribute if it is a input field
+                    $("#EditContentForm").find(".contentAttribute:first input[type='text']").focus();
                 </c:otherwise>
             </c:choose>
 
@@ -54,7 +57,13 @@
         });
 
         function scrollTo() {
-            $("#EditContentMain").scrollTop($("#${scrollTo} .buttonGroup:last").offset().top);
+            var top = $("#${scrollTo} .contentAttributeRepeaterRow:last").offset().top;
+            if (top > 100) {
+                top -= 100;
+            } else {
+                top = 0;
+            }
+            $("#EditContentMain").scrollTop(top);
         }
 
         function bindToolbarButtons() {
