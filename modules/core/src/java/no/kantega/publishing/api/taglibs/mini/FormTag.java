@@ -92,7 +92,7 @@ public class FormTag extends BodyTagSupport {
                     out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.approvereminder", locale)+"</div>");
                 }
 
-                if (currentEditContent.getStatus() == ContentStatus.DRAFT) {
+                if (currentEditContent.getStatus() == ContentStatus.DRAFT && currentEditContent.getVersion() > 1) {
                     out.write("<div class=\"ui-state-highlight\">"+ LocaleLabels.getLabel("aksess.simpleedit.editdraft", locale)+"</div>");
                 }
             }
