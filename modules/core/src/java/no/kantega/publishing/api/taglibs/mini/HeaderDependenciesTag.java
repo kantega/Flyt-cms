@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
+import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.common.Aksess;
 
@@ -35,6 +36,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         JspWriter out = pageContext.getOut();
 
         String scrollTo = (String)request.getAttribute("scrollTo");
+        ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
 
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro-oa/miniaksess.css\">\n");
         out.write("<script type=\"text/javascript\">\n" +
@@ -46,14 +48,19 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "        };\n");
         if (scrollTo != null) {
             out.write("  function scrollTo() {\n" +
-                    "            var elementPosition = $(\"#" + scrollTo + " .buttonGroup:last\").offset().top;\n" +
+                    "            var elementPosition = $(\"#" + scrollTo + " .contentAttributeRepeaterRow:last\").offset().top;\n" +
+                    "            if (elementPosition > 100) {" +
+                    "                elementPosition -= 100;" +
+                    "            } else { " +
+                    "                elementPosition = 0;" +
+                    "            }" +
                     "            $(\"body\").scrollTop(elementPosition);\n" +
                     "        }\n" +
                     "\n");
             out.write("  $(document).ready(function(){\n" +
                     "       setTimeout(scrollTo, 500);\n" +
                     "    });\n");
-        } else {
+        } else if (errors == null || errors.getLength() == 0) {
             out.write("  $(document).ready(function(){\n" +
                     "       // Set focus to first input field in form\n" +
                     "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
