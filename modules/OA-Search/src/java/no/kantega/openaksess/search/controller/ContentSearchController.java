@@ -240,18 +240,18 @@ public class ContentSearchController implements AksessController {
         model.put("links", links);
         int currentPage = searchResponse.getCurrentPage();
         if (currentPage > 0) {
-            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage);
+            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls());
             links.put("prevPageUrl", prevPageUrl);
         }
 
         int numberOfPages = searchResponse.getNumberOfPages();
         if (currentPage < (numberOfPages - 1)) {
-            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage);
+            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls());
             links.put("nextPageUrl", nextPageUrl);
         }
 
         if (numberOfPages > 1) {
-            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage));
+            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls()));
         }
     }
 

@@ -32,35 +32,37 @@ public class QueryStringGenerator {
     private static final String encoding = "utf-8";
     private final static String PAGENO_PARAM = "page";
 
-    public static String getPrevPageUrl(SearchQuery query, int currentPage) {
-        return getPageUrl(query, currentPage - 1);
+    public static String getPrevPageUrl(SearchQuery query, int currentPage, boolean shouldAppendFilterQueries) {
+        return getPageUrl(query, currentPage - 1, shouldAppendFilterQueries);
     }
 
-    public static String getNextPageUrl(SearchQuery query, int currentPage) {
-        return getPageUrl(query, currentPage + 1);
+    public static String getNextPageUrl(SearchQuery query, int currentPage, boolean shouldAppendFilterQueries) {
+        return getPageUrl(query, currentPage + 1, shouldAppendFilterQueries);
     }
 
-    public static String getPageUrl(SearchQuery query, int pageNumber) {
-        StringBuilder queryStringBuilder = getUrl(query);
+    private static String getPageUrl(SearchQuery query, int pageNumber, boolean shouldAppendFilterQueries) {
+        StringBuilder queryStringBuilder = getUrl(query, shouldAppendFilterQueries);
         queryStringBuilder.append("&");
         queryStringBuilder.append(String.format(keyValueFormat, PAGENO_PARAM, pageNumber));
         return queryStringBuilder.toString();
     }
 
-    private static StringBuilder getUrl(SearchQuery query) {
+    private static StringBuilder getUrl(SearchQuery query, boolean shouldAppendFilterQueries) {
         StringBuilder queryStringBuilder = new StringBuilder(query.getSearchContext().getSearchUrl());
         queryStringBuilder.append("?");
         queryStringBuilder.append(String.format(keyValueFormat, QUERY_PARAM, getEncodedQuery(query.getOriginalQuery())));
-        appendFilterQueries(query, queryStringBuilder);
+
+        if (shouldAppendFilterQueries) {
+            appendFilterQueries(query, queryStringBuilder);
+        }
 
         return queryStringBuilder;
     }
 
-    public static Map<Integer, String> getPageUrls(SearchResponse searchResponse, int standingOnPage) {
-        LinkedHashMap<Integer, String> pageUrls = new LinkedHashMap<Integer, String>();
+    public static Map<Integer, String> getPageUrls(SearchResponse searchResponse, int standingOnPage, boolean shouldAppendFilterQueries) {
+        Map<Integer, String> pageUrls = new LinkedHashMap<>();
         SearchQuery query = searchResponse.getQuery();
-        int page = standingOnPage;
-        int startPage = ((page / 10) * 10);
+        int startPage = ((standingOnPage / 10) * 10);
         int endPage = startPage + 9;
 
         int numberOfHits = searchResponse.getNumberOfHits().intValue();
@@ -72,13 +74,13 @@ public class QueryStringGenerator {
             startPage--;
         }
         for (int i = startPage; i <= endPage; i++) {
-            pageUrls.put(i, getPageUrl(query, i));
+            pageUrls.put(i, getPageUrl(query, i, shouldAppendFilterQueries));
         }
         return pageUrls;
     }
 
-    public static String getFacetUrl(String facetfield, String facetvalue, SearchQuery searchQuery) {
-        StringBuilder queryStringBuilder = getUrl(searchQuery);
+    public static String getFacetUrl(String facetfield, String facetvalue, SearchQuery searchQuery, boolean shouldAppendFilterQueries) {
+        StringBuilder queryStringBuilder = getUrl(searchQuery, shouldAppendFilterQueries);
         queryStringBuilder.append("&");
         queryStringBuilder.append(FILTER_PARAM);
         queryStringBuilder.append("=");
@@ -86,7 +88,6 @@ public class QueryStringGenerator {
 
         return queryStringBuilder.toString();
     }
-
 
     private static void appendFilterQueries(SearchQuery query, StringBuilder queryStringBuilder) {
         List<String> filterQueries = query.getFilterQueries();

@@ -269,7 +269,7 @@ public class SolrSearcher implements Searcher {
     }
 
     private boolean addFacetResult(SearchQuery query, Multimap<String, FacetResult> facets, String facetFieldName, String facetFieldValue, Number facetCount) {
-        return facets.put(facetFieldName, new FacetResult(facetFieldName, facetFieldValue, facetCount, QueryStringGenerator.getFacetUrl(facetFieldName, facetFieldValue, query)));
+        return facets.put(facetFieldName, new FacetResult(facetFieldName, facetFieldValue, facetCount, QueryStringGenerator.getFacetUrl(facetFieldName, facetFieldValue, query, query.isAppendFiltersToPageUrls())));
     }
 
     private void throwIfNotLenghtTwo(String facetQueryString, String[] facetFieldAndValue) {

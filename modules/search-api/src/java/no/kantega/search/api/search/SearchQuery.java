@@ -26,6 +26,7 @@ public class SearchQuery {
     private boolean fuzzySearch = true;
     private boolean boostByPublishDate = false;
     private Language language = Language.NO;
+    private boolean appendFiltersToPageUrls = true;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -205,5 +206,13 @@ public class SearchQuery {
 
     public void setLanguage(Language language) {
         this.language = language;
+    }
+
+    public boolean isAppendFiltersToPageUrls() {
+        return appendFiltersToPageUrls;
+    }
+
+    public void setAppendFiltersToPageUrls(boolean appendFiltersToPageUrls) {
+        this.appendFiltersToPageUrls = appendFiltersToPageUrls;
     }
 }
