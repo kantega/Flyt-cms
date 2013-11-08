@@ -11,6 +11,6 @@ public class ContentAliasDaoJdbcImpl extends JdbcDaoSupport implements ContentAl
 
     @Override
     public List<String> getAllAliases() {
-        return getJdbcTemplate().queryForList("select alias from Content", String.class);
+        return getJdbcTemplate().queryForList("select alias from content", String.class);
     }
 }
