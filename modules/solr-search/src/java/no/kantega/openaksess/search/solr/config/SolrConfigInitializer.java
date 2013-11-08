@@ -77,8 +77,12 @@ public class SolrConfigInitializer {
     }
 
     private static void copyToConfigDir(ConfigPair configPair) throws IOException {
-        log.info("Copying {} to {}", configPair.resourcePath, configPair.targetFile);
-        copyAndCloseStreams(SolrConfigInitializer.class.getResourceAsStream(configPair.resourcePath), new FileOutputStream(configPair.targetFile));
+        if (configPair.targetFile.exists()) {
+            log.info(configPair.targetFile.getAbsolutePath() + " exists, will not overwrite");
+        } else {
+            log.info("Copying {} to {}", configPair.resourcePath, configPair.targetFile);
+            copyAndCloseStreams(SolrConfigInitializer.class.getResourceAsStream(configPair.resourcePath), new FileOutputStream(configPair.targetFile));
+        }
     }
 
     private static void copyAndCloseStreams(InputStream resourceAsStream, FileOutputStream output) throws IOException {
