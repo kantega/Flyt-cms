@@ -25,6 +25,7 @@ public class SearchQuery {
     private int offset = 0;
     private boolean fuzzySearch = true;
     private boolean boostByPublishDate = false;
+    private Language language = Language.NO;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -196,5 +197,13 @@ public class SearchQuery {
 
     public void setBoostByPublishDate(boolean boostByPublishDate) {
         this.boostByPublishDate = boostByPublishDate;
+    }
+
+    public Language getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 }

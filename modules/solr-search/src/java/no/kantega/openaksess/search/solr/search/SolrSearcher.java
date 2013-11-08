@@ -118,12 +118,11 @@ public class SolrSearcher implements Searcher {
             solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
         }
 
-        // TODO get language from query and use _en if appropriate
-        solrQuery.add(DisMaxParams.QF, "all_text_no");
-        solrQuery.add(DisMaxParams.PF, "all_text_no");
+        solrQuery.add(DisMaxParams.QF, "all_text_" + query.getLanguage().code);
+        solrQuery.add(DisMaxParams.PF, "all_text_" + query.getLanguage().code);
         solrQuery.add(DisMaxParams.PS, "10");
 
-        solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery()));
+        solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getLanguage().code));
 
         if (includeDebugInfo) {
             solrQuery.setShowDebugInfo(true);
@@ -132,16 +131,16 @@ public class SolrSearcher implements Searcher {
         return solrQuery;
     }
 
-    private String[] getBoostQuery(String query) {
+    private String[] getBoostQuery(String query, String language) {
         String[] terms = query.split(" ");
         List<String> boostQueries = new ArrayList<>(terms.length * 6);
         for (String term : terms) {
             boostQueries.add("all_text_unanalyzed:" + term);
-            boostQueries.add("title_no:" + query);
-            boostQueries.add("altTitle_no:" + query);
-            boostQueries.add("description_no:" + query);
-            boostQueries.add("keywords:" + query);
-            boostQueries.add("topics:" + query);
+            boostQueries.add("title_" + language + ":" + term);
+            boostQueries.add("altTitle_" + language + ":" + term);
+            boostQueries.add("description_" + language + ":" + term);
+            boostQueries.add("keywords:" + term);
+            boostQueries.add("topics:" + term);
         }
 
         return boostQueries.toArray(new String[boostQueries.size()]);
