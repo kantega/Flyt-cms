@@ -548,9 +548,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     @Override
     public ContentIdentifier getParent(ContentIdentifier cid) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
-        int parentAssociationId = getJdbcTemplate().queryForInt("select ParentAssociationId from associations where AssociationId = ?", cid.getAssociationId());
-        ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(parentAssociationId);
-        parentCid.setLanguage(cid.getLanguage());
+        ContentIdentifier parentCid = null;
+        try {
+            int parentAssociationId = getJdbcTemplate().queryForObject("select ParentAssociationId from associations where AssociationId = ?", Integer.class, cid.getAssociationId());
+            parentCid =  ContentIdentifier.fromAssociationId(parentAssociationId);
+            parentCid.setLanguage(cid.getLanguage());
+        } catch (DataAccessException e) {
+            log.warn("Error executing select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId(), e);
+        }
         return parentCid;
     }
 

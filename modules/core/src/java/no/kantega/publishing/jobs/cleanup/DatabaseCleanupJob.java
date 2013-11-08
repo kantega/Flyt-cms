@@ -19,7 +19,6 @@ package no.kantega.publishing.jobs.cleanup;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.ServerType;
-import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
@@ -53,9 +52,8 @@ public class DatabaseCleanupJob {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
-        } else {
-            log.info("Starting database cleanup job");
         }
+        log.info("Starting database cleanup job");
 
         try (Connection c = dbConnectionFactory.getConnection()){
             deleteAttachmentsWithNoContent(c);
@@ -95,8 +93,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldTrafficLogEntries(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getTrafficLogMaxAge());
 
         log.info( "Deleting trafficlog older than " + Aksess.getTrafficLogMaxAge() + " months");
@@ -107,8 +104,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldTransactionLocks(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.DATE, -7);
         log.info( "Deleting transactionlocks older than 7 days");
 
@@ -125,8 +121,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldEventLogEntries(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getEventLogMaxAge());
 
         log.info( "Deleting event log entries older than " + Aksess.getEventLogMaxAge() + " months");
@@ -137,8 +132,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldSearhlogEntries(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -1);
 
         log.info( "Deleting search log entries older than 1 month");
@@ -149,8 +143,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldItems(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, -Aksess.getDeletedItemsMaxAge());
 
         log.info( "Deleting deleted items older than " + Aksess.getDeletedItemsMaxAge() + " months");
@@ -165,13 +158,13 @@ public class DatabaseCleanupJob {
         st.execute();
     }
 
-    private void deletePagesWithNoAssociations(Connection c) throws SQLException, ObjectInUseException {
+    private void deletePagesWithNoAssociations(Connection c) throws SQLException {
         PreparedStatement st = c.prepareStatement("select ContentId from content where ContentId not in (select ContentId from associations)");
         ResultSet rs = st.executeQuery();
         while (rs.next()) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(rs.getInt("ContentId"));
-            String title = SQLHelper.getString(c, "select title from contentversion where contentId = " + cid.getContentId() + " and IsActive = 1", "title");
-            log.info( "Deleting page " + title + " because it has been in the trash can for over 1 month");
+            String title = SQLHelper.getString(c, "select title from contentversion where contentId = ? and IsActive = 1", "title", new Object[]{cid.getContentId()});
+            log.info("Deleting page " + title + " because it has been in the trash can for over 1 month");
             eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
             ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
@@ -190,8 +183,7 @@ public class DatabaseCleanupJob {
     }
 
     private void deleteOldXmlCacheEntries(Connection c) throws SQLException {
-        Calendar cal;
-        cal = new GregorianCalendar();
+        Calendar cal = new GregorianCalendar();
         cal.add(Calendar.MONTH, - Aksess.getXmlCacheMaxAge());
 
         log.info( "Deleting Xmlcache entries older than " + Aksess.getXmlCacheMaxAge() + " months");
