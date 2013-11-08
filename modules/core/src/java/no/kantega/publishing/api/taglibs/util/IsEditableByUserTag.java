@@ -32,6 +32,8 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class IsEditableByUserTag  extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsEditableByUserTag.class);
     private static ContentIdHelper contentIdHelper;
@@ -48,7 +50,7 @@ public class IsEditableByUserTag  extends ConditionalTagSupport {
             }
 
             if (contentObject == null) {
-                contentObject = (Content)request.getAttribute("aksess_this");
+                contentObject = tryGetFromRequest(request);
             }
             if (contentObject == null) {
                 // Hent denne siden

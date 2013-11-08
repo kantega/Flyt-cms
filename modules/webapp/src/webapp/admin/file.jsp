@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page import="no.kantega.publishing.common.data.Content" %>
+<%@ page import="static no.kantega.publishing.api.ContentUtil.tryGetFromRequest" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -21,7 +22,7 @@
 <%
     String url = "";
     String title = "";
-    Content content = (Content)request.getAttribute("aksess_this");
+    Content content = tryGetFromRequest(request);
     if (content != null) {
         url = content.getLocation();
         title = content.getTitle();

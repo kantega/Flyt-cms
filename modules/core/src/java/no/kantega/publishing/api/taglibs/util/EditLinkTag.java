@@ -34,6 +34,8 @@ import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class EditLinkTag  extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(EditLinkTag.class);
     private static ContentIdHelper contentIdHelper;
@@ -64,7 +66,7 @@ public class EditLinkTag  extends BodyTagSupport {
             String body = bodyContent.getString();
             JspWriter out = bodyContent.getEnclosingWriter();
 
-            Content current = (Content)request.getAttribute("aksess_this");
+            Content current = tryGetFromRequest(request);
             if (current == null) {
                 if(contentIdHelper == null){
                     contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);

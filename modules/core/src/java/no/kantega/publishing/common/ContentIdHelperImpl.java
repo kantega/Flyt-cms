@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 
@@ -347,7 +348,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         String adjustedUrl = url;
 
         if (siteId == -1) {
-            Content content = (Content)request.getAttribute("aksess_this");
+            Content content = tryGetFromRequest(request);
             if (content != null) {
                 siteId = content.getAssociation().getSiteId();
             }
@@ -390,7 +391,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         ContentIdentifier contentIdentifier = null;
         String url = request.getServletPath();
         String path = request.getPathInfo();
-        Content current = (Content)request.getAttribute("aksess_this");
+        Content current = tryGetFromRequest(request);
         if (current != null) {
             contentIdentifier = ContentIdentifier.fromAssociationId(current.getAssociation().getId());
             contentIdentifier.setLanguage(current.getLanguage());

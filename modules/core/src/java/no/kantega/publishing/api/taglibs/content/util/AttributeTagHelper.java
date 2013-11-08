@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static no.kantega.commons.util.URLHelper.combinePaths;
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 /**
  *
@@ -84,7 +85,7 @@ public final class AttributeTagHelper {
                     ContentManagementService cs = new ContentManagementService(request);
 
                     // Normalt sett vil denne ligge i requesten
-                    content = (Content)request.getAttribute("aksess_this");
+                    content = tryGetFromRequest(request);
                     if (content == null) {
                         // Hent denne siden
                         content = cs.getContent(contentIdHelper.fromRequest(request), true);
@@ -104,7 +105,7 @@ public final class AttributeTagHelper {
                     if (content == null) {
                         if (collection == null) {
                             // Normalt sett vil denne ligge i requesten
-                            content = (Content)request.getAttribute("aksess_this");
+                            content = tryGetFromRequest(request);
                             if (content == null) {
                                 // Hent denne siden
                                 content = cs.getContent(contentIdHelper.fromRequest(request), true);
@@ -492,7 +493,7 @@ public final class AttributeTagHelper {
     }
 
     private static String getCacheKeyPrefix(HttpServletRequest request) {
-        Content tmp = (Content)request.getAttribute("aksess_this");
+        Content tmp = tryGetFromRequest(request);
         String key = "aksess_content";
         if (tmp != null) {
             key = key + tmp.getId();

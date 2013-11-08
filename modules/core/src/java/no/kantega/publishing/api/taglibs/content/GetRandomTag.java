@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class GetRandomTag  extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetRandomTag.class);
 
@@ -136,7 +138,7 @@ public class GetRandomTag  extends BodyTagSupport {
                 query.setAssociatedId(associatedId);
                 useAssociatedId = false;
             } else if (contentList != null) {
-                Content content = (Content)request.getAttribute("aksess_this");
+                Content content = tryGetFromRequest(request);
                 if (content == null) {
                     return SKIP_BODY;
                 }
@@ -170,7 +172,7 @@ public class GetRandomTag  extends BodyTagSupport {
             if (useAssociatedId) {
                 // Standard: Finner innhold knyttet til denne siden
                 try {
-                    Content content = (Content)request.getAttribute("aksess_this");
+                    Content content = tryGetFromRequest(request);
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {

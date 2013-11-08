@@ -27,10 +27,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.CharArrayWriter;
 import java.io.IOException;
+
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 /**
  */
@@ -58,7 +59,7 @@ public class UrlContentRewriter implements ContentRewriter {
         }
     }
 
-    private String rewriteURLs(ServletRequest request, String html) throws IOException {
+    private String rewriteURLs(HttpServletRequest request, String html) throws IOException {
         String contextPath = Aksess.getContextPath();
 
         CharArrayWriter caw = new CharArrayWriter();
@@ -96,7 +97,7 @@ public class UrlContentRewriter implements ContentRewriter {
 
                         try {
                             // Get site
-                            Content currentPage = (Content)request.getAttribute("aksess_this");
+                            Content currentPage = tryGetFromRequest(request);
                             if (currentPage != null) {
                                 siteId = currentPage.getAssociation().getSiteId();
                             } else {

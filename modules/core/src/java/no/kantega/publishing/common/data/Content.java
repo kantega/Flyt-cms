@@ -80,6 +80,10 @@ public class Content extends BaseObject {
      * The publishing status of this content. One of the values in ContentStatus
      */
     private ContentStatus status = ContentStatus.DRAFT;
+
+    /**
+     * On of {code}no.kantega.publishing.api.content.Language{code}
+     */
     private int language = 0;
 
     private String title = "Uten tittel";

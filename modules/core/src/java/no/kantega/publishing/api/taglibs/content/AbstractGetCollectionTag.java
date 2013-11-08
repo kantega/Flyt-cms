@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Arrays.asList;
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 public class AbstractGetCollectionTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(AbstractGetCollectionTag.class);
@@ -210,7 +211,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     ids = contentList;
                 } else {
                     // Interpret as attribute navn that contains list with ids
-                    Content content = (Content)request.getAttribute("aksess_this");
+                    Content content = tryGetFromRequest(request);
                     if (content == null) {
                         return null;
                     }
@@ -309,7 +310,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (useAssociatedId && !findAll) {
                 // Standard: Find content connected to this page
                 try {
-                    Content content = (Content)request.getAttribute("aksess_this");
+                    Content content = tryGetFromRequest(request);
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {

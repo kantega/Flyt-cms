@@ -29,6 +29,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 /**
  *
  */
@@ -44,10 +46,10 @@ public class SaveFormSubmissionController implements AksessController {
     private String mailConfirmationSubject;
     private String mailConfirmationTemplate;
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<>();
 
-        Content content = (Content) request.getAttribute("aksess_this");
+        Content content = tryGetFromRequest(request);
         Form form = null;
 
         if (content != null) {
@@ -56,7 +58,7 @@ public class SaveFormSubmissionController implements AksessController {
 
         if (form != null) {
             if (request.getMethod().equalsIgnoreCase("POST") && request.getParameter("isAksessFormSubmit") != null) {
-                Map<String, String[]> values = new LinkedHashMap<String, String[]>(request.getParameterMap());
+                Map<String, String[]> values = new LinkedHashMap<>(request.getParameterMap());
                 addValues(values, request);
 
                 FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(values, form, true);
@@ -93,7 +95,7 @@ public class SaveFormSubmissionController implements AksessController {
                 }
             } else {
                 // Form is entered for the first time
-                Map<String, String[]> prefillValues = new HashMap<String, String[]>();
+                Map<String, String[]> prefillValues = new HashMap<>();
                 prefill(prefillValues, request);
                 if (prefillValues.size() > 0) {
                     FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form, true);
@@ -115,7 +117,7 @@ public class SaveFormSubmissionController implements AksessController {
         String recipient = formsubmission.getSubmittedByEmail();
         if (recipient != null && recipient.contains("@")) {
             String subject = String.format(mailConfirmationSubject, formsubmission.getForm().getTitle());
-            Map<String, Object> params = new HashMap<String, Object>();
+            Map<String, Object> params = new HashMap<>();
             params.put("currentPage", currentPage);
             params.put("form", formsubmission);
 

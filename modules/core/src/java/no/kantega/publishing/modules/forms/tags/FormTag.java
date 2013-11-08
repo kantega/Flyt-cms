@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 /**
  * Tag used to create forms
  *
@@ -52,7 +54,7 @@ public class FormTag extends BodyTagSupport {
             StringBuilder html = new StringBuilder();
 
             HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-            Content content = (Content) request.getAttribute("aksess_this");
+            Content content = tryGetFromRequest(request);
             Locale locale = (Locale) request.getAttribute("aksess_locale");
 
             hasErrors = (request.getAttribute("hasErrors") != null) ? (Boolean) (request.getAttribute("hasErrors")) : false;

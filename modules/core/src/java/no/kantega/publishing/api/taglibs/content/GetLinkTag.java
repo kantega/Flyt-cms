@@ -41,6 +41,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
 import static no.kantega.commons.util.URLHelper.combinePaths;
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 public class GetLinkTag extends BodyTagSupport{
     private static final Logger log = LoggerFactory.getLogger(GetLinkTag.class);
@@ -136,7 +137,7 @@ public class GetLinkTag extends BodyTagSupport{
                     setSiteCacheIfNull();
                     Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
                     if (url != null && isAdminMode) {
-                        Content current = (Content)request.getAttribute("aksess_this");
+                        Content current = tryGetFromRequest(request);
                         if (current == null) {
                             if(contentIdHelper == null){
                                 contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);

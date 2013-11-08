@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.Collator;
 import java.util.*;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -51,7 +52,7 @@ public class AlphabeticalListController implements AksessController {
             }
         }
 
-        Content current = (Content)request.getAttribute("aksess_this");
+        Content current = tryGetFromRequest(request);
         ContentIdentifier cid = current.getContentIdentifier();
         query.setAssociatedId(cid);
 

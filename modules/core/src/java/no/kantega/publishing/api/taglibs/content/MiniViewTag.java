@@ -38,6 +38,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class MiniViewTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(MiniViewTag.class);
 
@@ -64,7 +66,7 @@ public class MiniViewTag extends TagSupport {
         DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
         try {
-            Content currentPage = (Content)request.getAttribute("aksess_this");
+            Content currentPage = tryGetFromRequest(request);
 
             if (contentObject == null) {
                 contentObject = AttributeTagHelper.getContent(pageContext, collection, contentId, null);

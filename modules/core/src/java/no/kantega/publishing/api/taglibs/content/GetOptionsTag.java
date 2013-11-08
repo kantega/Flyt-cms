@@ -25,6 +25,8 @@ import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.Collection;
 import java.util.Iterator;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromPageContext;
+
 public class GetOptionsTag  extends LoopTagSupport {
 
     private Iterator i;
@@ -44,7 +46,7 @@ public class GetOptionsTag  extends LoopTagSupport {
     }
 
     protected void prepare() throws JspTagException {
-        Content content = (Content) pageContext.getRequest().getAttribute("aksess_this");
+        Content content = tryGetFromPageContext(pageContext);
         language = content.getLanguage();
         
         Collection options = EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignorevariant);

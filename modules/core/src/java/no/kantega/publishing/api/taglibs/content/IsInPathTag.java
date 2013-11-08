@@ -34,6 +34,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class IsInPathTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsInPathTag.class);
     private static ContentIdHelper contentIdHelper;
@@ -66,7 +68,7 @@ public class IsInPathTag extends ConditionalTagSupport {
             if (contentId != null) {
                 try {
 
-                    Content content = contentObject != null ? contentObject :  (Content)request.getAttribute("aksess_this");
+                    Content content = contentObject != null ? contentObject :  tryGetFromRequest(request);
 
                     if (content == null) {
                         // Ikke hentet side

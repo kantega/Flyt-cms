@@ -45,6 +45,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 /**
  * A ContentRequestListener that executes groovy scripts with the same name as a jsp.
  */
@@ -84,7 +86,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                 if (resource != null) {
 
                     Map<Class, Object> allowedParameters = new HashMap<>();
-                    allowedParameters.put(Content.class, context.getRequest().getAttribute("aksess_this"));
+                    allowedParameters.put(Content.class, tryGetFromRequest(context.getRequest()));
                     allowedParameters.put(HttpServletRequest.class, context.getRequest());
                     allowedParameters.put(HttpServletResponse.class, context.getResponse());
                     allowedParameters.put(ServletContext.class, servletContext);

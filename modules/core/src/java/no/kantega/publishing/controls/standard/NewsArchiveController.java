@@ -27,6 +27,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 /**
  * Author: Kristian Lier Selnæs, Kantega AS
  * Date: 19.des.2006
@@ -39,10 +41,10 @@ public class NewsArchiveController implements AksessController {
     private int defaultMax = 20;
     private String description = "Nyheter - Brukes for å vise liste med nyheter der brukeren velger dato/år";
 
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Calendar calendar = new GregorianCalendar();
         RequestParameters param = new RequestParameters(request);
-        Content c = (Content)request.getAttribute("aksess_this");
+        Content c = tryGetFromRequest(request);
 
         String keyword = param.getString("keyword");
 
@@ -112,9 +114,8 @@ public class NewsArchiveController implements AksessController {
 
         Map monthMap = new TreeMap();
         Locale locale = new Locale("no", "NO");
-        Content content = (Content) request.getAttribute("aksess_this");
-        if (content != null) {
-            locale = Language.getLanguageAsLocale(content.getLanguage());
+        if (c != null) {
+            locale = Language.getLanguageAsLocale(c.getLanguage());
         }
         DateFormat df = new SimpleDateFormat("MMMMM", locale);
         for (int i = 0; i < 12; i++) {

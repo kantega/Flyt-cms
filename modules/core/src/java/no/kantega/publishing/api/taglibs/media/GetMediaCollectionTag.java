@@ -16,11 +16,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * User: Terje Røstum, Kantega AS
- * Date: Jan 12, 2010
- * Time: 10:36:36 AM
- */
+import static no.kantega.publishing.api.ContentUtil.tryGetFromPageContext;
 
 public class GetMediaCollectionTag  extends LoopTagSupport {
     private int folder = -1;
@@ -47,13 +43,13 @@ public class GetMediaCollectionTag  extends LoopTagSupport {
     protected void prepare() throws JspTagException {
         MultimediaService mediaService = new MultimediaService((HttpServletRequest)pageContext.getRequest());
 
-        List<Multimedia> images = new ArrayList<Multimedia>();
+        List<Multimedia> images = new ArrayList<>();
         if (folder != -1) {
             // Get objects from a folder
             List<Multimedia> objects = mediaService.getMultimediaList(folder);
             for (Multimedia obj : objects) {
                 if (obj.getType() == MultimediaType.MEDIA) {
-                    if (!imagesonly || obj.getMimeType().getType().indexOf("image") != -1) {
+                    if (!imagesonly || obj.getMimeType().getType().contains("image")) {
                         images.add(obj);
                     }
                 }
@@ -66,7 +62,7 @@ public class GetMediaCollectionTag  extends LoopTagSupport {
                 ids = medialist;
             } else {
                 // Interpret as attribute name that contains list with ids
-                Content content = (Content)pageContext.getRequest().getAttribute("aksess_this");
+                Content content = tryGetFromPageContext(pageContext);
                 if (content != null) {
                     ids = content.getAttributeValue(medialist);
                 }
@@ -77,7 +73,7 @@ public class GetMediaCollectionTag  extends LoopTagSupport {
                 for (int mediaId : mediaIds) {
                     Multimedia m = mediaService.getMultimedia(mediaId);
                     if (m != null && m.getType() == MultimediaType.MEDIA) {
-                        if (!imagesonly || m.getMimeType().getType().indexOf("image") != -1) {
+                        if (!imagesonly || m.getMimeType().getType().contains("image")) {
                             images.add(m);
                         }
                     }

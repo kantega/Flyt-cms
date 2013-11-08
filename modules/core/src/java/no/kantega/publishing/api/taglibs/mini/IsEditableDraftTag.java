@@ -28,6 +28,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 public class IsEditableDraftTag extends ConditionalTagSupport {
 
     private Content contentObject;
@@ -36,7 +38,7 @@ public class IsEditableDraftTag extends ConditionalTagSupport {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         if (contentObject == null) {
-            contentObject = (Content)request.getAttribute("aksess_this");
+            contentObject = tryGetFromRequest(request);
         }
         if (contentObject != null) {
             ContentManagementService cms = new ContentManagementService(request);

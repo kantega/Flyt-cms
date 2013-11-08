@@ -28,6 +28,8 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromPageContext;
+
 /**
  *  Set specified content as current page
  */
@@ -57,7 +59,7 @@ public class UseContentTag  extends ConditionalTagSupport {
     }
 
     protected boolean condition() throws JspTagException {
-        originalContent = (Content)pageContext.getRequest().getAttribute("aksess_this");
+        originalContent = tryGetFromPageContext(pageContext);
 
         if (contentObject == null && (collection != null || contentId != null)) {
             try {
