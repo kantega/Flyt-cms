@@ -131,7 +131,7 @@ public class ContentSearchController implements AksessController {
         searchQuery.setGroupField(getGroupField(request));
         searchQuery.setGroupQueries(getGroupQueries(request));
         searchQuery.setBoostByPublishDate(getBooleanParameter(request, "boostByPublishDate", false));
-        return searchQuery;
+        return customizeQuery(searchQuery);
     }
 
     private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery) {
@@ -224,6 +224,16 @@ public class ContentSearchController implements AksessController {
         if (numberOfPages > 1) {
             links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage));
         }
+    }
+
+    /**
+     * Extension method for adding parameters to the search query programmatically rather than through
+     * request parameters.
+     * @param searchQuery to customize
+     * @return the customized query.
+     */
+    public SearchQuery customizeQuery(SearchQuery searchQuery){
+        return searchQuery;
     }
 
     public String getDescription() {
