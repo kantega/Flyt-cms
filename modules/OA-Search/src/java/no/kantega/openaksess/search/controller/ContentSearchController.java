@@ -134,15 +134,6 @@ public class ContentSearchController implements AksessController {
         return customizeQuery(searchQuery, searchContext, request);
     }
 
-    private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery, AksessSearchContext searchContext) {
-        boolean excludeDefaultFacets = getBooleanParameter(request, "excludedefaultfacets", false);
-        searchQuery.setFacetFields(getFacetFields(request, searchContext, excludeDefaultFacets));
-
-        if (!excludeDefaultFacets) {
-            searchQuery.setFacetQueries(facetQueries);
-        }
-    }
-
     /**
      * @param request - Current HttpServletRequest.
      * @return whether boostByPublishDate should be true or false for the current search query.
@@ -166,6 +157,15 @@ public class ContentSearchController implements AksessController {
      */
     public String[] getGroupQueries(HttpServletRequest request) {
         return getStringParameters(request, "groupquery");
+    }
+
+    private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery, AksessSearchContext searchContext) {
+        boolean excludeDefaultFacets = getBooleanParameter(request, "excludedefaultfacets", false);
+        searchQuery.setFacetFields(getFacetFields(request, searchContext, excludeDefaultFacets));
+
+        if (!excludeDefaultFacets) {
+            searchQuery.setFacetQueries(facetQueries);
+        }
     }
 
     /**
