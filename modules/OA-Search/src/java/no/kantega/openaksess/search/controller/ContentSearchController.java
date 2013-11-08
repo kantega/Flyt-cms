@@ -126,32 +126,56 @@ public class ContentSearchController implements AksessController {
         searchQuery.setResultsPerPage(getIntParameter(request, "resultsprpage", SearchQuery.DEFAULT_RESULTS_PER_PAGE));
         searchQuery.setOffset(getIntParameter(request, "offset", 0));
 
-        addFacetFields(request, searchQuery);
+        addFacetFields(request, searchQuery, searchContext);
 
         searchQuery.setGroupField(getGroupField(request));
         searchQuery.setGroupQueries(getGroupQueries(request));
-        searchQuery.setBoostByPublishDate(getBooleanParameter(request, "boostByPublishDate", false));
-        return customizeQuery(searchQuery);
+        searchQuery.setBoostByPublishDate(getBoostByPublishDate(request));
+        return customizeQuery(searchQuery, searchContext, request);
     }
 
-    private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery) {
+    private void addFacetFields(HttpServletRequest request, SearchQuery searchQuery, AksessSearchContext searchContext) {
         boolean excludeDefaultFacets = getBooleanParameter(request, "excludedefaultfacets", false);
-        searchQuery.setFacetFields(getFacetFields(request, excludeDefaultFacets));
+        searchQuery.setFacetFields(getFacetFields(request, searchContext, excludeDefaultFacets));
 
         if (!excludeDefaultFacets) {
             searchQuery.setFacetQueries(facetQueries);
         }
     }
 
-    private String getGroupField(HttpServletRequest request) {
+    /**
+     * @param request - Current HttpServletRequest.
+     * @return whether boostByPublishDate should be true or false for the current search query.
+     * default returns the value of request parameter boostByPublishDate, or false if absent.
+     */
+    public boolean getBoostByPublishDate(HttpServletRequest request) {
+        return getBooleanParameter(request, "boostByPublishDate", false);
+    }
+
+    /**
+     * @param request - Current HttpServletRequest.
+     * @return the field to group results by.
+     */
+    public String getGroupField(HttpServletRequest request) {
         return getStringParameter(request, "groupfield", null);
     }
 
-    private String[] getGroupQueries(HttpServletRequest request) {
+    /**
+     * @param request - Current HttpServletRequest.
+     * @return the group queries to add to the current search query.
+     */
+    public String[] getGroupQueries(HttpServletRequest request) {
         return getStringParameters(request, "groupquery");
     }
 
-    private List<String> getFacetFields(HttpServletRequest request, boolean excludeDefaultFacets) {
+    /**
+     * Get the facet fields to be used for the current request.
+     * @param request - Current HttpServletRequest.
+     * @param excludeDefaultFacets true if the fields defined in the field facetFields should be included in
+     *                             the facesFields-list.
+     * @return all facetfields to be applied.
+     */
+    public List<String> getFacetFields(HttpServletRequest request, AksessSearchContext searchContext, boolean excludeDefaultFacets) {
         List<String> fields = excludeDefaultFacets? Collections.<String>emptyList() : facetFields;
         String parameterfacetFields = getStringParameter(request, "facetFields", null);
         if(parameterfacetFields != null){
@@ -160,7 +184,12 @@ public class ContentSearchController implements AksessController {
         return fields;
     }
 
-    private List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
+    /**
+     * Get the filter queries to be used for the current request.
+     * @param request - Current HttpServletRequest.
+     * @return all filter queries to be applied.
+     */
+    public List<String> getFilterQueries(HttpServletRequest request, AksessSearchContext searchContext) {
         List<String> filterQueries = new ArrayList<>(Arrays.asList(getStringParameters(request, QueryStringGenerator.FILTER_PARAM)));
 
         addSiteFilter(searchContext, filterQueries, getBooleanParameter(request, "includeContentWithoutSite", false));
@@ -229,10 +258,12 @@ public class ContentSearchController implements AksessController {
     /**
      * Extension method for adding parameters to the search query programmatically rather than through
      * request parameters.
+     *
      * @param searchQuery to customize
+     * @param request HttpServletRequest
      * @return the customized query.
      */
-    public SearchQuery customizeQuery(SearchQuery searchQuery){
+    public SearchQuery customizeQuery(SearchQuery searchQuery, AksessSearchContext searchContext, HttpServletRequest request){
         return searchQuery;
     }
 
