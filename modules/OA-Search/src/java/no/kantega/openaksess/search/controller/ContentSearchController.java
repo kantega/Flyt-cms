@@ -3,6 +3,8 @@ package no.kantega.openaksess.search.controller;
 import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.search.api.search.QueryStringGenerator;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
@@ -99,8 +102,16 @@ public class ContentSearchController implements AksessController {
     public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String term = getQorTerm(request);
         SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
+        setLanguage(request, query);
         query.setResultsPerPage(limit);
         return searcher.spell(query);
+    }
+
+    private void setLanguage(HttpServletRequest request, SearchQuery query) {
+        Content content = tryGetFromRequest(request);
+        if(content.getLanguage() == Language.ENGLISH){
+            query.setLanguage(no.kantega.search.api.search.Language.EN);
+        }
     }
 
     private SearchResponse performSearch(HttpServletRequest request, String query) {

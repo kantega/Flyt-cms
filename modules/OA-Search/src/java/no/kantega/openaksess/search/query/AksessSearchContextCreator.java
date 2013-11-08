@@ -15,6 +15,8 @@ import org.springframework.web.bind.ServletRequestUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
+
 @Component
 public class AksessSearchContextCreator implements ApplicationContextAware {
 
@@ -30,7 +32,7 @@ public class AksessSearchContextCreator implements ApplicationContextAware {
     private int findSiteId(HttpServletRequest request) {
         int siteId = 1;
 
-        Content content = (Content)request.getAttribute("aksess_this");
+        Content content = tryGetFromRequest(request);
         if (content != null) {
             siteId = content.getAssociation().getSiteId();
         } else if(request.getParameter("siteId") != null){
