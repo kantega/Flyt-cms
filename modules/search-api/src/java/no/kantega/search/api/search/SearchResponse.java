@@ -14,6 +14,7 @@ public class SearchResponse {
     private List<String> spellSuggestions;
     private Map<String, Collection<FacetResult>> facets;
     private final String ALL_DOCUMENTS_GROUPNAME = "all";
+    private String debugInformation;
 
     public SearchResponse(SearchQuery query, long numberOfHits, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
@@ -106,5 +107,13 @@ public class SearchResponse {
 
     public void setGroupResultResponses(List<GroupResultResponse> groupResultResponses) {
         this.groupResultResponses = groupResultResponses;
+    }
+
+    public void setDebugInformation(String debugInformation) {
+        this.debugInformation = debugInformation;
+    }
+
+    public String getDebugInformation() {
+        return debugInformation;
     }
 }

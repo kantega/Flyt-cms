@@ -18,6 +18,7 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -40,6 +41,9 @@ public class SolrSearcher implements Searcher {
 
     private final Pattern boundary = Pattern.compile("\\s");
 
+    @Value("#{runtimeMode.name() == 'DEVELOPMENT'}")
+    private boolean includeDebugInfo = false;
+
     public SearchResponse search(SearchQuery query) {
         try {
             SolrQuery params = createSearchParams(query);
@@ -53,7 +57,7 @@ public class SolrSearcher implements Searcher {
     }
 
     private SearchResponse createSearchReponse(SearchQuery query, QueryResponse queryResponse) {
-        SearchResponse searchResponse = null;
+        SearchResponse searchResponse;
         if (query.getResultsAreGrouped()) {
             searchResponse = createGroupSearchResponse(query, queryResponse);
         } else {
@@ -64,6 +68,10 @@ public class SolrSearcher implements Searcher {
         setSpellResponse(searchResponse, queryResponse);
 
         addFacetResults(searchResponse, queryResponse);
+
+        if(includeDebugInfo){
+            addDebugInfo(searchResponse, queryResponse);
+        }
 
         return searchResponse;
     }
@@ -109,7 +117,34 @@ public class SolrSearcher implements Searcher {
         if (query.isBoostByPublishDate()) {
             solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
         }
+
+        // TODO get language from query and use _en if appropriate
+        solrQuery.add(DisMaxParams.QF, "all_text_no");
+        solrQuery.add(DisMaxParams.PF, "all_text_no");
+        solrQuery.add(DisMaxParams.PS, "10");
+
+        solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery()));
+
+        if (includeDebugInfo) {
+            solrQuery.setShowDebugInfo(true);
+        }
+
         return solrQuery;
+    }
+
+    private String[] getBoostQuery(String query) {
+        String[] terms = query.split(" ");
+        List<String> boostQueries = new ArrayList<>(terms.length * 6);
+        for (String term : terms) {
+            boostQueries.add("all_text_unanalyzed:" + term);
+            boostQueries.add("title_no:" + query);
+            boostQueries.add("altTitle_no:" + query);
+            boostQueries.add("description_no:" + query);
+            boostQueries.add("keywords:" + query);
+            boostQueries.add("topics:" + query);
+        }
+
+        return boostQueries.toArray(new String[boostQueries.size()]);
     }
 
     public List<String> suggest(SearchQuery query) {
@@ -333,11 +368,13 @@ public class SolrSearcher implements Searcher {
     }
 
     private TitleAndDescription notHighlightedTitleAndDescription(SolrDocument result, String languageSuffix) {
-        TitleAndDescription titleAndDescription;
-        String description = (String) result.getFieldValue("description_" + languageSuffix);
         String title = (String) result.getFieldValue("title_" + languageSuffix);
-        titleAndDescription = new TitleAndDescription(title, description);
-        return titleAndDescription;
+        String description = (String) result.getFieldValue("description_" + languageSuffix);
+        return new TitleAndDescription(title, description);
+    }
+
+    private void addDebugInfo(SearchResponse searchResponse, QueryResponse queryResponse) {
+        searchResponse.setDebugInformation(queryResponse.getDebugMap().toString());
     }
 
     @Autowired
