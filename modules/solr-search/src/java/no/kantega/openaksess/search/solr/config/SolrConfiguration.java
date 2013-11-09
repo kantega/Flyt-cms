@@ -30,7 +30,7 @@ public class SolrConfiguration {
     @Value("httpSolrServerUrl:")
     private String httpSolrServerUrl;
 
-    @Value("httpSolrServerUrl:")
+    @Value("cloudSolrServer:")
     private String cloudSolrServer;
 
     @Bean(destroyMethod = "shutdown")
