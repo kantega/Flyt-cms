@@ -41,7 +41,7 @@ public class SolrSearcher implements Searcher {
 
     private final Pattern boundary = Pattern.compile("\\s");
 
-    @Value("#{runtimeMode.name() == 'DEVELOPMENT'}")
+    @Value("#{runtimeMode?.name() == 'DEVELOPMENT'}")
     private boolean includeDebugInfo = false;
 
     public SearchResponse search(SearchQuery query) {

@@ -214,8 +214,8 @@ public class SearcherIntegrationTest {
         SearchResponse kantega = doSearch("kantega", "", "indexedContentType:herp-document");
         List<SearchResult> searchHits = kantega.getSearchHits();
         assertEquals("Wrong number of search results", 3, searchHits.size());
-        assertEquals(5, searchHits.get(0).getId());
-        assertEquals(6, searchHits.get(1).getId());
+        assertEquals(6, searchHits.get(0).getId());
+        assertEquals(5, searchHits.get(1).getId());
         assertEquals(7, searchHits.get(2).getId());
     }
 
