@@ -27,6 +27,7 @@ public class SearchQuery {
     private boolean boostByPublishDate = false;
     private Language language = Language.NO;
     private boolean appendFiltersToPageUrls = true;
+    private QueryType queryType = QueryType.Default;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -214,5 +215,13 @@ public class SearchQuery {
 
     public void setAppendFiltersToPageUrls(boolean appendFiltersToPageUrls) {
         this.appendFiltersToPageUrls = appendFiltersToPageUrls;
+    }
+
+    public QueryType getQueryType() {
+        return queryType;
+    }
+
+    public void setQueryType(QueryType queryType) {
+        this.queryType = queryType;
     }
 }

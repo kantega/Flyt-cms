@@ -15,6 +15,8 @@ import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.DisMaxParams;
 import org.apache.solr.common.params.GroupParams;
 import org.apache.solr.common.params.ModifiableSolrParams;
+import org.apache.solr.search.ExtendedDismaxQParserPlugin;
+import org.apache.solr.search.QueryParsing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -114,15 +116,20 @@ public class SolrSearcher implements Searcher {
 
         addResultGrouping(query, solrQuery);
 
-        if (query.isBoostByPublishDate()) {
-            solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
+        if (query.getQueryType() == QueryType.Default) {
+            solrQuery.add(QueryParsing.DEFTYPE, ExtendedDismaxQParserPlugin.NAME);
+            if (query.isBoostByPublishDate()) {
+                solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
+            }
+
+            solrQuery.add(DisMaxParams.QF, "all_text_" + query.getLanguage().code);
+            solrQuery.add(DisMaxParams.PF, "all_text_" + query.getLanguage().code);
+            solrQuery.add(DisMaxParams.PS, "10");
+
+            solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getLanguage().code));
+        } else {
+            solrQuery.add(QueryParsing.DEFTYPE, ExtendedDismaxQParserPlugin.DEFAULT_QTYPE);
         }
-
-        solrQuery.add(DisMaxParams.QF, "all_text_" + query.getLanguage().code);
-        solrQuery.add(DisMaxParams.PF, "all_text_" + query.getLanguage().code);
-        solrQuery.add(DisMaxParams.PS, "10");
-
-        solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getLanguage().code));
 
         if (includeDebugInfo) {
             solrQuery.setShowDebugInfo(true);

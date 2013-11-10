@@ -200,6 +200,8 @@ public class SearcherIntegrationTest {
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "title_no:Kan*");
         q.setHighlightSearchResultDescription(false);
+        q.setQueryType(QueryType.Lucene);
+
         SearchResponse response = searcher.search(q);
         for(SearchResult searchResult : response.getSearchHits()){
             String title = searchResult.getTitle();
@@ -207,6 +209,23 @@ public class SearcherIntegrationTest {
         }
 
         assertTrue("Number of hits should be larger than 0", response.getNumberOfHits().intValue() > 0);
+    }
+
+    @Test
+    public void testTitleContaining(){
+        SearchContext searchContext = getDummySearchContext();
+        SearchQuery q = new SearchQuery(searchContext, "title_no:Hetebølge");
+        q.setHighlightSearchResultDescription(false);
+        q.setQueryType(QueryType.Lucene);
+
+        SearchResponse response = searcher.search(q);
+        for(SearchResult searchResult : response.getSearchHits()){
+            String title = searchResult.getTitle();
+            assertTrue(title + " did not contain start with kan", title.toLowerCase().contains("hetebølge"));
+        }
+
+        assertTrue("Number of hits should be larger than 0", response.getNumberOfHits().intValue() > 0);
+        assertEquals(response.getSearchHits().get(0).getTitle(), "Hetebølge gir matpris-hopp");
     }
 
     @Test
