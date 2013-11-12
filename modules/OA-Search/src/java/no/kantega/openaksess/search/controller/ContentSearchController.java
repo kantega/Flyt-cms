@@ -69,6 +69,8 @@ public class ContentSearchController implements AksessController {
             if(includeLinks(request)){
                 addLinks(model, searchResponse);
             }
+        } else {
+            model.put("searchResponse", SearchResponse.emptyResponse());
         }
 
         return model;

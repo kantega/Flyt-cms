@@ -233,7 +233,7 @@ public class dbConnectionFactory {
         DbMigrate migrate = new DbMigrate();
 
         try {
-            new JdbcTemplate(dataSource).queryForInt("select count(version) from oa_db_migrations");
+            new JdbcTemplate(dataSource).queryForObject("select count(version) from oa_db_migrations", Integer.class);
         } catch (DataAccessException e) {
             log.info("Automatic database migration cannot be enabled before the final manual upgrade is performed");
             return;
@@ -242,7 +242,7 @@ public class dbConnectionFactory {
         ServletContextScriptSource scriptSource = new ServletContextScriptSource(servletContext, root);
 
         Set<String> domainPaths = servletContext.getResourcePaths(root);
-        List<String> domains = new ArrayList<String>();
+        List<String> domains = new ArrayList<>();
         // We want the oa domain first
         domains.add("oa");
 
@@ -250,7 +250,7 @@ public class dbConnectionFactory {
             if(domainPath.endsWith("/")) {
                 // Remove last slash
                 domainPath = domainPath.substring(0, domainPath.length()-1);
-                String domain = domainPath.substring(domainPath.lastIndexOf("/")+1);
+                String domain = domainPath.substring(domainPath.lastIndexOf('/')+1);
                 if(!domain.startsWith(".") && !"oa".equals(domain)) {
                     domains.add(domain);
                 }

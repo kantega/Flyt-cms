@@ -116,4 +116,8 @@ public class SearchResponse {
     public String getDebugInformation() {
         return debugInformation;
     }
+
+    public static SearchResponse emptyResponse() {
+        return new SearchResponse(null, 0, 0, Collections.<SearchResult>emptyList());
+    }
 }

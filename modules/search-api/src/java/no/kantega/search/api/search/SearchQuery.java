@@ -23,7 +23,7 @@ public class SearchQuery {
     private String groupField;
     private List<String> groupQueries;
     private int offset = 0;
-    private boolean fuzzySearch = true;
+    private boolean fuzzySearch = false;
     private boolean boostByPublishDate = false;
     private Language language = Language.NO;
     private boolean appendFiltersToPageUrls = true;
