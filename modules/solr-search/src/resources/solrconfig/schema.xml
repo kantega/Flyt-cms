@@ -13,6 +13,7 @@
         <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" autoGeneratePhraseQueries="true">
             <analyzer>
                 <charFilter class="solr.HTMLStripCharFilterFactory"/>
+                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s+)" replacement=" "/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
                 <filter class="solr.LowerCaseFilterFactory"/>
             </analyzer>
