@@ -24,7 +24,7 @@ public class ContentVisibilityStatus {
     public static final int ACTIVE  = 10;
     public static final int ARCHIVED  = 15;
     public static final int EXPIRED = 20;
-    private final static Map<Integer, String> names = new HashMap<Integer, String>();
+    private final static Map<Integer, String> names = new HashMap<>();
     static {
         names.put(WAITING, "WAITING");
         names.put(ACTIVE, "ACTIVE");
