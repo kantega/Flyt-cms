@@ -111,6 +111,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
             if (content != null) {
                 // Send NOT_FOUND if expired or not published
                 if(!isAdminMode && isExpiredOrNotPublished(content)) {
+                    log.info("Content {} ({}) not shown because it is expired or not published", content.getTitle(), content.getId());
                     throw new ContentNotFoundException(request.getRequestURI());
                 }
                 if (redirectToCorrectSiteIfOtherSite(request, response, isAdminMode, content)){

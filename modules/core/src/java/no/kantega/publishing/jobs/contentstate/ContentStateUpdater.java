@@ -50,6 +50,7 @@ public class ContentStateUpdater {
                     if (content.getExpireAction() == ExpireAction.ARCHIVE) {
                         newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
                     }
+                    log.info("VisibilityStatus of " + content.getTitle() + " was set to " + ContentVisibilityStatus.getName(newVisibilityStatus));
                     cms.setContentVisibilityStatus(content, newVisibilityStatus);
 
                 }
@@ -60,6 +61,7 @@ public class ContentStateUpdater {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = contentAO.getContent(cid, false);
                 if (content != null) {
+                    log.info("VisibilityStatus of " + content.getTitle() + " was set to WAITING");
                     cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING);
                 }
             }

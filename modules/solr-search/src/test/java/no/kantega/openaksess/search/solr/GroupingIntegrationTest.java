@@ -2,7 +2,6 @@ package no.kantega.openaksess.search.solr;
 
 import no.kantega.search.api.search.*;
 import org.apache.commons.collections.Predicate;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,6 @@ public class GroupingIntegrationTest {
     private Searcher searcher;
 
     @Test
-    @Ignore
     public void resultsShouldBeGroupedByIndexedContentType(){
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "as");
@@ -31,7 +29,7 @@ public class GroupingIntegrationTest {
 
         assertEquals("Wrong number of content types", 4, search.getGroupResultResponses().size());
 
-        assertEquals("Wrong number of results", 17, search.getNumberOfHits());
+        assertEquals("Wrong number of results", 14, search.getNumberOfHits());
         GroupResultResponse aksessDocument = (GroupResultResponse) select(search.getGroupResultResponses(), getGroupValuePredicate("aksess-document")).iterator().next();
         assertEquals("Wrong number of results", 6, aksessDocument.getNumFound().intValue());
 
