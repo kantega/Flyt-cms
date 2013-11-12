@@ -67,6 +67,7 @@
 
     <fields>
         <field name="id" type="int" indexed="true" stored="true" required="true" multiValued="false"/>
+        <field name="associationId" type="int" indexed="true" stored="true" required="false" multiValued="false"/>
         <field name="securityId" type="int" indexed="true" stored="true" required="true" multiValued="false" />
         <field name="parentId" type="int" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>
         <field name="indexedContentType" type="string" indexed="true" stored="true" required="true" multiValued="false" docValues="true"/>

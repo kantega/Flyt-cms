@@ -176,7 +176,7 @@
 
     <requestHandler name="/select" class="solr.SearchHandler">
         <lst name="defaults">
-            <str name="fl">uid,id,parentId,securityId,title_*,description*,indexedContentType,author,url,language</str>
+            <str name="fl">uid,id,associationId,parentId,securityId,title_*,description*,indexedContentType,author,url,language</str>
             <str name="df">all_text_no</str>
             <str name="defType">edismax</str>
             <str name="qf">title_no^2 title_en^2 altTitle_no^2 altTitle_en^2 description_no^1.5 description_en^1.5 keywords^2 topics^2 all_text_no all_text_en</str>

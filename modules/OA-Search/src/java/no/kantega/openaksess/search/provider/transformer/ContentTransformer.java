@@ -49,6 +49,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             Association association = content.getAssociation();
 
             indexableDocument.setId(String.valueOf(content.getId()));
+            indexableDocument.addAttribute("associationId", association.getAssociationId());
             indexableDocument.setSecurityId(content.getSecurityId());
             indexableDocument.setTitle(content.getTitle());
             indexableDocument.setContentType(HANDLED_DOCUMENT_TYPE);
@@ -187,15 +188,15 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         final StringBuilder buffer = new StringBuilder();
         SAXParser parser = new SAXParser();
         parser.setContentHandler(new DefaultHandler() {
-            public void characters(char[] chars, int i, int i1) throws SAXException {
+            public void characters(char[] chars, int i, int i1) {
                 buffer.append(chars, i, i1);
                 buffer.append(" ");
             }
         });
 
         if(html != null) {
-            try {
-                parser.parse(new InputSource(new StringReader(html)));
+            try (StringReader stringReader = new StringReader(html)){
+                parser.parse(new InputSource(stringReader));
             } catch (IOException | SAXException e) {
                 log.error("Error stripping html", e);
             }
