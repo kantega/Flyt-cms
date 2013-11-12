@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -67,7 +66,7 @@ public class SearchResultFilterAspect {
         for (GroupResultResponse groupResultResponse : searchResponse.getGroupResultResponses()) {
             List<SearchResult> originalSearchResults = groupResultResponse.getSearchResults();
             List<SearchResult> filteredResult = new ArrayList<>(filter(originalSearchResults, new Predicate<SearchResult>() {
-                public boolean apply(@Nullable SearchResult documentHit) {
+                public boolean apply(SearchResult documentHit) {
                     Integer mappedType = indexedContentTypeToObjectTypeMapping.get(documentHit.getIndexedContentType());
                     return mappedType == null || session.isAuthorized(toBaseObject(documentHit, mappedType), Privilege.VIEW_CONTENT);
                 }

@@ -213,7 +213,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     }
 
     public String generateUniqueID(Content document) {
-        return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
+        return HANDLED_DOCUMENT_TYPE + "-" + document.getAssociation().getAssociationId();
     }
 
     private String getCustomIndexFieldMapping(Content content, Attribute value) {

@@ -44,12 +44,12 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
     public void provideDocuments(BlockingQueue<IndexableDocument> indexableDocuments) {
         try {
             ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
-            LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<Integer>(100);
+            LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
             executorService.execute(new IDProducer(dataSource, ids));
             progressReporter.setStarted();
             while (!progressReporter.isFinished()){
                 try {
-                    Integer id = ids.poll(10, TimeUnit.SECONDS);
+                    Integer id = ids.poll(10L, TimeUnit.SECONDS);
                     if (id != null) {
                         ContentIdentifier contentIdentifier =  ContentIdentifier.fromAssociationId(id);
 
@@ -88,7 +88,7 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
 
     private long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForInt("SELECT count(*) FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
+        return jdbcTemplate.queryForObject("SELECT count(*) FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0", Long.class);
     }
 
     private class IDProducer implements Runnable {

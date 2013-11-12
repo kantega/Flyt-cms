@@ -72,6 +72,6 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
     }
 
     public String generateUniqueID(Attachment document) {
-        return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
+        return HANDLED_DOCUMENT_TYPE + "-" + document.getId();
     }
 }
