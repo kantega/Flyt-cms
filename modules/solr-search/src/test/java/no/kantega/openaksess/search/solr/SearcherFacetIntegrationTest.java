@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.solr;
 
 import no.kantega.search.api.search.*;
 import org.apache.commons.collections.Predicate;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +124,7 @@ public class SearcherFacetIntegrationTest {
     }
 
     @Test
+    @Ignore
     public void exploreLocationFacet(){
         SearchContext searchContext = getDummySearchContext();
         SearchQuery q = new SearchQuery(searchContext, "rett");
