@@ -80,6 +80,7 @@ public abstract class Attribute {
     private String[] hideInSites = null; // Angir alias for siter hvor denne attributten ikke skal vises (null = vis for alle)
 
     private String[] editableByRole = null; // Roles which can edit this element
+    private static SiteCache siteCache;
 
     public Attribute() {
 
@@ -199,7 +200,7 @@ public abstract class Attribute {
             }
 
             helpText = XPathHelper.getString(config, "helptext");
-            script= XPathHelper.getString(config, "script");
+            script = XPathHelper.getString(config, "script");
         }
     }
 
@@ -398,7 +399,10 @@ public abstract class Attribute {
         try {
             Association association = content.getAssociation();
             int siteId =  association.getSiteId();
-            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(siteId);
+            if (siteCache == null) {
+                siteCache = RootContext.getInstance().getBean(SiteCache.class);
+            }
+            Site site = siteCache.getSiteById(siteId);
             // Dersom site er angitt i hideInSites skal den ikke vises
             if (site != null && hideInSites != null) {
                 for (String alias : hideInSites) {

@@ -219,7 +219,7 @@ public class ContentTemplate implements PublicIdObject {
 
     public List<Element> getAttributeElements() {
         if (attributeElements == null) {
-            attributeElements = new ArrayList<Element>();
+            attributeElements = new ArrayList<>();
         }
         return attributeElements;
     }
@@ -230,7 +230,7 @@ public class ContentTemplate implements PublicIdObject {
 
     public List<Element> getPropertyElements() {
         if (propertyElements == null) {
-            propertyElements = new ArrayList<Element>();
+            propertyElements = new ArrayList<>();
         }
         return propertyElements;
     }

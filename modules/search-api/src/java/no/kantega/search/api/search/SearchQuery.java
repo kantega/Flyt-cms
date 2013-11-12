@@ -28,6 +28,7 @@ public class SearchQuery {
     private Language language = Language.NO;
     private boolean appendFiltersToPageUrls = true;
     private QueryType queryType = QueryType.Default;
+    private List<String> additionalQueryFields;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -223,5 +224,19 @@ public class SearchQuery {
 
     public void setQueryType(QueryType queryType) {
         this.queryType = queryType;
+    }
+
+    /**
+     * By default only one all-containing field is queried. This field uses «standard» analyzing, so in some cases it
+     * is useful to add custom fields that are handled in some special matter. It is also possible to specify
+     * that this query should use <code>QueryType.Lucene</code>, but then boosting and such is lost.
+     * @return fields that should be queried in addition to the all-containing field.
+     */
+    public List<String> getAdditionalQueryFields() {
+        return additionalQueryFields == null ? Collections.<String>emptyList() : additionalQueryFields;
+    }
+
+    public void setAdditionalQueryFields(List<String> additionalQueryFields) {
+        this.additionalQueryFields = additionalQueryFields;
     }
 }

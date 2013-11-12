@@ -128,6 +128,7 @@
         <copyField source="*_txt" dest="all_text_unanalyzed" />
         <copyField source="keywords" dest="all_text_unanalyzed" />
         <copyField source="topics" dest="all_text_unanalyzed" />
+        <copyField source="*_name" dest="all_text_unanalyzed" />
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>

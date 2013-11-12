@@ -275,7 +275,7 @@ public class EditContentHelper {
         ContentTemplate template = null;
 
         if (defaultValues == null) {
-            defaultValues = new HashMap<String, String>();
+            defaultValues = new HashMap<>();
         }
 
         if (attributeType == AttributeDataType.CONTENT_DATA) {
@@ -293,7 +293,7 @@ public class EditContentHelper {
             return;
         }
 
-        List<Attribute> newAttributes = new ArrayList<Attribute>();
+        List<Attribute> newAttributes = new ArrayList<>();
 
         addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
 
@@ -557,8 +557,8 @@ public class EditContentHelper {
         List<Attribute> attributes = content.getAttributes(attributeType);
 
         if (rowPath.contains("[")) {
-            String repeaterName = rowPath.substring(0, rowPath.indexOf("["));
-            int rowNo = Integer.parseInt(rowPath.substring(rowPath.indexOf("[") + 1, rowPath.indexOf("]")));
+            String repeaterName = rowPath.substring(0, rowPath.indexOf('['));
+            int rowNo = Integer.parseInt(rowPath.substring(rowPath.indexOf('[') + 1, rowPath.indexOf(']')));
             Attribute attribute = getAttributeByName(attributes, repeaterName);
             if (attribute instanceof RepeaterAttribute) {
                 RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attribute;

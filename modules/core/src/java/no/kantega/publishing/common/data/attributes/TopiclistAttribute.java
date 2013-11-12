@@ -68,7 +68,7 @@ public class TopiclistAttribute extends ListAttribute {
     }
 
     public List<ListOption> getListOptions(int language) {
-        List<ListOption> options = new ArrayList<ListOption>();
+        List<ListOption> options = new ArrayList<>();
 
         List<Topic> topics = Collections.emptyList();
 

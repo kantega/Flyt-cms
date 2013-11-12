@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.openaksess.search.index.ContentAttributeNameToIndexFieldMapping;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Association;
@@ -37,6 +38,9 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
     private static final Pattern KEYWORDS_PATTERN = Pattern.compile("[,\\s]");
     private static final Pattern TITLE_OR_DESCRIPTION = Pattern.compile("title|description");
+
+    @Autowired(required = false)
+    private ContentAttributeNameToIndexFieldMapping contentAttributeNameToIndexFieldMapping;
 
     @Autowired
     private TopicDao topicDao;
@@ -87,7 +91,11 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
-                if(value.isSearchable() && !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches()){
+                String customFieldNameMapping = getCustomIndexFieldMapping(content, value);
+                if(value.isSearchable() && isNotBlank(customFieldNameMapping)){
+                    log.debug("Attribute {} is indexed as {}", value.getName(), customFieldNameMapping);
+                    indexableDocument.addAttribute(customFieldNameMapping, getValue(value));
+                } else if(value.isSearchable() && !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches()){
                     String fieldName = getFieldName(value, language);
 
                     indexableDocument.addAttribute(fieldName, getValue(value));
@@ -207,5 +215,13 @@ public class ContentTransformer implements DocumentTransformer<Content> {
 
     public String generateUniqueID(Content document) {
         return String.format("%s-%s", HANDLED_DOCUMENT_TYPE, document.getId());
+    }
+
+    private String getCustomIndexFieldMapping(Content content, Attribute value) {
+        if(contentAttributeNameToIndexFieldMapping != null) {
+            return contentAttributeNameToIndexFieldMapping.getMappings().get(content.getContentTemplateId() + "," + value.getName());
+        } else {
+            return null;
+        }
     }
 }

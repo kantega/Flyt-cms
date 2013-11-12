@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.kantega.no" xmlns="http://www.kantega.no" elementFormDefault="qualified">
     <xs:element name="template">
         <xs:annotation>
@@ -388,7 +388,7 @@
                 <![CDATA[
                 <repeater name="utvalgte_sider_promoboks" title="Utvalgte sider med beskrivelse i promoboks">
                     <attribute name="utvalgt_side_promoboks" title="Utvalgt side" type="contentid" multiple="false" mandatory="true">
-                        <helptext>Side som vises i promoboks, tittel på sida blir tittelen</helptext>
+                        <helptext>Side som vises i promoboks, tittel pÃ¥ sida blir tittelen</helptext>
                     </attribute>
                     <attribute name="utvalgt_side_tekst_promoboks" title="ledetekst" type="text">
                         <helptext>Utfyllende tekst under tittel i promoboks</helptext>
