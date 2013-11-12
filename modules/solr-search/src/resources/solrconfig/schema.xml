@@ -54,15 +54,21 @@
 
         <fieldtype name="string" stored="true" indexed="true" multiValued="true" class="solr.StrField" />
         <fieldtype name="tlf" stored="true" indexed="true" multiValued="true" class="solr.TextField">
-            <analyzer type="index">
-                <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s)" replacement=""/>
-                <tokenizer class="solr.StandardTokenizerFactory"/>
-            </analyzer>
-            <analyzer type="query">
+            <analyzer>
                 <charFilter class="solr.PatternReplaceCharFilterFactory" pattern="(\s)" replacement=""/>
                 <tokenizer class="solr.StandardTokenizerFactory"/>
             </analyzer>
         </fieldtype>
+
+        <fieldtype name="name" stored="false" indexed="true" multiValued="true" class="solr.TextField">
+            <analyzer>
+                <filter class="solr.LowerCaseFilterFactory" />
+                <filter class="solr.ASCIIFoldingFilterFactory" />
+                <filter class="solr.PhoneticFilterFactory" encoder="DoubleMetaphone" />
+                <tokenizer class="solr.StandardTokenizerFactory"/>
+            </analyzer>
+        </fieldtype>
+
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
@@ -134,6 +140,7 @@
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>
