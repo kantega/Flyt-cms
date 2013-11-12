@@ -62,7 +62,6 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.setVisibility(ContentVisibilityStatus.getName(content.getVisibilityStatus()));
             int language = content.getLanguage();
             indexableDocument.setLanguage(getLanguageAsISOCode(language));
-
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
             indexableDocument.setParentId(association.getParentAssociationId());

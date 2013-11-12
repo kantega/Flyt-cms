@@ -251,6 +251,9 @@ public class Content extends BaseObject {
         this.type = type;
     }
 
+    /**
+     * @return the databaseId of this Content's ContentTemplate.
+     */
     public int getContentTemplateId() {
         return contentTemplateId;
     }
@@ -267,6 +270,9 @@ public class Content extends BaseObject {
         this.metaDataTemplateId = templateId;
     }
 
+    /**
+     * @return the databaseId of this Content's DisplayTemplate.
+     */
     public int getDisplayTemplateId() {
         return displayTemplateId;
     }
@@ -557,7 +563,7 @@ public class Content extends BaseObject {
     }
 
     public Map<String, Attribute> getMetaAttributes() {
-        Map<String, Attribute> map = new HashMap<String, Attribute>();
+        Map<String, Attribute> map = new HashMap<>();
         if (metaAttributes != null) {
             for (Attribute a : metaAttributes) {
                 map.put(a.getName(), a);
