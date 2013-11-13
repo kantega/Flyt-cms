@@ -22,18 +22,31 @@ public class DateRange {
         this.to = to;
     }
 
+    /**
+     * @return the field this DateRange should apply to.
+     */
     public String getField() {
         return field;
     }
 
+    /**
+     * @return the spacing between each facet.
+     * @see org.apache.solr.util.DateMathParser
+     */
     public String getGap() {
         return gap;
     }
 
+    /**
+     * @return the start of this range.
+     */
     public Date getFrom() {
         return from;
     }
 
+    /**
+     * @return the end of this range.
+     */
     public Date getTo() {
         return to;
     }
