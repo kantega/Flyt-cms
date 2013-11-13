@@ -404,9 +404,6 @@ public class ContentQuery {
                         query.append(" and content.ContentId in (:attributecontentids)");
                         List<Integer> attributecontentids = new ArrayList<>();
                         while (rs.next()) {
-                            if (noFound > 0) {
-                                query.append(",");
-                            }
                             int id = rs.getInt("ContentId");
                             attributecontentids.add(id);
                             noFound++;
