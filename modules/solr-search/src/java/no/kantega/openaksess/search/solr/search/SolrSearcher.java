@@ -124,10 +124,10 @@ public class SolrSearcher implements Searcher {
             }
 
             solrQuery.add(DisMaxParams.QF, getQueryFields(query));
-            solrQuery.add(DisMaxParams.PF, "all_text_" + query.getLanguage().code);
+            solrQuery.add(DisMaxParams.PF, "all_text_" + query.getIndexedLanguage().code);
             solrQuery.add(DisMaxParams.PS, "10");
 
-            solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getLanguage().code));
+            solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getIndexedLanguage().code));
         } else {
             solrQuery.add(QueryParsing.DEFTYPE, QParserPlugin.DEFAULT_QTYPE);
         }
@@ -145,7 +145,7 @@ public class SolrSearcher implements Searcher {
         List<String> queryFields = new ArrayList<>(size);
 
         queryFields.addAll(additionalQueryFields);
-        queryFields.add("all_text_" + query.getLanguage().code);
+        queryFields.add("all_text_" + query.getIndexedLanguage().code);
         return queryFields.toArray(new String[size]);
     }
 

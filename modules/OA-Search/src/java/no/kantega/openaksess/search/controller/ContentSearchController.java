@@ -7,10 +7,7 @@ import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.search.api.search.QueryStringGenerator;
-import no.kantega.search.api.search.SearchQuery;
-import no.kantega.search.api.search.SearchResponse;
-import no.kantega.search.api.search.Searcher;
+import no.kantega.search.api.search.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -112,7 +109,7 @@ public class ContentSearchController implements AksessController {
     private void setLanguage(HttpServletRequest request, SearchQuery query) {
         Content content = tryGetFromRequest(request);
         if(content.getLanguage() == Language.ENGLISH){
-            query.setLanguage(no.kantega.search.api.search.Language.EN);
+            query.setIndexedLanguage(IndexedLanguage.EN);
         }
     }
 

@@ -25,7 +25,7 @@ public class SearchQuery {
     private int offset = 0;
     private boolean fuzzySearch = false;
     private boolean boostByPublishDate = false;
-    private Language language = Language.NO;
+    private IndexedLanguage indexedLanguage = IndexedLanguage.NO;
     private boolean appendFiltersToPageUrls = true;
     private QueryType queryType = QueryType.Default;
     private List<String> additionalQueryFields;
@@ -202,12 +202,12 @@ public class SearchQuery {
         this.boostByPublishDate = boostByPublishDate;
     }
 
-    public Language getLanguage() {
-        return language;
+    public IndexedLanguage getIndexedLanguage() {
+        return indexedLanguage;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setIndexedLanguage(IndexedLanguage indexedLanguage) {
+        this.indexedLanguage = indexedLanguage;
     }
 
     public boolean isAppendFiltersToPageUrls() {
