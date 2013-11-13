@@ -124,7 +124,9 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         if (documentTypeId != -1 && documentTypeId != 0) {
             indexableDocument.addAttribute("documentTypeId", documentTypeId);
             DocumentType documentTypeById = DocumentTypeCache.getDocumentTypeById(documentTypeId);
-            indexableDocument.addAttribute("documentTypeName", documentTypeById.getName());
+            if (documentTypeById != null) {
+                indexableDocument.addAttribute("documentTypeName", documentTypeById.getName());
+            }
         }
     }
 
