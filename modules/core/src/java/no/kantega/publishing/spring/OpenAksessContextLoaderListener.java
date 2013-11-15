@@ -103,7 +103,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     private void checkDatabaseConfigured(Properties properties) {
         log.debug("Determining if database is configured");
-        List<String> missingProperties = new ArrayList<String>();
+        List<String> missingProperties = new ArrayList<>();
 
         String driverClass = properties.getProperty("database.driver");
 

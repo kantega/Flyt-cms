@@ -31,10 +31,10 @@ public class SolrConfiguration {
     @Value("${disableUpdateSolrHome:false}")
     private boolean disableUpdateSolrHome;
 
-    @Value("${httpSolrServerUrl:}")
+    @Value("${httpSolrServerUrl}")
     private String httpSolrServerUrl;
 
-    @Value("${cloudSolrServer:}")
+    @Value("${cloudSolrServer}")
     private String cloudSolrServer;
 
     @Bean(destroyMethod = "shutdown")

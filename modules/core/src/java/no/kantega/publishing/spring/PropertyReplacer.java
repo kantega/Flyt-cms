@@ -34,9 +34,9 @@ public class PropertyReplacer implements BeanFactoryPostProcessor {
     private static final Logger log = LoggerFactory.getLogger(PropertyReplacer.class);
 
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-
+        log.info("Adding properties from Aksess.configuration to application context");
         PropertyPlaceholderConfigurer cfg = new PropertyPlaceholderConfigurer();
-        Properties properties = new Properties(Aksess.getConfiguration().getProperties());
+        Properties properties = Aksess.getConfiguration().getProperties();
 
         properties.setProperty("appDir", Configuration.getApplicationDirectory());
 

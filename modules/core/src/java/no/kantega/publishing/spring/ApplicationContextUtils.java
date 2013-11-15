@@ -16,23 +16,16 @@
 
 package no.kantega.publishing.spring;
 
-import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
-import org.springframework.beans.BeansException;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 
-import java.util.Properties;
 import java.io.File;
+import java.util.Properties;
 
-/**
- * Created by IntelliJ IDEA.
- * User: bjorsnos
- * Date: May 5, 2009
- * Time: 4:01:01 PM
- * To change this template use File | Settings | File Templates.
- */
 public abstract class ApplicationContextUtils {
 
     public static void addAutowiredSupport(ConfigurableWebApplicationContext wac) {
