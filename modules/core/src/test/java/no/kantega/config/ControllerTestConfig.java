@@ -23,6 +23,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.DefaultResourceLoader;
 
+import java.util.HashSet;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
@@ -71,7 +72,7 @@ public class ControllerTestConfig {
     @Bean
     public ContentAliasDao contentAliasDao(){
         ContentAliasDao contentAliasDao = mock(ContentAliasDao.class);
-        when(contentAliasDao.getAllAliases()).thenReturn(asList("/alias/", "/alias/alias/"));
+        when(contentAliasDao.getAllAliases()).thenReturn(new HashSet<>(asList("/alias/", "/alias/alias/")));
         return contentAliasDao;
     }
 

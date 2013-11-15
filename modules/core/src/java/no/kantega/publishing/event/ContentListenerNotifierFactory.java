@@ -18,7 +18,9 @@ package no.kantega.publishing.event;
 
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ServletContextAware;
 
+import javax.servlet.ServletContext;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -30,30 +32,31 @@ import java.util.Iterator;
  */
 public class ContentListenerNotifierFactory implements ApplicationContextAware {
     private ApplicationContext applicationContext;
-
+    private String contentListenerNotifierId;
 
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
+    public void setContentListenerNotifierId(String contentListenerNotifierId) {
+        this.contentListenerNotifierId = contentListenerNotifierId;
+    }
+
     public ContentEventListener createInstance() {
         return (ContentEventListener) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ContentEventListener.class}, new InvocationHandler() {
             public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
-                Map lists = applicationContext.getBeansOfType(ContentListenerList.class);
-                Iterator it = lists.values().iterator();
+                Map eventListeners = applicationContext.getBeansOfType(ContentEventListener.class);
+
+                Iterator it = eventListeners.keySet().iterator();
                 while (it.hasNext()) {
-                    ContentListenerList contentListenerList = (ContentListenerList) it.next();
-                    for (int i = 0; i < contentListenerList.getListeners().size(); i++) {
-                        ContentEventListener contentEventListener = (ContentEventListener) contentListenerList.getListeners().get(i);
+                    String key = (String)it.next();
+                    if (!key.equals(contentListenerNotifierId)) {
+                        ContentEventListener contentEventListener = (ContentEventListener) eventListeners.get(key);
                         method.invoke(contentEventListener, objects);
                     }
-
                 }
                 return null;
             }
         });
-
     }
-
-
 }

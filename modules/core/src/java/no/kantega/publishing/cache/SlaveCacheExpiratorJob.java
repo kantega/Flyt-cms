@@ -43,6 +43,7 @@ public class SlaveCacheExpiratorJob {
             return;
         }
 
+        final Ehcache aliasCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.AliasCache.name());
         final Ehcache contentCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentCache.name());
         final Ehcache contentListCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentListCache.name());
         final Ehcache siteMapCache = cacheManager.getEhcache(CacheManagerFactory.CacheNames.SiteMapCache.name());
@@ -79,6 +80,8 @@ public class SlaveCacheExpiratorJob {
             contentListCache.removeAll();
             // Flush the site map cache
             siteMapCache.removeAll();
+            // Flush alias cache
+            aliasCache.removeAll();
         }
 
         // Flush any XML caches changed since last time

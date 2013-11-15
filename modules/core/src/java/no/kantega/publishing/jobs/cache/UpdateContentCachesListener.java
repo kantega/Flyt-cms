@@ -11,20 +11,19 @@ import org.springframework.cache.CacheManager;
 public class UpdateContentCachesListener extends ContentEventListenerAdapter {
     private Cache contentUrlCache;
     private Cache contentIdentifierCache;
-    private int id;
+    private Cache aliasCache;
 
     @Override
     public void contentSaved(ContentEvent event) {
-        Association a = event.getContent().getAssociation();
-        if (a != null) {
-            id = a.getId();
-            contentUrlCache.evict(id);
-            contentIdentifierCache.evict(id);
-        }
+        aliasCache.clear();
+        contentUrlCache.clear();
+        contentIdentifierCache.clear();
     }
+
 
     @Autowired
     public void setCacheManager(CacheManager cacheManager) {
+        aliasCache = cacheManager.getCache(CacheManagerFactory.CacheNames.AliasCache.name());
         contentUrlCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentUrlCache.name());
         contentIdentifierCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentIdentifierCache.name());
     }

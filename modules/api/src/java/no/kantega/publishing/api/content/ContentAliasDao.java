@@ -1,11 +1,12 @@
 package no.kantega.publishing.api.content;
 
-import java.util.List;
+import java.util.Set;
 
 public interface ContentAliasDao {
 
     /**
      * @return list of all the defined aliases for content objects.
      */
-    public List<String> getAllAliases();
+
+    public Set<String> getAllAliases();
 }

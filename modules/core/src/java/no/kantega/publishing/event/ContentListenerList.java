@@ -18,6 +18,9 @@ package no.kantega.publishing.event;
 
 import java.util.List;
 
+/**
+ * @deprecated No need to wrap ContentEventListener in a list anymore
+ */
 public class ContentListenerList {
     private List<ContentEventListener> listeners;
 

@@ -19,7 +19,7 @@ public class CacheManagerFactory extends EhCacheManagerFactoryBean implements Se
 
     private ServletContext servletContext;
 
-    public enum CacheNames {ContentCache, ContentListCache, SiteMapCache, XmlCache, FacetLabelCache, ContentUrlCache, ContentIdentifierCache, ImageCache, UserCache}
+    public enum CacheNames {AliasCache, ContentCache, ContentListCache, SiteMapCache, XmlCache, FacetLabelCache, ContentUrlCache, ContentIdentifierCache, ImageCache, UserCache}
     private static final Logger log = LoggerFactory.getLogger(CacheManagerFactory.class);
 
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/ehcache-oa.xml";

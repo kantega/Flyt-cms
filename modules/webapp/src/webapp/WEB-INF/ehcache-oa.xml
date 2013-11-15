@@ -10,6 +10,17 @@
             memoryStoreEvictionPolicy="LRU"
             statistics="false"/>
 
+    <cache name="AliasCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
     <cache name="ContentCache"
            maxElementsInMemory="500"
            eternal="false"

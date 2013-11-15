@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertTrue;
 
@@ -20,7 +20,7 @@ public class ContentAliasDaoJdbcImplTest {
 
     @Test
     public void shouldReturnAllAliases(){
-        List<String> allAliases = dao.getAllAliases();
+        Set<String> allAliases = dao.getAllAliases();
         assertTrue("Did not contain /alias/", allAliases.contains("/alias/"));
     }
 }

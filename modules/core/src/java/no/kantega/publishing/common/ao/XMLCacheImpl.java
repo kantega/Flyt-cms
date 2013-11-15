@@ -38,7 +38,7 @@ import java.util.List;
 public class XMLCacheImpl implements XmlCache {
     private static final Logger log = LoggerFactory.getLogger(XMLCacheImpl.class);
 
-    @Cacheable("XMLCache")
+    @Cacheable("XmlCache")
     @Override
     public XMLCacheEntry getXMLFromCache(String id){
         XMLCacheEntry cacheEntry = null;
@@ -63,7 +63,7 @@ public class XMLCacheImpl implements XmlCache {
         return cacheEntry;
     }
 
-    @CacheEvict(value = "XMLCache", key = "#cacheEntry.id")
+    @CacheEvict(value = "XmlCache", key = "#cacheEntry.id")
     @Override
     public void storeXMLInCache(XMLCacheEntry cacheEntry){
         try (Connection c = dbConnectionFactory.getConnection()){
