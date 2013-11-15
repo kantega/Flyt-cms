@@ -58,7 +58,7 @@ public class ControllerTestConfig {
         return mock(ContentRequestDispatcher.class);
     }
 
-    @Bean
+    @Bean(name = "securityRealm")
     public SecurityRealm securityRealm(){
         return mock(SecurityRealm.class);
     }

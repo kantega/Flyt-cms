@@ -5,7 +5,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -16,7 +15,7 @@ import javax.servlet.http.HttpSession;
 @Configuration
 public class SecuritySessionConfiguration {
     private final SecuritySession unauthenticatedInstance = createNewUnauthenticatedInstance();
-    @Autowired
+
     private SecurityRealm securityRealm;
 
     @Bean
@@ -47,5 +46,9 @@ public class SecuritySessionConfiguration {
         unauthenticatedUser.addRole(role);
 
         return new SecuritySession(securityRealm, unauthenticatedUser);
+    }
+
+    public void setSecurityRealm(SecurityRealm securityRealm) {
+        this.securityRealm = securityRealm;
     }
 }

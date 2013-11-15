@@ -23,7 +23,9 @@
 
     <context:annotation-config/>
 
-    <context:component-scan base-package="no.kantega.publishing.admin.config"/>
+    <bean class="no.kantega.publishing.admin.config.SecuritySessionConfiguration">
+        <property name="securityRealm" ref="${security.realm}"/>
+    </bean>
 
     <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl" scope="session"/>
 
