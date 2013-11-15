@@ -275,4 +275,29 @@
         <logback.version>1.0.13</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>deploy-project-parent</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.kantega.openaksess</groupId>
+                        <artifactId>generate-project-xml-maven-plugin</artifactId>
+                        <version>1.4</version>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>deploy-project-parent</id>
+                                <phase>install</phase>
+                                <goals>
+                                    <goal>deploy-project-parent</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
