@@ -183,9 +183,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             // Set up @Autowired support
             ApplicationContextUtils.addAutowiredSupport(wac);
 
-            // Add ${appDir} property for the Spring Context
-            ApplicationContextUtils.addAppDirPropertySupport(wac);
-
             final Configuration configuration = new Configuration(properties);
 
 
@@ -197,6 +194,9 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
             // Set and load configuration on these classes since they are not DI-based (hackish..)
             Aksess.setConfiguration(configuration);
             Aksess.loadConfiguration();
+
+            // Add ${appDir} property for the Spring Context
+            ApplicationContextUtils.addAppDirPropertySupport(wac);
 
             dbConnectionFactory.setServletContext(servletContext);
             dbConnectionFactory.setConfiguration(configuration);

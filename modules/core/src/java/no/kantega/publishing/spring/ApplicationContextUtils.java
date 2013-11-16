@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.spring;
 
+import no.kantega.publishing.common.Aksess;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
@@ -42,7 +43,7 @@ public abstract class ApplicationContextUtils {
 
     public static void addAppDirPropertySupport(ConfigurableWebApplicationContext wac) {
         PropertyPlaceholderConfigurer configurer  = new PropertyPlaceholderConfigurer();
-        final Properties properties = new Properties();
+        final Properties properties = Aksess.getConfiguration().getProperties();
         File dataDir = (File) wac.getServletContext().getAttribute(OpenAksessContextLoaderListener.APPLICATION_DIRECTORY);
         properties.setProperty("appDir", dataDir.getAbsolutePath());
         configurer.setProperties(properties);
