@@ -57,6 +57,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
             }
         } catch (Exception e) {
+            log.error("Error when submitting index query", e);
             throw new IllegalStateException(e);
         }
 

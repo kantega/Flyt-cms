@@ -16,16 +16,13 @@
 
 package no.kantega.publishing.event;
 
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.ServletContextAware;
+import org.springframework.context.ApplicationContextAware;
 
-import javax.servlet.ServletContext;
-import java.lang.reflect.Proxy;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.Map;
-import java.util.Iterator;
 
 /**
  *
@@ -45,13 +42,11 @@ public class ContentListenerNotifierFactory implements ApplicationContextAware {
     public ContentEventListener createInstance() {
         return (ContentEventListener) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {ContentEventListener.class}, new InvocationHandler() {
             public Object invoke(Object object, Method method, Object[] objects) throws Throwable {
-                Map eventListeners = applicationContext.getBeansOfType(ContentEventListener.class);
+                Map<String, ContentEventListener> eventListeners = applicationContext.getBeansOfType(ContentEventListener.class);
 
-                Iterator it = eventListeners.keySet().iterator();
-                while (it.hasNext()) {
-                    String key = (String)it.next();
-                    if (!key.equals(contentListenerNotifierId)) {
-                        ContentEventListener contentEventListener = (ContentEventListener) eventListeners.get(key);
+                for (Map.Entry<String, ContentEventListener> stringContentEventListenerEntry : eventListeners.entrySet()) {
+                    if (!stringContentEventListenerEntry.getKey().equals(contentListenerNotifierId)) {
+                        ContentEventListener contentEventListener = stringContentEventListenerEntry.getValue();
                         method.invoke(contentEventListener, objects);
                     }
                 }

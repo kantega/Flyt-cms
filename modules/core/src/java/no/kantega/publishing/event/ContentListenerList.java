@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * @deprecated No need to wrap ContentEventListener in a list anymore
  */
+@Deprecated
 public class ContentListenerList {
     private List<ContentEventListener> listeners;
 
