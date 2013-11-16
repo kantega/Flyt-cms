@@ -46,7 +46,7 @@ public class ViewSystemInformationAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         if ("true".equals(request.getParameter("reload"))) {
             Configuration conf = (Configuration) RootContext.getInstance().getBean("aksessConfiguration");
@@ -112,14 +112,16 @@ public class ViewSystemInformationAction extends AbstractController {
         model.put("vmVendor", runtimeMXBean.getVmVendor());
         model.put("vmVersion", runtimeMXBean.getVmVersion());
         model.put("javaVersion", System.getProperty("java.version"));
+        model.put("tmpDir", System.getProperty("java.io.tmpdir"));
     }
 
     private void addMemoryInformation(Map<String, Object> model) {
         DecimalFormat format = new DecimalFormat("#,###.##");
         long mb = 1024*1024;
-        double free = Runtime.getRuntime().freeMemory()/(double)mb;
-        double total = Runtime.getRuntime().totalMemory()/(double)mb;
-        double max = Runtime.getRuntime().maxMemory()/(double)mb;
+        Runtime runtime = Runtime.getRuntime();
+        double free = runtime.freeMemory()/(double)mb;
+        double total = runtime.totalMemory()/(double)mb;
+        double max = runtime.maxMemory()/(double)mb;
 
         model.put("freeMemory", format.format(free));
         model.put("totalMemory", format.format(total));

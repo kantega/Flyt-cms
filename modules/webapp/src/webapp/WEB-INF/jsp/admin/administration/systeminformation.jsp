@@ -75,6 +75,11 @@
             </div>
 
             <div class="formElement">
+                <div class="heading"><kantega:label key="aksess.systeminfo.tmpdir"/></div>
+                <div class="content">${tmpDir}</div>
+            </div>
+
+            <div class="formElement">
                 <div class="heading"><kantega:label key="aksess.systeminfo.dbconnection.url"/></div>
                 <div class="content">${databaseUrl}</div>
             </div>
