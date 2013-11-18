@@ -62,4 +62,10 @@ public interface ContentIdHelper {
      * @param contentIdentifier assure both are set on.
      */
     void assureContentIdAndAssociationIdSet(ContentIdentifier contentIdentifier);
+
+    /**
+     * Make sure the given ContentIdentifier has associationId set.
+     * @param contentIdentifier assure associationid is set on.
+     */
+    void assureAssociationIdSet(ContentIdentifier contentIdentifier);
 }

@@ -29,6 +29,7 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.spring.RootContext;
@@ -48,7 +49,7 @@ import static java.util.Arrays.asList;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
-
+    private ContentIdHelper contentIdHelper;
     private ContentIdentifier associatedId = null;
     private AssociationCategory associationCategory = null;
     private List<ContentIdentifier> contentList = null;
@@ -141,7 +142,8 @@ public class ContentQuery {
         query.append(" and content.ContentId = associations.ContentId");
 
         if (associatedId != null) {
-            if (associatedId.getAssociationId() != -1) {
+            if (associatedId.getAssociationId() != -1 || associatedId.getContentId() != -1) {
+                assureAssociationIdSet(associatedId);
                 query.append(" and associations.ParentAssociationId = :ParentAssociationId");
                 parameters.put("ParentAssociationId", associatedId.getAssociationId());
             }
@@ -164,13 +166,15 @@ public class ContentQuery {
             }
         } else if (pathElementIds != null) {
             for (int i = 0; i < pathElementIds.size(); i++) {
-                String key = "pathelement".concat(String.valueOf(i));
+                ContentIdentifier pathElementId = pathElementIds.get(i);
+                                String key = "pathelement".concat(String.valueOf(i));
                 if (i == 0) {
                     query.append(" and (associations.Path like :").append(key);
                 } else {
                     query.append(" or associations.Path like :").append(key);
                 }
-                parameters.put(key, "%/" + pathElementIds.get(i).getAssociationId() + "/%");
+                assureAssociationIdSet(pathElementId);
+                parameters.put(key, "%/" + pathElementId.getAssociationId() + "/%");
                 if (i == (pathElementIds.size()-1)) {
                     query.append(")");
                 }
@@ -182,8 +186,10 @@ public class ContentQuery {
             }
         } else if (excludedPathElementIds != null) {
             for (ContentIdentifier excludedPathElementId : excludedPathElementIds) {
+
                 if (excludedPathElementId != null) {
                     // exclude all published under given id
+                    assureAssociationIdSet(excludedPathElementId);
                     query.append(" and associations.Path not like :associationpath and associations.AssociationId <> :excludepathid ");
                     parameters.put("associationpath", "/%" + excludedPathElementId.getAssociationId() + "/%");
                     parameters.put("excludepathid", excludedPathElementId.getAssociationId());
@@ -734,6 +740,7 @@ public class ContentQuery {
     private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
         @Override
         public Integer apply(ContentIdentifier input) {
+            assureAssociationIdSet(input);
             return input.getAssociationId();
         }
     };
@@ -780,5 +787,10 @@ public class ContentQuery {
         }
     }
 
-
+    public void assureAssociationIdSet(ContentIdentifier cid) {
+        if(contentIdHelper == null){
+            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+        }
+        contentIdHelper.assureAssociationIdSet(cid);
+    }
 }

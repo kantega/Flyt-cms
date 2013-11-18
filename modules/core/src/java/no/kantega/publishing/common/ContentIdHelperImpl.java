@@ -478,6 +478,24 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     }
 
     @Override
+    public void assureAssociationIdSet(ContentIdentifier contentIdentifier){
+        if (contentIdentifier != null) {
+            int associationId = contentIdentifier.getAssociationId();
+            int contentId = contentIdentifier.getContentId();
+
+            if (contentId != -1 && associationId == -1) {
+                try {
+                    associationId = findAssociationIdFromContentId(contentId, contentIdentifier.getSiteId(), contentIdentifier.getContextId());
+                    contentIdentifier.setAssociationId(associationId);
+                } catch (SystemException e) {
+                    log.error("", e);
+                }
+            }
+        }
+    }
+
+
+    @Override
     public void setServletContext(ServletContext servletContext) {
         CONTENT_URL_PATTERN = Pattern.compile(ContentPatterns.getPatternWithContextPath(servletContext.getContextPath()));
     }
