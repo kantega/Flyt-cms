@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--
   ~ Copyright 2009 Kantega AS
   ~
@@ -104,7 +104,7 @@
         </attribute>
     </tag>
     <tag>
-        <description>Lager en link til for å redigere en side med MiniAksess.</description>
+        <description>Lager en link til for Ã¥ redigere en side med MiniAksess.</description>
         <name>edit</name>
         <tag-class>no.kantega.publishing.api.taglibs.mini.EditTag</tag-class>
         <body-content>JSP</body-content>

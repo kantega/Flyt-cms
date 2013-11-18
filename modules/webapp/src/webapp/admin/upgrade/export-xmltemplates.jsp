@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?><%@ page contentType="text/xml;charset=iso-8859-1" language="java" pageEncoding="utf-8" %><%@ page import="com.thoughtworks.xstream.XStream" %><%@ page import="no.kantega.publishing.common.data.TemplateConfiguration" %><%@ page import="no.kantega.publishing.common.util.templates.TemplateConfigurationExportHelper" %><%@ page import="no.kantega.publishing.common.util.templates.XStreamTemplateHelper" %>
+<?xml version="1.0" encoding="utf-8"?><%@ page contentType="text/xml;charset=iso-8859-1" language="java" pageEncoding="utf-8" %><%@ page import="com.thoughtworks.xstream.XStream" %><%@ page import="no.kantega.publishing.common.data.TemplateConfiguration" %><%@ page import="no.kantega.publishing.common.util.templates.TemplateConfigurationExportHelper" %><%@ page import="no.kantega.publishing.common.util.templates.XStreamTemplateHelper" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
