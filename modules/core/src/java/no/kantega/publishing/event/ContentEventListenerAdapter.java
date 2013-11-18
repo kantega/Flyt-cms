@@ -54,6 +54,10 @@ public  class ContentEventListenerAdapter implements ContentEventListener {
     public void associationAdded(ContentEvent event) {
     }
 
+    public void associationDeleted(ContentEvent event) {
+
+    }
+
     public void setAssociationsPriority(ContentEvent contentEvent) {
 
     }

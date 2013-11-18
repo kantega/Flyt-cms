@@ -440,10 +440,10 @@ public class AssociationAO  {
     }
 
 
-    private static void appendPathSql(StringBuilder where, List ids, String op, String not) {
+    private static void appendPathSql(StringBuilder where, List<Association> associations, String op, String not) {
         where.append("(");
-        for (int i = 0; i < ids.size(); i++) {
-            Integer id = (Integer)ids.get(i);
+        for (int i = 0; i < associations.size(); i++) {
+            Integer id = associations.get(i).getId();
             if (i > 0) {
                 where.append(op);
             }
@@ -453,10 +453,10 @@ public class AssociationAO  {
     }
 
 
-    private static void appendAssociationsSql(StringBuilder where, List ids) {
+    private static void appendAssociationsSql(StringBuilder where, List<Association> associations) {
         where.append("(");
-        for (int i = 0; i < ids.size(); i++) {
-            Integer id = (Integer)ids.get(i);
+        for (int i = 0; i < associations.size(); i++) {
+            Integer id = associations.get(i).getId();
             if (i > 0) {
                 where.append(",");
             }
@@ -466,11 +466,11 @@ public class AssociationAO  {
     }
 
 
-    public static List<Content> deleteAssociationsById(List ids, boolean deleteMultiple, String userId) throws SystemException {
+    public static List<Content> deleteAssociationsById(List<Association> associations, boolean deleteMultiple, String userId) throws SystemException {
 
         List<Content> deletedContent = new ArrayList<>();
 
-        if (ids == null || ids.size() == 0) {
+        if (associations == null || associations.size() == 0) {
             return deletedContent;
         }
 
@@ -483,7 +483,7 @@ public class AssociationAO  {
 
             PreparedStatement st = c.prepareStatement("select ContentId, Title FROM contentversion WHERE ContentId IN" +
                     "(SELECT ContentId From associations WHERE UniqueId = ?) AND contentversion.IsActive = 1");
-            st.setInt(1, (Integer)ids.get(0));
+            st.setInt(1, associations.get(0).getId());
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 current = new Content();
@@ -505,7 +505,7 @@ public class AssociationAO  {
             query.append(AssociationType.SHORTCUT);
             query.append(" AND (IsDeleted IS NULL OR IsDeleted = 0) ");
             query.append(" AND UniqueId NOT IN ");
-            appendAssociationsSql(query, ids);
+            appendAssociationsSql(query, associations);
 
             int cnt = SQLHelper.getInt(c, query.toString(), "Cnt");
             if (cnt == 0) {
@@ -524,7 +524,7 @@ public class AssociationAO  {
             query.append("SELECT ContentId  FROM associations WHERE Type <> ");
             query.append(AssociationType.SHORTCUT);
             query.append(" AND (IsDeleted IS NULL OR IsDeleted = 0) AND ");
-            appendPathSql(query, ids, "OR", "");
+            appendPathSql(query, associations, "OR", "");
             query.append(" AND contentid NOT IN (");
 
             // Query 2
@@ -537,12 +537,12 @@ public class AssociationAO  {
             query.append(AssociationType.SHORTCUT);
             query.append(" AND (IsDeleted IS NULL OR IsDeleted = 0) AND ");
 
-            appendPathSql(query, ids, "OR", "");
+            appendPathSql(query, associations, "OR", "");
 
             // End query 3
             query.append(" ) ");
             query.append(" AND ");
-            appendPathSql(query, ids, "AND", "NOT");
+            appendPathSql(query, associations, "AND", "NOT");
 
             // End query 2
             query.append(")");
@@ -592,7 +592,7 @@ public class AssociationAO  {
                 // Marker side for sletting
                 query = new StringBuilder();
                 query.append("UPDATE associations SET IsDeleted = 1 , DeletedItemsId = ").append(deletedItemsId).append(" WHERE UniqueId IN ");
-                appendAssociationsSql(query, ids);
+                appendAssociationsSql(query, associations);
 
                 st = c.prepareStatement(query.toString());
                 st.executeUpdate();
@@ -601,7 +601,7 @@ public class AssociationAO  {
                 // Marker undersider for sletting
                 query = new StringBuilder();
                 query.append("UPDATE associations SET IsDeleted = 1, DeletedItemsId = ").append(deletedItemsId).append(" WHERE ");
-                appendPathSql(query, ids, "OR", "");
+                appendPathSql(query, associations, "OR", "");
 
                 st = c.prepareStatement(query.toString());
                 st.executeUpdate();

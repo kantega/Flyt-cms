@@ -218,6 +218,10 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         return HANDLED_DOCUMENT_TYPE + "-" + document.getAssociation().getAssociationId();
     }
 
+    public String generateUniqueID(Association association) {
+        return HANDLED_DOCUMENT_TYPE + "-" + association.getAssociationId();
+    }
+
     private String getCustomIndexFieldMapping(Content content, Attribute value) {
         if(contentAttributeNameToIndexFieldMapping != null) {
             return contentAttributeNameToIndexFieldMapping.getMappings().get(content.getContentTemplateId() + "," + value.getName());

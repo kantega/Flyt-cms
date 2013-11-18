@@ -1111,7 +1111,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<Content> deleteAssociationsById(int[] associationIds, boolean deleteMultiple) throws SystemException {
-        List<Integer> associations = new ArrayList<Integer>();
+        List<Association> associations = new ArrayList<>();
 
         for (int associationId : associationIds) {
             Association a = AssociationAO.getAssociationById(associationId);
@@ -1119,7 +1119,7 @@ public class ContentManagementService {
                 if (a.getAssociationtype() == AssociationType.SHORTCUT) {
                     // Sjekk tilgangen til snarvei
                     if (securitySession.isAuthorized(a, Privilege.APPROVE_CONTENT)) {
-                        associations.add(a.getId());
+                        associations.add(a);
                     }
                 } else {
                     // Sjekk tilgangen til innholdsobjektet den peker på
@@ -1135,7 +1135,7 @@ public class ContentManagementService {
                         priv = Privilege.APPROVE_CONTENT;
                     }
                     if (securitySession.isAuthorized(c, priv)) {
-                        associations.add(a.getId());
+                        associations.add(a);
                     }
                 }
             }
@@ -1150,6 +1150,11 @@ public class ContentManagementService {
                 eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
                 ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
             }
+
+            for (Association a : associations) {
+                ContentListenerUtil.getContentNotifier().associationDeleted(new ContentEvent().setAssociation(a));
+            }
+
         }
 
         return pagesToBeDeleted;

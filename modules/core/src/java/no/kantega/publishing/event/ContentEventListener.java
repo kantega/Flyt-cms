@@ -60,6 +60,12 @@ public interface ContentEventListener {
     void associationAdded(ContentEvent event);
 
     /**
+     * Called after a association is deleted
+     * @param event - event.getAssociation contains association which was deleted
+     */
+    void associationDeleted(ContentEvent event);
+
+    /**
      * Called when priority for a list of associations is updated
      * @param contentEvent - contains nothing
      */

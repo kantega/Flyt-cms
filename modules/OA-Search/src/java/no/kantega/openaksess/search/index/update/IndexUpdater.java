@@ -2,9 +2,14 @@ package no.kantega.openaksess.search.index.update;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 import no.kantega.search.api.index.DocumentIndexer;
@@ -16,6 +21,9 @@ import java.util.List;
 
 @Component
 public class IndexUpdater extends ContentEventListenerAdapter {
+    @Autowired
+    private ContentAO contentAO;
+
     @Autowired
     private DocumentIndexer documentIndexer;
 
@@ -45,7 +53,14 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     public void contentDeleted(ContentEvent event) {
         Content content = event.getContent();
         List<String> uids = new ArrayList<>();
-        uids.add(contentTransformer.generateUniqueID(content));
+        List<Association> associations = AssociationAO.getAssociationsByContentId(content.getId());
+        if (associations != null) {
+            for (Association association : associations) {
+                if (association.getAssociationtype() != AssociationType.SHORTCUT) {
+                    uids.add(contentTransformer.generateUniqueID(association));
+                }
+            }
+        }
 
         for (Attachment attachment : AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
             uids.add(attachmentTransformer.generateUniqueID(attachment));
@@ -63,6 +78,31 @@ public class IndexUpdater extends ContentEventListenerAdapter {
         updateIndex(event.getContent());
     }
 
+    @Override
+    public void associationUpdated(ContentEvent event) {
+        // TODO: Should reindex children
+        updateIndex(event.getAssociation());
+    }
+
+    @Override
+    public void associationCopied(ContentEvent event) {
+        // TODO: Should reindex children
+        updateIndex(event.getAssociation());
+    }
+
+    @Override
+    public void associationDeleted(ContentEvent event) {
+        // TODO: Should reindex children
+        List<String> uids = new ArrayList<>();
+        uids.add(contentTransformer.generateUniqueID(event.getAssociation()));
+        documentIndexer.deleteById(uids);
+    }
+
+    @Override
+    public void associationAdded(ContentEvent event) {
+        updateIndex(event.getAssociation());
+    }
+
     public void attachmentUpdated(ContentEvent event) {
         Attachment attachment = event.getAttachment();
         if (attachment.getContentId() != -1) {
@@ -72,6 +112,21 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
     private void updateIndex(Content content) {
         if (content.isSearchable()) {
+            List<Association> associations = content.getAssociations();
+            if (associations != null) {
+                for (Association association : associations) {
+                    if (association.getAssociationtype() != AssociationType.SHORTCUT) {
+                        updateIndex(association);
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateIndex(Association association) {
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(association.getAssociationId());
+        Content content = contentAO.getContent(cid, true);
+        if (content != null) {
             documentIndexer.indexDocumentAndCommit(contentTransformer.transform(content));
         }
     }
