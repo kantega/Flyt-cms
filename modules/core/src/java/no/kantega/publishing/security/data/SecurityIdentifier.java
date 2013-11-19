@@ -18,9 +18,12 @@ package no.kantega.publishing.security.data;
 
 import no.kantega.publishing.common.Aksess;
 
+import java.io.Serializable;
+
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
-public abstract class SecurityIdentifier {
+public abstract class SecurityIdentifier implements Serializable {
+    private static final long serialVersionUID = -8588017268623687907L;
     public String id = null;
 
 

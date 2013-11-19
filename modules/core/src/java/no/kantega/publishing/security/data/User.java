@@ -30,6 +30,7 @@ import java.util.Properties;
  */
 public class User extends SecurityIdentifier {
 
+    private static final long serialVersionUID = -6039629430560060849L;
     private String givenName = "";
     private String surname = "";
     private String email = null;
@@ -65,7 +66,7 @@ public class User extends SecurityIdentifier {
     }
 
     public String getName() {
-        if (!givenName.equals("") && !surname.equals("")) {
+        if (!givenName.isEmpty() && !surname.isEmpty()) {
             return givenName + " " + surname;
         } else {
             return givenName + surname;

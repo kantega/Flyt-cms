@@ -20,6 +20,7 @@ import no.kantega.publishing.security.data.enums.RoleType;
 
 public class Role extends SecurityIdentifier {
 
+    private static final long serialVersionUID = -4394810820233025873L;
     public String name = null;
 
     public String getType() {

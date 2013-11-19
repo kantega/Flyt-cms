@@ -16,11 +16,6 @@
 
 package no.kantega.publishing.security.data.enums;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 16, 2009
- * Time: 9:55:04 AM
- */
 public enum NotificationPriority {
     PRIORITY1(1),
     PRIORITY2(2),
@@ -48,6 +43,6 @@ public enum NotificationPriority {
     }
 
     public String toString() {
-        return "" + getNotificationPriorityAsInt();
+        return String.valueOf(getNotificationPriorityAsInt());
     }
 }

@@ -18,9 +18,11 @@ package no.kantega.publishing.api.xmlcache;
 
 import org.w3c.dom.Document;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class XMLCacheEntry {
+public class XMLCacheEntry implements Serializable {
+    private static final long serialVersionUID = -3060466275358877198L;
     private String id = null;
     private Document xml = null;
     private Date lastUpdated = null;

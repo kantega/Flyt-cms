@@ -18,7 +18,10 @@ package no.kantega.publishing.security.data;
 
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 
-public class Permission {
+import java.io.Serializable;
+
+public class Permission implements Serializable {
+    private static final long serialVersionUID = -1330571981410046891L;
     private int privilege = -1;
     private NotificationPriority notificationPriority;
     private SecurityIdentifier securityIdentifier = null;
