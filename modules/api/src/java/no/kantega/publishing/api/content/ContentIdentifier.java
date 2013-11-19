@@ -83,7 +83,9 @@ public class ContentIdentifier {
         if (siteId != -1) {
             idStr += "&amp;siteId=" + siteId;
         }
-
+        if (status != null) {
+            idStr += "&amp;status=" + status;
+        }
         return idStr;
     }
 
