@@ -1,43 +1,48 @@
 package no.kantega.publishing.cache;
 
-import net.sf.ehcache.CacheManager;
-import net.sf.ehcache.Ehcache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 
 /**
  * ContentEventListener that flushes caches on events.
  */
 public class CacheExpirator extends ContentEventListenerAdapter {
+    private Cache contentCache;
+    private Cache contentListCache;
+    private Cache contentUrlCache;
+    private Cache contentIdentifierCache;
+    private Cache aliasCache;
+    private Cache sitemapCache;
 
-    private CacheManager cacheManager;
 
     @Override
     public void associationUpdated(ContentEvent event) {
         // Pages could have been copied, safest just to flush everything.
         removeAllContent();
-        removeAllContentListsAndSiteMaps();
+        removeContentListsAndSiteMaps();
     }
 
     @Override
     public void associationCopied(ContentEvent event) {
         // Pages could have been copied, safest just to flush everything.
         removeAllContent();
-        removeAllContentListsAndSiteMaps();
+        removeContentListsAndSiteMaps();
     }
 
     @Override
     public void associationAdded(ContentEvent event) {
         // Pages could have been copied, safest just to flush everything.
         removeAllContent();
-        removeAllContentListsAndSiteMaps();
+        removeContentListsAndSiteMaps();
     }
 
     @Override
     public void setAssociationsPriority(ContentEvent contentEvent) {
         // Pages reordered, all lists and sitemaps should be flushed
-        removeAllContentListsAndSiteMaps();
+        removeContentListsAndSiteMaps();
     }
 
     @Override
@@ -70,35 +75,41 @@ public class CacheExpirator extends ContentEventListenerAdapter {
         removeContentFromCache(event);
     }
 
-    private Ehcache getContentCache() {
-        return cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentCache.name());
-    }
-
     private void removeContentFromCache(ContentEvent event) {
         // Remove the content that was changed
-        final Ehcache contentCache = getContentCache();
-
-        for(Association a : event.getContent().getAssociations())  {
-            Object key = a.getAssociationId();
-            contentCache.remove(key);
+        Association a = event.getContent().getAssociation();
+        if (a != null) {
+            int id = a.getAssociationId();
+            contentCache.evict(id);
+            contentUrlCache.evict(id);
         }
-        removeAllContentListsAndSiteMaps();
+        aliasCache.clear();
+        contentIdentifierCache.clear();
+        contentListCache.clear();
+        sitemapCache.clear();
     }
 
-    private void removeAllContentListsAndSiteMaps() {
-        // Flush the content list cache
-        cacheManager.getEhcache(CacheManagerFactory.CacheNames.ContentListCache.name()).removeAll();
-        // Flush the site map cache
-        cacheManager.getEhcache(CacheManagerFactory.CacheNames.SiteMapCache.name()).removeAll();
+    private void removeContentListsAndSiteMaps() {
+        contentListCache.clear();
+        sitemapCache.clear();
     }
 
     private void removeAllContent() {
-        // Remove the content that was changed
-        final Ehcache contentCache = getContentCache();
-        contentCache.removeAll();
+        aliasCache.clear();
+        contentCache.clear();
+        contentIdentifierCache.clear();
+        contentListCache.clear();
+        contentUrlCache.clear();
+        sitemapCache.clear();
     }
 
-    public void setCacheManager(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
+    @Autowired
+    public void setCacheManager(org.springframework.cache.CacheManager cacheManager) {
+        aliasCache = cacheManager.getCache(CacheManagerFactory.CacheNames.AliasCache.name());
+        contentCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentCache.name());
+        contentIdentifierCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentIdentifierCache.name());
+        contentListCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentListCache.name());
+        contentUrlCache = cacheManager.getCache(CacheManagerFactory.CacheNames.ContentUrlCache.name());
+        sitemapCache =  cacheManager.getCache(CacheManagerFactory.CacheNames.SiteMapCache.name());
     }
 }

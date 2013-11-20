@@ -19,16 +19,13 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean class="no.kantega.publishing.jobs.cache.UpdateContentCachesListener"/>
     <bean class="no.kantega.publishing.jobs.contentstate.RemoveFromLinkCheckerListener"/>
     <bean class="no.kantega.publishing.jobs.contentstate.DeleteIfExpiredListener"/>
     <bean class="no.kantega.publishing.jobs.multimedia.MultimediaUsageListener">
         <property name="multimediaUsageDao" ref="aksessMultimediaUsageDao"/>
         <property name="multimediaDao" ref="aksessMultimediaDao"/>
     </bean>
-    <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator">
-        <property name="cacheManager" ref="ehcacheCacheManager"/>
-    </bean>
+    <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator"/>
 
     <bean id="contentListenerNotifierFactory" class="no.kantega.publishing.event.ContentListenerNotifierFactory">
         <property name="contentListenerNotifierId" value="contentListenerNotifier"/>

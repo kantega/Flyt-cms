@@ -234,9 +234,9 @@ public class ContentManagementService {
     }
 
     private Content getContentFromCache(ContentIdentifier id, boolean adminMode) {
-        if(cachingEnabled) {
+        if(cachingEnabled && id.getVersion() == -1 && id.getStatus() == null) {
             contentIdHelper.assureAssociationIdSet(id);
-            final Object key = id.toString();
+            final Object key = id.getAssociationId();
             final Element element = contentCache.get(key);
 
             if(element == null) {
