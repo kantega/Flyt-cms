@@ -213,7 +213,7 @@ public class ContentManagementService {
     }
 
     private Content getContentFromCache(ContentIdentifier id, boolean adminMode) {
-        if(cachingEnabled) {
+        if(cachingEnabled && id.getVersion() == -1 && id.getStatus() == -1) {
             final Object key = id.getAssociationId();
             final Element element = contentCache.get(key);
 
