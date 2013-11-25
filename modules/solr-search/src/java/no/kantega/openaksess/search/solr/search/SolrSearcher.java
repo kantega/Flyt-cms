@@ -126,10 +126,6 @@ public class SolrSearcher implements Searcher {
                 solrQuery.add( DisMaxParams.BF, boostByPublishDateQuery);
             }
 
-            for (String additionalBoostFunction : query.getAdditionalBoostFunctions()){
-                solrQuery.add( DisMaxParams.BF, additionalBoostFunction);
-            }
-
             solrQuery.add(DisMaxParams.QF, getQueryFields(query));
             solrQuery.add(DisMaxParams.PF, "all_text_" + query.getIndexedLanguage().code);
             solrQuery.add(DisMaxParams.PS, "10");
