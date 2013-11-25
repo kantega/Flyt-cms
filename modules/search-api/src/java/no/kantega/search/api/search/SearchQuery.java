@@ -29,6 +29,8 @@ public class SearchQuery {
     private boolean appendFiltersToPageUrls = true;
     private QueryType queryType = QueryType.Default;
     private List<String> additionalQueryFields;
+    private List<String> boostFunctions = Collections.emptyList();
+    private List<String> boostQueries = Collections.emptyList();
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -252,7 +254,7 @@ public class SearchQuery {
     /**
      * Fuzzy search add ~ to the query terms, this tells Lucene to match terms within a certain edit distance to the
      * original term.
-     * @see <a href="http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Fuzzy%20Searches>Fuzzy Searches</a>
+     * @see <a href="http://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Fuzzy%20Searches">Fuzzy Searches</a>
      * @param fuzzySearch - whether or not to enable fuzzy search. Default is false.
      */
     public void setFuzzySearch(boolean fuzzySearch) {
@@ -327,9 +329,7 @@ public class SearchQuery {
     }
 
     /**
-     * By default only one all-containing field is queried. This field uses «standard» analyzing, so in some cases it
-     * is useful to add custom fields that are handled in some special matter. It is also possible to specify
-     * that this query should use <code>QueryType.Lucene</code>, but then boosting and such is lost.
+     * @see no.kantega.search.api.search.SearchQuery#setAdditionalQueryFields(java.util.List)
      * @return fields that should be queried in addition to the all-containing field.
      */
     public List<String> getAdditionalQueryFields() {
@@ -337,10 +337,51 @@ public class SearchQuery {
     }
 
     /**
+     * By default only one all-containing field is queried. This field uses «standard» analyzing, so in some cases it
+     * is useful to add custom fields that are handled in some special matter. It is also possible to specify
+     * that this query should use <code>QueryType.Lucene</code>, but then boosting and such is lost.
      * @param additionalQueryFields the field to query in addition to the all-containing field.
-     * @see no.kantega.search.api.search.SearchQuery#getAdditionalQueryFields()
      */
     public void setAdditionalQueryFields(List<String> additionalQueryFields) {
         this.additionalQueryFields = additionalQueryFields;
+    }
+
+    /**
+     * @see no.kantega.search.api.search.SearchQuery#setBoostFunctions(java.util.List)
+     * @return boost functions to apply to the search results.
+     */
+    public List<String> getBoostFunctions() {
+        return boostFunctions;
+    }
+
+    /**
+     * Functions to use when calculating the final score and relevancy of the search results.
+     * If boostByPublishDate is activated the publishdate-function will be added to the
+     * final list of functions.
+     * @see <a href="http://wiki.apache.org/solr/FunctionQuery">FunctionQuery</a>
+     * @see no.kantega.search.api.search.SearchQuery#setBoostByPublishDate(boolean)
+     * @param boostFunctions to apply to the search results.
+     */
+    public void setBoostFunctions(List<String> boostFunctions) {
+        this.boostFunctions = boostFunctions;
+    }
+
+    /**
+     * @see no.kantega.search.api.search.SearchQuery#setBoostQueries(java.util.List)
+     * @return the boostqueries to apply to the search results.
+     */
+    public List<String> getBoostQueries() {
+        return boostQueries;
+    }
+
+    /**
+     * Specify queries in normal Lucene format that when match boost a given result.
+     * e.g. title:something
+     * The boost queries specified here is added to the default queries.
+     * The default queries among others «title_${query.indexedLanguage}:${raw query}»
+     * @param boostQueries to apply to the search results.
+     */
+    public void setBoostQueries(List<String> boostQueries) {
+        this.boostQueries = boostQueries;
     }
 }

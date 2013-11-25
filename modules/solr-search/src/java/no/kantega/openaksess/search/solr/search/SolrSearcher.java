@@ -122,15 +122,14 @@ public class SolrSearcher implements Searcher {
 
         if (query.getQueryType() == QueryType.Default) {
             solrQuery.add(QueryParsing.DEFTYPE, ExtendedDismaxQParserPlugin.NAME);
-            if (query.isBoostByPublishDate()) {
-                solrQuery.add( DisMaxParams.BF, boostByPublishDateQuery);
-            }
+
+            solrQuery.add( DisMaxParams.BF, getBoostFunctions(query));
 
             solrQuery.add(DisMaxParams.QF, getQueryFields(query));
             solrQuery.add(DisMaxParams.PF, "all_text_" + query.getIndexedLanguage().code);
             solrQuery.add(DisMaxParams.PS, "10");
 
-            solrQuery.add(DisMaxParams.BQ, getBoostQuery(query.getOriginalQuery(), query.getIndexedLanguage().code));
+            solrQuery.add(DisMaxParams.BQ, getBoostQueries(query.getBoostQueries(), query.getOriginalQuery(), query.getIndexedLanguage().code));
         } else {
             solrQuery.add(QueryParsing.DEFTYPE, QParserPlugin.DEFAULT_QTYPE);
         }
@@ -140,6 +139,14 @@ public class SolrSearcher implements Searcher {
         }
 
         return solrQuery;
+    }
+
+    private String[] getBoostFunctions(SearchQuery query) {
+        List<String> boostFunctions = new ArrayList<>(query.getBoostFunctions());
+        if (query.isBoostByPublishDate()) {
+            boostFunctions.add( boostByPublishDateQuery);
+        }
+        return boostFunctions.toArray(new String[boostFunctions.size()]);
     }
 
     private String[] getQueryFields(SearchQuery query) {
@@ -152,9 +159,11 @@ public class SolrSearcher implements Searcher {
         return queryFields.toArray(new String[size]);
     }
 
-    private String[] getBoostQuery(String query, String language) {
+    private String[] getBoostQueries(List<String> additionalBoostQueries, String query, String language) {
         String[] terms = query.split(" ");
-        List<String> boostQueries = new ArrayList<>(terms.length * 6);
+        List<String> boostQueries = new ArrayList<>(additionalBoostQueries.size() + terms.length * 6);
+        boostQueries.addAll(additionalBoostQueries);
+
         for (String term : terms) {
             boostQueries.add("all_text_unanalyzed:" + term);
             boostQueries.add("title_" + language + ":" + term);
