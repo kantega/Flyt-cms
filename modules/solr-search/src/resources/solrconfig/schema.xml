@@ -100,6 +100,7 @@
         <field name="groupId" type="int" indexed="true" stored="true" />
         <field name="siteId" type="int" indexed="true" stored="true" multiValued="false" />
         <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>
+        <field name="location_depth" type="int" indexed="true" stored="true" multiValued="false"/>
         <field name="alias" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="createDate" type="date" indexed="true" stored="true"/>
         <field name="publishDate" type="date" indexed="true" stored="true"/>

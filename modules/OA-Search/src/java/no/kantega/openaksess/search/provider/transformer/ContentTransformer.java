@@ -65,7 +65,9 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             int siteId = association.getSiteId();
             indexableDocument.setSiteId(siteId);
             indexableDocument.setParentId(association.getParentAssociationId());
+
             indexableDocument.addAttribute("location", locationWithoutTrailingSlash(association));
+            indexableDocument.addAttribute("location_depth", association.getDepth());
 
             indexableDocument.addAttribute("contentType", content.getType().name());
             indexableDocument.addAttribute("contentTemplateId", content.getContentTemplateId());

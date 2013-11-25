@@ -42,8 +42,8 @@ public class SolrSearcher implements Searcher {
     @Autowired
     private SolrServer solrServer;
 
-    private Map<String, SearchResultDecorator> resultDecoratorMap;
-    private SearchResultDecorator defaultSearchResultDecorator;
+    private Map<String, SearchResultDecorator<?>> resultDecoratorMap;
+    private SearchResultDecorator<?> defaultSearchResultDecorator;
 
     private final Pattern boundary = Pattern.compile("\\s");
 
