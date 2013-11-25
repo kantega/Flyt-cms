@@ -29,6 +29,7 @@ public class SearchQuery {
     private boolean appendFiltersToPageUrls = true;
     private QueryType queryType = QueryType.Default;
     private List<String> additionalQueryFields;
+    private List<String> additionalBoostFunctions = Collections.emptyList();
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -342,5 +343,13 @@ public class SearchQuery {
      */
     public void setAdditionalQueryFields(List<String> additionalQueryFields) {
         this.additionalQueryFields = additionalQueryFields;
+    }
+
+    public List<String> getAdditionalBoostFunctions() {
+        return additionalBoostFunctions;
+    }
+
+    public void setAdditionalBoostFunctions(List<String> additionalBoostFunctions) {
+        this.additionalBoostFunctions = additionalBoostFunctions;
     }
 }

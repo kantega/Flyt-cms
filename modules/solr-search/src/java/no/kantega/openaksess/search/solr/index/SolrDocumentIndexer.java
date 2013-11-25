@@ -128,8 +128,9 @@ public class SolrDocumentIndexer implements DocumentIndexer {
             return (String) value;
         } else if (Date.class.isAssignableFrom(value.getClass())){
             return dateFormat.format(value);
+        } else {
+            return String.valueOf(value);
         }
-        return "";
     }
 
     private SolrInputDocument getSolrParams(IndexableDocument document) {
