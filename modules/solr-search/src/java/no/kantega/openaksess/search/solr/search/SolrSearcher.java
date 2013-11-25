@@ -36,6 +36,9 @@ public class SolrSearcher implements Searcher {
 
     private final String DESCRIPTION_HIHLIGHTING_FIELD = "all_text_unanalyzed";
 
+    @Value("${search.boostByPublishDateQuery:recip(ms(NOW/HOUR,publishDate),3.16e-11,1,1)}")
+    private String boostByPublishDateQuery;
+
     @Autowired
     private SolrServer solrServer;
 
@@ -120,7 +123,7 @@ public class SolrSearcher implements Searcher {
         if (query.getQueryType() == QueryType.Default) {
             solrQuery.add(QueryParsing.DEFTYPE, ExtendedDismaxQParserPlugin.NAME);
             if (query.isBoostByPublishDate()) {
-                solrQuery.add( DisMaxParams.BF, "recip(ms(NOW,publishDate),3.16e-11,1,1)");
+                solrQuery.add( DisMaxParams.BF, boostByPublishDateQuery);
             }
 
             solrQuery.add(DisMaxParams.QF, getQueryFields(query));
