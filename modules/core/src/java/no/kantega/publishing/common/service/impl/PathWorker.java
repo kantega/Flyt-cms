@@ -34,7 +34,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class PathWorker {
@@ -53,30 +52,7 @@ public class PathWorker {
         for (int pathId : pathIds) {
             ids.add(pathId);
         }
-        List<PathEntry> entries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
-        sortByPathEntries(pathEntries, pathIds);
-        return entries;
-    }
-
-    private static void sortByPathEntries(List<PathEntry> pathEntries, int[] pathIds) {
-        final List<Integer> pathOrder = convertToListOfIntegers(pathIds);
-        Collections.sort(pathEntries, new Comparator<PathEntry>() {
-            @Override
-            public int compare(PathEntry o1, PathEntry o2) {
-                int positionOfO1 = pathOrder.indexOf(o1.getId());
-                int positionOfO2 = pathOrder.indexOf(o2.getId());
-                return Integer.compare(positionOfO1, positionOfO2);
-            }
-        });
-    }
-
-
-    private static List<Integer> convertToListOfIntegers(int... pathIds) {
-        final List<Integer> pathOrder = new ArrayList<>();
-        for (int pathId : pathIds) {
-            pathOrder.add(pathId);
-        }
-        return pathOrder;
+        return new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, content.ContentTemplateId, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids) ORDER BY associations.Depth", Collections.singletonMap("ids", ids), rowMapperWithContentTemplateId);
     }
 
     /**
@@ -109,7 +85,7 @@ public class PathWorker {
             return pathEntries;
         }
 
-        pathEntries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids)", Collections.singletonMap("ids", pathIds),rowMapper);
+        pathEntries = new NamedParameterJdbcTemplate(dbConnectionFactory.getDataSource()).query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:ids) ORDER BY associations.Depth", Collections.singletonMap("ids", pathIds),rowMapper);
 
         return pathEntries;
     }
