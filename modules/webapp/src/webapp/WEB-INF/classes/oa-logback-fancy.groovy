@@ -28,7 +28,9 @@ import static ch.qos.logback.core.spi.FilterReply.DENY
 
 // http://jira.qos.ch/browse/LOGBACK-269
 def oarequest
-def oa
+def oainfo
+def oaerror
+def other
 
 def loggingDirectory = context.getProperty('logdir')
 
@@ -52,34 +54,77 @@ appender("oarequest", RollingFileAppender) {
         onMatch = ACCEPT
     }
 }
-appender("oa", RollingFileAppender) {
-    oa = component
+appender("oainfo", RollingFileAppender) {
+    oainfo = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
-    file = "${loggingDirectory}/aksess.log"
+    file = "${loggingDirectory}/info.log"
     append = true
     rollingPolicy(TimeBasedRollingPolicy) {
-        fileNamePattern = "${loggingDirectory}/aksess.%d{yyyy-MM-dd}.log.gz"
+        fileNamePattern = "${loggingDirectory}/info.%d{yyyy-MM-dd}.log.gz"
         maxHistory = 30
     }
     filter(EvaluatorFilter) {
         evaluator(GEventEvaluator) {
-            expression = '!e.loggerName.contains("no.kantega.publishing.client")'
+            expression = 'e.level.toInt() <= INFO.toInt() && e.loggerName.contains("no.kantega") && !e.loggerName.contains("no.kantega.publishing.client")'
         }
         onMismatch = DENY
         onMatch = ACCEPT
+    }
+}
+appender("oaerror", RollingFileAppender) {
+    oaerror = component
+    encoder(PatternLayoutEncoder) {
+        pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
+    }
+    file = "${loggingDirectory}/error.log"
+    append = true
+    rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = "${loggingDirectory}/error.%d{yyyy-MM-dd}.log.gz"
+        maxHistory = 30
+    }
+    filter(EvaluatorFilter) {
+        evaluator(GEventEvaluator) {
+            expression = 'e.level.toInt() > INFO.toInt() && e.loggerName.contains("no.kantega") && !e.loggerName.contains("no.kantega.publishing.client")'
+        }
+        onMismatch = DENY
+        onMatch = ACCEPT
+    }
+}
+appender("other", RollingFileAppender) {
+    other = component
+    encoder(PatternLayoutEncoder) {
+        pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
+    }
+    file = "${loggingDirectory}/other.log"
+    append = true
+    rollingPolicy(TimeBasedRollingPolicy) {
+        fileNamePattern = "${loggingDirectory}/other.%d{yyyy-MM-dd}.log.gz"
+        maxHistory = 30
+    }
+    filter(EvaluatorFilter) {
+        evaluator(GEventEvaluator) {
+            expression = 'e.loggerName.contains("no.kantega")'
+        }
+        onMismatch = ACCEPT
+        onMatch = DENY
     }
 }
 
 appender("oarequest-async", AsyncAppender) {
     component.addAppender(oarequest)
 }
-appender("oa-async", AsyncAppender) {
-    component.addAppender(oa)
+appender("oainfo-async", AsyncAppender) {
+    component.addAppender(oainfo)
 }
-
-root(INFO, ["oarequest-async", "oa-async"])
+appender("oaerror-async", AsyncAppender) {
+    component.addAppender(oaerror)
+}
+appender("other-async", AsyncAppender) {
+    component.addAppender(other)
+}
+root(INFO, ["oarequest-async", "oainfo-async", "oaerror-async", "other-async"])
 
 logger("no.kantega", INFO)
 logger("ro.isdc.wro", WARN)
