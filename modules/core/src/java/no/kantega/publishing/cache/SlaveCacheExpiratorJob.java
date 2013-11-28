@@ -15,6 +15,7 @@ import no.kantega.publishing.eventlog.EventLogQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Date;
 import java.util.List;
@@ -32,9 +33,11 @@ public class SlaveCacheExpiratorJob {
     @Autowired
     private XmlCache xmlCache;
 
+    @Autowired
     private CacheManager cacheManager;
 
-    public void execute() {
+    @Scheduled(fixedRateString = "${jobs.slaveCacheExpirator.period}", initialDelay = 1000 * 60 )
+    public void expireSlaveCache() {
         if (Aksess.getServerType() != ServerType.SLAVE) {
             log.error("This job should not run on server type " + Aksess.getServerType());
             return;
@@ -68,7 +71,7 @@ public class SlaveCacheExpiratorJob {
 
             for(Association a : AssociationAO.getAssociationsByContentId(eventLogEntry.getSubjectId())) {
                 final Object key = a.getAssociationId();
-                log.debug("Expiring association " + a.getAssociationId());
+                log.debug("Expiring association {}", a.getAssociationId());
                 contentCache.remove(key);
             }
         }
@@ -96,9 +99,5 @@ public class SlaveCacheExpiratorJob {
 
         lastRun = thisRun;
         
-    }
-
-    public void setCacheManager(CacheManager cacheManager) {
-        this.cacheManager = cacheManager;
     }
 }
