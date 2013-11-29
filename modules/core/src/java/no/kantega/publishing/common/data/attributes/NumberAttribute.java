@@ -18,9 +18,9 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+import java.text.*;
 import java.util.Collections;
+import java.util.Locale;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -55,20 +55,33 @@ public class NumberAttribute extends Attribute {
         super.setValue(value.toString());
     }
 
-    @Override
-    public String getRenderer() {
-        return "number";
-    }
+    public String getValue(String format, Locale locale) {
 
-    public String getValue(String format) {
         if (value == null) {
             return "";
         }
         if (format == null || format.length() == 0) {
             return getValue();
         }
-        
-        NumberFormat formatter = new DecimalFormat(format);
+
+        NumberFormat formatter;
+
+        if (locale != null) {
+            formatter = new DecimalFormat(format, new DecimalFormatSymbols(locale));
+        } else {
+            formatter = new DecimalFormat(format);
+        }
+
         return formatter.format(Integer.parseInt(value));
+    }
+
+
+    @Override
+    public String getRenderer() {
+        return "number";
+    }
+
+    public String getValue(String format) {
+        return getValue(format, null);
     }
 }

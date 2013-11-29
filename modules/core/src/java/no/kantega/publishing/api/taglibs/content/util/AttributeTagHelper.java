@@ -260,9 +260,10 @@ public final class AttributeTagHelper {
                     DateAttribute date = (DateAttribute)attr;
                     result = date.getValue(cmd.getFormat(), locale);
                 } else if(attr instanceof NumberAttribute) {
+                    Locale locale = Language.getLanguageAsLocale(content.getLanguage());
                     NumberAttribute number = (NumberAttribute)attr;
                     if (cmd.getFormat() != null && cmd.getFormat().length() > 0) {
-                        result = number.getValue(cmd.getFormat());
+                        result = number.getValue(cmd.getFormat(), locale);
                     } else {
                         result = number.getValue();
                     }
