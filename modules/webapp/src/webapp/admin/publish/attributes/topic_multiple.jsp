@@ -1,8 +1,9 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.TopicAttribute,
-                 no.kantega.publishing.topicmaps.data.Topic,
-                 java.util.List"%>
+                 no.kantega.publishing.common.service.TopicMapService,
+                 no.kantega.publishing.topicmaps.data.Topic"%>
+<%@ page import="java.util.List" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -22,18 +23,18 @@
 <%
     TopicAttribute attribute = (TopicAttribute) request.getAttribute("attribute");
     String fieldName = (String) request.getAttribute("fieldName");
-
+    TopicMapService topicMapService = new TopicMapService(request);
     String value = attribute.getValue();
 %>
-<div class="inputs">
+<div class="terje inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
-    <select name="<%=fieldName%>list" class="inp" style="width:600px;" size="10">
+    <select name="<%=fieldName%>list" class="inp fullWidth" size="10">
     <%
         if (value != null && value.length() > 0) {
             List<Topic> topics = attribute.getValueAsTopics();
 
             for (Topic topic : topics) {
-                out.write("<option value=\"" + topic.getTopicMapId() + ":" + topic.getId() + "\">" + topic.getBaseName() + "</option>");
+                out.write("<option value=\"" + topic.getTopicMapId() + ":" + topic.getId() + "\">" + topic.getBaseName() + " (" + topicMapService.getTopicMap(topic.getTopicMapId()).getName() + ")" + "</option>");
             }
         }
     %>
