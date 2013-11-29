@@ -26,7 +26,7 @@
     TopicMapService topicMapService = new TopicMapService(request);
     String value = attribute.getValue();
 %>
-<div class="terje inputs">
+<div class="inputs">
     <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
     <select name="<%=fieldName%>list" class="inp fullWidth" size="10">
     <%
