@@ -125,9 +125,13 @@ public class SolrSearcher implements Searcher {
 
             solrQuery.add( DisMaxParams.BF, getBoostFunctions(query));
 
-            solrQuery.add(DisMaxParams.QF, getQueryFields(query));
-            solrQuery.add(DisMaxParams.PF, "all_text_" + query.getIndexedLanguage().code);
+            String field = "all_text_" + query.getIndexedLanguage().code;
+            solrQuery.add(DisMaxParams.QF, getQueryFields(query, field));
+            solrQuery.add(DisMaxParams.PF, field);
+            solrQuery.add(DisMaxParams.PF2, field);
+            solrQuery.add(DisMaxParams.PF3, field);
             solrQuery.add(DisMaxParams.PS, "10");
+            solrQuery.add(DisMaxParams.MM, "1");
 
             solrQuery.add(DisMaxParams.BQ, getBoostQueries(query.getBoostQueries(), query.getOriginalQuery(), query.getIndexedLanguage().code));
         } else {
@@ -144,18 +148,18 @@ public class SolrSearcher implements Searcher {
     private String[] getBoostFunctions(SearchQuery query) {
         List<String> boostFunctions = new ArrayList<>(query.getBoostFunctions());
         if (query.isBoostByPublishDate()) {
-            boostFunctions.add( boostByPublishDateQuery);
+            boostFunctions.add( boostByPublishDateQuery );
         }
         return boostFunctions.toArray(new String[boostFunctions.size()]);
     }
 
-    private String[] getQueryFields(SearchQuery query) {
+    private String[] getQueryFields(SearchQuery query, String allTextField) {
         List<String> additionalQueryFields = query.getAdditionalQueryFields();
         int size = additionalQueryFields.size() + 1;
         List<String> queryFields = new ArrayList<>(size);
 
         queryFields.addAll(additionalQueryFields);
-        queryFields.add("all_text_" + query.getIndexedLanguage().code);
+        queryFields.add(allTextField);
         return queryFields.toArray(new String[size]);
     }
 
