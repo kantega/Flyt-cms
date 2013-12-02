@@ -18,6 +18,8 @@ package no.kantega.commons.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static org.apache.commons.lang.StringUtils.isNotBlank;
+
 public class URLHelper {
 
     public static String getRootURL(HttpServletRequest request) {
@@ -43,6 +45,17 @@ public class URLHelper {
         return request.getScheme() + "://" +  request.getServerName() + portStr;
     }
 
+    public static String getUrlWithHttps(HttpServletRequest request){
+        StringBuilder sb = new StringBuilder(getServerURL(request).replaceFirst("http:", "https:"));
+        sb.append(request.getRequestURI());
+
+        String queryString = request.getQueryString();
+        if(isNotBlank(queryString)){
+            sb.append("?").append(queryString);
+        }
+        return sb.toString();
+    }
+
     /**
      * Get combined url from two fragments.
      * /a + b -> /a/b
@@ -51,11 +64,11 @@ public class URLHelper {
      */
     public static String combinePaths(String urlFragment1, String urlFragment2){
         StringBuilder urlBuilder = new StringBuilder();
-        if(!urlFragment1.endsWith("/")){
+        if (urlFragment1.endsWith("/")) {
             urlBuilder.append(urlFragment1);
-            urlBuilder.append('/');
         } else {
             urlBuilder.append(urlFragment1);
+            urlBuilder.append('/');
         }
 
         if(urlFragment2.startsWith("/")){

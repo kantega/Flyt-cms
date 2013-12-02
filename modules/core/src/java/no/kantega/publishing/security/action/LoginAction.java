@@ -35,6 +35,7 @@ import no.kantega.security.api.role.RoleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
@@ -44,6 +45,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
+
+import static no.kantega.commons.util.URLHelper.getUrlWithHttps;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 public class LoginAction extends AbstractLoginAction {
     private static final Logger log = LoggerFactory.getLogger(LoginAction.class);
@@ -55,6 +59,9 @@ public class LoginAction extends AbstractLoginAction {
     @Autowired private SystemConfiguration configuration;
     @Autowired private RememberMeHandler rememberMeHandler;
 
+    @Value("${security.login.usessl:false}")
+    private boolean loginRequireSsl;
+
     private String loginView = null;
 
     private boolean rolesExists = false;
@@ -63,11 +70,11 @@ public class LoginAction extends AbstractLoginAction {
         String username = request.getParameter("j_username");
         String domain = request.getParameter("j_domain");
         String password = request.getParameter("j_password");
-        String redirect = request.getParameter("redirect");
+        String redirect = defaultString(request.getParameter("redirect"), Aksess.getContextPath());
         String rememberMe = request.getParameter("remember_me");
 
-        if (redirect == null || redirect.length() == 0) {
-            redirect = Aksess.getContextPath();
+        if(loginRequireSsl && !request.isSecure()){
+            return redirectToSecure(request);
         }
 
         // If login page is secure, redirect to secure page after logging in
@@ -138,6 +145,10 @@ public class LoginAction extends AbstractLoginAction {
         model.put("loginLayout", getLoginLayout());
 
         return new ModelAndView(loginView, model);
+    }
+
+    private ModelAndView redirectToSecure(HttpServletRequest request) {
+        return new ModelAndView(new RedirectView(getUrlWithHttps(request)));
     }
 
     private void registerSuccessfulLogin(HttpServletRequest request, String username, String domain) {

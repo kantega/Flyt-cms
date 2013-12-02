@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 
+import static no.kantega.commons.util.URLHelper.getUrlWithHttps;
+
 /**
- *
+ * Filter for admin space that ensures user is logged in and check that request is not csrf-attempt.
  */
 public class AdminFilter implements Filter {
     private ServletContext servletContext;
@@ -50,6 +52,11 @@ public class AdminFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+        if(Aksess.getConfiguration().getBoolean("security.admin.requiressl", false)){
+            response.sendRedirect(getUrlWithHttps(request));
+            return;
+        }
 
         request.setAttribute(ServletContext.class.getName(), servletContext);
 
@@ -81,7 +88,7 @@ public class AdminFilter implements Filter {
 
                 // Check for cross site request forgery
                 if(Aksess.isCsrfCheckEnabled() && isForgedPost(request)) {
-                    log.info("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
+                    log.warn("Possible CSRF detected: by " + securitySession.getIdentity().getUserId() +"@" + securitySession.getIdentity().getDomain() +" from " +request.getRemoteHost() +", posting to " + request.getRequestURL().toString() );
                     response.sendError(HttpServletResponse.SC_FORBIDDEN, "CSRF detected");
                     return;
                 }

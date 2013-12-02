@@ -29,12 +29,10 @@ import java.util.regex.Pattern;
  *
  */
 public class LoginFilter implements Filter {
-    private ServletContext servletContext;
     private Pattern excludedFilesPattern = null;
     private Pattern exclucedHostsPattern = null;
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        servletContext = filterConfig.getServletContext();
         String filesPattern = filterConfig.getInitParameter("exclude");
         if(filesPattern != null) {
             excludedFilesPattern = Pattern.compile(filesPattern);

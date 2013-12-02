@@ -14,6 +14,8 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 
+import static org.apache.http.util.TextUtils.isBlank;
+
 
 public abstract class AbstractLoginAction implements Controller {
     private String loginLayout;
@@ -53,7 +55,7 @@ public abstract class AbstractLoginAction implements Controller {
     protected Identity getIdentityFromRequest(HttpServletRequest request) {
         String userid = request.getParameter("username");
         String domain = request.getParameter("domain");
-        if (userid == null || userid.length() == 0 || domain == null || domain.length() == 0) {
+        if (isBlank(userid) || isBlank(domain)) {
             return null;
         }
 
