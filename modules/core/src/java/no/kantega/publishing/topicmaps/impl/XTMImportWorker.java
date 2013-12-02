@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.topicmaps.impl;
 
+import com.sun.org.apache.xpath.internal.CachedXPathAPI;
+import com.sun.org.apache.xpath.internal.XPathAPI;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XPathHelper;
@@ -26,8 +28,6 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import no.kantega.publishing.topicmaps.data.TopicBaseName;
 import no.kantega.publishing.topicmaps.data.TopicOccurence;
-import org.apache.xpath.CachedXPathAPI;
-import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -50,7 +50,7 @@ public class XTMImportWorker{
     }
 
     public List<Topic> getTopicsFromDocument(Document document) throws TransformerException {
-        List<Topic> topicList = new ArrayList<Topic>();
+        List<Topic> topicList = new ArrayList<>();
         NodeList topics = new CachedXPathAPI().selectNodeList(document.getDocumentElement(), "topic");
         for (int i = 0; i < topics.getLength(); i++) {
             Element elmTopic = (Element)topics.item(i);
@@ -106,7 +106,7 @@ public class XTMImportWorker{
     private String getAttributeValue(Element element,  String[] attributes,String... xpaths) throws TransformerException {
         String attributeValue = null;
         for(String xpath: xpaths){
-            Element attributeElement = (Element)XPathAPI.selectSingleNode(element, xpath);
+            Element attributeElement = (Element) XPathAPI.selectSingleNode(element, xpath);
             if (attributeElement != null) {
                 int index = 0;
                 while ((attributeValue == null || attributeValue.isEmpty()) && index < attributes.length){

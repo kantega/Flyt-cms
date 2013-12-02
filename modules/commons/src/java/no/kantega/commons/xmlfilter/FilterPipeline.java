@@ -16,9 +16,9 @@
 
 package no.kantega.commons.xmlfilter;
 
+import com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl;
+import com.sun.org.apache.xml.internal.serializer.OutputPropertiesFactory;
 import no.kantega.commons.exception.SystemException;
-import org.apache.xalan.processor.TransformerFactoryImpl;
-import org.apache.xml.serializer.OutputPropertiesFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

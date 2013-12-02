@@ -16,28 +16,25 @@
 
 package no.kantega.publishing.common.util.templates;
 
+import com.sun.org.apache.xpath.internal.XPathAPI;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.util.XMLHelper;
+import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
+import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
-import no.kantega.commons.util.XMLHelper;
-import no.kantega.commons.exception.InvalidFileException;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import no.kantega.publishing.common.factory.AttributeFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.NodeList;
-import org.w3c.dom.Element;
-import org.apache.xpath.XPathAPI;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javax.xml.transform.TransformerException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -55,7 +52,7 @@ public class ContentTemplateValidator {
      * @return
      */
     public List<TemplateConfigurationValidationError> validate(ContentTemplate contentTemplate, int contentTemplateType) {
-        List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+        List<TemplateConfigurationValidationError> errors = new ArrayList<>();
 
         // Check attributes in XML file
         try {
