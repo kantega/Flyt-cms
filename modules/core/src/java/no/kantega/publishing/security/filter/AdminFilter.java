@@ -53,7 +53,7 @@ public class AdminFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        if(Aksess.getConfiguration().getBoolean("security.admin.requiressl", false)){
+        if(Aksess.getConfiguration().getBoolean("security.admin.requiressl", false) && !request.isSecure()){
             response.sendRedirect(getUrlWithHttps(request));
             return;
         }
