@@ -71,7 +71,7 @@
                     <c:forEach items="${topReferers}" var="ref">
                         <tr>
                             <td>
-                                <a target="refererwindow" href="<c:out value="${ref.referer}"/>"><c:out value="${ref.refererShort}"/></a>
+                                <a target="refererwindow" href="${ref.referer}">${ref.refererShort}</a>
                             </td>
                             <td class="number">${ref.occurrences}</td>
                         </tr>
@@ -84,7 +84,7 @@
                 <table border="0" width="100%">
                     <c:forEach items="${topReferingHosts}" var="ref">
                         <tr>
-                            <td><c:out value="${ref.referer}"/></td>
+                            <td>${ref.referer}</td>
                             <td class="number">${ref.occurrences}</td>
                         </tr>
                     </c:forEach>
@@ -95,7 +95,7 @@
                 <table border="0" width="100%">
                     <c:forEach items="${topReferingQueries}" var="ref">
                         <tr>
-                            <td><c:out value="${ref.referer}"/></td>
+                            <td>${ref.referer}</td>
                             <td class="number">${ref.occurrences}</td>
                         </tr>
                     </c:forEach>

@@ -29,10 +29,10 @@
 <div class="topicList">
     <ol class="alphabeticalList columnized columnCount3">
         <c:forEach var="letter" items="${topics}">
-            <li class="letter" id="Letter_${letter.key}"><span class="letter"><c:out value="${letter.key}"/></span>
+            <li class="letter" id="Letter_${letter.key}"><span class="letter">${letter.key}</span>
                 <ol>
                     <c:forEach var="topic" items="${letter.value}">
-                        <li><a href="ViewTopic.action?topicId=${topic.id}&amp;topicMapId=${topic.topicMapId}" class="topic"><c:out value="${topic.baseName}"/></a>&nbsp;<span class="type">(${topic.instanceOf.baseName})</span></li>
+                        <li><a href="ViewTopic.action?topicId=${topic.id}&amp;topicMapId=${topic.topicMapId}" class="topic">${topic.baseName}</a>&nbsp;<span class="type">(${topic.instanceOf.baseName})</span></li>
                     </c:forEach>
                 </ol>
             </li>

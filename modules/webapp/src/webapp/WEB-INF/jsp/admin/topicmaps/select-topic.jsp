@@ -61,7 +61,7 @@
                                 <optgroup label="${topicMap.name}">
                             </c:if>
                             <c:forEach var="topicType" items="${topicMap.topicTypes}">
-                                <option value="${topicMap.id}:<c:out value="${topicType.id}"/>" <c:if test="${topicType.id == instanceOf.id && topicMap.id == instanceOf.topicMapId}">selected</c:if>><c:out value="${topicType.baseName}"/></option>
+                                <option value="${topicMap.id}:${topicType.id}" <c:if test="${topicType.id == instanceOf.id && topicMap.id == instanceOf.topicMapId}">selected</c:if>>${topicType.baseName}</option>
                             </c:forEach>
                             <c:if test="${fn:length(topicMaps) > 1}">
                                 </optgroup>
@@ -84,11 +84,11 @@
                             <tr>
                                 <c:choose>
                                     <c:when test="${selectMultiple}">
-                                        <td><input type="checkbox" class="checkbox" name="topicId" id="topic${status.index}" value="<c:out value="${topic.topicMapId}"/>:<c:out value="${topic.id}"/>"></td>
-                                        <td><label for="topic${status.index}"><c:out value="${topic.baseName}"/></label></td>
+                                        <td><input type="checkbox" class="checkbox" name="topicId" id="topic${status.index}" value="${topic.topicMapId}:${topic.id}"></td>
+                                        <td><label for="topic${status.index}">${topic.baseName}</label></td>
                                     </c:when>
                                     <c:otherwise>
-                                        <td><a href="Javascript:addTopic(${topic.topicMapId}, '<c:out value="${topic.id}"/>', '<c:out value="${topic.baseName}"/>')"><c:out value="${topic.baseName}"/></a></td>
+                                        <td><a href="Javascript:addTopic(${topic.topicMapId}, '${topic.id}', '${topic.baseName}')">${topic.baseName}</a></td>
                                     </c:otherwise>
                                 </c:choose>
                             </tr>

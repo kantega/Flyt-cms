@@ -40,11 +40,11 @@
             <c:if test="${numProfileConfigurations > 1}">
                 <select name="domain">
                     <c:forEach items="${profileConfigurations}" var="config">
-                        <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
+                        <option value="${config.domain}" <c:if test="${domain eq config.domain}">selected</c:if>>${config.description}</option>
                     </c:forEach>
                 </select>
             </c:if>
-            <input type="text" name="q" value="<c:out value="${query}"/>">
+            <input type="text" name="q" value="${query}">
             <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
         </form>
         <br>
@@ -60,9 +60,9 @@
             <c:set var="numberOfUsers" value="0"/>
             <c:forEach var="user" items="${users}" varStatus="status">
                 <c:set var="numberOfUsers" value="${numberOfUsers+1}"/>
-                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                    <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')"><c:out value="${user.givenName}"/> <c:out value="${user.surname}"/></a></td>
-                    <td><c:out value="${user.department}"/></td>
+                <tr class="tableRow${status.index mod 2}">
+                    <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')">${user.givenName} ${user.surname}</a></td>
+                    <td>${user.department}</td>
                     <td align="right">
                         <c:if test="${canSetPassword}">
                             <a class="button" href="Javascript:doAction('../password/reset', '${user.identity.domain}', '${user.identity.userId}')"><kantega:label key="useradmin.searchprofiles.password"/></a>
@@ -86,7 +86,7 @@
         <c:if test="${canEdit}">
             <div class="buttonGroup">
                 <form action="edit">
-                    <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
+                    <input type="hidden" name="domain" value="${domain}">
                     <span class="button"><input type="submit" class="add" value="<kantega:label key="useradmin.searchprofiles.newprofile"/>"></span>
                 </form>
             </div>

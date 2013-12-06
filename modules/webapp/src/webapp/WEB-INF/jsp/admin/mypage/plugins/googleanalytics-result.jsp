@@ -28,9 +28,9 @@
         data.addColumn('number', '<kantega:label key="aksess.googleanalytics.pageviews"/>');
         data.addRows(${fn:length(usage.perMonthStats)});
         <c:forEach items="${usage.perMonthStats}" var="entry" varStatus="status">
-            data.setValue(<c:out value="${status.index}"/>, 0, getMonthName('<c:out value="${entry.month}"/>'));
-            data.setValue(<c:out value="${status.index}"/>, 1, <c:out value="${entry.visits}"/>);
-            data.setValue(<c:out value="${status.index}"/>, 2, <c:out value="${entry.pageviews}"/>);
+            data.setValue(${status.index}, 0, getMonthName('${entry.month}'));
+            data.setValue(${status.index}, 1, ${entry.visits});
+            data.setValue(${status.index}, 2, ${entry.pageviews});
         </c:forEach>
 
         chart = new google.visualization.AreaChart(document.getElementById('permonthstats_div'));
@@ -40,15 +40,15 @@
 
 <c:choose>
     <c:when test="${not empty errorMsg}">
-        <p><c:out value="${errorMsg}"/></p>
+        <p>${errorMsg}</p>
     </c:when>
     <c:otherwise>
         <div id="permonthstats_div"></div>
 
         <h3><kantega:label key="aksess.googleanalytics.lastmonth"/></h3>
         <ul>
-            <li><c:out value="${usage.visits}"/> <kantega:label key="aksess.googleanalytics.visits"/></li>
-            <li><c:out value="${usage.pageviews}"/> <kantega:label key="aksess.googleanalytics.pageviews"/></li>
+            <li>${usage.visits} <kantega:label key="aksess.googleanalytics.visits"/></li>
+            <li>${usage.pageviews} <kantega:label key="aksess.googleanalytics.pageviews"/></li>
             <li><fmt:formatNumber value="${usage.pageviews/usage.visits}" minFractionDigits="2" maxFractionDigits="2"/> <kantega:label key="aksess.googleanalytics.pages"/>/<kantega:label key="aksess.googleanalytics.visits"/></li>
         </ul>
 
@@ -63,7 +63,7 @@
             <c:forEach items="${pageviews}" var="entry">
                 <tr class="tableRow${status.index mod 2}">
                     <td>
-                        <a href="<aksess:geturl/><c:out value="${entry.path}"/>" target="_top">
+                        <a href="<aksess:geturl/>${entry.path}" target="_top">
                             <c:choose>
                                 <c:when test="${fn:length(entry.path) gt 20}">
                                     ${fn:substring(entry.path, 0, 19)}...
@@ -74,8 +74,8 @@
                             </c:choose>
                         </a>
                     </td>
-                    <td><c:out value="${entry.title}"/></td>
-                    <td class="number"><c:out value="${entry.views}"/></td>
+                    <td>${entry.title}</td>
+                    <td class="number">${entry.views}</td>
                 </tr>
             </c:forEach>
         </table>
@@ -89,8 +89,8 @@
 
             <c:forEach items="${usage.browsers}" var="browser">
                 <tr>
-                    <td><c:out value="${browser.key}"/></td>
-                    <td class="number"><c:out value="${browser.value}"/></td>
+                    <td>${browser.key}</td>
+                    <td class="number">${browser.value}</td>
                 </tr>
             </c:forEach>
         </table>

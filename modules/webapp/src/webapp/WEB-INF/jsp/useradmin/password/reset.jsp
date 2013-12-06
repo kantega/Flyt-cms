@@ -54,27 +54,27 @@
         </form>
 
         <form action="reset" name="myform" method="post" id="mailform" style="<c:if test="${!maildefault}">display: none;</c:if>">
-            <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-            <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+            <input type="hidden" name="domain" value="${domain}">
+            <input type="hidden" name="userId" value="${userId}">
             <admin:box>
                 <p>
                     <label>Fra:</label>
-                    <input type="text" name="from" class="textInput" value="<c:out value="${mailfrom}"/>" maxlength="64">
+                    <input type="text" name="from" class="textInput" value="${mailfrom}" maxlength="64">
                 </p>
 
                 <p>
                     <label>Til:</label>
-                    <a href="mailto:<c:out value="${mailto}"/>"><c:out value="${mailto}"/></a>
+                    <a href="mailto:${mailto}">${mailto}</a>
                 </p>
 
                 <p>
                     <label>Emne:</label>
-                    <input type="text" name="subject" class="textInput" value="<c:out value="${mailsubject}"/>" maxlength="64">
+                    <input type="text" name="subject" class="textInput" value="${mailsubject}" maxlength="64">
                 </p>
 
                 <p>
                     <label>Tekst:</label>
-                    <textarea name="message" style="width: 600px; height: 110px"><c:out value="${mailtemplate}"/></textarea>
+                    <textarea name="message" style="width: 600px; height: 110px">${mailtemplate}</textarea>
 
                 </p>
 
@@ -88,17 +88,17 @@
     </c:if>
 
     <form action="reset" name="myform" method="post" id="passwordform" style="<c:if test="${maildefault}">display: none;</c:if>">
-        <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
-        <input type="hidden" name="userId" value="<c:out value="${userId}"/>">
+        <input type="hidden" name="domain" value="${domain}">
+        <input type="hidden" name="userId" value="${userId}">
         <admin:box>
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.password.password1"/></label></div>
-                <div class="inputs"><input type="password" name="password1" class="textInput" value="<c:out value="${password1}"/>" maxlength="64" autocomplete="off"></div>
+                <div class="inputs"><input type="password" name="password1" class="textInput" value="${password1}" maxlength="64" autocomplete="off"></div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.password.password2"/></label></div>
-                <div class="inputs"><input type="password" name="password2" class="textInput" value="<c:out value="${password1}"/>" maxlength="64" autocomplete="off"></div>
+                <div class="inputs"><input type="password" name="password2" class="textInput" value="${password1}" maxlength="64" autocomplete="off"></div>
             </div>
 
             <div class="buttonGroup">

@@ -67,7 +67,7 @@
                     <div class="inputs">
                         <select name="instanceOf" id="TopicInstanceOf">
                             <c:forEach var="topicType" items="${topicTypes}">
-                                <option value="${topicType.id}"><c:out value="${topicType.baseName}"/></option>
+                                <option value="${topicType.id}">${topicType.baseName}</option>
                             </c:forEach>
                         </select>
                     </div>
@@ -80,17 +80,17 @@
                         <label for="TopicOccurence${status.index}">
                             <c:choose>
                                 <c:when test="${occurence.instanceOf.baseName != ''}">
-                                    <c:out value="${occurence.instanceOf.baseName}"/>
+                                    ${occurence.instanceOf.baseName}
                                 </c:when>
                                 <c:otherwise>
-                                    <c:out value="${occurence.instanceOf.id}"/>
+                                    ${occurence.instanceOf.id}
                                 </c:otherwise>
                             </c:choose>
 
                         </label>
                     </div>
                     <div class="inputs">
-                        <textarea name="occurence_resourcedata_${status.index}" wrap="soft" rows="6" cols="40"><c:out value="${occurence.resourceData}"/></textarea>
+                        <textarea name="occurence_resourcedata_${status.index}" wrap="soft" rows="6" cols="40">${occurence.resourceData}</textarea>
                     </div>
                 </div>
             </c:forEach>

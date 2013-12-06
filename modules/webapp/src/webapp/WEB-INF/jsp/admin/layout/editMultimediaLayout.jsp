@@ -178,13 +178,13 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.medianame"/></legend>
-                        <input type="text" class="fullWidth" name="name" id="MultimediaName" value="<c:out value="${media.name}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                        <input type="text" class="fullWidth" name="name" id="MultimediaName" value="${media.name}" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.altname"/></legend>
-                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="<c:out value="${media.altname}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="${media.altname}" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                         <div class="ui-state-highlight">
                             <kantega:label key="aksess.multimedia.altinfo"/>
                         </div>
@@ -193,7 +193,7 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.author"/></legend>
-                        <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="<c:out value="${media.author}"/>" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
+                        <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="${media.author}" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                     </fieldset>
                 </div>
 
@@ -213,13 +213,13 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.usage"/></legend>
-                        <textarea name="usage" id="MultimediaUsage" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.usage}"/></textarea>
+                        <textarea name="usage" id="MultimediaUsage" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>${media.usage}</textarea>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.description"/></legend>
-                        <textarea name="description" id="MultimediaDescription" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>><c:out value="${media.description}"/></textarea>
+                        <textarea name="description" id="MultimediaDescription" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>${media.description}</textarea>
                     </fieldset>
                 </div>
 

@@ -64,11 +64,11 @@
             </thead>
             <tbody>
             <c:forEach items="${most}" var="q" varStatus="status">
-                <tr  class="tableRow<c:out value="${status.index mod 2}"/>">
-                    <td><c:out value="${status.index + 1}"/></td>
-                    <td><c:out value="${q.query}"/></td>
+                <tr  class="tableRow${status.index mod 2}">
+                    <td>${status.index + 1}</td>
+                    <td>${q.query}</td>
                     <td class="number"><fmt:formatNumber value="${q.numberOfHits}" maxFractionDigits="2"/></td>
-                    <td class="number"><c:out value="${q.numberOfSearches}"/></td>
+                    <td class="number">${q.numberOfSearches}</td>
                 </tr>
             </c:forEach>
             </tbody>
@@ -85,11 +85,11 @@
             </thead>
             <tbody>
             <c:forEach items="${least}" var="q" varStatus="status">
-                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                    <td><c:out value="${status.index + 1}"/></td>
-                    <td><c:out value="${q.query}"/></td>
+                <tr class="tableRow${status.index mod 2}">
+                    <td>${status.index + 1}</td>
+                    <td>${q.query}</td>
                     <td class="number"><fmt:formatNumber value="${q.numberOfHits}" maxFractionDigits="2"/></td>
-                    <td class="number"><c:out value="${q.numberOfSearches}"/></td>
+                    <td class="number">${q.numberOfSearches}</td>
                 </tr>
             </c:forEach>
             </tbody>

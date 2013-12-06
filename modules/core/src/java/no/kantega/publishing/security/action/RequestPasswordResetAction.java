@@ -1,6 +1,5 @@
 package no.kantega.publishing.security.action;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
@@ -9,6 +8,8 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.ResetPasswordToken;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.profile.Profile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,8 +18,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 
 public class RequestPasswordResetAction extends AbstractLoginAction  {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private String requestResetPasswordView = null;
     private String mailSubject;
     private String mailFrom;
@@ -27,7 +31,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Identity identity = getIdentityFromRequest(request);
         if (identity != null) {
-            return sendPasswordRequest(request, response);
+            return sendPasswordRequest(request);
         } else {
             Map<String, Object> model = new HashMap<>();
             model.put("loginLayout", getLoginLayout());
@@ -35,7 +39,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         }
     }
 
-    private ModelAndView sendPasswordRequest(HttpServletRequest request, HttpServletResponse response) throws SystemException, ConfigurationException {
+    private ModelAndView sendPasswordRequest(HttpServletRequest request) throws SystemException {
         Identity identity = getIdentityFromRequest(request);
 
         Profile userProfile = getProfileManager().getProfileForUser(identity);
@@ -44,12 +48,16 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         model.put("loginLayout", getLoginLayout());
         
         if (userProfile == null) {
+            log.warn("Could not find userprofile for " + identity.getUserId());
             model.put("error", "aksess.resetpassword.no-profile");
             return new ModelAndView(requestResetPasswordView, model);
         } else if (userProfile.getEmail() == null || !userProfile.getEmail().contains("@")) {
+            log.warn("Userprofile {} did not have any email",  identity.getUserId());
             model.put("error", "aksess.resetpassword.no-email");
             return new ModelAndView(requestResetPasswordView, model);
         }
+
+        log.info("Generating password reset token for user " + userProfile.getIdentity().getUserId());
 
         Date expireDate = getExpireDate();
 
@@ -66,7 +74,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         mailParam.put("expireDate", expireDate);
         mailParam.put("profile", userProfile);
 
-        if (mailFrom == null || mailFrom.length() == 0) {
+        if (isBlank(mailFrom)) {
             mailFrom = Aksess.getConfiguration().getString("mail.from");
         }
 

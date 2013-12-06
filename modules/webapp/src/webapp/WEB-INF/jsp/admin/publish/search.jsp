@@ -61,7 +61,7 @@
         <c:if test="${searchResponse.numberOfHits gt 10}">
             <div class="paging">
                 <c:if test="${not empty links.prevPageUrl}">
-                    <a class="previous" href="<c:out value="${links.prevPageUrl}"/>"><kantega:label key="aksess.search.results.previous"/></a>
+                    <a class="previous" href="${links.prevPageUrl}"><kantega:label key="aksess.search.results.previous"/></a>
                 </c:if>
 
                 <ul class="pagenumbers">
@@ -69,10 +69,10 @@
                         <li>
                             <c:choose>
                                 <c:when test="${status.current.key == searchResponse.currentPage + 1}">
-                                    <a class="currentpage" href="<c:out value="${status.current.value}"/>"><b><c:out value="${status.current.key}"/></b></a>
+                                    <a class="currentpage" href="${status.current.value}"><b>${status.current.key}</b></a>
                                 </c:when>
                                 <c:otherwise>
-                                    <a href="<c:out value="${status.current.value}"/>"><c:out value="${status.current.key}"/></a>
+                                    <a href="${status.current.value}">${status.current.key}</a>
                                 </c:otherwise>
                             </c:choose>
                             <c:if test="${!status.last}">
@@ -82,7 +82,7 @@
                     </c:forEach>
                 </ul>
                 <c:if test="${not empty nextPageUrl}">
-                    <a class="next" href="<c:out value="${nextPageUrl}"/>"><kantega:label key="aksess.search.results.next"/></a>
+                    <a class="next" href="${nextPageUrl}"><kantega:label key="aksess.search.results.next"/></a>
                 </c:if>
             </div>
         </c:if>

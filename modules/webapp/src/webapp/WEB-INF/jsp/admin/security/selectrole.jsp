@@ -59,11 +59,11 @@
                         <tr class="tableRow<%=(i%2)%>">
                             <c:choose>
                                 <c:when test="${multiple}">
-                                    <td><input type="checkbox" name="role" id="role<%=i%>" value="<c:out value="${role.id}"/>"></td>
+                                    <td><input type="checkbox" name="role" id="role<%=i%>" value="${role.id}"></td>
                                     <td><label for="role<%=i%>">${displayName}</label></td>
                                 </c:when>
                                 <c:otherwise>
-                                    <td><a href="javascript:selectRole('<c:out value="${role.id}"/>', '<c:out value="${displayName}"/>')"><c:out value="${displayName}"/></a></td>
+                                    <td><a href="javascript:selectRole('${role.id}', '${displayName}')">${displayName}</a></td>
                                 </c:otherwise>
                             </c:choose>
                         </tr>

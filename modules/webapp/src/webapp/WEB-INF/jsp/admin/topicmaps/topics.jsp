@@ -1,10 +1,3 @@
-<%@ page import="no.kantega.publishing.common.data.WorkList" %>
-<%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
-<%@ page import="java.text.DecimalFormat" %>
-<%@ page import="java.util.Properties" %>
-<%@ page import="java.util.Enumeration" %>
-<%@ page import="java.util.Iterator" %>
-<%@ page import="java.util.Map" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -115,7 +108,7 @@
     <div id="TopicTabs">
         <ul>
             <c:forEach var="topicMap" items="${topicMaps}" varStatus="status">
-                <li><a href="SearchTopics.action?topicMapId=${topicMap.id}"><c:out value="${topicMap.name}"/></a></li>
+                <li><a href="SearchTopics.action?topicMapId=${topicMap.id}">${topicMap.name}</a></li>
             </c:forEach>
         </ul>
     </div>

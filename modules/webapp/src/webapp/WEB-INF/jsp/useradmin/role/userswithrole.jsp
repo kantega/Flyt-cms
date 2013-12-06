@@ -37,8 +37,8 @@
         <h1><kantega:label key="useradmin.roleusers.title"/></h1>
 
         <form action="removeuserrole" name="removerole" method="post">
-            <input type="hidden" name="roleId" value="<c:out value="${roleId}"/>">
-            <input type="hidden" name="roleDomain" value="<c:out value="${roleDomain}"/>">
+            <input type="hidden" name="roleId" value="${roleId}">
+            <input type="hidden" name="roleDomain" value="${roleDomain}">
             <input type="hidden" name="userId" value="">
             <input type="hidden" name="userDomain" value="">
             <input type="hidden" name="context" value="role">
@@ -46,14 +46,14 @@
         <table border="0" cellspacing="0" cellpadding="0" width="400">
             <c:forEach items="${profileSets}" var="profileSet">
                 <tr class="tableHeading">
-                    <td><c:out value="${profileSet.description}"/></td>
+                    <td>${profileSet.description}</td>
                 </tr>
                 <c:forEach items="${profileSet.profiles}" var="profile" varStatus="status">
-                    <tr class="tableRow<c:out value="${status.index mod 2}"/>">
-                        <td><a href="../profile/edit?domain=${profile.identity.domain}&amp;userId=${profile.identity.userId}"><c:out value="${profile.givenName}"/> <c:out value="${profile.surname}"/></a></td>
+                    <tr class="tableRow${status.index mod 2}">
+                        <td><a href="../profile/edit?domain=${profile.identity.domain}&amp;userId=${profile.identity.userId}">${profile.givenName} ${profile.surname}</a></td>
                         <td align="right">
                             <c:if test="${profileSet.isEditable}">
-                                <a href="Javascript:removeRole('<c:out value="${profile.identity.userId}"/>', '<c:out value="${profile.identity.domain}"/>')" class="button delete"><kantega:label key="useradmin.userroles.remove"/></a>
+                                <a href="Javascript:removeRole('${profile.identity.userId}', '${profile.identity.domain}')" class="button delete"><kantega:label key="useradmin.userroles.remove"/></a>
                             </c:if>
                         </td>
                     </tr>

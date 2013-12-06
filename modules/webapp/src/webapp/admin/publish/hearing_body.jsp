@@ -60,7 +60,7 @@
                             <b>Vennligst fyll ut følgende felt riktig:</b>
                             <ul>
                                 <c:forEach items="${errors.errors}" var="error">
-                                    <LI><c:out value="${error.message}"/><!-- [<A href="Javascript:document.myform.<c:out value="${error.field}"/>.focus()">vis meg</A>]--></LI>
+                                    <LI>${error.message}<!-- [<A href="Javascript:document.myform.${error.field}.focus()">vis meg</A>]--></LI>
                                 </c:forEach>
                             </ul>
                         </div>

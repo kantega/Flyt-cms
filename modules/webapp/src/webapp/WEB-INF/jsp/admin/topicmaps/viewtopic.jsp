@@ -99,7 +99,7 @@
 
 <kantega:section id="body">
     <admin:box>
-        <h1><c:out value="${topic.baseName}"/> <c:if test="${instanceOf != null}"><span class="instanceof">(<c:out value="${instanceOf.baseName}"/>)</span></c:if></h1>
+        <h1>${topic.baseName} <c:if test="${instanceOf != null}"><span class="instanceof">(${instanceOf.baseName})</span></c:if></h1>
 
         <div id="TopicOccurences">
             <c:forEach var="occurence" items="${topic.occurences}">

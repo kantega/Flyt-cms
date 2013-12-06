@@ -21,15 +21,15 @@
     <table class="fullWidth">
         <tr>
             <td><kantega:label key="aksess.userinformation.name"/></td>
-            <td><c:out value="${currentUser.name}"/></td>
+            <td>${currentUser.name}</td>
         </tr>
         <tr>
             <td><kantega:label key="aksess.userinformation.email"/></td>
-            <td><c:out value="${currentUser.email}"/></td>
+            <td>${currentUser.email}</td>
         </tr>
         <tr>
             <td><kantega:label key="aksess.userinformation.department"/></td>
-            <td><c:out value="${currentUser.department}"/></td>
+            <td>${currentUser.department}</td>
         </tr>
         <tr>
             <td><kantega:label key="aksess.userinformation.roles"/></td>
@@ -40,8 +40,8 @@
                             <c:forEach items="${currentUser.roles}" var="role">
                                 <li>
                                     <c:choose>
-                                        <c:when test="${not empty role.value.name}"><c:out value="${role.value.name}"/></c:when>
-                                        <c:otherwise><c:out value="${role.value.id}"/></c:otherwise>
+                                        <c:when test="${not empty role.value.name}">${role.value.name}</c:when>
+                                        <c:otherwise>${role.value.id}</c:otherwise>
                                     </c:choose>
 
                                 </li>
@@ -60,7 +60,7 @@
                 <td>
                     <ul>
                         <c:forEach items="${currentUser.topics}" var="topic">
-                            <li><c:out value="${topic.baseName}"/></li>
+                            <li>${topic.baseName}</li>
                         </c:forEach>
                     </ul>
 
@@ -73,7 +73,7 @@
                 <td>
                     <ul>
                         <c:forEach items="${currentUser.orgUnits}" var="orgUnit">
-                            <li><c:out value="${orgUnit.name}"/></li>
+                            <li>${orgUnit.name}</li>
                         </c:forEach>
                     </ul>
                 </td>

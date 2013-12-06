@@ -27,7 +27,7 @@
 
 <kantega:section id="content">
     <form action="edit" id="EditUserProfileForm" name="myform" method="post" class="inline">
-        <input type="hidden" name="isNew" value="<c:out value="${isNew}"/>">
+        <input type="hidden" name="isNew" value="${isNew}">
         <input type="hidden" name="save" value="true">
         <admin:box>
             <h1>
@@ -52,14 +52,14 @@
                                     </c:otherwise>
                                     </c:choose>
                                     <c:forEach items="${configurations}" var="config">
-                                        <option value="<c:out value="${config.domain}"/>" <c:if test="${profile.identity.domain eq config.domain}">selected</c:if> <c:if test="${config.profileUpdateManager == null}">disabled</c:if>><c:out value="${config.description}"/></option>
+                                        <option value="${config.domain}" <c:if test="${profile.identity.domain eq config.domain}">selected</c:if> <c:if test="${config.profileUpdateManager == null}">disabled</c:if>>${config.description}</option>
                                     </c:forEach>
                                 </select>
                         </div>
                     </div>
                 </c:when>
                 <c:otherwise>
-                    <input type="hidden" name="domain" value="<c:out value="${profile.identity.domain}"/>">
+                    <input type="hidden" name="domain" value="${profile.identity.domain}">
                 </c:otherwise>
             </c:choose>
 
@@ -68,11 +68,11 @@
                 <div class="inputs">
                     <c:choose>
                         <c:when test="${isNew}">
-                            <input type="text" name="userId" class="textInput" value="<c:out value="${profile.identity.userId}"/>" maxlength="64">
+                            <input type="text" name="userId" class="textInput" value="${profile.identity.userId}" maxlength="64">
                         </c:when>
                         <c:otherwise>
-                            <input type="text" name="userIdDummy" class="textInput" value="<c:out value="${profile.identity.userId}"/>" maxlength="64" disabled="disabled">
-                            <input type="hidden" name="userId" value="<c:out value="${profile.identity.userId}"/>">
+                            <input type="text" name="userIdDummy" class="textInput" value="${profile.identity.userId}" maxlength="64" disabled="disabled">
+                            <input type="hidden" name="userId" value="${profile.identity.userId}">
                         </c:otherwise>
                     </c:choose>
                 </div>
@@ -80,22 +80,22 @@
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.profile.givenname"/></label></div>
-                <div class="inputs"><input type="text" name="givenName" class="textInput" value="<c:out value="${profile.givenName}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
+                <div class="inputs"><input type="text" name="givenName" class="textInput" value="${profile.givenName}" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.profile.surname"/></label></div>
-                <div class="inputs"><input type="text" name="surname" class="textInput" value="<c:out value="${profile.surname}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
+                <div class="inputs"><input type="text" name="surname" class="textInput" value="${profile.surname}" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.profile.email"/></label></div>
-                <div class="inputs"><input type="email" name="email" class="textInput" value="<c:out value="${profile.email}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
+                <div class="inputs"><input type="email" name="email" class="textInput" value="${profile.email}" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
             </div>
 
             <div class="formElement">
                 <div class="heading"><label><kantega:label key="useradmin.profile.department"/></label></div>
-                <div class="inputs"><input type="text" name="department" class="textInput" value="<c:out value="${profile.department}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
+                <div class="inputs"><input type="text" name="department" class="textInput" value="${profile.department}" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>></div>
             </div>
 
             <c:if test="${!canEdit}">
@@ -106,7 +106,7 @@
 
             <div class="buttonGroup">
                 <span class="button"><input type="submit" class="ok" value="<kantega:label key="aksess.button.save"/>" <c:if test="${!canEdit}">disabled="disabled"</c:if>></span>
-                <span class="button"><input type="button" class="cancel" onclick="location='search?domain=<c:out value="${profile.identity.domain}"/>'" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                <span class="button"><input type="button" class="cancel" onclick="location='search?domain=${profile.identity.domain}'" value="<kantega:label key="aksess.button.cancel"/>"></span>
             </div>
         </admin:box>
     </form>

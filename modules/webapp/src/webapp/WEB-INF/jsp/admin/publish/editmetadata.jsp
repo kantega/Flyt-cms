@@ -64,14 +64,14 @@
         <div class="contentAttribute">
             <div class="heading"><kantega:label key="aksess.contentproperty.alttitle"/></div>
             <div class="inputs">
-                <input type="text" name="alttitle" size="72" class="fullWidth" value="<c:out value="${currentContent.altTitle}"/>" maxlength="255" tabindex="20">
+                <input type="text" name="alttitle" size="72" class="fullWidth" value="${currentContent.altTitle}" maxlength="255" tabindex="20">
             </div>
         </div>
 
         <div class="contentAttribute">
             <div class="heading"><kantega:label key="aksess.contentproperty.publisher"/></div>
             <div class="inputs">
-                <input type="text" name="publisher" size="64" class="fullWidth" value="<c:out value="${currentContent.publisher}"/>" maxlength="64" tabindex="30">
+                <input type="text" name="publisher" size="64" class="fullWidth" value="${currentContent.publisher}" maxlength="64" tabindex="30">
             </div>
         </div>
         <!-- Owner -->
@@ -103,7 +103,7 @@
         <div class="contentAttribute">
             <div class="heading"><kantega:label key="aksess.contentproperty.keywords"/></div>
             <div class="inputs">
-                <textarea name="keywords" cols="72" rows="5"  class="fullWidth" wrap="soft" tabindex="50"><c:out value="${currentContent.keywords}"/></textarea>
+                <textarea name="keywords" cols="72" rows="5"  class="fullWidth" wrap="soft" tabindex="50">${currentContent.keywords}</textarea>
             </div>
         </div>
         <div class="contentAttribute">

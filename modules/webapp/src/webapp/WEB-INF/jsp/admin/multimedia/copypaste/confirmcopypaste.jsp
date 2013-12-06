@@ -35,12 +35,12 @@
 <kantega:section id="body">
 
     <form name="myform" method="post" action="CopyPasteMultimedia.action">
-        <input type="hidden" name="mmId" value="<c:out value="${multimedia.id}"/>">
-        <input type="hidden" name="newParentId" value="<c:out value="${newParent.id}"/>">
+        <input type="hidden" name="mmId" value="${multimedia.id}">
+        <input type="hidden" name="newParentId" value="${newParent.id}">
 
         <admin:box>
             <p>
-                <kantega:label key="aksess.copypaste.move"/> <b><c:out value="${multimedia.name}"/></b> <kantega:label key="aksess.copypaste.under"/> <b><c:out value="${newParent.name}"/></b> ?
+                <kantega:label key="aksess.copypaste.move"/> <b>${multimedia.name}</b> <kantega:label key="aksess.copypaste.under"/> <b>${newParent.name}</b> ?
             </p>
 
             <div class="buttonGroup">

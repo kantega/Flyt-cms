@@ -41,23 +41,23 @@
                                 <select name="domain" class="textInput">
                             </c:when>
                             <c:otherwise>
-                                <input type="hidden" name="domain" value="<c:out value="${role.domain}"/>">
+                                <input type="hidden" name="domain" value="${role.domain}">
                                 <select name="domainDummy" disabled class="textInput">
                             </c:otherwise>
                         </c:choose>
                         <c:forEach items="${configurations}" var="config">
-                            <option value="<c:out value="${config.domain}"/>" <c:if test="${role.domain eq config.domain}">selected</c:if> <c:if test="${config.roleUpdateManager == null}">disabled</c:if>><c:out value="${config.description}"/></option>
+                            <option value="${config.domain}" <c:if test="${role.domain eq config.domain}">selected</c:if> <c:if test="${config.roleUpdateManager == null}">disabled</c:if>>${config.description}</option>
                         </c:forEach>
                         </select>
                     </p>
                 </c:when>
                 <c:otherwise>
-                    <input type="hidden" name="domain" value="<c:out value="${configurations[0].domain}"/>">
+                    <input type="hidden" name="domain" value="${configurations[0].domain}">
                 </c:otherwise>
             </c:choose>
             <p>
                 <label><kantega:label key="useradmin.role.name"/></label>
-                <input type="text" name="roleId" class="textInput" value="<c:out value="${role.id}"/>" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
+                <input type="text" name="roleId" class="textInput" value="${role.id}" maxlength="64" <c:if test="${!canEdit}">disabled="disabled"</c:if>>
             </p>
 
             <c:if test="${!canEdit}">

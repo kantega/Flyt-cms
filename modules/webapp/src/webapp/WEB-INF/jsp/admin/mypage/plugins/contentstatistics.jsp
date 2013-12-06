@@ -27,19 +27,19 @@
     <tbody>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofpages"/></td>
-        <td class="number"><c:out value="${contentCount}"/></td>
+        <td class="number">${contentCount}</td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberoflinks"/></td>
-        <td class="number"><c:out value="${linkCount}"/></td>
+        <td class="number">${linkCount}</td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofmedia"/></td>
-        <td class="number"><c:out value="${multimediaCount}"/></td>
+        <td class="number">${multimediaCount}</td>
     </tr>
     <tr>
         <td><kantega:label key="aksess.contentstatistics.numberofcontentproducers"/></td>
-        <td class="number"><c:out value="${contentProducerCount}"/></td>
+        <td class="number">${contentProducerCount}</td>
     </tr>
     </tbody>
 </table>

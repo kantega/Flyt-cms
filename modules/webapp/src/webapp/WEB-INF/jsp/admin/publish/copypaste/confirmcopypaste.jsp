@@ -38,10 +38,10 @@
 <kantega:section id="body">
 
     <form name="myform" method="post" action="CopyPasteContent.action">
-        <input type="hidden" name="isCopy" value="<c:out value="${isCopy}"/>">
-        <input type="hidden" name="pasteShortCut" value="<c:out value="${pasteShortCut}"/>">
-        <input type="hidden" name="uniqueId" value="<c:out value="${uniqueId}"/>">
-        <input type="hidden" name="newParentId" value="<c:out value="${newParentId}"/>">
+        <input type="hidden" name="isCopy" value="${isCopy}">
+        <input type="hidden" name="pasteShortCut" value="${pasteShortCut}">
+        <input type="hidden" name="uniqueId" value="${uniqueId}">
+        <input type="hidden" name="newParentId" value="${newParentId}">
 
         <c:choose>
             <c:when test="${isCopy && !pasteShortCut}">
@@ -62,7 +62,7 @@
                                 </c:otherwise>
                             </c:choose>
                             <td>
-                                <strong><kantega:label key="aksess.copypaste.copy.textcopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i></strong><br>
+                                <strong><kantega:label key="aksess.copypaste.copy.textcopy"/> <i>${selectedContentTitle}</i> <kantega:label key="aksess.copypaste.under"/> <i>${parentTitle}</i></strong><br>
                                 <kantega:label key="aksess.copypaste.copy.textcopy2"/>
                             </td>
                         </tr>
@@ -78,7 +78,7 @@
                                 </c:otherwise>
                             </c:choose>
                             <td>
-                                <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i><c:out value="${parentTitle}"/></i></strong><br>
+                                <strong><kantega:label key="aksess.copypaste.copy.treecopy"/> <i>${selectedContentTitle}</i> <kantega:label key="aksess.copypaste.copy.treecopy2"/> <i>${parentTitle}</i></strong><br>
                                 <kantega:label key="aksess.copypaste.copy.treecopy3"/>
                             </td>
                         </tr>
@@ -87,11 +87,11 @@
             </c:when>
 
             <c:when test="${isCopy && pasteShortCut}">
-                <p><kantega:label key="aksess.copypaste.copyshortcut"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.fra"/> <i><c:out value="${parentTitle}"/></i> ? </p>
+                <p><kantega:label key="aksess.copypaste.copyshortcut"/> <i>${selectedContentTitle}</i> <kantega:label key="aksess.copypaste.fra"/> <i>${parentTitle}</i> ? </p>
             </c:when>
 
             <c:otherwise>
-                <p><kantega:label key="aksess.copypaste.move"/> <i><c:out value="${selectedContentTitle}"/></i> <kantega:label key="aksess.copypaste.under"/> <i><c:out value="${parentTitle}"/></i> ? </p>
+                <p><kantega:label key="aksess.copypaste.move"/> <i>${selectedContentTitle}</i> <kantega:label key="aksess.copypaste.under"/> <i>${parentTitle}</i> ? </p>
             </c:otherwise>
 
         </c:choose>

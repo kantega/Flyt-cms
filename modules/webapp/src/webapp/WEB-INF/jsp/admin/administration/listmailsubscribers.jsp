@@ -1,5 +1,3 @@
-<%@ page import="java.util.List" %>
-<%@ page import="no.kantega.publishing.common.data.UserContentChanges" %>
 <%@ page import="java.net.URLEncoder" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -43,7 +41,7 @@
                     String emailEnc = URLEncoder.encode(email, queryStringEncoding);
                 %>
                 <tr class="tableRow${status.index mod 2}">
-                    <td><a href="mailto:<c:out value="${email}"/>"><c:out value="${email}"/></a></td>
+                    <td><a href="mailto:${email}">${email}</a></td>
                     <td>
                         <a href="ViewMailSubscribers.action?delete=<%=emailEnc%>" class="button delete"><kantega:label key="aksess.button.delete"/></a>
                     </td>

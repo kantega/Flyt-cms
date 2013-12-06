@@ -143,7 +143,7 @@
     <div id="MainPaneContent">
         <admin:box>
             <form action="SelectTemplate.action" name="myform" method="get">
-                <input type="hidden" name="mainParentId" value="<c:out value="${parent.id}"/>">
+                <input type="hidden" name="mainParentId" value="${parent.id}">
                 <c:choose>
                     <c:when test="${displayAddAssociation}">
                         <h2><kantega:label key="aksess.selecttemplate.parent"/></h2>

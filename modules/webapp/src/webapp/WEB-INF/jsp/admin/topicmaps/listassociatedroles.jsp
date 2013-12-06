@@ -22,7 +22,7 @@
     <table>
         <c:forEach var="role" items="${roles}" varStatus="status">
             <tr  class="tableRow${status.index mod 2}">
-                <td><c:out value="${role.name}"/></td>
+                <td>${role.name}</td>
                 <c:if test="${canDelete}">
                     <td align="right"><a href="ListAssociatedRoles.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}&amp;deleteId=${role.id}" target="_new" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a></td>
                 </c:if>

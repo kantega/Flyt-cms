@@ -22,7 +22,7 @@
 <rss version="2.0">
     <channel>
         <title><aksess:getattribute name="title"/></title>
-        <link><c:out value="${baseUrl}"/></link>
+        <link>${baseUrl}</link>
         <description><aksess:getattribute name="title"/></description>
 
         <!-- Items -->
@@ -31,7 +31,7 @@
             <item>
                 <title><aksess:getattribute name="title" collection="undersider"/></title>
                 <link>
-                    <c:out value="${baseUrl}"/><aksess:getattribute name="url" collection="undersider"/>
+                    ${baseUrl}<aksess:getattribute name="url" collection="undersider"/>
                 </link>
                 <description>
                     <![CDATA[<aksess:getattribute name="description" collection="undersider"/>]]>

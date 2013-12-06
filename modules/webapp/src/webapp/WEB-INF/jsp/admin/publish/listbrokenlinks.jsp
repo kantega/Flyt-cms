@@ -35,13 +35,13 @@
                 </thead>
                 <tbody>
                 <c:forEach var="link" items="${brokenLinks}" varStatus="status">
-                    <tr class="tableRow<c:out value="${status.index mod 2}"/>" valign="top">
+                    <tr class="tableRow${status.index mod 2}" valign="top">
                         <td>
-                            <a href="../?contentId=<c:out value="${link.contentId}"/>" target="_top"><c:out value="${link.contentTitle}"/></a>
+                            <a href="../?contentId=${link.contentId}" target="_top">${link.contentTitle}</a>
                         </td>
                         <td>
                             <c:if test="${link.attributeName != null}">
-                                <c:out value="${link.attributeName}"/>
+                                ${link.attributeName}
                             </c:if>
                         </td>
                         <c:set var="url" value="${link.url}"/>
@@ -63,7 +63,7 @@
                                         <c:when test="${link.httpStatus == 401}"><kantega:label key="aksess.linkcheck.httpstatus.401"/></c:when>
                                         <c:when test="${link.httpStatus == 404}"><kantega:label key="aksess.linkcheck.httpstatus.404"/></c:when>
                                         <c:when test="${link.httpStatus == 500}"><kantega:label key="aksess.linkcheck.httpstatus.500"/></c:when>
-                                        <c:otherwise>HTTP <c:out value="${link.httpStatus}"/></c:otherwise>
+                                        <c:otherwise>HTTP ${link.httpStatus}</c:otherwise>
                                     </c:choose>
                                 </c:when>
                                 <c:when test="${link.status == 4}"><kantega:label key="aksess.linkcheck.statuses.4"/></c:when>
@@ -74,7 +74,7 @@
                                 <c:when test="${link.status == 9}"><kantega:label key="aksess.linkcheck.statuses.9"/></c:when>
                                 <c:when test="${link.status == 10}"><kantega:label key="aksess.linkcheck.statuses.10"/></c:when>
                                 <c:when test="${link.status == 11}"><kantega:label key="aksess.linkcheck.statuses.11"/></c:when>
-                                <c:otherwise><c:out value="${link.status}"/></c:otherwise>
+                                <c:otherwise>${link.status}</c:otherwise>
                             </c:choose>
                         </td>
                         <td>
@@ -83,7 +83,7 @@
                             </c:if>
                         </td>
                         <td>
-                            <c:out value="${link.timesChecked}"/>
+                            ${link.timesChecked}
                         </td>
                     </tr>
                 </c:forEach>

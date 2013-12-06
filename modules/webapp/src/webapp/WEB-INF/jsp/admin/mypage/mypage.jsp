@@ -170,7 +170,7 @@
                         </thead>
                         <c:forEach var="item" items="${myDeletedItems}" varStatus="status">
                             <tr class="tableRow${status.index mod 2}">
-                                <td><c:out value="${item.title}"/></td>
+                                <td>${item.title}</td>
                                 <td><admin:formatdate date="${item.deletedDate}"/></td>
                                 <td><a href="#" onclick="restore('${item.id}')" class="button restore"><span><kantega:label key="aksess.mypage.restore"/></span></a></td>
                             </tr>

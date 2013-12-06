@@ -55,6 +55,7 @@ import java.util.Properties;
 public class MailSender {
     private static final Logger log = LoggerFactory.getLogger(MailSender.class);
 
+    private static EventLog eventLog;
     /**
      * Sends a mail message. The message body is created by using a simple template mechanism. See MailTextReader.
      *
@@ -170,16 +171,23 @@ public class MailSender {
             // Send meldingen
             Transport.send(message);
 
-            EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
+            initEventLog();
+
             eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
 
             // Logg sending
             log.info("Sending email to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
-            EventLog eventLog = RootContext.getInstance().getBean(EventLog.class);
             eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
+            log.error("Error sending mail", e);
             throw new SystemException("Error sending email to : " + to + " with subject " + subject, e);
+        }
+    }
+
+    private static void initEventLog() {
+        if(eventLog == null){
+            eventLog = RootContext.getInstance().getBean(EventLog.class);
         }
     }
 

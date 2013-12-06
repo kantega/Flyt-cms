@@ -39,11 +39,11 @@
             <c:if test="${numRoleConfigurations > 1}">
                 <select name="domain">
                     <c:forEach items="${roleConfigurations}" var="config">
-                        <option value="<c:out value="${config.domain}"/>" <c:if test="${domain eq config.domain}">selected</c:if>><c:out value="${config.description}"/></option>
+                        <option value="${config.domain}" <c:if test="${domain eq config.domain}">selected</c:if>>${config.description}</option>
                     </c:forEach>
                 </select>
             </c:if>
-            <input type="text" name="q" value="<c:out value="${query}"/>">
+            <input type="text" name="q" value="${query}">
             <span class="button"><input type="submit" class="search" value="<kantega:label key="aksess.button.search"/>"></span>
         </form>
         <br>
@@ -57,7 +57,7 @@
             </thead>
             <tbody>
             <c:forEach var="role" items="${roles}" varStatus="status">
-                <tr class="tableRow<c:out value="${status.index mod 2}"/>">
+                <tr class="tableRow${status.index mod 2}">
                     <td><a href="Javascript:doAction('edit', '${role.domain}', '${role.id}')">${role.name}</a></td>
                     <td>
                         <c:if test="${canEdit && role.id != adminRole}">
@@ -72,7 +72,7 @@
         <c:if test="${canEdit}">
             <div class="buttonGroup">
                 <form action="edit">
-                    <input type="hidden" name="domain" value="<c:out value="${domain}"/>">
+                    <input type="hidden" name="domain" value="${domain}">
                     <span class="button"><input type="submit" class="add" value="<kantega:label key="useradmin.searchroles.newrole"/>"></span>
                 </form>
             </div>

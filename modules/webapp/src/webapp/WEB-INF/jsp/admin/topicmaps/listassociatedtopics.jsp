@@ -32,11 +32,11 @@
         <tr class="tableRow${status.index mod 2}">
             <td>
                 <c:if test="${topicAssociation.rolespec != null && topicAssociation.rolespec.baseName != prevRoleSpec}">
-                    <c:out value="${topicAssociation.rolespec.baseName}"/>
+                    ${topicAssociation.rolespec.baseName}
                     <c:set var="prevRoleSpec" value="${topicAssociation.rolespec.baseName}"/>
                 </c:if>
             </td>
-            <td><a href="ViewTopic.action?topicId=${topicAssociation.associatedTopicRef.id}&amp;topicMapId=${topicAssociation.associatedTopicRef.topicMapId}"><c:out value="${topicAssociation.associatedTopicRef.baseName}"/></a></td>
+            <td><a href="ViewTopic.action?topicId=${topicAssociation.associatedTopicRef.id}&amp;topicMapId=${topicAssociation.associatedTopicRef.topicMapId}">${topicAssociation.associatedTopicRef.baseName}</a></td>
             <c:if test="${canDelete}">
                 <td align="right"><a href="ListAssociatedTopics.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}&amp;deleteId=${topicAssociation.associatedTopicRef.id}" target="_new" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a></td>
             </c:if>

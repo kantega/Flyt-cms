@@ -36,7 +36,7 @@
 
     <ul>
         <c:forEach items="${aliases}" var="alias">
-            <li><c:out value="${alias}"/></li>
+            <li>${alias}</li>
         </c:forEach>
     </ul>
 

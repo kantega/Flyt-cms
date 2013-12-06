@@ -23,11 +23,11 @@
 
 <kantega:section id="content">
     <form action="delete" name="myform" method="post">
-        <input type="hidden" name="domain" value="<c:out value="${role.domain}"/>">
-        <input type="hidden" name="roleId" value="<c:out value="${role.id}"/>">
+        <input type="hidden" name="domain" value="${role.domain}">
+        <input type="hidden" name="roleId" value="${role.id}">
         <input type="hidden" name="confirm" value="true">
         <p>
-            <kantega:label key="useradmin.deleterole.confirm"/> <c:out value="${role.name}"/> ?
+            <kantega:label key="useradmin.deleterole.confirm"/> ${role.name} ?
         </p>
 
         <div class="buttonGroup">

@@ -75,7 +75,7 @@
         <c:if test="${needsToken}">
             <div class="text securitytoken">
                 <label for="token">Security token: </label>
-                <input type="text" name="token" id="token" size="40" value="<c:out value="${token}"/>">
+                <input type="text" name="token" id="token" size="40" value="${token}">
                 <div class="helptext">(from security/initialusertoken.txt)</div>
             </div>
             <c:if test="${errorToken}">

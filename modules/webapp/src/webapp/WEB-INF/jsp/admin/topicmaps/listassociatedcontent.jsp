@@ -20,7 +20,7 @@
 <table id="AssociatedContent">
     <c:forEach var="page" items="${content}" varStatus="status">
         <tr  class="tableRow${status.index mod 2}">
-            <td><a href="${page.url}" target="_new"><c:out value="${page.title}"/></a></td>
+            <td><a href="${page.url}" target="_new">${page.title}</a></td>
             <c:if test="${canDelete}">
                 <td align="right"><a href="ListAssociatedContent.action?topicMapId=${topic.topicMapId}&amp;topicId=${topic.id}&amp;deleteId=${page.id}" target="_new" class="button delete"><span><kantega:label key="aksess.button.delete"/></span></a></td>
             </c:if>
