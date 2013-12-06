@@ -17,13 +17,13 @@
 
 package no.kantega.publishing.admin.topicmaps.ajax;
 
-import org.springframework.web.servlet.ModelAndView;
-import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
-import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.topicmaps.data.Topic;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +36,7 @@ import java.util.Map;
 public class ListAssociatedRolesAction extends AbstractTopicInfoAction {
     @Override
     public ModelAndView handleTopicInfoRequest(HttpServletRequest request, HttpServletResponse response, Topic topic) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("topic", topic);
 

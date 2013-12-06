@@ -56,7 +56,7 @@ public class DeleteAttachmentAction implements Controller {
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("refresh", new Date().getTime());
 
         return new ModelAndView(new RedirectView("SaveAttachments.action"), model);

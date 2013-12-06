@@ -61,7 +61,7 @@ public class CopyPasteContentAction implements Controller {
         Association parent = aksessService.getAssociationById(newParentId);
         Association source = aksessService.getAssociationById(uniqueId);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         if (isCopy) {
             copyContent(aksessService, isTextCopy, pasteShortCut, uniqueId, newParentId, category, parent, source);

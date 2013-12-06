@@ -35,7 +35,7 @@ public class DefaultTemplateRenderer implements TemplateRenderer {
     }
 
     class DefaultRenderer implements Renderer {
-        private final Map<String, Object> attributes = new HashMap<String, Object>();
+        private final Map<String, Object> attributes = new HashMap<>();
         private final String path;
         private final Class clazz;
         private final String resource;

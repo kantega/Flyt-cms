@@ -58,7 +58,7 @@ public class SpellcheckAction {
      */
     @RequestMapping("/admin/publish/Spellcheck.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         setResponseValues(response);
         JSONObject jsonObject = getJSONObject(request);
         model.put("id", null);

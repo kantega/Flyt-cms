@@ -35,7 +35,7 @@ public class ListUserChangesAction extends AbstractController {
     private String viewDocuments;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request, "utf-8");
         int months = param.getInt("months");

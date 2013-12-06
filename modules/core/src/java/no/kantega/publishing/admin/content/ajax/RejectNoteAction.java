@@ -31,7 +31,7 @@ public class RejectNoteAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("url", request.getParameter("url"));
 
         return new ModelAndView(view, model);

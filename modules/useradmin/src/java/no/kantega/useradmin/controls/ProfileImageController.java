@@ -32,7 +32,7 @@ public class ProfileImageController extends AbstractUserAdminController {
         String id = params.getString("userId");
 
         ValidationErrors errors = new ValidationErrors();
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("domain", domain);
         model.put("userId", id);
         model.put("errors", errors);

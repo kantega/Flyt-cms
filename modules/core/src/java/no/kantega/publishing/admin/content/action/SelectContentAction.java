@@ -16,24 +16,23 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.common.data.Content;
-import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
-
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.Map;
 
 public class SelectContentAction implements Controller {
     private String view;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
         if (param.getBoolean("selectContentId", false)) {

@@ -24,7 +24,7 @@ public class XmlExportAction implements Controller {
         int associationId = params.getInt(AdminRequestParameters.THIS_ID);
         String view = "/WEB-INF/jsp/export/xmlexport.jsp";
         Content page = null;
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         if (associationId > -1) {
             ContentManagementService cms = new ContentManagementService(request);
             ContentIdentifier cid = new ContentIdentifier();

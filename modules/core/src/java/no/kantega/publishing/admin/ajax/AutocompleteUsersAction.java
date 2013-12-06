@@ -16,22 +16,19 @@
 
 package no.kantega.publishing.admin.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.publishing.security.SecuritySession;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
-
-import no.kantega.publishing.security.service.SecurityService;
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.Map;
 
 public class AutocompleteUsersAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String name = request.getParameter("term");
         if (name != null && name.length() >= 3) {
             SecuritySession securitySession = SecuritySession.getInstance(request);

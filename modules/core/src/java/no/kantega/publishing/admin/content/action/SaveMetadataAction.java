@@ -78,7 +78,7 @@ public class SaveMetadataAction extends AbstractSaveContentAction {
 
 
     Map<String, Object> getModel(Content content, HttpServletRequest request) {
-        Map<String, Object> model =  new HashMap<String, Object>();
+        Map<String, Object> model =  new HashMap<>();
 
         ContentManagementService cms = new ContentManagementService(request);
 

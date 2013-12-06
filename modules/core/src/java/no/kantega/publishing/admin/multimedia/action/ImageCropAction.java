@@ -43,7 +43,7 @@ public class ImageCropAction extends AbstractEditMultimediaAction {
     private ImageEditor imageEditor;
 
     protected ModelAndView handleGet(Multimedia mm, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         SecuritySession securitySession = SecuritySession.getInstance(request);
         if (securitySession.isUserInRole(Aksess.getAdminRole()) || securitySession.getUser().getId().equalsIgnoreCase(mm.getModifiedBy())) {
             model.put("allowOverwrite", Boolean.TRUE);

@@ -49,7 +49,7 @@ public class TotalStatisticsAction  extends SimpleAdminController {
 
         RequestParameters params = new RequestParameters(request);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         ContentManagementService aksessService = new ContentManagementService(request);
 

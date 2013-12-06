@@ -31,7 +31,7 @@ public class SaveHearingHelper  {
             Date hearingDeadline = param.getDate("attributeValue_hearing_deadline", Aksess.getDefaultDateFormat());
             hearing.setDeadLine(hearingDeadline);
         } catch(Exception e) {
-            Map<String, Object> objects = new HashMap<String, Object>();
+            Map<String, Object> objects = new HashMap<>();
             objects.put("dateFormat", Aksess.getDefaultDateFormat());
             errors.add(null, "aksess.error.date", objects);
         }

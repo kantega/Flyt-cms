@@ -55,7 +55,7 @@ public class EditTopicTypeAction extends AbstractController {
         RequestParameters params = new RequestParameters(request, "utf-8");
         int topicMapid = params.getInt("topicMapId");
         String topicId = params.getString("topicId");
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("topicMapId", topicMapid);
         if (topicId != null) {

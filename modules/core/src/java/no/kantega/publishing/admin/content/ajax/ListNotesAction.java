@@ -44,7 +44,7 @@ public class ListNotesAction extends SimpleAdminController {
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters params = new RequestParameters(request);
 

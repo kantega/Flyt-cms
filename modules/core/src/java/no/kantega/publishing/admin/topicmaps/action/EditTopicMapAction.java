@@ -39,7 +39,7 @@ public class EditTopicMapAction extends AbstractController {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         TopicMap topicMap = null;
 

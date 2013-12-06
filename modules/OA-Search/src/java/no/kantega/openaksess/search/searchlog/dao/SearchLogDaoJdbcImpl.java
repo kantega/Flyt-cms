@@ -23,7 +23,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
     private JdbcTemplate jdbcTemplate;
 
     public void registerSearch(String queryString, List<String> exactQuery, int siteId, Number numberOfHits) {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         params.put("time", new Timestamp(new Date().getTime()));
         params.put("query", queryString);
         params.put("exact_query", StringUtils.join(exactQuery, ","));
@@ -33,7 +33,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
     }
 
     public int getSearchCountForPeriod(Date after, Date before, int siteId)  {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         StringBuilder queryString = new StringBuilder("select count(*) from searchlog where siteId=:site_id");
         params.put("site_id", siteId);
 

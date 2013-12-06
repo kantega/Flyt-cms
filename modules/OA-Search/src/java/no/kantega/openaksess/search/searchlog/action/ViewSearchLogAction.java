@@ -35,7 +35,7 @@ public class ViewSearchLogAction extends AbstractController {
     private SearchLogDao searchLogDao;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         List<Site> sites = siteCache.getSites();
 

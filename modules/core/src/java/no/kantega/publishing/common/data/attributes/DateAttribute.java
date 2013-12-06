@@ -109,7 +109,7 @@ public class DateAttribute extends Attribute {
         value = value.replace('/', '.');
         value = value.replace('-', '.');
 
-        Map<String, Object> objects = new HashMap<String, Object>();
+        Map<String, Object> objects = new HashMap<>();
         objects.put("field", title);
 
         DateFormat df = new SimpleDateFormat(dateFormat);

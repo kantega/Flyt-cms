@@ -82,7 +82,7 @@ public class NavigatorAction implements Controller {
         MultimediaMapEntry mediaArchiveRoot = mediaService.getPartialMultimediaMap(openIds, getFoldersOnly);
 
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(AdminRequestParameters.NAVIGATION_OPEN_FOLDERS, openFoldersList);
         model.put(AdminRequestParameters.ITEM_IDENTIFIER, selectedId);
         model.put(AdminRequestParameters.MULTIMEDIA_GET_FOLDERS_ONLY, getFoldersOnly);

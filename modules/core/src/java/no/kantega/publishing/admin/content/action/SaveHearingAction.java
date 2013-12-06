@@ -41,7 +41,7 @@ public class SaveHearingAction extends AbstractController {
 		setDeadlineIfNotPresent(content.getHearing());
 		addCurrentUserAsInvitee(request, content.getHearing());
 
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 
 		if (request.getMethod().equalsIgnoreCase("POST")) {
 

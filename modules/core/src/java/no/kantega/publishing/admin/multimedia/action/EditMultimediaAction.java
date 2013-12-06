@@ -44,7 +44,7 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
         Configuration c = Aksess.getConfiguration();
 
         // Show image / media object
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
         model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
@@ -95,7 +95,7 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
 
             mm.setId(mediaService.setMultimedia(mm));
         }
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         if (insert) {
             model.put("media", mm);
             model.put("maxWidth", param.getInt("maxWidth"));

@@ -18,20 +18,19 @@ package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.common.ao.HostnamesDao;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.ao.HostnamesDao;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+import java.util.Map;
 
 public class EditDomainNamesAction extends AbstractController {
 
@@ -50,7 +49,7 @@ public class EditDomainNamesAction extends AbstractController {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         int siteId = param.getInt("siteId");
 

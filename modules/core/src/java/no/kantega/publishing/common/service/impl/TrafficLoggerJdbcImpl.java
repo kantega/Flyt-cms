@@ -63,7 +63,7 @@ public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implemen
                 referer = referer.substring(0, 254);
             }
 
-            Map<String, Object> parameters = new HashMap<String, Object>();
+            Map<String, Object> parameters = new HashMap<>();
 
             parameters.put("Time", time);
             parameters.put("ContentId", id);

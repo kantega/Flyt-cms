@@ -44,7 +44,7 @@ public class MultimediaPropertiesAction {
 
     @RequestMapping("/admin/multimedia/MultimediaProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         RequestParameters param = new RequestParameters(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
 

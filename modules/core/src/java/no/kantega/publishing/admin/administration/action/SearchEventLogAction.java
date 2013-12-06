@@ -38,7 +38,7 @@ public class SearchEventLogAction extends AbstractController {
     private EventLog eventLog;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
             RequestParameters p = new RequestParameters(request, "utf-8");

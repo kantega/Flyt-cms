@@ -53,7 +53,7 @@ public class UpdateDisplayPeriodAction {
 
     @RequestMapping("/admin/publish/UpdateDisplayPeriod.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
         ContentManagementService cms = new ContentManagementService(request);

@@ -11,7 +11,7 @@ public class NavigatorAction implements Controller {
     private String view;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String openFolders = request.getParameter("openFolders");
 
         Set<String> openUnits = new TreeSet<String>();

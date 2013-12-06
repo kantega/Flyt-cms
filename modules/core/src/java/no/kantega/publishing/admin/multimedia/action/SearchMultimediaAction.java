@@ -45,7 +45,7 @@ public class SearchMultimediaAction extends AbstractController {
 
 
     private Map<String, Object> performSearches(HttpServletRequest request) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         MultimediaService mediaService = new MultimediaService(request);
         String q = request.getParameter("q");

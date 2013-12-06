@@ -56,7 +56,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
 
 
     private ModelAndView showErrorForm(String error) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("loginLayout", getLoginLayout());
         model.put("error", error);
         return new ModelAndView(resetPasswordErrorView, model);
@@ -81,7 +81,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
             return showErrorForm("aksess.resetpassword.nopasswordmanager");
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         passwordManager.setPassword(identity, password1, password2);
 
@@ -108,7 +108,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
     }
 
     public ModelAndView showPasswordForm(HttpServletRequest request) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         String token = request.getParameter("token");
         String userid = request.getParameter("username");

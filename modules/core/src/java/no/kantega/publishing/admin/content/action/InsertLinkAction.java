@@ -51,7 +51,7 @@ public class InsertLinkAction extends AbstractController {
             linkType = LINKTYPE_EXTERNAL;
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         RequestParameters param = new RequestParameters(request);
         String url = param.getString("url");
         if (url != null) {

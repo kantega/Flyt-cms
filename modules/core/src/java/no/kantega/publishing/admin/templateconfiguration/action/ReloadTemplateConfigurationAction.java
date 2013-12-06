@@ -50,7 +50,7 @@ public class ReloadTemplateConfigurationAction extends AbstractController {
     private ContentAO contentAO;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
             TemplateConfiguration config =  templateConfigurationFactory.getConfiguration();

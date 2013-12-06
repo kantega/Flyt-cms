@@ -53,7 +53,7 @@ public class DeleteAssociationAction implements Controller {
         RequestParameters param = new RequestParameters(request, "utf-8");
         HttpSession session = request.getSession();
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             // Not post, user should confirm delete of page

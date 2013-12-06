@@ -40,7 +40,7 @@ public class SelectTopicsAction extends AbstractController {
         RequestParameters param = new RequestParameters(request);
         TopicMapService topicMapService = new TopicMapService(request);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         Topic instanceOf = null;
         String mapAndId = param.getString("topictype");

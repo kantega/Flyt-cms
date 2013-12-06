@@ -57,7 +57,7 @@ public class AddContentAction extends AbstractController {
     private ContentIdHelper contentIdHelper;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
 

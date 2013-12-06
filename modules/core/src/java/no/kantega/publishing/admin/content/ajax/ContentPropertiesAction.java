@@ -69,7 +69,7 @@ public class ContentPropertiesAction {
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String url = request.getParameter("url");
         ContentManagementService cms = new ContentManagementService(request);
 
@@ -157,7 +157,7 @@ public class ContentPropertiesAction {
                 enabledButtons.add("PrivilegesButton");
             }
 
-            Map<String, Object> contentProperties = new HashMap<String, Object>();
+            Map<String, Object> contentProperties = new HashMap<>();
             contentProperties.put("title", content.getTitle());
             contentProperties.put("alias", content.getAlias());
             contentProperties.put("lastModified", formatDateTime(content.getLastModified()));

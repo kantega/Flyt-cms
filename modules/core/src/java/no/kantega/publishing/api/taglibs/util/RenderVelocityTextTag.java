@@ -32,7 +32,7 @@ public class RenderVelocityTextTag extends BodyTagSupport {
     }
 
     private String renderText(String text) throws IOException {
-        Map<String, Object> parameters = new HashMap<String, Object>();
+        Map<String, Object> parameters = new HashMap<>();
 
         Enumeration paramNames = pageContext.getRequest().getAttributeNames();
         while (paramNames.hasMoreElements()) {

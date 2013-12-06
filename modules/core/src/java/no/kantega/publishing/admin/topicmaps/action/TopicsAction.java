@@ -32,7 +32,7 @@ public class TopicsAction extends AbstractController {
 
     @Override
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         TopicMapService topicMapService = new TopicMapService(request);
         List<TopicMap> topicMaps = topicMapService.getTopicMaps();

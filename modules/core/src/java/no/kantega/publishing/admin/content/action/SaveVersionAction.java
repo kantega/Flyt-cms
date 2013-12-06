@@ -48,7 +48,7 @@ public class SaveVersionAction extends AbstractSaveContentAction {
     }
 
     Map<String, Object> getModel(Content content, HttpServletRequest request) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         ContentIdentifier cid =  ContentIdentifier.fromContentId(content.getId());
         cid.setLanguage(content.getLanguage());

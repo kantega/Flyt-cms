@@ -94,7 +94,7 @@ public class FileAttribute extends Attribute {
 
     public  void validate(ValidationErrors errors) {
         if (mandatory && (value == null || value.length() == 0)) {
-            Map<String, Object> objects = new HashMap<String, Object>();
+            Map<String, Object> objects = new HashMap<>();
             objects.put("field", title);
             errors.add(name, "aksess.feil.mandatoryfield.file", objects);
         }

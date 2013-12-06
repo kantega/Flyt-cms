@@ -16,21 +16,19 @@
 
 package no.kantega.publishing.admin.topicmaps.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.commons.client.util.RequestParameters;
-
-import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -47,7 +45,7 @@ public class HandleContentTopicsAction implements Controller {
         int topicMapId = param.getInt("topicMapId");
         String topicId = param.getString("topicId");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         Content content = (Content)request.getSession(true).getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content != null) {
             if (topicMapId > 0 && topicId != null) {

@@ -41,7 +41,7 @@ public class ViewDisplayPeriodAction extends AbstractController {
     private ContentIdHelper contentIdHelper;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         ContentManagementService cms = new ContentManagementService(request);
         String url = request.getParameter("url");
         ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);

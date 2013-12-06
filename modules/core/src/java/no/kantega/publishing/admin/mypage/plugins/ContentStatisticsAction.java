@@ -45,7 +45,7 @@ public class ContentStatisticsAction implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("contentCount", contentAO.getContentCount());
         model.put("linkCount", contentAO.getLinkCount());
         model.put("multimediaCount", MultimediaAO.getMultimediaCount());

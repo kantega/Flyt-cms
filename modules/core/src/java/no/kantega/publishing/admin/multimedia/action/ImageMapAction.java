@@ -17,16 +17,17 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.ao.MultimediaImageMapAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaImageMap;
-import no.kantega.publishing.common.ao.MultimediaImageMapAO;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -36,7 +37,7 @@ public class ImageMapAction extends AbstractEditMultimediaAction {
     private String view;
 
     protected ModelAndView handleGet(Multimedia mm, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         MultimediaImageMap imageMap = MultimediaImageMapAO.loadImageMap(mm.getId());
         if (imageMap != null) {

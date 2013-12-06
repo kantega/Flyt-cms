@@ -36,7 +36,7 @@ public class ListTopicTypesAction extends AbstractController {
         int topicMapId = new RequestParameters(request).getInt("topicMapId");
         List<Topic> topics = topicMapService.getTopicTypes(topicMapId);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("topicMapId", topicMapId);
         model.put("topics", topics);
         return new ModelAndView(view, model);

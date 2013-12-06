@@ -44,7 +44,7 @@ public class EmailAttribute extends Attribute {
 
         if ((value != null) && (value.length() > 0)) {
             if (!RegExp.isEmail(value)) {
-                Map<String, Object> objects = new HashMap<String, Object>();
+                Map<String, Object> objects = new HashMap<>();
                 objects.put("field", title);                
                 errors.add(name, "aksess.feil.invalidemail", objects);
             }

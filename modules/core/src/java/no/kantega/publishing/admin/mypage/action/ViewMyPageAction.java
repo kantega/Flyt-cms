@@ -32,7 +32,7 @@ public class ViewMyPageAction extends AbstractController {
     String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         ContentManagementService cms = new ContentManagementService(request);
 

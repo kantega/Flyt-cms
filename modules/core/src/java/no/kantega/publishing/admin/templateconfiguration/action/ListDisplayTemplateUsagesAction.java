@@ -30,7 +30,7 @@ public class ListDisplayTemplateUsagesAction extends AbstractController {
     private String view;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
         int templateId = param.getInt("templateId");

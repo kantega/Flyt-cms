@@ -54,7 +54,7 @@ public class PageStatisticsAction extends SimpleAdminController {
 
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("totalStatsEnabled", totalStatsEnabled);
 

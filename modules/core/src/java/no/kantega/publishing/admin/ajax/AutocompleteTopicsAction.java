@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class AutocompleteTopicsAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         RequestParameters param = new RequestParameters(request);
 
         int topicMapId = param.getInt("topicMapId");

@@ -35,7 +35,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
     private EventLog eventLog;
 
 	public void process(List<LinkOccurrence> links) {
-		Map<String, Object> params = new HashMap<String, Object>();
+		Map<String, Object> params = new HashMap<>();
 		params.put("linklist", links);
         params.put("applicationurl", Aksess.getApplicationUrl());
         params.put("failedpages", getFailedUrlEmitEvents());

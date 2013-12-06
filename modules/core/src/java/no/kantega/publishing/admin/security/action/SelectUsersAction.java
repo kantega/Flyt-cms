@@ -43,7 +43,7 @@ public class SelectUsersAction extends AbstractController {
             action = "AddUserRolePermission.action";
         }
 
-        Map<String, Object> model =  new HashMap<String, Object>();
+        Map<String, Object> model =  new HashMap<>();
         model.put("action", action);
         model.put("multiple", multiple);
         model.put("name", name);

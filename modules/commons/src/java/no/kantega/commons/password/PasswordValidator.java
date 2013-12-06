@@ -15,7 +15,7 @@ public class PasswordValidator {
     public ValidationErrors isValidPassword(String password, String password2) {
         ValidationErrors errors = new ValidationErrors();
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
 
         if (password == null || !password.equals(password2)) {
             errors.add("password", "password.mismatch", params);

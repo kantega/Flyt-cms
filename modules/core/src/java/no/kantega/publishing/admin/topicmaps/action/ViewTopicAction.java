@@ -42,7 +42,7 @@ public class ViewTopicAction extends AbstractController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         int topicMapId = param.getInt("topicMapId");
         String topicId = param.getString("topicId");

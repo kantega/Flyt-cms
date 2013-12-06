@@ -36,7 +36,7 @@ public class UpdateMediaNameAction extends AbstractController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         int mediaId = param.getInt("itemIdentifier");
         String name = param.getString("name", 255);

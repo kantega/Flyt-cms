@@ -16,10 +16,9 @@
 
 package no.kantega.publishing.admin.ajax;
 
+import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -31,7 +30,7 @@ import java.util.Map;
 
 public class AutocompleteMultimediaAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         String name = request.getParameter("term");
         if (name != null && name.trim().length() > 0) {

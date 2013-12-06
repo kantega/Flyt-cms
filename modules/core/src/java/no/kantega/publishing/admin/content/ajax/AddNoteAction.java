@@ -78,7 +78,7 @@ public class AddNoteAction extends SimpleAdminController {
             }
         }
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(AdminRequestParameters.ITEM_IDENTIFIER, url);
         return new ModelAndView(new RedirectView("ListNotes.action"), model);
     }

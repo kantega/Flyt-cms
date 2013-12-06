@@ -51,7 +51,7 @@ public class ListBrokenLinksAction extends SimpleAdminController {
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
         List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
         String sort = params.getString("sort");
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         // Extracting currently selected content from it's url
         ContentIdentifier cid = null;

@@ -63,7 +63,7 @@ public class SaveContentAction extends AbstractSaveContentAction {
 
 
     Map<String, Object> getModel(Content content, HttpServletRequest request) {
-        return new HashMap<String, Object>();
+        return new HashMap<>();
     }
 
     public void setView(String view) {

@@ -35,7 +35,7 @@ public class ListContentLocksAction extends AbstractController {
         LockManager.cleanup();
         Map locks = LockManager.getLocks();
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("locks", locks);
         
         return new ModelAndView(view, model);

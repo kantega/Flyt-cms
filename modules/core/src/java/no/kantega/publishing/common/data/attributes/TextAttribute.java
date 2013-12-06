@@ -65,7 +65,7 @@ public class TextAttribute extends Attribute {
 
         if (isNotBlank(value) && isNotBlank(regexp)) {
             if (!value.matches(regexp)) {
-                Map<String, Object> objects = new HashMap<String, Object>();
+                Map<String, Object> objects = new HashMap<>();
                 objects.put("field", title);
                 errors.add(name, "aksess.feil.invalidchar", objects);
             }

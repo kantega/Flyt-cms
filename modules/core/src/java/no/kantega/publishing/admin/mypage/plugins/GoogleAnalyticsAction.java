@@ -52,7 +52,7 @@ public class GoogleAnalyticsAction implements Controller {
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String view = formView;
 
         Configuration config = Aksess.getConfiguration();
@@ -202,7 +202,7 @@ public class GoogleAnalyticsAction implements Controller {
         }
 
         private Map<String, Object> getUsage(String tableId) throws IOException, ServiceException {
-            Map<String, Object> usage = new HashMap<String, Object>();
+            Map<String, Object> usage = new HashMap<>();
             Calendar cal = Calendar.getInstance();
             Date now = cal.getTime();
             cal.add(Calendar.MONTH, -1);

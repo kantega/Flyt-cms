@@ -1,18 +1,17 @@
 package no.kantega.publishing.admin.mypage.plugins;
 
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.User;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
-import java.security.MessageDigest;
-
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.security.data.User;
 
 /**
  *
@@ -32,7 +31,7 @@ public class UserInfoAction  implements Controller {
      * @throws Exception
      */
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         SecuritySession securitySession =  SecuritySession.getInstance(request);
         User user = securitySession.getUser();

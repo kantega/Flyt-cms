@@ -16,21 +16,19 @@
 
 package no.kantega.publishing.admin.multimedia.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.MultimediaService;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 public class ViewFolderAction implements Controller {
 
@@ -55,7 +53,7 @@ public class ViewFolderAction implements Controller {
         Multimedia currentMultimedia = mediaService.getMultimedia(folderId);
         List<Multimedia> mmlist = mediaService.getMultimediaList(folderId);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put(AdminRequestParameters.MULTIMEDIA_CURRENT_FOLDER, currentMultimedia);
         model.put(AdminRequestParameters.MULTIMEDIA_ITEMS_LIST, mmlist);
 

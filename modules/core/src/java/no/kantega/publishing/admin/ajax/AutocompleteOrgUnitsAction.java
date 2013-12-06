@@ -17,22 +17,19 @@
 package no.kantega.publishing.admin.ajax;
 
 import no.kantega.publishing.org.OrgUnit;
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
+import no.kantega.publishing.org.OrganizationManager;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.org.OrganizationManager;
-import no.kantega.commons.client.util.RequestParameters;
-
 public class AutocompleteOrgUnitsAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
 

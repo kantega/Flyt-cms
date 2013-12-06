@@ -35,7 +35,7 @@ import java.util.Map;
 
 public class ListAssociatedContentAction extends AbstractTopicInfoAction {
     public ModelAndView handleTopicInfoRequest(HttpServletRequest request, HttpServletResponse response, Topic topic) {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         model.put("topic", topic);
 

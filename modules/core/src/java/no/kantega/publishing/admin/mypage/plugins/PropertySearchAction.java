@@ -39,7 +39,7 @@ public class PropertySearchAction  implements Controller {
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             return new ModelAndView(formView);
         } else {
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
 
             RequestParameters param = new RequestParameters(request);
 

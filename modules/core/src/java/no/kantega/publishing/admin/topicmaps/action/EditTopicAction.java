@@ -72,7 +72,7 @@ public class EditTopicAction extends AbstractController {
         RequestParameters param = new RequestParameters(request);
         TopicMapService topicMapService = new TopicMapService(request);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         String topicId = param.getString("topicId");
         String associatedTopicId = param.getString("associatedTopicId");
@@ -98,7 +98,7 @@ public class EditTopicAction extends AbstractController {
         String associatedTopicId = param.getString("associatedTopicId");
         String instanceOf = param.getString("instanceOf");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         TopicMapService topicMapService = new TopicMapService(request);
 
@@ -169,7 +169,7 @@ public class EditTopicAction extends AbstractController {
             errors = new ValidationErrors();
             request.setAttribute("errors", errors);
         }
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         if (parameters != null) {
             for (Pair<String, String> p : parameters) {
                 params.put(p.getKey(), p.getValue());

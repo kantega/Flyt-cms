@@ -17,11 +17,10 @@
 package no.kantega.publishing.admin.ajax;
 
 import no.kantega.commons.util.StringHelper;
-import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -39,7 +38,7 @@ public class AutocompleteContentAction implements Controller {
     private SiteCache siteCache;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         String title = request.getParameter("term");
 
         if (title != null && title.trim().length() > 0) {

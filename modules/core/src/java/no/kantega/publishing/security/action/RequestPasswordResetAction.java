@@ -29,7 +29,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         if (identity != null) {
             return sendPasswordRequest(request, response);
         } else {
-            Map<String, Object> model = new HashMap<String, Object>();
+            Map<String, Object> model = new HashMap<>();
             model.put("loginLayout", getLoginLayout());
             return new ModelAndView(requestResetPasswordView, model);
         }
@@ -40,7 +40,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
 
         Profile userProfile = getProfileManager().getProfileForUser(identity);
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
         model.put("loginLayout", getLoginLayout());
         
         if (userProfile == null) {
@@ -56,7 +56,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         ResetPasswordTokenManager tokenManager = getResetPasswordTokenManager();
         ResetPasswordToken token = tokenManager.generateResetPasswordToken(identity, expireDate);
 
-        Map<String, Object> mailParam = new HashMap<String, Object>();
+        Map<String, Object> mailParam = new HashMap<>();
         String url = URLHelper.getServerURL(request) + request.getContextPath();
         url += "/ResetPassword.action";
         url += "?token=" + token.getToken();

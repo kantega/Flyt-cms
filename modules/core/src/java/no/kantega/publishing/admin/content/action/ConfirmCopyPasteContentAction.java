@@ -61,7 +61,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         RequestParameters param = new RequestParameters(request, "utf-8");
 
-        Map<String, Object> model = new HashMap<String, Object>();
+        Map<String, Object> model = new HashMap<>();
 
         String url = request.getParameter("newParentUrl");
         ContentIdentifier newParentCid = contentIdHelper.fromRequestAndUrl(request, url);
