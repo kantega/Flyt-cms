@@ -39,11 +39,8 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jun 26, 2007
- * Time: 2:54:03 PM
- */
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class ResetPasswordController extends AbstractUserAdminController {
 
     private PasswordValidator passwordValidator;
@@ -65,7 +62,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
         String password1 = param.getString("password1");
         String password2 = param.getString("password2");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         model.put("domain", domain);
 
         Configuration aksessConf = Aksess.getConfiguration();
@@ -74,11 +71,11 @@ public class ResetPasswordController extends AbstractUserAdminController {
 
         if(mailtemplate != null && getProfileConfiguration(domain).getPasswordManager() != null) {
 
-            if( user.getEmail() == null || user.getEmail().trim().equals("")) {
+            if( isBlank(user.getEmail()) ) {
                 model.put("noemail", Boolean.TRUE);
             } else {
 
-                model.put("maildefault", new Boolean(aksessConf.getBoolean("security.passwordmail.default", false)));
+                model.put("maildefault", aksessConf.getBoolean("security.passwordmail.default", false));
 
                 Velocity.init();
 
@@ -90,7 +87,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
                 VelocityContext context = new VelocityContext();
 
                 context.put("editor", aksessConf.getString("mail.editor"));
-                StringBuffer name = new StringBuffer();
+                StringBuilder name = new StringBuilder();
                 name.append(user.getGivenName());
                 if(user.getSurname() != null && !user.getSurname().trim().equals("")) {
                     name.append(" ").append(user.getSurname());
@@ -99,7 +96,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
                 context.put("name", name.toString());
 
                 StringWriter sw = new StringWriter();
-                Velocity.evaluate(context, sw, mailtemplate, new InputStreamReader(new FileInputStream(temp), "iso-8859-1"));
+                Velocity.evaluate(context, sw, mailtemplate, new InputStreamReader(new FileInputStream(temp), aksessConf.getString("velocity.templateencoding", "iso-8859-1")));
 
                 model.put("mailtemplate", sw.toString());
 

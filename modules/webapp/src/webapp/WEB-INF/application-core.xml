@@ -243,7 +243,7 @@
     </bean>
 
     <bean id="templateRenderer" class="no.kantega.publishing.templating.DefaultTemplateRenderer">
-        <property name="defaultEncoding" value="iso-8859-1"/>
+        <property name="defaultEncoding" value="${velocity.templateencoding}"/>
         <property name="velocityEngine" ref="velocityEngine"/>
     </bean>
 
