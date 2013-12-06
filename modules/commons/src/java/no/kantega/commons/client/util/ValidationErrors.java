@@ -27,7 +27,7 @@ import java.util.Map;
  */
 
 public class ValidationErrors {
-    List<ValidationError> errors = new ArrayList<ValidationError>();
+    List<ValidationError> errors = new ArrayList<>();
 
     public ValidationErrors() {
     }
