@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import com.sun.org.apache.xpath.internal.XPathAPI;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XMLHelper;
@@ -24,6 +23,7 @@ import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
+import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;

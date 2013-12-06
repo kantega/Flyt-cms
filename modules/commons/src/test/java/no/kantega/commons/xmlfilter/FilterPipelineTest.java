@@ -38,7 +38,7 @@ public class FilterPipelineTest extends TestCase {
         StringWriter sw = new StringWriter();
         try {
             filterPipeline.filter(new StringReader(input), sw);
-            assertEquals(pre + meta + "<body>Dette er en test med &aelig;&oslash;&aring; &AElig;&Oslash;&Aring;</body></html>", sw.toString());
+            assertEquals(pre + meta + "<body>Dette er en test med æøå ÆØÅ</body></html>", sw.toString());
             //
         } catch (SystemException e) {
             fail(e.getMessage());

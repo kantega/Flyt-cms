@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import com.sun.org.apache.xpath.internal.XPathAPI;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
@@ -26,6 +25,7 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
+import org.apache.xpath.XPathAPI;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Document;
@@ -36,11 +36,6 @@ import javax.xml.transform.TransformerException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 14, 2009
- * Time: 4:34:56 PM
- */
 public class ContentTemplateValidator {
     private ResourceLoader contentTemplateResourceLoader;
     private AttributeFactory attributeFactory;
