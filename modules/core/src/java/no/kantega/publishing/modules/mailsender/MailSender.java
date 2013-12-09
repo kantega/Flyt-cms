@@ -121,6 +121,9 @@ public class MailSender {
      * @throws ConfigurationException if a configuration error occurs.
      */
     public static void send(String from, String to, String subject, MimeBodyPart[] bodyParts) throws ConfigurationException, SystemException {
+
+        initEventLog();
+
         try {
             Properties props = new Properties();
 
@@ -170,8 +173,6 @@ public class MailSender {
 
             // Send meldingen
             Transport.send(message);
-
-            initEventLog();
 
             eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
 
