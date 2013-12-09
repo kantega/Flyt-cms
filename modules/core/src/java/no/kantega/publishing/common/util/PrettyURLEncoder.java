@@ -20,6 +20,8 @@ import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -71,7 +73,11 @@ public class PrettyURLEncoder {
 
     public static String createContentUrl(int associationId, String title, String alias) {
         if (isNotBlank(alias)) {
-            return alias.charAt(0) == '/' ? alias : "/" + alias;
+            try {
+                return alias.charAt(0) == '/' ? alias : "/" + URLEncoder.encode(alias, "utf-8");
+            } catch (UnsupportedEncodingException e) {
+                return alias.charAt(0) == '/' ? alias : "/" + alias;
+            }
         } else {
             return Aksess.CONTENT_URL_PREFIX + "/" + associationId + "/" + encode(title);
         }

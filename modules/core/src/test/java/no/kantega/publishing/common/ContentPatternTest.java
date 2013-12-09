@@ -91,9 +91,10 @@ public class ContentPatternTest {
 
     @Test
     public void aliasPatternShouldExtractAlias(){
-        Pattern pattern = Pattern.compile(ContentPatterns.ALIAS_PATTERN);
+        Pattern pattern = Pattern.compile(ContentPatterns.ALIAS_PATTERN, Pattern.UNICODE_CHARACTER_CLASS);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
+        values.put("/aliasæ/", asList(new Pair<>("alias", "/aliasæ/")));
         values.put("/alias/", asList(new Pair<>("alias", "/alias/")));
         values.put("/alias", asList(new Pair<>("alias", "/alias")));
         values.put("/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));

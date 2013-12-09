@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 public class ContentAliasValidator {
     private static final Logger log = LoggerFactory.getLogger(ContentAliasValidator.class);
 
-    private static final Pattern ALIAS_PATTERN = Pattern.compile(ContentPatterns.ALIAS_PATTERN);
+    private static final Pattern ALIAS_PATTERN = Pattern.compile(ContentPatterns.ALIAS_PATTERN, Pattern.UNICODE_CHARACTER_CLASS);
 
     public static void validateAlias(String alias, Content content, ValidationErrors errors) {
 

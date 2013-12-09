@@ -497,7 +497,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
     @Override
     public void setServletContext(ServletContext servletContext) {
-        CONTENT_URL_PATTERN = Pattern.compile(ContentPatterns.getPatternWithContextPath(servletContext.getContextPath()));
+        CONTENT_URL_PATTERN = Pattern.compile(ContentPatterns.getPatternWithContextPath(servletContext.getContextPath()), Pattern.UNICODE_CHARACTER_CLASS);
     }
 
     private static final RowMapper<Pair<Integer, Integer>> associationContentIdAndTypeMapper = new RowMapper<Pair<Integer, Integer>>() {
