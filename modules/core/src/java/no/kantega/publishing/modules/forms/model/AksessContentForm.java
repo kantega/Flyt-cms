@@ -7,12 +7,16 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.EditableformAttribute;
 import no.kantega.publishing.common.data.attributes.EmailAttribute;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.modules.forms.filter.GetFormFieldsFilter;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.Iterator;
 import java.util.List;
+
+import static org.apache.commons.lang.StringUtils.isBlank;
 
 public class AksessContentForm extends DefaultForm {
 
@@ -28,9 +32,21 @@ public class AksessContentForm extends DefaultForm {
     public AksessContentForm(Content content) {
         List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
         for (Attribute attr : attributes) {
-            if (attr instanceof EmailAttribute) {
-                setEmail(attr.getValue());
+            if (isBlank(getEmail())) {
+                String email = "";
+                if (attr instanceof RepeaterAttribute) {
+                    email = getEmailFromRepeater((RepeaterAttribute) attr, email);
+                }
+
+                if (isBlank(email) && attr instanceof EmailAttribute) {
+                    email = attr.getValue();
+                }
+
+                if (!isBlank(email)) {
+                    setEmail(email);
+                }
             }
+
             if (attr instanceof EditableformAttribute) {
                 setFormDefinition(attr.getValue());
                 setFieldNames(getFieldNamesFromDefinition(attr.getValue()));
@@ -39,6 +55,21 @@ public class AksessContentForm extends DefaultForm {
         setId(content.getId());
         setTitle(content.getTitle());
         setUrl(content.getUrl());
+    }
+
+    private String getEmailFromRepeater(RepeaterAttribute repeaterAttribute, String email) {
+        Iterator<List<Attribute>> it =  repeaterAttribute.getIterator();
+        while(it.hasNext()) {
+            for (Attribute a : it.next()) {
+                if (a instanceof EmailAttribute) {
+                    if (!isBlank(email)) {
+                        email += ",";
+                    }
+                    email += a.getValue();
+                }
+            }
+        }
+        return email;
     }
 
     private List<String> getFieldNamesFromDefinition(String formDefinition) {
@@ -53,6 +84,4 @@ public class AksessContentForm extends DefaultForm {
 
         return filter.getFieldNames();
     }
-
-
 }
