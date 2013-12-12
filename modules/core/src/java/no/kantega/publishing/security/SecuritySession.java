@@ -60,7 +60,7 @@ public class SecuritySession {
     private Identity identity = null;
     private SecurityRealm realm = null;
     private SiteCache siteCache;
-    private static RememberMeHandler rememberMeHandler;
+    private RememberMeHandler rememberMeHandler;
 
     // Husker sist tilgangssjekk
     private CachedBaseObject prevObject = null;
@@ -70,9 +70,8 @@ public class SecuritySession {
     public SecuritySession() {
     }
 
-    public SecuritySession(SecurityRealm securityRealm, User unauthenticatedUser) {
-        realm = securityRealm;
-        user = unauthenticatedUser;
+    public SecuritySession(SecurityRealm realm) {
+        this.realm = realm;
     }
 
     /**
@@ -89,7 +88,9 @@ public class SecuritySession {
             request.getSession(true).setAttribute("aksess.securitySession", session);
         }
 
-        Identity identity = rememberMeHandler.getRememberedIdentity(request);
+        session.setRememberMeHandlerIfNull();
+
+        Identity identity = session.rememberMeHandler.getRememberedIdentity(request);
         if (identity == null) {
 
             IdentityResolver resolver = session.realm.getIdentityResolver();
@@ -212,7 +213,7 @@ public class SecuritySession {
     }
 
     /**
-     * Creates a new SecuritySession pre set with an unauthenticated user.
+     * Creates a new SecuritySession pre set with user with no roles except 'everyone'.
      *
      * @return SecuritySession
      */
@@ -236,7 +237,6 @@ public class SecuritySession {
 
     private static SecuritySession createNewInstance() throws SystemException {
         SecuritySession session = new SecuritySession();
-        session.setRememberMeHandlerIfNull();
         session.realm = SecurityRealmFactory.getInstance();
         return session;
     }
@@ -329,6 +329,7 @@ public class SecuritySession {
             log.error("Error in url " + redirect, e);
         }
 
+        setRememberMeHandlerIfNull();
         rememberMeHandler.forgetUser(request, response);
 
         try {

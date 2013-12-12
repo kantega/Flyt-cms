@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
 
 @Configuration
 public class SecuritySessionConfiguration {
-    private final SecuritySession unauthenticatedInstance = createNewUnauthenticatedInstance();
+    private final SecuritySession unauthenticatedInstance = createNewSecuritySession();
 
     private SecurityRealm securityRealm;
 
@@ -25,27 +25,17 @@ public class SecuritySessionConfiguration {
         HttpSession session = request.getSession(false);
         if(session == null){
             securitySession = unauthenticatedInstance;
-        }else {
+        } else {
             securitySession = (SecuritySession) session.getAttribute("aksess.securitySession");
-            if(securitySession == null){
+            if (securitySession == null){
                 securitySession = unauthenticatedInstance;
             }
         }
         return securitySession;
     }
 
-    private SecuritySession createNewUnauthenticatedInstance() {
-        User unauthenticatedUser = new User();
-        unauthenticatedUser.setGivenName("Aksess - Unauthenticated");
-        unauthenticatedUser.setSurname("CMS");
-        unauthenticatedUser.setId("Unauthenticated");
-
-        Role role = new Role();
-        role.setId(Aksess.getEveryoneRole());
-        role.setName(Aksess.getEveryoneRole());
-        unauthenticatedUser.addRole(role);
-
-        return new SecuritySession(securityRealm, unauthenticatedUser);
+    private SecuritySession createNewSecuritySession() {
+        return new SecuritySession(securityRealm);
     }
 
     public void setSecurityRealm(SecurityRealm securityRealm) {
