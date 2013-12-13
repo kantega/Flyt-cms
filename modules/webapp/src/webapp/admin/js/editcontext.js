@@ -537,6 +537,15 @@ openaksess.editcontext = function()  {
             var name = element.name;
             var field = element.form['delete_' + name];
             field.value = "1";
+
+            // Remove link to down attachment
+            var $parent = $(element).parent().parent();
+            var $link = $(".fileattribute-link", $parent);
+            $link.hide();
+
+            // Hide delete button
+            var $buttonGroup = $(".buttonGroup", $parent);
+            $buttonGroup.hide();
         },
 
         clearDefaultValue : function(field, defaultValue) {

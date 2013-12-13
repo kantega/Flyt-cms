@@ -50,7 +50,7 @@
     <input type="file" class="fullWidth" name="${fieldName}" id="${fieldName}" value="<%=value%>" size="60" tabindex="${attribute.tabIndex}" onchange="validateFileAgainstBlackList_${fieldName}(this)">
     <input type="hidden" name="delete_${fieldName}" value="0">
     <% if (value != null && value.length() > 0) {%>
-    <br><a href="<%=attribute.getProperty(AttributeProperty.URL)%>" class="textlink" target="_new"><%=attribute.getProperty(AttributeProperty.NAME)%></a>
+    <div class="fileattribute-link"><a href="<%=attribute.getProperty(AttributeProperty.URL)%>" class="textlink" target="_new"><%=attribute.getProperty(AttributeProperty.NAME)%></a></div>
     <%}%>
 </div>
 <% if (value != null && value.length() > 0) {%>
