@@ -376,6 +376,13 @@
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>
+            <xs:attribute name="keepoldversions" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>
+                        Only valid for file attributes. Set to true to keep old attachments.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
 
         </xs:complexType>
     </xs:element>
