@@ -172,7 +172,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         }else if (attribute instanceof RepeaterAttribute){
             fieldname = new StringBuilder(getFieldName(attribute.getParent(), language));
         } else if (attribute instanceof TextAttribute){
-            if (language == Language.ENGLISH) {
+            if (isEnglishContent(attribute, language)) {
                 fieldname.append("en");
             }else {
                 fieldname.append("no");
@@ -181,6 +181,10 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             fieldname.append("str");
         }
         return fieldname.toString();
+    }
+
+    private boolean isEnglishContent(Attribute attribute, int language) {
+        return language == Language.ENGLISH || attribute.getName().endsWith("_en") || attribute.getName().endsWith("_eng");
     }
 
     private Object getValue(Attribute attribute) {
