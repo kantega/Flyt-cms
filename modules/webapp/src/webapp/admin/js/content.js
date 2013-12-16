@@ -230,8 +230,9 @@ openaksess.content = {
      */
     publish : {
         open : function(url) {
-            openaksess.common.debug("openaksess.content.publish.open(): url: " + url);
-            openaksess.navigate.updateMainPane(url, false);
+            var associationId = openaksess.common.getQueryParam("thisId", url);
+            openaksess.common.debug("openaksess.content.publish.open(): associationId: " + associationId);
+            openaksess.navigate.updateMainPane(associationId, false);
         },
 
         openInNewWindow : function(url) {
