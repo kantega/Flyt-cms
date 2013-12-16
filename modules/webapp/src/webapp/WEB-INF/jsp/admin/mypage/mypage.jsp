@@ -72,9 +72,10 @@
         $(document).ready(function(){
             $("#WorkList").tabs();
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
+            <%-- Disabled: https://jira.kantega.no/browse/AP-1710
             $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
                 widgetLoaded();
-            });
+            }); --%>
             $("#ContentStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/ContentStatistics.action");
             $("#OrgUnitStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/OrgUnitStatistics.action");
             $("#UserInfo").load("${pageContext.request.contextPath}/admin/mypage/plugins/UserInfo.action");
