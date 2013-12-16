@@ -223,7 +223,7 @@ table.fullWidth {
 }
 
 #Content.administration #MainPaneContent {
-    width: 600px;
+    width: 750px;
     margin: 10px;
 }
 
@@ -825,7 +825,7 @@ input.fullWidth, select.fullWidth {
 /************** Boxes **************/
 div.roundCorners {
     /*padding-bottom: 20px;*/
-    max-width: 650px;
+    max-width: 750px;
 }
 
 div.roundCorners div.top {
