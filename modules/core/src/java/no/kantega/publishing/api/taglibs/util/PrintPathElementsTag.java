@@ -10,7 +10,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,6 +28,7 @@ public class PrintPathElementsTag extends TagSupport {
     private Integer associationId;
     private String cssClass = defaultCssClass;
     private String separator = defaultSeparator;
+    private boolean skipFirst = false;
     private PathEntryService pathEntryService;
 
     @Override
@@ -49,12 +49,13 @@ public class PrintPathElementsTag extends TagSupport {
                 writer.write(cssClass);
                 writer.write("\">");
 
-                for (Iterator<PathEntry> iterator = pathByContentId.iterator(); iterator.hasNext(); ) {
-                    PathEntry pathEntry = iterator.next();
+                int lastElement = pathByContentId.size() - 1;
+                for(int i = getStartIndex(); i < pathByContentId.size(); i++){
+                    PathEntry pathEntry = pathByContentId.get(i);
                     writer.write("<span>");
                     writer.write(pathEntry.getTitle());
                     writer.write("</span>");
-                    if(iterator.hasNext()){
+                    if(i < lastElement){
                         writer.write(separator);
                     }
                 }
@@ -68,11 +69,16 @@ public class PrintPathElementsTag extends TagSupport {
         return super.doStartTag();
     }
 
+    private int getStartIndex() {
+        return skipFirst ? 1 : 0;
+    }
+
     @Override
     public int doEndTag() throws JspException {
         associationId = -1;
         cssClass = defaultCssClass;
         separator = defaultSeparator;
+        skipFirst = false;
         return super.doEndTag();
     }
 
@@ -86,5 +92,9 @@ public class PrintPathElementsTag extends TagSupport {
 
     public void setSeparator(String separator) {
         this.separator = separator;
+    }
+
+    public void setSkipFirst(boolean skipFirst) {
+        this.skipFirst = skipFirst;
     }
 }
