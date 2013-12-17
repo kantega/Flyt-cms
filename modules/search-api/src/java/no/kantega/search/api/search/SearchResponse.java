@@ -56,7 +56,7 @@ public class SearchResponse {
     public List<SearchResult> getSearchHits() {
         List<SearchResult> documentHits = Collections.emptyList();
         for(GroupResultResponse groupResultResponse : groupResultResponses){
-            if(groupResultResponse.getGroupValue().equals(ALL_DOCUMENTS_GROUPNAME)){
+            if(groupResultResponse.getGroupValue() != null && groupResultResponse.getGroupValue().equals(ALL_DOCUMENTS_GROUPNAME)){
                 documentHits = groupResultResponse.getSearchResults();
             }
         }
