@@ -421,6 +421,11 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 throw new ContentNotFoundException(path);
             }
         } else {
+            if (url.endsWith(Aksess.getStartPage())) {
+                // Used when a directory with a index.jsp is accessed directly
+                url = url.substring(0, url.length() - Aksess.getStartPage().length() + 1);
+            }
+
             String queryString = request.getQueryString();
             if (queryString != null && queryString.length() > 0) {
                 url = url + "?" + queryString;
