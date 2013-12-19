@@ -78,14 +78,14 @@ public class ContentPropertiesAction {
             Content content = cms.getContent(cid, false);
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
-            List<String> enabledButtons = new ArrayList<String>();
+            List<String> enabledButtons = new ArrayList<>();
 
             boolean showApproveButtons = false;
             if (content != null) {
                 //Breadcrumbs
                 List<PathEntry> path = cms.getPathByAssociation(content.getAssociation());
                 if (path == null) {
-                    path = new ArrayList<PathEntry>();
+                    path = new ArrayList<>();
                 }
 
                 //Add current element to the path.
@@ -146,7 +146,7 @@ public class ContentPropertiesAction {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.draft", Aksess.getDefaultAdminLocale()));
                 } else if (content.getChangeFromDate() != null) {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.changefromdate", Aksess.getDefaultAdminLocale()));
-                }                
+                }
 
                 ContentLock lock = LockManager.peekAtLock(content.getId());
                 if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
@@ -155,41 +155,41 @@ public class ContentPropertiesAction {
                 }
 
                 enabledButtons.add("PrivilegesButton");
-            }
 
-            Map<String, Object> contentProperties = new HashMap<>();
-            contentProperties.put("title", content.getTitle());
-            contentProperties.put("alias", content.getAlias());
-            contentProperties.put("lastModified", formatDateTime(content.getLastModified()));
-            contentProperties.put("lastModifiedBy", content.getLastMajorChangeBy());
-            contentProperties.put("approvedBy", content.getApprovedBy());
-            contentProperties.put("changeFromDate", formatDateTime(content.getChangeFromDate()));
-            contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
-            contentProperties.put("ownerperson", content.getOwnerPerson());
-            String owner = content.getOwner();
-            if (owner != null && owner.trim().length() > 0) {
-                Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
-                if (orgManagers != null && orgManagers.size() > 0) {
-                    OrganizationManager orgManager = (OrganizationManager) orgManagers.values().iterator().next();
-                    try {
-                        OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
-                        if (ownerUnit != null) {
-                            owner = ownerUnit.getName();
+                Map<String, Object> contentProperties = new HashMap<>();
+                contentProperties.put("title", content.getTitle());
+                contentProperties.put("alias", content.getAlias());
+                contentProperties.put("lastModified", formatDateTime(content.getLastModified()));
+                contentProperties.put("lastModifiedBy", content.getLastMajorChangeBy());
+                contentProperties.put("approvedBy", content.getApprovedBy());
+                contentProperties.put("changeFromDate", formatDateTime(content.getChangeFromDate()));
+                contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
+                contentProperties.put("ownerperson", content.getOwnerPerson());
+                String owner = content.getOwner();
+                if (owner != null && owner.trim().length() > 0) {
+                    Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
+                    if (orgManagers != null && orgManagers.size() > 0) {
+                        OrganizationManager orgManager = (OrganizationManager) orgManagers.values().iterator().next();
+                        try {
+                            OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
+                            if (ownerUnit != null) {
+                                owner = ownerUnit.getName();
+                            }
+                        } catch (Exception e) {
+                            log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
                         }
-                    } catch (Exception e) {
-                        log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
                     }
                 }
+                contentProperties.put("owner", owner);
+                contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
+                contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
+
+                model.put("showApproveButtons", showApproveButtons);
+                model.put("enabledButtons", enabledButtons);
+
+                model.put("contentProperties", contentProperties);
+                model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
             }
-            contentProperties.put("owner", owner);
-            contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
-            contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
-
-            model.put("showApproveButtons", showApproveButtons);
-            model.put("enabledButtons", enabledButtons);
-
-            model.put("contentProperties", contentProperties);
-            model.put("userPreferences", userPreferencesManager.getAllPreferences(request));
 
 
             return model;
