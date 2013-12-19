@@ -554,7 +554,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             parentCid =  ContentIdentifier.fromAssociationId(parentAssociationId);
             parentCid.setLanguage(cid.getLanguage());
         } catch (DataAccessException e) {
-            log.warn("Error executing select ParentAssociationId from associations where AssociationId = " + cid.getAssociationId(), e);
+            log.warn("Error executing select ParentAssociationId from associations where AssociationId = {}: {}", cid.getAssociationId(), e.getMessage());
         }
         return parentCid;
     }
