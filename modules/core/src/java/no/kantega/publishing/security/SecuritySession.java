@@ -67,8 +67,7 @@ public class SecuritySession {
     private int prevPrivilege = -1;
     private boolean prevResult = false;
 
-    public SecuritySession() {
-    }
+    private SecuritySession() { }
 
     public SecuritySession(SecurityRealm realm) {
         this.realm = realm;

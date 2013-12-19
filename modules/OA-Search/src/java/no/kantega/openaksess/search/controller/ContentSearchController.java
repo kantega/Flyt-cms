@@ -67,7 +67,7 @@ public class ContentSearchController implements AksessController {
                 addLinks(model, searchResponse);
             }
         } else {
-            model.put("searchResponse", SearchResponse.emptyResponse());
+            model.put("searchResponse", emptyResponse(request));
         }
 
         return model;
@@ -288,5 +288,9 @@ public class ContentSearchController implements AksessController {
 
     public void setFacetQueries(List<String> facetQueries) {
         this.facetQueries = facetQueries;
+    }
+
+    private SearchResponse emptyResponse(HttpServletRequest request) {
+        return new SearchResponse(new SearchQuery(aksessSearchContextCreator.getSearchContext(request), ""), 0L, 0, Collections.<SearchResult>emptyList());
     }
 }
