@@ -18,6 +18,7 @@ package org.kantega.openaksess.plugins.groovyscripts;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyCodeSource;
+import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.annotations.RequestHandler;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListenerAdapter;
 import no.kantega.publishing.common.data.Content;
@@ -117,6 +118,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
                 }
             } catch (IOException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
+                log.error("Error running script for template {} with url {}", template, URLHelper.getCurrentUrl(context.getRequest()));
                 log.error("Error running script", e);
                 throw new RuntimeException(e);
             }
