@@ -32,7 +32,13 @@ public class AliasRequestHandler {
         String alias = (String) request.getAttribute(AksessAliasHandlerMapping.HANDLED_OA_ALIAS);
 
         ContentIdentifier cid = getBestMatchingAlias(alias, request.getServerName());
-        return contentRequestHandler.handleFromContentIdentifier(cid, request, response);
+        try {
+            return contentRequestHandler.handleFromContentIdentifier(cid, request, response);
+        } catch (Exception e) {
+            LOG.error("Error handling alias {}, cid {}", alias, cid);
+            LOG.error("Error handling alias {}", e);
+            throw e;
+        }
     }
 
     private ContentIdentifier getBestMatchingAlias(String alias, String serverName) {
