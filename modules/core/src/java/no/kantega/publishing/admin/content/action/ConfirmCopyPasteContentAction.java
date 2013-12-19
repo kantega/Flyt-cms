@@ -33,9 +33,11 @@ import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
-import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
@@ -48,12 +50,17 @@ import java.util.*;
  * Action Controller for confirming a copy paste operation
  */
 public class ConfirmCopyPasteContentAction implements Controller {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private TemplateConfigurationCache templateConfigurationCache;
     private String errorView;
     private String view;
 
     @Autowired
     private ContentIdHelper contentIdHelper;
+
+    @Autowired
+    private ContentEventListener contentEventListener;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -108,13 +115,15 @@ public class ConfirmCopyPasteContentAction implements Controller {
         if (!isCopy && selectedContent.getAssociation().getSiteId() != newParent.getAssociation().getSiteId()) {
             // Check if template is allowed for pasted page in new site
             DisplayTemplate displayTemplate = cms.getDisplayTemplate(selectedContent.getDisplayTemplateId());
-            if (displayTemplate.getSites().size() > 0) {
+            if (displayTemplate != null && displayTemplate.getSites().size() > 0) {
                 forbidMoveCrossSite = true;
                 for (Site s : displayTemplate.getSites()) {
                     if (s.getId() == newParent.getAssociation().getSiteId()) {
                         forbidMoveCrossSite = false;
                     }
                 }
+            } else {
+                log.error("Displaytemplate with id {} was null for content with id ", selectedContent.getDisplayTemplateId(), selectedContent.getId());
             }
         }
 
@@ -150,7 +159,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
             model.put("allowCrossPublish", true);
 
             // Run plugins
-            ContentListenerUtil.getContentNotifier().beforeConfirmCopyPasteContent(new ContentEvent().setContent(selectedContent).setModel(model));
+            contentEventListener.beforeConfirmCopyPasteContent(new ContentEvent().setContent(selectedContent).setModel(model));
 
             return new ModelAndView(view, model);
         }
@@ -164,7 +173,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
         // Template only holds id of AssociationCategory, get complete AssociationCategory from cache
         List<AssociationCategory> allAssociations = templateConfigurationCache.getTemplateConfiguration().getAssociationCategories();
-        List<AssociationCategory> allowedAssociations = new ArrayList<AssociationCategory>();
+        List<AssociationCategory> allowedAssociations = new ArrayList<>();
         for (AssociationCategory allowedAssociation : tmpAllowedAssociations) {
             for (AssociationCategory allAssociation : allAssociations) {
                 if (allAssociation.getId() == allowedAssociation.getId()) {

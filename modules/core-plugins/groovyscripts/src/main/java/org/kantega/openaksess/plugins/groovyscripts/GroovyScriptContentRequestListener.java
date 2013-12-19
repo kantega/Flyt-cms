@@ -177,7 +177,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
         Method[] methods = clazz.getDeclaredMethods();
 
-        List<Method> candidateMethods = new ArrayList<Method>();
+        List<Method> candidateMethods = new ArrayList<>();
         Method annotatedMethod  = null;
 
         for (Method method : methods) {
