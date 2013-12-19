@@ -19,6 +19,7 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
@@ -90,7 +91,7 @@ public class DeleteAssociationAction implements Controller {
             }
 
             boolean isCrossPublished = false;
-            List associations = content.getAssociations();
+            List<Association> associations = content.getAssociations();
             if (associations != null) {
                 if (associations.size() > 1) {
                     isCrossPublished = true;                    
@@ -108,9 +109,8 @@ public class DeleteAssociationAction implements Controller {
             int[] ids = param.getInts("id");
             boolean confirmMultipleDelete = param.getBoolean("confirmMultipleDelete", false);
 
-            List toBeDeleted = null;
-            if (ids.length > 0) {
-                toBeDeleted = aksessService.deleteAssociationsById(ids, confirmMultipleDelete);
+            if (ids != null && ids.length > 0) {
+                List<Content> toBeDeleted = aksessService.deleteAssociationsById(ids, confirmMultipleDelete);
                 if (toBeDeleted != null && toBeDeleted.size() > 1 && !confirmMultipleDelete) {
                     // User must confirm deletion of subpages
                     model.put("associationIds", ids);
