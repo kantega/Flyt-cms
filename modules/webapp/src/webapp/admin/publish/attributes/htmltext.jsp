@@ -164,6 +164,13 @@
             theme_advanced_resizing : true,
             theme_advanced_resize_horizontal : false,
             theme_advanced_blockformats : "p,address,pre,<%=heading%>",
+            <%
+            if (!hasHtmlEditorRole) {
+            %>
+            theme_advanced_disable: "code",
+            <%
+            }
+            %>
 
             // Plugin options
             <%

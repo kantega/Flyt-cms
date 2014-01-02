@@ -72,9 +72,6 @@ public class Aksess {
     private static String[] rolePhotographer;
     private static String roleQualityAdmin;
 
-    private static String outputImageFormat = "jpg";
-    private static int outputImageQuality = 85;
-
     private static boolean isDefaultMinorChange = false;
 
     private static boolean openLinksInNewWindow = false;
@@ -139,10 +136,6 @@ public class Aksess {
         }
 
         dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
-
-        // Format and quality in images
-        outputImageFormat = c.getString("default.thumbnailformat", outputImageFormat);
-        outputImageQuality = c.getInt("default.thumbnailformat.jpg.quality", outputImageQuality);
 
         defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
         defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
@@ -220,7 +213,7 @@ public class Aksess {
         roleAdmin = c.getString("security.role.admin", "admin");
         roleAuthor = c.getStrings("security.role.author", "innholdsprodusent");
         roleForms = c.getStrings("security.role.forms", roleAdmin);
-        roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin);
+        roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin + "," + roleAuthor);
         roleUnit = c.getString("security.role.unit", "enhet*");
         roleDeveloper = c.getString("security.role.developer", "developer");
         roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");
@@ -449,14 +442,6 @@ public class Aksess {
 
     public static boolean doOpenLinksInNewWindow() {
         return openLinksInNewWindow;
-    }
-
-    public static String getOutputImageFormat() {
-        return outputImageFormat;
-    }
-
-    public static int getOutputImageQuality() {
-        return outputImageQuality;
     }
 
     public static String[] getInternalIpSegment() {
