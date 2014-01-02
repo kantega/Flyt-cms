@@ -42,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
@@ -59,7 +60,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
     @Autowired
     private ContentIdHelper contentIdHelper;
 
-    @Autowired
+    @Resource(name = "contentListenerNotifier")
     private ContentEventListener contentEventListener;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
