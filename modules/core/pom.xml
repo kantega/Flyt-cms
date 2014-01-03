@@ -114,12 +114,6 @@
         </dependency>
 
         <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
-            <version>${taglibs-standard.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>xalan</groupId>
             <artifactId>xalan</artifactId>
         </dependency>

@@ -66,8 +66,8 @@
         </dependency>
 
         <dependency>
-            <groupId>taglibs</groupId>
-            <artifactId>standard</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
             <version>${taglibs-standard.version}</version>
         </dependency>
 
