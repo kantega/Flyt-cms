@@ -40,7 +40,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
-import static no.kantega.commons.util.URLHelper.combinePaths;
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 public class GetLinkTag extends BodyTagSupport{
@@ -158,10 +157,6 @@ public class GetLinkTag extends BodyTagSupport{
                                 url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                             }
                         }
-                    } else if(url != null && url.equals(contentObject.getAlias()) && site.getHostnames().isEmpty()){
-                        // Site does not have its own domain. append site alias to
-                        // distinguish it from same alias on other sites.
-                        url = combinePaths(site.getAlias(), url);
                     }
                 } catch (ContentNotFoundException e) {
                     // Vi vet ikke hvilken site denne siden tilhører, er ikke registrert

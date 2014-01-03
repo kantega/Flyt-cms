@@ -23,7 +23,6 @@ import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.Language;
-import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
 import no.kantega.publishing.common.Aksess;
@@ -51,7 +50,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import static no.kantega.commons.util.URLHelper.combinePaths;
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 /**
@@ -306,14 +304,7 @@ public final class AttributeTagHelper {
                         result = String.valueOf(content.getAssociation().getNumberOfViews());
                         break;
                     case ContentProperty.URL:
-                        setSiteCacheIfNull();
-                        Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
                         result = content.getUrl();
-                        if(result.equals(content.getAlias()) && site.getHostnames().isEmpty()){
-                            // Site does not have its own domain. append site alias to
-                            // distinguish it from same alias on other sites.
-                            result = combinePaths(site.getAlias(), result);
-                        }
                         break;
                     case ContentProperty.ALIAS:
                         result = content.getAlias();

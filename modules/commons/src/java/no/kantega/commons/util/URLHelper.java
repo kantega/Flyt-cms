@@ -55,27 +55,4 @@ public class URLHelper {
         }
         return sb.toString();
     }
-
-    /**
-     * Get combined url from two fragments.
-     * /a + b -> /a/b
-     * /a/ + /b -> /a/b
-     * /a/ + b -> /a/b
-     */
-    public static String combinePaths(String urlFragment1, String urlFragment2){
-        StringBuilder urlBuilder = new StringBuilder();
-        if (urlFragment1.endsWith("/")) {
-            urlBuilder.append(urlFragment1);
-        } else {
-            urlBuilder.append(urlFragment1);
-            urlBuilder.append('/');
-        }
-
-        if(urlFragment2.startsWith("/")){
-            urlBuilder.append(urlFragment2.substring(1, urlFragment2.length()));
-        } else {
-            urlBuilder.append(urlFragment2);
-        }
-        return urlBuilder.toString();
-    }
 }
