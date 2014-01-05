@@ -113,7 +113,7 @@ public class MultimediaAO {
      * @throws SystemException
      */
     public static int setMultimedia(Multimedia mm) throws SystemException {
-
+        setPermissionAOIfNotSet();
         multimediaDao.setMultimedia(mm);
 
         if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
