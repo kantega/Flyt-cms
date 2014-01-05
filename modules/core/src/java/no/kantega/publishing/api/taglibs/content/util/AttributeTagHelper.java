@@ -31,6 +31,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
@@ -275,6 +276,23 @@ public final class AttributeTagHelper {
                         }
                     } else {
                         result = media.getProperty(cmd.getProperty());
+
+                        if (cmd.getProperty().equalsIgnoreCase(AttributeProperty.URL)) {
+                            if (cmd.getWidth() != -1) {
+                                result += !result.contains("?") ? "?" : "&amp;";
+                                result += "width=" + cmd.getWidth();
+                            }
+                            if (cmd.getHeight() != -1) {
+                                result += !result.contains("?") ? "?" : "&amp;";
+                                result += "height=" + cmd.getHeight();
+                            }
+
+                            if (cmd.getCropping() != Cropping.CONTAIN){
+                                result += !result.contains("?") ? "?" : "&amp;";
+                                result +="cropping=" + cmd.getCropping().getTypeAsString();
+                            }
+                        }
+
                     }
 
                     // Angi om bilde / medieobjekt skal vises inline eller lastes ned
@@ -283,6 +301,9 @@ public final class AttributeTagHelper {
                     }
                 } else {
                     result = attr.getProperty(cmd.getProperty());
+
+
+
                 }
 
                 if (attr instanceof TextAttribute) {
