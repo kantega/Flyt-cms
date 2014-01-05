@@ -4,10 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -85,7 +82,7 @@ public class SolrConfigInitializer {
         }
     }
 
-    private static void copyAndCloseStreams(InputStream resourceAsStream, FileOutputStream output) throws IOException {
+    private static void copyAndCloseStreams(InputStream resourceAsStream, OutputStream output) throws IOException {
         IOUtils.copy(resourceAsStream, output);
         IOUtils.closeQuietly(resourceAsStream);
         IOUtils.closeQuietly(output);
