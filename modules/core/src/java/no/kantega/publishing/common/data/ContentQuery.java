@@ -380,7 +380,7 @@ public class ContentQuery {
                     List<OrgUnit> orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
                     if(orgUnits.size() > 0) {
                         query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
-                                "     and hearinginvitee.InviteeRef in (:unitids))");
+                                " and hearinginvitee.InviteeRef in (:unitids))");
 
                         List<String> orgunitIds = transform(orgUnits, new Function<OrgUnit, String>() {
                             @Override
@@ -396,29 +396,30 @@ public class ContentQuery {
             query.append(")");
         }
 
-        if (attributes != null) {
+        if (attributes != null && !attributes.isEmpty()) {
             try {
                 // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
                 try (Connection c = dbConnectionFactory.getConnection()){
                     PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+                    query.append(" and content.ContentId in (:attributecontentids)");
+                    List<Integer> attributecontentids = new ArrayList<>();
                     for (Attribute a : attributes) {
                         st.setString(1, a.getName());
                         st.setString(2, a.getValue());
 
                         int noFound = 0;
                         ResultSet rs = st.executeQuery();
-                        query.append(" and content.ContentId in (:attributecontentids)");
-                        List<Integer> attributecontentids = new ArrayList<>();
+
                         while (rs.next()) {
                             int id = rs.getInt("ContentId");
                             attributecontentids.add(id);
                             noFound++;
                         }
                         if (noFound == 0) {
-                            return null;
+                            attributecontentids.add(-1);
                         }
-                        parameters.put("attributecontentids", attributecontentids);
                     }
+                    parameters.put("attributecontentids", attributecontentids);
                     st.close();
                 }
             } catch (SQLException e) {
