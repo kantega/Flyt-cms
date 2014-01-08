@@ -19,11 +19,13 @@ package no.kantega.publishing.common.templates;
 import junit.framework.TestCase;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 public class ImportTemplateConfigurationTest extends TestCase {
     public void testImportConfiguration() {
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
-        factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig.xml"));
+        factory.setTemplateConfig(new ClassPathResource("test-templateconfig.xml"));
         TemplateConfiguration config = factory.getConfiguration();
 
         assertEquals(config.getAssociationCategories().size(), 4);

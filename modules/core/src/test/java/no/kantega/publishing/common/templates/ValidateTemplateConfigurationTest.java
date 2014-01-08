@@ -22,6 +22,8 @@ import no.kantega.publishing.common.util.templates.TemplateConfigurationValidato
 import no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory;
 import org.apache.commons.collections.Predicate;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class ValidateTemplateConfigurationTest {
     @Test
     public void testValidate() {
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
-        factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig.xml"));
+        factory.setTemplateConfig(new ClassPathResource("test-templateconfig.xml"));
         TemplateConfiguration config = factory.getConfiguration();
 
         TemplateConfigurationValidator validator = new TemplateConfigurationValidator();
