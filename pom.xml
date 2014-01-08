@@ -199,7 +199,6 @@
             <plugin>
                 <groupId>org.kantega.openaksess</groupId>
                 <artifactId>generate-project-xml-maven-plugin</artifactId>
-                <version>1.5</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
@@ -219,6 +218,15 @@
                 </executions>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.kantega.openaksess</groupId>
+                    <artifactId>generate-project-xml-maven-plugin</artifactId>
+                    <version>1.8</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
     <properties>
@@ -260,7 +268,6 @@
                     <plugin>
                         <groupId>org.kantega.openaksess</groupId>
                         <artifactId>generate-project-xml-maven-plugin</artifactId>
-                        <version>1.6</version>
                         <inherited>false</inherited>
                         <executions>
                             <execution>
