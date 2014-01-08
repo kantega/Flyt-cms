@@ -66,7 +66,7 @@ public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, Init
     public void afterPropertiesSet() throws Exception {
         try {
             MessageDigest dig = MessageDigest.getInstance("MD5");
-            dig.update(Aksess.getWebappRevision().getBytes("utf-8"));
+            dig.update(Aksess.getBuildRevision().getBytes("utf-8"));
             key = DigestPrettyPrinter.prettyPrintDigest(dig.digest()).substring(0, 10);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

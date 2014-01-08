@@ -54,7 +54,7 @@ public class ViewSystemInformationAction extends AbstractController {
             conf.setProperties(loader.loadConfiguration());
         }
 
-        addOAAndWebappVersionInformation(model);
+        addOAVersionInformation(model);
 
         model.put("aksessVersion", Aksess.getVersion());
 
@@ -82,24 +82,9 @@ public class ViewSystemInformationAction extends AbstractController {
         return new ModelAndView(view, model);
     }
 
-    private void addOAAndWebappVersionInformation(Map<String, Object> model) {
-        try {
-            Properties versionInfo = new Properties();
-            versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
-            model.put("aksessRevision", versionInfo.get("revision"));
-            model.put("aksessTimestamp", parseDate((String) versionInfo.get("date")));
-        } catch (IOException e) {
-            log.info( "aksess-version.properties not found");
-        }
-        try {
-            Properties webappVersionInfo = new Properties();
-            webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
-            model.put("webappRevision", webappVersionInfo.get("revision"));
-            model.put("webappVersion", webappVersionInfo.get("version"));
-            model.put("webappTimestamp", parseDate((String) webappVersionInfo.get("date")));
-        } catch (IOException e) {
-            log.info( "aksess-webapp-version.properties not found");
-        }
+    private void addOAVersionInformation(Map<String, Object> model) {
+        model.put("aksessRevision", Aksess.getBuildRevision());
+        model.put("aksessTimestamp", parseDate(Aksess.getBuildDate()));
     }
 
     private void addVMStartDate(Map<String, Object> model, RuntimeMXBean runtimeMXBean) {
@@ -129,22 +114,12 @@ public class ViewSystemInformationAction extends AbstractController {
     }
 
     private Date parseDate(String date) {
-        DateFormat svnTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
+        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmm");
         Date parsedDate = null;
         try {
-            parsedDate = svnTimestampFormat.parse(date);
+            parsedDate = dateFormat.parse(date);
         } catch (ParseException e) {
-            DateFormat timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-            try {
-                parsedDate = timestampFormat.parse(date);
-            } catch (ParseException e1) {
-                timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
-                try {
-                    parsedDate = timestampFormat.parse(date);
-                } catch (ParseException e2) {
-                    log.error("Could not parse " + date, e2);
-                }
-            }
+            log.error(String.format("Could not parse '%s' as date", date), e);
         }
 
         return parsedDate;

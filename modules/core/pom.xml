@@ -30,6 +30,7 @@
 
     <properties>
         <wro.version>1.6.2</wro.version>
+        <build.date>${maven.build.timestamp}</build.date> <!-- Must be a property for filtering, see http://jira.codehaus.org/browse/MRESOURCES-99 -->
     </properties>
 
     <dependencies>
