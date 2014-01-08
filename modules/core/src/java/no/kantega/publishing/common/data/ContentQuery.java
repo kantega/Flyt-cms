@@ -397,31 +397,30 @@ public class ContentQuery {
         }
 
         if (attributes != null && !attributes.isEmpty()) {
-            try {
-                // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
-                try (Connection c = dbConnectionFactory.getConnection()){
-                    PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
-                    query.append(" and content.ContentId in (:attributecontentids)");
-                    List<Integer> attributecontentids = new ArrayList<>();
-                    for (Attribute a : attributes) {
-                        st.setString(1, a.getName());
-                        st.setString(2, a.getValue());
+            // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
+            try (Connection c = dbConnectionFactory.getConnection()){
+                PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca " +
+                        "where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+                List<Integer> attributecontentids = new ArrayList<>();
+                for (Attribute a : attributes) {
+                    st.setString(1, a.getName());
+                    st.setString(2, a.getValue());
 
-                        int noFound = 0;
-                        ResultSet rs = st.executeQuery();
+                    int noFound = 0;
+                    ResultSet rs = st.executeQuery();
 
-                        while (rs.next()) {
-                            int id = rs.getInt("ContentId");
-                            attributecontentids.add(id);
-                            noFound++;
-                        }
-                        if (noFound == 0) {
-                            attributecontentids.add(-1);
-                        }
+                    while (rs.next()) {
+                        int id = rs.getInt("ContentId");
+                        attributecontentids.add(id);
+                        noFound++;
                     }
-                    parameters.put("attributecontentids", attributecontentids);
-                    st.close();
+                    if (noFound == 0) {
+                        attributecontentids.add(-1);
+                    }
                 }
+                query.append(" and content.ContentId in (:attributecontentids)");
+                parameters.put("attributecontentids", attributecontentids);
+                st.close();
             } catch (SQLException e) {
                 log.error("Error when getting contentid", e);
             }
