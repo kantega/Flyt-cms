@@ -45,6 +45,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.IDN;
 import java.util.List;
 
 /**
@@ -193,7 +194,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
             Site site = siteCache.getSiteById(content.getAssociation().getSiteId());
             List<String> hostnames = site.getHostnames();
             if (hostnames.size() > 0) {
-                String hostname = hostnames.get(0);
+                String hostname = IDN.toASCII(hostnames.get(0));
                 int port = request.getServerPort();
                 String scheme = site.getScheme();
                 if (scheme == null) {
@@ -202,6 +203,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
                 if ("GET".equalsIgnoreCase(request.getMethod())) {
                     url = createRedirectUrlWithIncomingParameters(request, url);
                 }
+
                 url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
                 response.sendRedirect(url);
                 return true;
