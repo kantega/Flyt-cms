@@ -476,11 +476,10 @@ public final class AttributeTagHelper {
     }
 
     public static String replaceMacros(String url, PageContext pageContext) throws SystemException, NotAuthorizedException {
+        setSiteCacheIfNull();
         if (url != null && pageContext != null) {
             if (TemplateMacroHelper.containsMacro(url)) {
                 HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-
-                SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
 
                 DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
@@ -494,7 +493,7 @@ public final class AttributeTagHelper {
                 } else {
                     site = siteCache.getSiteByHostname(pageContext.getRequest().getServerName());
                     if(site == null){
-                        site = siteCache.getSiteById(1);
+                        site = siteCache.getDefaultSite();
                     }
                 }
 
