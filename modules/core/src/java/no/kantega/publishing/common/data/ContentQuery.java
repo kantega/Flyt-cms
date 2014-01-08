@@ -774,10 +774,8 @@ public class ContentQuery {
 
             QueryWithParameters that = (QueryWithParameters) o;
 
-            if (!params.equals(that.params)) return false;
-            if (!query.equals(that.query)) return false;
+            return params.equals(that.params) && query.equals(that.query);
 
-            return true;
         }
 
         @Override
