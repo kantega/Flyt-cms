@@ -1,0 +1,21 @@
+<html>
+<body>
+<p>Resultat av utfylt skjema: $form.form.title:</p>
+<table>
+    <thead>
+        <tr>
+            <th>Felt</th>
+            <th>Verdi</th>
+        </tr>
+    </thead>
+    <tbody>
+    #foreach ($value in $form.values)
+        <tr>
+            <td>$value.name</td>
+            <td>$value.valuesAsString</td>
+        </tr>
+    #end
+    </tbody>
+</table>
+</body>
+</html>

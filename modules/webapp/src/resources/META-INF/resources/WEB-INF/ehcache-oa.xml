@@ -1,0 +1,135 @@
+<ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" name="openAksessCache">
+
+    <defaultCache
+            maxElementsInMemory="10000"
+            eternal="false"
+            timeToIdleSeconds="120"
+            timeToLiveSeconds="120"
+            overflowToDisk="false"
+            memoryStoreEvictionPolicy="LRU"
+            statistics="false"/>
+
+    <cache name="AliasCache"
+           maxElementsInMemory="1000"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="ContentCache"
+           maxElementsInMemory="500"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="ContentListCache"
+           maxElementsInMemory="50"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="SiteMapCache"
+           maxElementsInMemory="50"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="XmlCache"
+           maxElementsInMemory="10"
+           eternal="false"
+           overflowToDisk="true"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="FacetLabelCache"
+           maxElementsInMemory="30"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="ContentUrlCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="ContentIdentifierCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="UserCache"
+           maxElementsInMemory="100"
+           eternal="false"
+           overflowToDisk="false"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           statistics="true">
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+    <cache name="ImageCache"
+           maxElementsInMemory="100"
+           eternal="true"
+           overflowToDisk="true"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           diskPersistent="true"
+           statistics="true" >
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+    <cache name="permissionCache"
+           maxElementsInMemory="100"
+           eternal="true"
+           overflowToDisk="true"
+           timeToIdleSeconds="600"
+           timeToLiveSeconds="600"
+           memoryStoreEvictionPolicy="LFU"
+           diskPersistent="true"
+           statistics="true" >
+        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+    </cache>
+
+</ehcache>

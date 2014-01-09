@@ -1,0 +1,100 @@
+<%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
+<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
+<%--
+  ~ Copyright 2010 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  --%>
+
+<c:forEach items="${mediaList}" var="media" varStatus="status">
+    <c:set var="imageIndex" value="${status.index}"/>
+    <c:choose>
+        <c:when test="${media.type eq 'FOLDER'}">
+            <div class="folder" id="Media${media.id}">
+                <div class="icon"></div>
+                <div class="mediaInfo">
+                    <div class="name">${media.name}</div>
+                    <div class="details">
+                        <c:if test="${media.noSubFolders > 0}">
+                            ${media.noSubFolders}
+                            <c:choose>
+                                <c:when test="${media.noSubFolders == 1}"><kantega:label key="aksess.multimedia.subfolder"/><c:if test="${media.noFiles > 0}">,</c:if></c:when>
+                                <c:otherwise><kantega:label key="aksess.multimedia.subfolders"/><c:if test="${media.noFiles > 0}">,</c:if></c:otherwise>
+                            </c:choose>
+                        </c:if>
+                        <c:if test="${media.noFiles > 0}">
+                            ${media.noFiles}
+                            <c:choose>
+                                <c:when test="${media.noFiles == 1}"><kantega:label key="aksess.multimedia.file"/></c:when>
+                                <c:otherwise><kantega:label key="aksess.multimedia.files"/></c:otherwise>
+                            </c:choose>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+        </c:when>
+        <c:otherwise>
+            <div class="media" id="Media${media.id}">
+                <div class="icon">
+                    <c:choose>
+                        <c:when test="${mediaSearch}">
+                            <a href="EditMultimedia.action?id=${media.id}" target="_parent">
+                        </c:when>
+                        <c:otherwise>
+                            <a href="EditMultimedia.action?id=${media.id}">
+                        </c:otherwise>
+                    </c:choose>
+                        <%
+                            Integer imageIndex = (Integer)pageContext.getAttribute("imageIndex");
+                            Multimedia mm = (Multimedia)pageContext.getAttribute("media");
+                            String mimeType = mm.getMimeType().getType();
+                            mimeType = mimeType.replace('/', '-');
+                            mimeType = mimeType.replace('.', '-');
+                            if (mimeType.contains("image")) {
+                                if (imageIndex < 30) {
+                                    // Workaround for first images not being displayed in IE 7 with lazy load plugin
+                                    out.write("<img class=\"thumbnail\" src=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                } else {
+                                    out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                }
+                            } else {
+                                out.write("<span class=\"mediafile\"><span class=\"file " + mimeType + "\"></span></span>");
+                            }
+                        %>
+                    </a>
+                </div>
+                <div class="mediaInfo">
+                    <div class="name">${media.name}</div>
+                    <div class="details">
+                        <c:choose>
+                            <c:when test="${media.height > 0 && media.width > 0}">
+                                <kantega:label key="aksess.multimedia.size"/>: ${media.width}x${media.height}<br>
+                            </c:when>
+                            <c:otherwise>
+                                ${media.fileType}<br>
+                            </c:otherwise>
+                        </c:choose>
+                        <c:if test="${media.height > 0 && media.width > 0}">
+                            <kantega:label key="aksess.multimedia.filesize" />: ${media.readableFileSize}<br>
+                        </c:if>
+                        <kantega:label key="aksess.multimedia.lastmodified"/>: <admin:formatdate date="${media.lastModified}"/><br />
+                        <kantega:label key="aksess.multimedia.nousages" />: ${media.noUsages}
+                        <c:if test="${mediaSearch && media.parentId > 0}">
+                            <a href="${media.parentId}" class="showfolder"><kantega:label key="aksess.multimedia.showfolder"/></a>
+                        </c:if>
+                    </div>
+                </div>
+            </div>
+        </c:otherwise>
+    </c:choose>
+</c:forEach>

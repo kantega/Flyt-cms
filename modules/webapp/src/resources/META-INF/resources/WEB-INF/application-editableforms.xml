@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
+
+    <bean id="aksessFormElementValidatorFactory" class="no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory">
+        <property name="formElementValidators">
+            <list>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementDateValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementEmailValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNumberValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementNorwegianSsnValidator"/>
+                <bean class="no.kantega.publishing.modules.forms.validate.FormElementRegExValidator"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="aksessContentFormService" class="no.kantega.publishing.modules.forms.service.AksessContentFormService"/>
+
+    <bean id="aksessFormSubmissionValidator" class="no.kantega.publishing.modules.forms.validate.DefaultFormSubmissionValidator">
+        <property name="formElementValidatorFactory" ref="aksessFormElementValidatorFactory"/>
+    </bean>
+
+    <bean id="aksessFilledFormBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFilledFormBuilder"/>
+
+    <bean id="aksessFormSubmissionBuilder" class="no.kantega.publishing.modules.forms.util.DefaultFormSubmissionBuilder"/>
+
+    <bean id="aksessSaveFormSubmissionController" class="no.kantega.publishing.modules.forms.control.SaveFormSubmissionController">
+        <property name="description" value="Collects data from form, validates data and sends to delivery service"/>
+        <property name="formDeliveryServiceIds" value="${forms.deliveryservices}"/>
+        <property name="pluginManager" ref="pluginManager"/>
+        <property name="formSubmissionValidator" ref="aksessFormSubmissionValidator"/>
+        <property name="filledFormBuilder" ref="aksessFilledFormBuilder"/>
+        <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
+        <property name="mailConfirmationSubject" value="${formengine.mailconfirmation.subject}"/>
+        <property name="mailConfirmationTemplate" value="${formengine.mailconfirmation.mailtemplate}"/>
+    </bean>
+</beans>

@@ -1,0 +1,20 @@
+
+How to add a database migration?
+
+* Create a new directory in WEB-INF/dbmigrate/oa/ with a name in the format 'yyyyMMddHHmm'
+    Example: WEB-INF/dbmigrate/oa/201010041200/
+
+* If your change is database agnostic, put your SQL file(s) in the 'all' subfolder:
+
+    Example: WEB-INF/dbmigrate/oa/201010041200/all/insert_some_values.sql
+
+* If your change is database specific, put your SQL file(s) in the database specific subfolder:
+
+    Example: WEB-INF/dbmigrate/oa/201010041200/mysql/insert_some_values.sql
+
+Please note that all scripts for a version tag is run in a single transaction.
+
+Scripts in the all directory will be executed first. Scripts within a directory will be executed in 
+alphabetic order.
+
+Supported database types: 'mysql', 'sqlserver', 'derby', 'oracle', 'postgresql'.

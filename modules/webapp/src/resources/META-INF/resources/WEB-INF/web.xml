@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright 2009 Kantega AS
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~    http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<web-app> <!-- Yes, there should be no namespaces here, aksess-maven-plugin will
+not work if you try adding them -->
+    <display-name>Aksess</display-name>
+    <description>Kantega Aksess Publisering for Java</description>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+
+    <filter>
+        <filter-name>ResponseHeaderFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ResponseHeaderFilter</filter-class>
+        <init-param>
+            <param-name>extensions</param-name>
+            <param-value>jpg,png,gif</param-value>
+        </init-param>
+        <init-param>
+            <param-name>expiresInDays</param-name>
+            <param-value>365</param-value>
+        </init-param>
+    </filter>
+
+    <filter>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>StalePluginClassLoaderFilter</filter-name>
+        <filter-class>no.kantega.publishing.plugin.provider.StalePluginClassLoaderFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>MultipartFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.NoSpringContextCapableMultipartFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>AdminFilter</filter-name>
+        <filter-class>no.kantega.publishing.security.filter.AdminFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>ContentRewriteFilter</filter-name>
+        <filter-class>no.kantega.publishing.client.filter.ContentRewriteFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>AksessRequestFilter</filter-name>
+        <filter-class>no.kantega.commons.filter.AksessRequestFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>PluginDelgatingFilter</filter-name>
+        <filter-class>no.kantega.publishing.security.PluginDelegatingFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>aksesswro</filter-name>
+        <filter-class>no.kantega.publishing.client.filter.OpenAksessConfiguredFilter</filter-class>
+        <init-param>
+            <param-name>wrappedFilterClass</param-name>
+            <param-value>ro.isdc.wro.http.WroFilter</param-value>
+        </init-param>
+    </filter>
+
+
+    <filter>
+        <filter-name>FakeDirectoryExpires</filter-name>
+        <filter-class>no.kantega.commons.filter.FarFutureExpiresDirectoryFilter</filter-class>
+    </filter>
+
+    <filter>
+        <filter-name>webappMetricsFilter</filter-name>
+        <filter-class>com.yammer.metrics.web.DefaultWebappMetricsFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>webappMetricsFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>FakeDirectoryExpires</filter-name>
+        <url-pattern>/expires/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>ResponseHeaderFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>ParamEncodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>StalePluginClassLoaderFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>PluginDelgatingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+
+    <filter-mapping>
+        <filter-name>MultipartFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>ContentRewriteFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>AksessRequestFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>aksesswro</filter-name>
+        <url-pattern>/wro-oa/*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>INCLUDE</dispatcher>
+        <dispatcher>FORWARD</dispatcher>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.DataDirectoryContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.LogInitListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.OpenAksessContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>com.yammer.metrics.reporting.MetricsServletContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+    <servlet>
+        <servlet-name>aksess</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>useradmin</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>webdav</servlet-name>
+        <servlet-class>com.bradmcevoy.http.MiltonServlet</servlet-class>
+        <init-param>
+            <param-name>resource.factory.factory.class</param-name>
+            <param-value>no.kantega.publishing.webdav.AksessResourceFactoryFactory</param-value>
+        </init-param>
+        <!--
+        To disable digest authentication uncomment the following. To completely disable
+        all authentication provide an empty value. If this init-param is missing milton
+        will default to basic and digest authentication.
+        -->
+        <init-param>
+            <param-name>authentication.handler.classes</param-name>
+            <param-value>com.bradmcevoy.http.http11.auth.BasicAuthHandler</param-value>
+        </init-param>
+
+        <init-param>
+            <param-name>not.found.url</param-name>
+            <param-value>/404.jsp</param-value>
+        </init-param>
+        <init-param>
+            <param-name>filter_0</param-name>
+            <param-value>com.bradmcevoy.http.DebugFilter</param-value>
+        </init-param>
+        <load-on-startup>0</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>TinyMCEServlet</servlet-name>
+        <servlet-class>no.kantega.publishing.TinyMCEServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>metricsServlet</servlet-name>
+        <servlet-class>com.yammer.metrics.reporting.MetricsServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/oasearch/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>useradmin</servlet-name>
+        <url-pattern>/admin/administration/useradmin/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/admin/oap/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/oap/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jjs</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>jsp</servlet-name>
+        <url-pattern>*.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>webdav</servlet-name>
+        <url-pattern>/webdav/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>TinyMCEServlet</servlet-name>
+        <url-pattern>/aksess/tiny_mce/tiny_mce_gzip.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>metricsServlet</servlet-name>
+        <url-pattern>/admin/metrics</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
+
+    <error-page>
+        <exception-type>no.kantega.commons.exception.NotAuthorizedException</exception-type>
+        <location>/403.jsp</location>
+    </error-page>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <page-encoding>UTF-8</page-encoding>
+            <trim-directive-whitespaces>true</trim-directive-whitespaces>
+        </jsp-property-group>
+    </jsp-config>
+</web-app>
