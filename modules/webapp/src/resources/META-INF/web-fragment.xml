@@ -15,10 +15,12 @@
   ~ limitations under the License.
   -->
 
-<web-app> <!-- Yes, there should be no namespaces here, aksess-maven-plugin will
-not work if you try adding them -->
-    <display-name>Aksess</display-name>
-    <description>Kantega Aksess Publisering for Java</description>
+<web-fragment version="3.0"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+
+    <name>openaksess</name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -289,4 +291,4 @@ not work if you try adding them -->
             <trim-directive-whitespaces>true</trim-directive-whitespaces>
         </jsp-property-group>
     </jsp-config>
-</web-app>
+</web-fragment>

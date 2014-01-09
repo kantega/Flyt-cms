@@ -4,11 +4,9 @@
                  no.kantega.publishing.security.SecuritySession"%>
 <%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory"%>
-<%@ page import="java.io.IOException"%>
 <%@ page import="java.text.DateFormat"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.util.Date"%>
-<%@ page import="java.util.Properties" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -44,20 +42,6 @@
         email = secSession.getUser().getEmail();
     }
 
-
-    Properties versionInfo = new Properties();
-    Properties webappVersionInfo = new Properties();
-
-    try {
-        versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
-    } catch (IOException e) {
-        log.info("aksess-version.properties not found");
-    }
-    try {
-        webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
-    } catch (IOException e) {
-        log.info("aksess-webapp-version.properties not found");
-    }
 %>
 
 <kantega:section id="bodyclass">error</kantega:section>
@@ -83,7 +67,7 @@
                     <input type="hidden" name="applicationUrl" value="<%=Aksess.getApplicationUrl()%>">
                     <input type="hidden" name="site" value="<%=request.getServerName()%>">
                     <input type="hidden" name="version" value="<%=Aksess.getVersion()%>">
-                    <input type="hidden" name="release" value="<%= versionInfo.get("revision") != null ? versionInfo.get("revision") : "?"%>/<%= webappVersionInfo.get("revision") != null ? webappVersionInfo.get("revision") : "?"%>">
+                    <input type="hidden" name="release" value="<%= Aksess.getBuildRevision() %>">
                     <input type="submit" value="<kantega:label key="aksess.error.sendreport"/>">
                 </form>
                 <% } else { %>

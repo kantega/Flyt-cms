@@ -39,10 +39,6 @@
                                 OpenAksess: ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${aksessRevision},
                                                     <fmt:formatDate value="${aksessTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
                             </div>
-                            <div class="row">
-                                Webapp: ${webappVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${webappRevision},
-                                            <fmt:formatDate value="${webappTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
-                            </div>
                         </div>
                     </div>
                 </div>
