@@ -225,11 +225,6 @@ not work if you try adding them -->
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>aksess</servlet-name>
-        <url-pattern>/oasearch/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
         <url-pattern>/admin/administration/useradmin/*</url-pattern>
     </servlet-mapping>

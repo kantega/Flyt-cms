@@ -27,6 +27,7 @@ import static org.springframework.web.bind.ServletRequestUtils.*;
  * Performs search for Aksess content.
  */
 @Controller
+@RequestMapping("/oasearch")
 public class ContentSearchController implements AksessController {
     @Autowired
     private Searcher searcher;
