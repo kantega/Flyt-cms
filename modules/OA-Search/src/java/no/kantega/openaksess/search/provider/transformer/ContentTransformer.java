@@ -164,6 +164,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                 attribute instanceof TopicAttribute){
             fieldname.append("txt");
         }else if(attribute instanceof ContentidAttribute ||
+                attribute instanceof ContentlistAttribute ||
                 attribute instanceof FileAttribute ||
                 attribute instanceof NumberAttribute){
             fieldname.append("i");
