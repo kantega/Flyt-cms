@@ -427,7 +427,7 @@ public abstract class Attribute {
     }
 
     public boolean isSearchable() {
-        return false;
+        return true;
     }
 
     public String[] getEditableByRoles() {
