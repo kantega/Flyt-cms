@@ -50,7 +50,7 @@ public class TinyMCEServlet extends HttpServlet {
         String[] languages = getParam(request, "languages", "").split(",");
         String[] themes = getParam(request, "themes", "").split(",");
         boolean diskCache = getParam(request, "diskcache", "").equals("true");
-        boolean isJS = getParam(request, "META-INF/resources/aksess/js", "").equals("true");
+        boolean isJS = getParam(request, "js", "").equals("true");
         boolean compress = getParam(request, "compress", "true").equals("true");
         boolean core = getParam(request, "core", "true").equals("true");
         String suffix = getParam(request, "suffix", "").equals("_src") ? "_src" : "";
