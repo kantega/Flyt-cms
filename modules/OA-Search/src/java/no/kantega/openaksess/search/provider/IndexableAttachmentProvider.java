@@ -93,6 +93,6 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     private long getNumberOfDocuments() {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForInt("SELECT count( distinct attachments.Id ) " + FROM_CLAUSE);
+        return jdbcTemplate.queryForObject("SELECT count( distinct attachments.Id ) " + FROM_CLAUSE, Integer.class);
     }
 }
