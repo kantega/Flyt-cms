@@ -156,7 +156,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     private String getFieldName(Attribute attribute, int language) {
         StringBuilder fieldname = new StringBuilder(attribute.getName());
         fieldname.append("_");
-        if(attribute instanceof ListAttribute ||
+        if((attribute instanceof ListAttribute && !(attribute instanceof ContentlistAttribute)) ||
                 attribute instanceof EmailAttribute ||
                 attribute instanceof RoleAttribute ||
                 attribute instanceof UserAttribute ||
@@ -194,6 +194,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             value = ((DateAttribute) attribute).getValueAsDate();
         }else if(attribute instanceof HtmltextAttribute){
             value = stripHtml(attribute.getValue());
+        } else if(attribute instanceof ListAttribute ){
+            value = ((ListAttribute) attribute).getValues();
         } else {
             value = attribute.getValue();
         }
