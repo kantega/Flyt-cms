@@ -11,6 +11,7 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
+import org.apache.commons.lang3.StringUtils;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import static java.util.Arrays.asList;
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class ContentTransformer implements DocumentTransformer<Content> {
@@ -93,17 +96,39 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
                 Attribute value = attribute.getValue();
                 String customFieldNameMapping = getCustomIndexFieldMapping(content, value);
-                if(value.isSearchable() && isNotBlank(customFieldNameMapping)){
-                    log.debug("Attribute {} is indexed as {}", value.getName(), customFieldNameMapping);
-                    indexableDocument.addAttribute(customFieldNameMapping, getValue(value));
-                } else if(value.isSearchable() && !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches()){
-                    String fieldName = getFieldName(value, language);
+                String fieldName = getFieldName(value, language);
 
-                    indexableDocument.addAttribute(fieldName, getValue(value));
+                if (shouldIndexAttribute(value, fieldName)) {
+                    indexAttribute(indexableDocument, value, fieldName, customFieldNameMapping);
+                } else {
+                    log.debug("Did not index attribute {} with value «{}»", fieldName, value.getValue());
                 }
             }
         }
         return indexableDocument;
+    }
+
+    private void indexAttribute(IndexableDocument indexableDocument, Attribute value, String calculatedFieldName,  String customFieldNameMapping) {
+        if(isNotBlank(customFieldNameMapping)){
+            log.debug("Attribute {} is indexed as {}", value.getName(), customFieldNameMapping);
+            indexableDocument.addAttribute(customFieldNameMapping, getValue(value));
+        } else if(isNotTitleOrDescription(value)){
+
+            indexableDocument.addAttribute(calculatedFieldName, getValue(value));
+        }
+    }
+
+    private boolean shouldIndexAttribute(Attribute value, String fieldName) {
+        return value.isSearchable() && isNotBlankIntegerField(value, fieldName);
+    }
+
+    private boolean isNotBlankIntegerField(Attribute value, String fieldName) {
+        boolean isBlankIntegerField = fieldName.endsWith("_i") && isBlank(value.getValue());
+        return !isBlankIntegerField;
+    }
+
+    private boolean isNotTitleOrDescription(Attribute value) {
+        return !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches();
     }
 
     private void setOwnerPerson(Content content, IndexableDocument indexableDocument) {
@@ -163,14 +188,14 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                 attribute instanceof TopicmapAttribute ||
                 attribute instanceof TopicAttribute){
             fieldname.append("txt");
-        }else if(attribute instanceof ContentidAttribute ||
+        } else if(attribute instanceof ContentidAttribute ||
                 attribute instanceof ContentlistAttribute ||
                 attribute instanceof FileAttribute ||
                 attribute instanceof NumberAttribute){
             fieldname.append("i");
-        }else if(attribute instanceof DateAttribute){
+        } else if(attribute instanceof DateAttribute){
             fieldname.append("dt");
-        }else if (attribute instanceof RepeaterAttribute){
+        } else if (attribute instanceof RepeaterAttribute){
             fieldname = new StringBuilder(getFieldName(attribute.getParent(), language));
         } else if (attribute instanceof TextAttribute){
             if (isEnglishContent(attribute, language)) {
@@ -196,6 +221,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             value = stripHtml(attribute.getValue());
         } else if(attribute instanceof ListAttribute ){
             value = ((ListAttribute) attribute).getValues();
+        } else if (attribute instanceof ContentidAttribute) {
+            value = asList(StringUtils.split(attribute.getValue(), ','));
         } else {
             value = attribute.getValue();
         }

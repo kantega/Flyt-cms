@@ -78,7 +78,7 @@ public class ContentidAttribute extends Attribute {
     public int getStartId(Content content) {
         int start = -1;
 
-        if (startId != null && startId.length() > 0) {
+        if (isNotBlank(startId)) {
             try {
                 start = Integer.parseInt(startId);
             } catch (NumberFormatException e) {
@@ -98,8 +98,8 @@ public class ContentidAttribute extends Attribute {
     }
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {
-        List<ContentIdentifier> cids = new ArrayList<ContentIdentifier>();
-        if (value != null) {
+        List<ContentIdentifier> cids = new ArrayList<>();
+        if (isNotBlank(value)) {
             String[] values = value.split(",");
             for (String v : values) {
                 ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
