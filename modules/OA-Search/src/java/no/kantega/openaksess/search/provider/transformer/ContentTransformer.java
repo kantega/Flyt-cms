@@ -24,8 +24,9 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import static java.util.Arrays.asList;
@@ -93,8 +94,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             indexableDocument.addAttribute("url", content.getUrl());
             indexableDocument.addAttribute("topics", topicDao.getTopicNamesForContent(content.getId()));
 
-            for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
-                Attribute value = attribute.getValue();
+            for(Attribute value : getAttributes(content)){
                 String customFieldNameMapping = getCustomIndexFieldMapping(content, value);
                 String fieldName = getFieldName(value, language);
 
@@ -106,6 +106,22 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             }
         }
         return indexableDocument;
+    }
+
+    private List<Attribute> getAttributes(Content content) {
+        Collection<Attribute> values = content.getContentAttributes().values();
+        List<Attribute> attributes = new ArrayList<>(values.size());
+        for (Attribute value : values) {
+            if(value instanceof RepeaterAttribute){
+                Iterator<List<Attribute>> iterator = ((RepeaterAttribute) value).getIterator();
+                while (iterator.hasNext()){
+                    attributes.addAll(iterator.next());
+                }
+            } else {
+                attributes.add(value);
+            }
+        }
+        return attributes;
     }
 
     private void indexAttribute(IndexableDocument indexableDocument, Attribute value, String calculatedFieldName,  String customFieldNameMapping) {
@@ -179,7 +195,11 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     }
 
     private String getFieldName(Attribute attribute, int language) {
-        StringBuilder fieldname = new StringBuilder(attribute.getName());
+        StringBuilder fieldname = new StringBuilder();
+        if(attribute.getParent() != null){
+            fieldname.append(attribute.getParent().getName()).append("_");
+        }
+        fieldname.append(attribute.getName());
         fieldname.append("_");
         if((attribute instanceof ListAttribute && !(attribute instanceof ContentlistAttribute)) ||
                 attribute instanceof EmailAttribute ||
@@ -195,8 +215,6 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             fieldname.append("i");
         } else if(attribute instanceof DateAttribute){
             fieldname.append("dt");
-        } else if (attribute instanceof RepeaterAttribute){
-            fieldname = new StringBuilder(getFieldName(attribute.getParent(), language));
         } else if (attribute instanceof TextAttribute){
             if (isEnglishContent(attribute, language)) {
                 fieldname.append("en");

@@ -553,7 +553,7 @@ public class Content extends BaseObject {
     }
 
     public Map<String, Attribute> getContentAttributes() {
-        Map<String, Attribute> map = new HashMap<String, Attribute>();
+        Map<String, Attribute> map = new HashMap<>();
         if (contentAttributes != null) {
             for (Attribute a : contentAttributes) {
                 map.put(a.getName(), a);
