@@ -137,7 +137,7 @@
            warming searcher and use it.  If "false" then all requests
            will block until the first searcher is done warming.
         -->
-        <useColdSearcher>false</useColdSearcher>
+        <useColdSearcher>true</useColdSearcher>
 
         <!-- Max Warming Searchers
 
@@ -235,7 +235,7 @@
         <lst name="defaults">
             <!-- All the main content goes into "text"... if you need to return
   the extracted text or do highlighting, use a stored field. -->
-            <str name="fmap.content">text_no</str>
+            <str name="fmap.content">all_text_no</str>
             <str name="lowernames">false</str>
             <str name="uprefix">ignored_</str>
 
@@ -274,7 +274,7 @@
          http://wiki.apache.org/solr/AnalysisRequestHandler
 
          An analysis handler that provides a breakdown of the analysis
-         process of provided docuemnts. This handler expects a (single)
+         process of provided documents. This handler expects a (single)
          content stream with the following format:
 
          <docs>
@@ -489,12 +489,15 @@
 
             <!-- Configure the standard fragListBuilder -->
             <fragListBuilder name="simple"
-                             default="true"
                              class="solr.highlight.SimpleFragListBuilder"/>
 
             <!-- Configure the single fragListBuilder -->
             <fragListBuilder name="single"
                              class="solr.highlight.SingleFragListBuilder"/>
+
+            <!-- Configure the weighted fragListBuilder -->
+            <fragListBuilder name="weighted"
+                             class="solr.highlight.WeightedFragListBuilder"/>
 
             <!-- default tag FragmentsBuilder -->
             <fragmentsBuilder name="default"
@@ -544,8 +547,8 @@
                        object which will be used when getting instance of
                        BreakIterator
                     -->
-                    <str name="hl.bs.language">en</str>
-                    <str name="hl.bs.country">US</str>
+                    <str name="hl.bs.language">no</str>
+                    <str name="hl.bs.country">NO</str>
                 </lst>
             </boundaryScanner>
         </highlighting>

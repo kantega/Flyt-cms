@@ -34,8 +34,6 @@ import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 public class SolrSearcher implements Searcher {
     private final Logger log  = LoggerFactory.getLogger(getClass());
 
-    private final String DESCRIPTION_HIGHLIGHTING_FIELD = "all_text_unanalyzed";
-
     @Value("${search.boostByPublishDateQuery:recip(ms(NOW/HOUR,publishDate),3.16e-11,1,1)}")
     private String boostByPublishDateQuery;
 
@@ -315,7 +313,8 @@ public class SolrSearcher implements Searcher {
 
     private void setHighlighting(SearchQuery query, SolrQuery params) {
         params.setHighlight(query.isHighlightSearchResultDescription());
-        params.set("hl.fl", DESCRIPTION_HIGHLIGHTING_FIELD, "title_no", "title_en");
+        String lang = query.getIndexedLanguage().code;
+        params.set("hl.fl", "all_text_" + lang, "title_" + lang);
         params.set("hl.useFastVectorHighlighter", true);
     }
 
@@ -376,7 +375,7 @@ public class SolrSearcher implements Searcher {
             Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
             Map<String, List<String>> thisResult = highlighting.get((String) result.getFieldValue("uid"));
             if(thisResult != null && !thisResult.isEmpty()){
-                String description = highlightedValueOrDefault(result, thisResult, DESCRIPTION_HIGHLIGHTING_FIELD, "description_" + languageSuffix);
+                String description = highlightedValueOrDefault(result, thisResult, "all_text_" + languageSuffix, "description_" + languageSuffix);
                 String titleFieldName = "title_" + languageSuffix;
                 String title = highlightedValueOrDefault(result, thisResult, titleFieldName, titleFieldName);
                 titleAndDescription = new TitleAndDescription(title, description);

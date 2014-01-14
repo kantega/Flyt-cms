@@ -113,17 +113,20 @@
         <field name="contentStatus" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="url" type="string" indexed="false" stored="true" required="true" multiValued="false"/>
 
-        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
-        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <field name="all_text_no" type="text_no" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true" />
+        <field name="all_text_en" type="text_en" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true" />
+        <!-- Unanalyzed field to do exact match boosting -->
         <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
+        <copyField source="*_name" dest="all_text_en" />
         <copyField source="keywords" dest="all_text_en" />
         <copyField source="topics" dest="all_text_en" />
 
         <copyField source="*_no" dest="all_text_no" />
         <copyField source="*_txt" dest="all_text_no" />
+        <copyField source="*_name" dest="all_text_no" />
         <copyField source="keywords" dest="all_text_no" />
         <copyField source="topics" dest="all_text_no" />
 

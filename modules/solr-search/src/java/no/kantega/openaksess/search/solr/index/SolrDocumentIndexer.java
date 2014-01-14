@@ -104,6 +104,8 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         ModifiableSolrParams streamParams = new ModifiableSolrParams();
         String languageSuffix = getLanguageSuffix(document.getLanguage());
         streamParams.add("fmap.content", "text_" + languageSuffix);
+        // map stream_name such that it is ignored, otherwise names like .pdf6291048212804771660indexer ends up in index.
+        streamParams.add("stream_name", "stream_name_ignored");
 
         streamParams.add("literal.contentStatus", document.getContentStatus());
         streamParams.add("literal.indexedContentType", document.getContentType());
