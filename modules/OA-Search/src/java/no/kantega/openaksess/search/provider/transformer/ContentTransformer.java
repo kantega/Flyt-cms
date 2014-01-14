@@ -12,11 +12,17 @@ import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.provider.DocumentTransformer;
 import org.apache.commons.lang3.StringUtils;
+import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -229,6 +235,8 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         Object value;
         if(attribute instanceof DateAttribute){
             value = ((DateAttribute) attribute).getValueAsDate();
+        }else if(attribute instanceof HtmltextAttribute){
+            value = stripHtml(attribute.getValue());
         } else if(attribute instanceof ListAttribute ){
             value = ((ListAttribute) attribute).getValues();
         } else if (attribute instanceof ContentidAttribute) {
@@ -237,6 +245,27 @@ public class ContentTransformer implements DocumentTransformer<Content> {
             value = attribute.getValue();
         }
         return value;
+    }
+
+    private String stripHtml(String html) {
+        final StringBuilder buffer = new StringBuilder();
+        SAXParser parser = new SAXParser();
+        parser.setContentHandler(new DefaultHandler() {
+            public void characters(char[] chars, int i, int i1) {
+                buffer.append(chars, i, i1);
+                buffer.append(" ");
+            }
+        });
+
+        if(html != null) {
+            try (StringReader stringReader = new StringReader(html)){
+                parser.parse(new InputSource(stringReader));
+            } catch (IOException | SAXException e) {
+                log.error("Error stripping html", e);
+            }
+        }
+
+        return buffer.toString();
     }
 
     public String generateUniqueID(Content document) {
