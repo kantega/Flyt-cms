@@ -103,7 +103,7 @@ public class ContentPatternTest {
         values.put("/content/1234/TittelHer", asList(new Pair<>("alias", "/content/1234/TittelHer")));
 
         testPatternWithValues(pattern, values);
-        assertFalse("Pattern should not have matched", pattern.matcher("/images/image.png").matches());
+        assertFalse("Pattern should not have matched", pattern.matcher("/alias/pattern,png").matches());
     }
 
     @Test

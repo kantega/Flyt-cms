@@ -35,7 +35,7 @@ public class ContentPatterns {
      * Regexp matching url fragment like /alias, /alias/, /alias/alias2, and so on, with the following named group:
      * - <code>alias</code>, the whole alias.
      */
-    public static final String ALIAS_PATTERN = "(?<alias>[\\w\\-\\+=/\\&]*)";
+    public static final String ALIAS_PATTERN = "(?<alias>[\\w\\-\\+\\.=/\\&]*)";
 
     /**
      * Regexp combining <code>PRETTY_PATTERN</code>, <code>CONTENT_AP_PATTERN</code>,
