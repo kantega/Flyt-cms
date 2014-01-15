@@ -99,6 +99,7 @@ public class ContentPatternTest {
         values.put("/alias", asList(new Pair<>("alias", "/alias")));
         values.put("/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));
         values.put("/alias/aliaspart2", asList(new Pair<>("alias", "/alias/aliaspart2")));
+        values.put("/alias/mypage.dk", asList(new Pair<>("alias", "/alias/mypage.dk")));
 
         values.put("/content/1234/TittelHer", asList(new Pair<>("alias", "/content/1234/TittelHer")));
 
