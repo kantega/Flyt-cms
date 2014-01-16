@@ -72,6 +72,9 @@
             </analyzer>
         </fieldtype>
 
+        <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
+        <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
+
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
@@ -149,6 +152,10 @@
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
+        <!-- Type used to index the lat and lon components for the "location" FieldType -->
+        <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
+        <dynamicField name="*_location"  type="location" indexed="true" stored="false"/>
+
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>
