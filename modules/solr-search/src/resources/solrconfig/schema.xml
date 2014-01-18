@@ -152,6 +152,7 @@
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_path" type="text_path"    indexed="true"  stored="false" termVectors="true"/>
         <!-- Type used to index the lat and lon components for the "location" FieldType -->
         <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
         <dynamicField name="*_location"  type="location" indexed="true" stored="false"/>
