@@ -269,7 +269,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     }
 
     public String generateUniqueID(Content document) {
-        return HANDLED_DOCUMENT_TYPE + "-" + document.getAssociation().getAssociationId();
+        return HANDLED_DOCUMENT_TYPE + "-" + document.getId() + "-" + document.getAssociation().getSiteId();
     }
 
     public String generateUniqueID(Association association) {

@@ -34,7 +34,7 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
     public IndexableDocument transform(Attachment attachment) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(attachment));
 
-        ContentIdentifier contentIdentifier =  ContentIdentifier.fromContentId(attachment.getContentId());
+        ContentIdentifier contentIdentifier = ContentIdentifier.fromContentId(attachment.getContentId());
         Content content = contentAO.getContent(contentIdentifier, true);
 
         if (content != null && content.isSearchable()) {
