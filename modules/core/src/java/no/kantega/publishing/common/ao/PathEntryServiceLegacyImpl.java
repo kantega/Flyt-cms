@@ -13,7 +13,10 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport implements PathEntryService {
     private static final Logger log = LoggerFactory.getLogger(PathEntryServiceLegacyImpl.class);
@@ -31,9 +34,9 @@ public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport imp
             String path = getNamedParameterJdbcTemplate().queryForObject("select Path from associations where UniqueId = :associationId",
                     Collections.singletonMap("associationId", associationId), String.class);
             String replaceSlashAddCurrent = StringUtils.removeStart(path, "/").replace("/", ",") + associationId;
-            Map<String,Object> associationIds = new HashMap<>();
-            associationIds.put("associationIds", Arrays.asList(replaceSlashAddCurrent.split(",")));
-            pathEntries = getNamedParameterJdbcTemplate().query("select contentversion.Title, associations.AssociationId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:associationIds) order by associations.AssociationId", associationIds, rowMapper);
+            Map<String,Object> associationIds = Collections.<String,Object>singletonMap("associationIds", Arrays.asList(replaceSlashAddCurrent.split(",")));
+
+            pathEntries = getNamedParameterJdbcTemplate().query("select contentversion.Title, associations.AssociationId, content.contentTemplateId from content, contentversion, associations  where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.contentId = associations.contentId and associations.AssociationId in (:associationIds) order by associations.AssociationId", associationIds, rowMapper);
         } catch (DataAccessException e) {
             log.error( e.getMessage());
         }
@@ -43,7 +46,9 @@ public class PathEntryServiceLegacyImpl extends NamedParameterJdbcDaoSupport imp
     private final RowMapper<PathEntry> rowMapper = new RowMapper<PathEntry>() {
         @Override
         public PathEntry mapRow(ResultSet resultSet, int i) throws SQLException {
-            return new PathEntry(resultSet.getInt("AssociationId"), resultSet.getString("Title"));
+            PathEntry pathEntry = new PathEntry(resultSet.getInt("AssociationId"), resultSet.getString("Title"));
+            pathEntry.setContentTemplateId(resultSet.getInt("contentTemplateId"));
+            return pathEntry;
         }
     };
 }
