@@ -10,7 +10,8 @@ import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
-import no.kantega.search.api.provider.DocumentTransformer;
+import no.kantega.search.api.IndexableDocumentCustomizer;
+import no.kantega.search.api.provider.DocumentTransformerAdapter;
 import org.apache.commons.lang3.StringUtils;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
@@ -36,7 +37,12 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
-public class ContentTransformer implements DocumentTransformer<Content> {
+public class ContentTransformer extends DocumentTransformerAdapter<Content> {
+
+    public ContentTransformer() {
+        super(Content.class);
+    }
+
     private final Logger log = LoggerFactory.getLogger(getClass());
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
 
@@ -49,6 +55,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
     @Autowired
     private TopicDao topicDao;
 
+    @Override
     public IndexableDocument transform(Content content) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(content));
 
@@ -104,7 +111,12 @@ public class ContentTransformer implements DocumentTransformer<Content> {
                     log.debug("Did not index attribute {} with value «{}»", fieldName, value.getValue());
                 }
             }
+
+            for (IndexableDocumentCustomizer<Content> customizer : getIndexableDocumentCustomizers()) {
+                indexableDocument = customizer.customizeIndexableDocument(content, indexableDocument);
+            }
         }
+
         return indexableDocument;
     }
 
@@ -268,6 +280,7 @@ public class ContentTransformer implements DocumentTransformer<Content> {
         return buffer.toString();
     }
 
+    @Override
     public String generateUniqueID(Content document) {
         return HANDLED_DOCUMENT_TYPE + "-" + document.getId() + "-" + document.getAssociation().getSiteId();
     }

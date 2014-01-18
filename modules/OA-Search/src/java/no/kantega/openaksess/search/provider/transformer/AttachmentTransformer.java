@@ -10,7 +10,8 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.search.api.IndexableDocument;
-import no.kantega.search.api.provider.DocumentTransformer;
+import no.kantega.search.api.IndexableDocumentCustomizer;
+import no.kantega.search.api.provider.DocumentTransformerAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,18 @@ import static no.kantega.openaksess.search.provider.transformer.LocationUtil.loc
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 
 @Component
-public class AttachmentTransformer implements DocumentTransformer<Attachment> {
+public class AttachmentTransformer extends DocumentTransformerAdapter<Attachment> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-attachment";
 
     @Autowired
     private ContentAO contentAO;
 
+    public AttachmentTransformer() {
+        super(Attachment.class);
+    }
+
+    @Override
     public IndexableDocument transform(Attachment attachment) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(attachment));
 
@@ -66,11 +72,16 @@ public class AttachmentTransformer implements DocumentTransformer<Attachment> {
             } catch (IOException e) {
                 log.error("Error streaming file", e);
             }
+
+            for (IndexableDocumentCustomizer<Attachment> customizer : getIndexableDocumentCustomizers()) {
+                indexableDocument = customizer.customizeIndexableDocument(attachment, indexableDocument);
+            }
         }
 
         return indexableDocument;
     }
 
+    @Override
     public String generateUniqueID(Attachment document) {
         return HANDLED_DOCUMENT_TYPE + "-" + document.getId();
     }

@@ -57,6 +57,15 @@ public class ContentPatternTest {
     }
 
     @Test
+    public void shouldExtractThisIdWhenContextPath(){
+        Pattern pattern = Pattern.compile(ContentPatterns.getPatternWithContextPath("/hist-webapp"), Pattern.UNICODE_CHARACTER_CLASS);
+        String url = "/hist-webapp/content.ap?thisId=110";
+        Matcher matcher = pattern.matcher(url);
+        assertTrue("Pattern did not match!", matcher.matches());
+        assertEquals("110", matcher.group("thisId"));
+    }
+
+    @Test
     public void basePatternShouldExtractProtocolHostAndPort(){
         Pattern pattern = Pattern.compile(ContentPatterns.BASE_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
