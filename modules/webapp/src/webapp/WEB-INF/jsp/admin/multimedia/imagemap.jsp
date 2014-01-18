@@ -1,5 +1,3 @@
-<%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
-<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
@@ -50,8 +48,8 @@
                 var current = $("#map" + currentMapArea);
                 var pos = current.position();
 
-                var startX = pos.left;
-                var startY = pos.top;
+                var startX = Math.floor( pos.left );
+                var startY = Math.floor( pos.top );
 
                 var endX = startX + current.width();
                 var endY = startY + current.height();
@@ -196,7 +194,8 @@
             });
 
 
-            $('#MediaObject').mousedown(function(event) {
+            var mediaObject = $('#MediaObject');
+            mediaObject.mousedown(function(event) {
                 var offset = $("#MediaObject").position();
                 var x = event.pageX - offset.left;
                 var y = event.pageY - offset.top - $("#Top").height();
@@ -204,7 +203,7 @@
                 event.preventDefault();
             });
 
-            $('#MediaObject').mouseup(function(event) {
+            mediaObject.mouseup(function(event) {
                 var offset = $("#MediaObject").position();
                 var x = event.pageX - offset.left;
                 var y = event.pageY - offset.top - $("#Top").height();
@@ -212,7 +211,7 @@
                 event.preventDefault();
             });
 
-            $('#MediaObject').mousemove(function(event) {
+            mediaObject.mousemove(function(event) {
                 var offset = $("#MediaObject").position();
                 var x = event.pageX - offset.left;
                 var y = event.pageY - offset.top - $("#Top").height();
@@ -242,10 +241,12 @@
             <input type="hidden" name="id" value="${media.id}">
             <table id="ImageMapTable">
                 <thead>
+                    <tr>
                         <th class="imageMapLink"><kantega:label key="aksess.multimedia.imagemap.lenke"/></th>
                         <th class="imageMapAltTitle" width="215"><kantega:label key="aksess.multimedia.imagemap.altnavn"/></th>
                         <th class="imageMapNewWindow"><kantega:label key="aksess.multimedia.imagemap.nyttvindu"/></th>
                         <th class="imageMapDelete">&nbsp;</th>
+                    </tr>
                 </thead>
                 <tbody>
                 </tbody>
