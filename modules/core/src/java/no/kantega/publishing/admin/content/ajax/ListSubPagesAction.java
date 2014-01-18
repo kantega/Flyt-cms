@@ -67,7 +67,7 @@ public class ListSubPagesAction extends SimpleAdminController {
 
         Map<String, Object> model = new HashMap<>();
 
-        Map<Integer, MenuList> menus = new HashMap<Integer, MenuList>();
+        Map<Integer, MenuList> menus = new HashMap<>();
 
         if (currentContent != null) {
             // Find allowed associationcategories
