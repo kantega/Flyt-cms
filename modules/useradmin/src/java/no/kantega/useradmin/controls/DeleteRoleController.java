@@ -67,7 +67,7 @@ public class DeleteRoleController extends AbstractUserAdminController {
             // Confirm deletion
             Role role = manager.getRoleById(roleId);
             model.put("role", role);
-            return new ModelAndView("/role/delete", model);
+            return new ModelAndView("role/delete", model);
         }
     }
 }

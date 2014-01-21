@@ -67,7 +67,7 @@ public class DeleteProfileController extends AbstractUserAdminController {
             // Confirm deletion
             Profile profile = manager.getProfileForUser(identity);
             model.put("profile", profile);
-            return new ModelAndView("/profile/delete", model);
+            return new ModelAndView("profile/delete", model);
         }
     }
 }
