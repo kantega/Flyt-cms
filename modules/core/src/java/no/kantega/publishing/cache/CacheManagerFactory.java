@@ -19,6 +19,7 @@ import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
+import java.util.UUID;
 
 /**
  * Based on EhCacheManagerFactoryBean
@@ -44,7 +45,7 @@ public class CacheManagerFactory implements ServletContextAware, FactoryBean<Cac
         Configuration configuration = ConfigurationFactory.parseConfiguration(is);
         String path = System.getProperty("java.io.tmpdir") + servletContext.getContextPath();
         configuration.addDiskStore(new DiskStoreConfiguration().path(path));
-        configuration.setName(configuration.getName() + servletContext.getContextPath());
+        configuration.setName(configuration.getName() + servletContext.getContextPath() + UUID.randomUUID());
         cacheManager = new CacheManager(configuration);
 
         createMBean();
