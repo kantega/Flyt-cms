@@ -42,26 +42,28 @@ public class LogInitListener implements ServletContextListener {
             final File dataDirectory  = (File) servletContextEvent.getServletContext().getAttribute(DataDirectoryContextListener.DATA_DIRECTORY_ATTR);
 
             if(dataDirectory == null) {
-                throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR
-                        +" was not set");
+                throw new NullPointerException("dataDirectory attribute " + DataDirectoryContextListener.DATA_DIRECTORY_ATTR + " was not set");
             }
 
             // Ensure log directory exists
             final File logsDirectory = new File(dataDirectory, "logs");
             logsDirectory.mkdirs();
 
-            final File configFile = new File(new File(dataDirectory, "conf"),  "logback.groovy");
-
-            if(!configFile.exists()) {
-                writeDefaultConfigFile(configFile);
-            }
-
             try {
-                loggerContext.reset();
-                loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
-                ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
-                contextInitializer.configureByResource(configFile.toURI().toURL());
-                LoggerFactory.getLogger(getClass()).info("Configured logging using logdir {}", logsDirectory.getAbsolutePath());
+                String autoConfig = System.getProperty("logback.autoconfig");
+                if (autoConfig == null) {
+                    final File configFile = new File(new File(dataDirectory, "conf"),  "logback.groovy");
+                    if(!configFile.exists()) {
+                        writeDefaultConfigFile(configFile);
+                    }
+
+                    loggerContext.reset();
+                    loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
+
+                    ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
+                    contextInitializer.configureByResource(configFile.toURI().toURL());
+                    LoggerFactory.getLogger(getClass()).info("Configured logging using logdir {}", logsDirectory.getAbsolutePath());
+                }
             } catch (Exception je) {
                 je.printStackTrace();
             }
