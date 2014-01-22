@@ -401,8 +401,10 @@ public class ContentQuery {
             try (Connection c = dbConnectionFactory.getConnection()){
                 PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca " +
                         "where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
-                List<Integer> attributecontentids = new ArrayList<>();
-                for (Attribute a : attributes) {
+
+                for (int i = 0; i < attributes.size(); i++) {
+                    List<Integer> attributecontentids = new ArrayList<>();
+                    Attribute a = attributes.get(i);
                     st.setString(1, a.getName());
                     st.setString(2, a.getValue());
 
@@ -417,9 +419,9 @@ public class ContentQuery {
                     if (noFound == 0) {
                         attributecontentids.add(-1);
                     }
+                    query.append(" and content.ContentId in (:attributecontentids").append(i).append(")");
+                    parameters.put("attributecontentids" + i, attributecontentids);
                 }
-                query.append(" and content.ContentId in (:attributecontentids)");
-                parameters.put("attributecontentids", attributecontentids);
                 st.close();
             } catch (SQLException e) {
                 log.error("Error when getting contentid", e);
