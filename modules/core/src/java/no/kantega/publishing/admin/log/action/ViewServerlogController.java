@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.web.util.HtmlUtils;
 
 import static com.google.common.collect.Lists.transform;
 
@@ -71,7 +72,7 @@ public class ViewServerlogController {
             while ((line = br.readLine()) != null) {
                 if (startline <= lineNumber) {
                     numberOfLinesReturned++;
-                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber).append("</span>").append(line).append("</div>");
+                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber).append("</span>").append(HtmlUtils.htmlEscape(line)).append("</div>");
                 }
                 lineNumber++;
                 if (lineNumber > endline) {
