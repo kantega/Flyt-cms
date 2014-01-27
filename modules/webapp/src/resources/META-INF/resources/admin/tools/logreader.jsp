@@ -22,7 +22,7 @@
         }
         #logfiles div {
             font-family: courier,monospace;
-            font-size: 8px;
+            font-size: 12px;
         }
 
         .line:nth-child(even){
@@ -46,6 +46,10 @@
 
         .linenumber {
             font-weight: bold;;
+        }
+
+        .logline {
+            white-space: pre-wrap;
         }
 
         #controlls {

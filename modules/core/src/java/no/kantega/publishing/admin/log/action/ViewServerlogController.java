@@ -72,7 +72,9 @@ public class ViewServerlogController {
             while ((line = br.readLine()) != null) {
                 if (startline <= lineNumber) {
                     numberOfLinesReturned++;
-                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber).append("</span>").append(HtmlUtils.htmlEscape(line)).append("</div>");
+                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber)
+                            .append("</span><span class=\"logline\">")
+                            .append(HtmlUtils.htmlEscape(line)).append("</span></div>");
                 }
                 lineNumber++;
                 if (lineNumber > endline) {
