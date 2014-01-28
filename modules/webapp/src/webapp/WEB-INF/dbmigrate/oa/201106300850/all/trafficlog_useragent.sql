@@ -1,1 +1,0 @@
-ALTER TABLE trafficlog ADD UserAgent VARCHAR(255) NULL;

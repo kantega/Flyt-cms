@@ -1,7 +1,0 @@
-ALTER TABLE multimedia ADD OriginalDate DATETIME NULL;
-ALTER TABLE multimedia ADD CameraMake VARCHAR(255) NULL;
-ALTER TABLE multimedia ADD CameraModel VARCHAR(255) NULL;
-ALTER TABLE multimedia ADD GPSLatitudeRef VARCHAR(1) NULL;
-ALTER TABLE multimedia ADD GPSLatitude VARCHAR(32) NULL;
-ALTER TABLE multimedia ADD GPSLongitudeRef VARCHAR(1) NULL;
-ALTER TABLE multimedia ADD GPSLongitude VARCHAR(32) NULL;

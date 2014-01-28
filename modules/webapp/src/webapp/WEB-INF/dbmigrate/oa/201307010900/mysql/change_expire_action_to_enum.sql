@@ -1,1 +1,0 @@
-ALTER TABLE content MODIFY COLUMN ExpireAction VARCHAR(32);
