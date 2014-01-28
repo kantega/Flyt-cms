@@ -58,8 +58,6 @@ public class AdminFilter implements Filter {
             return;
         }
 
-        request.setAttribute(ServletContext.class.getName(), servletContext);
-
         request.setAttribute("aksess_locale", Aksess.getDefaultAdminLocale());
 
         try {

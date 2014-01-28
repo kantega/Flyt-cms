@@ -18,8 +18,9 @@ package no.kantega.publishing.security.filter;
 
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.exception.ExceptionHandler;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -27,27 +28,23 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
- *
+ * Filter that denies access if user does not have admin role. Initiates login if user is not logged in.
  */
 public class RoleFilter implements Filter {
-    private ServletContext servletContext;
+    private static final Logger log = LoggerFactory.getLogger(RoleFilter.class);
+
     private String specifiedRole;
+
     public void init(FilterConfig filterConfig) throws ServletException {
-        servletContext = filterConfig.getServletContext();
-        specifiedRole = filterConfig.getInitParameter("specifiedRole");
+        specifiedRole = Aksess.getAdminRole();
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         HttpServletRequest request = (HttpServletRequest) servletRequest;
 
-        request.setAttribute(ServletContext.class.getName(), servletContext);
-
-
-
         try {
-            ContentManagementService aksessService = new ContentManagementService(request);
-            SecuritySession securitySession = aksessService.getSecuritySession();
+            SecuritySession securitySession = SecuritySession.getInstance(request);
 
             // Sjekk at bruker er logget inn
             if (!securitySession.isLoggedIn()) {
@@ -56,15 +53,16 @@ public class RoleFilter implements Filter {
             }
 
             // Sjekk at bruker er autorisert
-            if (specifiedRole!=null && !securitySession.isUserInRole(specifiedRole)) {
+            if (specifiedRole != null && !securitySession.isUserInRole(specifiedRole)) {
                 response.sendError(HttpServletResponse.SC_FORBIDDEN);
                 return;
             }
 
-            response.setDateHeader("Expires", 0);
+            response.setDateHeader("Expires", 0L);
 
             filterChain.doFilter(request,  response);
         } catch (Exception e) {
+            log.error("Something failed in the filterchain", e);
             ExceptionHandler handler = new ExceptionHandler();
 
             Throwable cause = e;
@@ -94,8 +92,6 @@ public class RoleFilter implements Filter {
                     cause = e;
                 }
             }
-
-            e.printStackTrace();
 
             handler.setThrowable(cause, request.getRequestURI());
             request.getSession(true).setAttribute("handler", handler);
