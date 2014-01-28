@@ -62,6 +62,9 @@ public class Aksess {
     private static String version = "unknown";
     private static String revision;
     private static String buildDate;
+    private static String webappRevision;
+    private static String webappVersion;
+    private static String webappDate;
 
     private static String roleEveryone = "everyone";
     private static String[] roleHtmlEditor;
@@ -282,6 +285,16 @@ public class Aksess {
             }
         }
 
+        try {
+            Properties webappVersionInfo = new Properties();
+            webappVersionInfo.load(Aksess.class.getResourceAsStream("/aksess-webapp-version.properties"));
+            webappRevision = webappVersionInfo.getProperty("revision", "");
+            webappVersion = webappVersionInfo.getProperty("version", "unknown");
+            webappDate = webappVersionInfo.getProperty("date", "");
+        } catch (IOException e) {
+            throw new RuntimeException("/aksess-webapp-version.properties not found", e);
+        }
+
         log.info( "location.contextpath=" + contextPath);
     }
 
@@ -300,6 +313,18 @@ public class Aksess {
 
     public static String getBuildRevision() {
         return revision;
+    }
+
+    public static String getWebappRevision() {
+        return webappRevision.isEmpty() ? webappVersion : webappRevision;
+    }
+
+    public static String getWebappVersion() {
+        return webappVersion;
+    }
+
+    public static String getWebappDate() {
+        return webappDate;
     }
 
     /**

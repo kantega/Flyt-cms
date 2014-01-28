@@ -29,7 +29,6 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
@@ -54,7 +53,7 @@ public class ViewSystemInformationAction extends AbstractController {
             conf.setProperties(loader.loadConfiguration());
         }
 
-        addOAVersionInformation(model);
+        addOAAndWebappVersionInformation(model);
 
         model.put("aksessVersion", Aksess.getVersion());
 
@@ -82,9 +81,12 @@ public class ViewSystemInformationAction extends AbstractController {
         return new ModelAndView(view, model);
     }
 
-    private void addOAVersionInformation(Map<String, Object> model) {
+    private void addOAAndWebappVersionInformation(Map<String, Object> model) {
         model.put("aksessRevision", Aksess.getBuildRevision());
         model.put("aksessTimestamp", parseDate(Aksess.getBuildDate()));
+        model.put("webappRevision", Aksess.getWebappRevision());
+        model.put("webappVersion", Aksess.getWebappVersion());
+        model.put("webappTimestamp", parseDate(Aksess.getWebappDate()));
     }
 
     private void addVMStartDate(Map<String, Object> model, RuntimeMXBean runtimeMXBean) {
@@ -114,12 +116,22 @@ public class ViewSystemInformationAction extends AbstractController {
     }
 
     private Date parseDate(String date) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmm");
+        DateFormat svnTimestampFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'");
         Date parsedDate = null;
         try {
-            parsedDate = dateFormat.parse(date);
+            parsedDate = svnTimestampFormat.parse(date);
         } catch (ParseException e) {
-            log.error(String.format("Could not parse '%s' as date", date), e);
+            DateFormat timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+            try {
+                parsedDate = timestampFormat.parse(date);
+            } catch (ParseException e1) {
+                timestampFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+                try {
+                    parsedDate = timestampFormat.parse(date);
+                } catch (ParseException e2) {
+                    log.error("Could not parse " + date, e2);
+                }
+            }
         }
 
         return parsedDate;
