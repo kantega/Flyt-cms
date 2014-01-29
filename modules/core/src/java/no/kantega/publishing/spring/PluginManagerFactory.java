@@ -115,6 +115,11 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         return builder.build();
     }
 
+    @Override
+    protected void destroyInstance(Object instance) throws Exception {
+            DefaultPluginManager.class.cast(instance).stop();
+    }
+
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
