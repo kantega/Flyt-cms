@@ -32,7 +32,6 @@
         <module>groovyconsole</module>
         <module>groovyscripts</module>
         <module>jobexecuter</module>
-        <module>metrics</module>
         <module>core-plugins-dep</module>
     </modules>
 
