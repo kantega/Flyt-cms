@@ -33,12 +33,8 @@
 
     <bean name="aksessAttributeFactory" class="no.kantega.publishing.common.factory.ClassNameAttributeFactory"/>
 
-    <bean id="aksessTemplateConfigInputSource" class="no.kantega.publishing.common.data.ServletContextInputStreamSource">
-        <property name="resource" value="${templateconfig.location}"/>
-    </bean>
-
     <bean id="aksessTemplateConfigurationFactory" class="no.kantega.publishing.common.util.templates.XStreamTemplateConfigurationFactory">
-        <property name="inputStreamSource" ref="aksessTemplateConfigInputSource"/>
+        <property name="templateConfig" value="${templateconfig.location}"/>
     </bean>
 
     <bean id="aksessTemplateConfigurationValidator" class="no.kantega.publishing.common.util.templates.TemplateConfigurationValidator"/>

@@ -17,23 +17,14 @@
 package no.kantega.publishing.jobs.contentstate;
 
 
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.ServerType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class ContentStateChangeJob  {
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private ContentStateUpdater stateUpdater;
 
     public void execute() {
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
         stateUpdater.expireContent();
         stateUpdater.publishContent();
     }

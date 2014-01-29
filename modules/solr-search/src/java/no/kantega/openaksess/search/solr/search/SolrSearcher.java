@@ -34,6 +34,8 @@ import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 public class SolrSearcher implements Searcher {
     private final Logger log  = LoggerFactory.getLogger(getClass());
 
+    private final String DESCRIPTION_HIHLIGHTING_FIELD = "all_text_unanalyzed";
+
     @Value("${search.boostByPublishDateQuery:recip(ms(NOW/HOUR,publishDate),3.16e-11,1,1)}")
     private String boostByPublishDateQuery;
 
@@ -313,8 +315,7 @@ public class SolrSearcher implements Searcher {
 
     private void setHighlighting(SearchQuery query, SolrQuery params) {
         params.setHighlight(query.isHighlightSearchResultDescription());
-        String lang = query.getIndexedLanguage().code;
-        params.set("hl.fl", "all_text_" + lang, "title_" + lang);
+        params.set("hl.fl", DESCRIPTION_HIHLIGHTING_FIELD, "title_no", "title_en");
         params.set("hl.useFastVectorHighlighter", true);
     }
 
@@ -374,10 +375,9 @@ public class SolrSearcher implements Searcher {
         if(query.isHighlightSearchResultDescription()){
             Map<String, Map<String, List<String>>> highlighting = queryResponse.getHighlighting();
             Map<String, List<String>> thisResult = highlighting.get((String) result.getFieldValue("uid"));
-            if(thisResult != null && !thisResult.isEmpty()){
-                String description = highlightedValueOrDefault(result, thisResult, "all_text_" + languageSuffix, "description_" + languageSuffix);
-                String titleFieldName = "title_" + languageSuffix;
-                String title = highlightedValueOrDefault(result, thisResult, titleFieldName, titleFieldName);
+            if(thisResult != null){
+                String description = highlightedValueOrDefault(result, thisResult, DESCRIPTION_HIHLIGHTING_FIELD);
+                String title = highlightedValueOrDefault(result, thisResult, "title_" + languageSuffix);
                 titleAndDescription = new TitleAndDescription(title, description);
             } else {
                 titleAndDescription = notHighlightedTitleAndDescription(result, languageSuffix);
@@ -389,15 +389,15 @@ public class SolrSearcher implements Searcher {
         return titleAndDescription;
     }
 
-    private String highlightedValueOrDefault(SolrDocument result, Map<String, List<String>> thisResult, String fieldKey, String fallbackField) {
-        List<String> highlightedValue = thisResult.get(fieldKey);
-        String fieldValue;
-        if (highlightedValue != null) {
-            fieldValue = highlightedValue.get(0);
+    private String highlightedValueOrDefault(SolrDocument result, Map<String, List<String>> thisResult, String titleKey) {
+        List<String> titleValue = thisResult.get(titleKey);
+        String title;
+        if (titleValue != null) {
+            title = titleValue.get(0);
         } else {
-            fieldValue = (String) result.getFirstValue(fallbackField);
+            title = (String) result.getFirstValue(titleKey);
         }
-        return fieldValue;
+        return title;
     }
 
     private TitleAndDescription notHighlightedTitleAndDescription(SolrDocument result, String languageSuffix) {

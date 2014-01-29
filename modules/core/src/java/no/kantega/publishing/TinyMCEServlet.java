@@ -1,5 +1,6 @@
 package no.kantega.publishing;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -244,10 +245,7 @@ public class TinyMCEServlet extends HttpServlet {
         if (url != null) {
             try {
                 InputStream is = url.openStream();
-                int avail = is.available();
-                byte[] basdas = new byte[avail];
-                is.read(basdas);
-                retVal = new String(basdas);
+                retVal = IOUtils.toString(is, "iso-8859-1");
             } catch (IOException e) {
                 log.error( e.getMessage(), e);
             }

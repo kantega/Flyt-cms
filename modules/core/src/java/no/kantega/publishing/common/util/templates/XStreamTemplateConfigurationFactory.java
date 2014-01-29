@@ -17,10 +17,10 @@
 package no.kantega.publishing.common.util.templates;
 
 import com.thoughtworks.xstream.XStream;
-import no.kantega.publishing.common.data.InputStreamSource;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,26 +28,24 @@ import java.io.InputStream;
 public class XStreamTemplateConfigurationFactory implements TemplateConfigurationFactory {
     private static final Logger log = LoggerFactory.getLogger(XStreamTemplateConfigurationFactory.class);
 
-    private InputStreamSource inputStreamSource;
+    private Resource templateConfig;
 
     public TemplateConfiguration getConfiguration() {
         XStream xstream = XStreamTemplateHelper.getXStream();
 
         TemplateConfiguration templateConfiguration = new TemplateConfiguration();
 
-        try {
-            InputStream is = inputStreamSource.getInputStream();
-            xstream.fromXML(inputStreamSource.getInputStream(), templateConfiguration);
-            is.close();
+        try (InputStream is = templateConfig.getInputStream()) {
+            xstream.fromXML(is, templateConfiguration);
         } catch (IOException e) {
-            log.error("", e);
+            throw new RuntimeException("Failed to read template configuration", e);
         }
 
         return templateConfiguration;
     }
 
 
-    public void setInputStreamSource(InputStreamSource inputStreamSource) {
-        this.inputStreamSource = inputStreamSource;
+    public void setTemplateConfig(Resource resource) {
+        this.templateConfig = resource;
     }
 }

@@ -60,6 +60,11 @@ public class Aksess {
     private static String flashPluginVersion;
     private static boolean flashUseJavascript = false;
     private static String version = "unknown";
+    private static String revision;
+    private static String buildDate;
+    private static String webappRevision;
+    private static String webappVersion;
+    private static String webappDate;
 
     private static String roleEveryone = "everyone";
     private static String[] roleHtmlEditor;
@@ -269,9 +274,25 @@ public class Aksess {
                     throw new RuntimeException("'version' property not found in version file " + versionResource);
                 }
 
+                revision = versionProps.getProperty("revision", "unknown");
+                buildDate =versionProps.getProperty("buildDate");
+                if (buildDate == null || buildDate.trim().isEmpty()) {
+                    throw new RuntimeException(String.format("'buildDate' property not set in version file %s", versionResource));
+                }
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        try {
+            Properties webappVersionInfo = new Properties();
+            webappVersionInfo.load(Aksess.class.getResourceAsStream("/aksess-webapp-version.properties"));
+            webappRevision = webappVersionInfo.getProperty("revision", "");
+            webappVersion = webappVersionInfo.getProperty("version", "unknown");
+            webappDate = webappVersionInfo.getProperty("date", "");
+        } catch (IOException e) {
+            throw new RuntimeException("/aksess-webapp-version.properties not found", e);
         }
 
         log.info( "location.contextpath=" + contextPath);
@@ -281,16 +302,29 @@ public class Aksess {
         return version;
     }
 
+    /**
+     * Get the build timestamp for this version.
+     *
+     * @return Date string with format <code>yyyyMMdd-HHmm</code>
+     */
+    public static String getBuildDate() {
+        return buildDate;
+    }
+
+    public static String getBuildRevision() {
+        return revision;
+    }
 
     public static String getWebappRevision() {
-        try {
-            Properties webappVersionInfo = new Properties();
-            webappVersionInfo.load(Aksess.class.getResourceAsStream("/aksess-webapp-version.properties"));
-            return webappVersionInfo.getProperty("revision");
-        } catch (IOException e) {
-            throw new RuntimeException("/aksess-webapp-version.properties not found", e);
-        }
+        return webappRevision.isEmpty() ? webappVersion : webappRevision;
+    }
 
+    public static String getWebappVersion() {
+        return webappVersion;
+    }
+
+    public static String getWebappDate() {
+        return webappDate;
     }
 
     /**

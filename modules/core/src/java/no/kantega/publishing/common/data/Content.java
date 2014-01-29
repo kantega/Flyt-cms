@@ -553,7 +553,7 @@ public class Content extends BaseObject {
     }
 
     public Map<String, Attribute> getContentAttributes() {
-        Map<String, Attribute> map = new HashMap<>();
+        Map<String, Attribute> map = new HashMap<String, Attribute>();
         if (contentAttributes != null) {
             for (Attribute a : contentAttributes) {
                 map.put(a.getName(), a);
@@ -608,12 +608,6 @@ public class Content extends BaseObject {
         }
     }
 
-    /**
-     * @param name the attribute name as specified in the content template xml.
-     * @param type type, either <code>AttributeDataType.CONTENT_DATA</code> or <code>AttributeDataType.META_DATA</code>
-     *             or <code>AttributeDataType.ANY</code>
-     * @return the Attribute or null.
-     */
     public Attribute getAttribute(String name, int type) {
         if (isBlank(name)) {
             throw new IllegalArgumentException("Name was blank");

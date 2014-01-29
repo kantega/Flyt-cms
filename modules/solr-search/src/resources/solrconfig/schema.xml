@@ -72,9 +72,6 @@
             </analyzer>
         </fieldtype>
 
-        <fieldType name="tdouble" class="solr.TrieDoubleField" precisionStep="8" positionIncrementGap="0"/>
-        <fieldType name="location" class="solr.LatLonType" subFieldSuffix="_coordinate"/>
-
         <fieldtype name="ignored" stored="false" indexed="false" multiValued="true" class="solr.StrField" />
     </types>
 
@@ -116,20 +113,17 @@
         <field name="contentStatus" type="string" indexed="true" stored="true" multiValued="false"/>
         <field name="url" type="string" indexed="false" stored="true" required="true" multiValued="false"/>
 
-        <field name="all_text_no" type="text_no" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true" />
-        <field name="all_text_en" type="text_en" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true" />
-        <!-- Unanalyzed field to do exact match boosting -->
+        <field name="all_text_no" type="text_no" indexed="true" stored="false" multiValued="true" termVectors="true"/>
+        <field name="all_text_en" type="text_en" indexed="true" stored="false" multiValued="true" termVectors="true"/>
         <field name="all_text_unanalyzed" type="text_general" indexed="true" stored="true" multiValued="true" termVectors="true" omitNorms="false" omitTermFreqAndPositions="false" termPositions="true" termOffsets="true"/>
 
         <copyField source="*_en" dest="all_text_en"/>
         <copyField source="*_txt" dest="all_text_en" />
-        <copyField source="*_name" dest="all_text_en" />
         <copyField source="keywords" dest="all_text_en" />
         <copyField source="topics" dest="all_text_en" />
 
         <copyField source="*_no" dest="all_text_no" />
         <copyField source="*_txt" dest="all_text_no" />
-        <copyField source="*_name" dest="all_text_no" />
         <copyField source="keywords" dest="all_text_no" />
         <copyField source="topics" dest="all_text_no" />
 
@@ -152,11 +146,6 @@
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
-        <dynamicField name="*_path" type="text_path"    indexed="true"  stored="false" termVectors="true"/>
-        <!-- Type used to index the lat and lon components for the "location" FieldType -->
-        <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
-        <dynamicField name="*_location"  type="location" indexed="true" stored="false"/>
-
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
     <uniqueKey>uid</uniqueKey>

@@ -15,10 +15,12 @@
   ~ limitations under the License.
   -->
 
-<web-app> <!-- Yes, there should be no namespaces here, aksess-maven-plugin will
-not work if you try adding them -->
-    <display-name>Aksess</display-name>
-    <description>Kantega Aksess Publisering for Java</description>
+<web-fragment version="3.0"
+              xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
+
+    <name>openaksess</name>
 
     <context-param>
         <param-name>contextConfigLocation</param-name>
@@ -56,11 +58,6 @@ not work if you try adding them -->
     <filter>
         <filter-name>AdminFilter</filter-name>
         <filter-class>no.kantega.publishing.security.filter.AdminFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>AdminRoleFilter</filter-name>
-        <filter-class>no.kantega.publishing.security.filter.RoleFilter</filter-class>
     </filter>
 
     <filter>
@@ -136,11 +133,6 @@ not work if you try adding them -->
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/admin/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>AdminRoleFilter</filter-name>
-        <url-pattern>/admin/tools/*</url-pattern>
     </filter-mapping>
 
     <filter-mapping>
@@ -235,6 +227,11 @@ not work if you try adding them -->
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>aksess</servlet-name>
+        <url-pattern>/oasearch/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>useradmin</servlet-name>
         <url-pattern>/admin/administration/useradmin/*</url-pattern>
     </servlet-mapping>
@@ -280,6 +277,9 @@ not work if you try adding them -->
 
     <session-config>
         <session-timeout>15</session-timeout>
+        <cookie-config>
+            <http-only>true</http-only>
+        </cookie-config>
     </session-config>
 
     <error-page>
@@ -287,11 +287,4 @@ not work if you try adding them -->
         <location>/403.jsp</location>
     </error-page>
 
-    <jsp-config>
-        <jsp-property-group>
-            <url-pattern>*.jsp</url-pattern>
-            <page-encoding>UTF-8</page-encoding>
-            <trim-directive-whitespaces>true</trim-directive-whitespaces>
-        </jsp-property-group>
-    </jsp-config>
-</web-app>
+</web-fragment>

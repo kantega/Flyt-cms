@@ -69,7 +69,7 @@ public class EditRoleController extends AbstractUserAdminController {
                 model.put("canEdit", Boolean.TRUE);
                 model.put("role", role);
                 errors.add(null, "useradmin.role.rolenamemissing");
-                return new ModelAndView("/role/edit", model);
+                return new ModelAndView("role/edit", model);
             } else if (updateManager != null) {
                 updateManager.saveOrUpdateRole(role);
                 return new ModelAndView(new RedirectView("search?message=useradmin.role.saved&domain=" + URLEncoder.encode(domain, "iso-8859-1")));
@@ -91,7 +91,7 @@ public class EditRoleController extends AbstractUserAdminController {
 
         model.put("configurations", getRoleConfiguration());
 
-        return new ModelAndView("/role/edit", model);
+        return new ModelAndView("role/edit", model);
 
     }
 }

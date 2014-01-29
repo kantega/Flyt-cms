@@ -24,12 +24,12 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.7.4-SNAPSHOT</version>
+    <version>7.8.0-beta-1</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.8.0-beta-1</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.8.0-beta-1</developerConnection>
     </scm>
 
     <pluginRepositories>
@@ -199,6 +199,7 @@
             <plugin>
                 <groupId>org.kantega.openaksess</groupId>
                 <artifactId>generate-project-xml-maven-plugin</artifactId>
+                <version>1.9</version>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
@@ -218,15 +219,6 @@
                 </executions>
             </plugin>
         </plugins>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.kantega.openaksess</groupId>
-                    <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.8</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
     </build>
 
     <properties>
@@ -268,6 +260,7 @@
                     <plugin>
                         <groupId>org.kantega.openaksess</groupId>
                         <artifactId>generate-project-xml-maven-plugin</artifactId>
+                        <version>1.9</version>
                         <inherited>false</inherited>
                         <executions>
                             <execution>

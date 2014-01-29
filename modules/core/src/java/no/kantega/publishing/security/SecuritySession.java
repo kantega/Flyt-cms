@@ -396,7 +396,7 @@ public class SecuritySession {
         return SecurityService.isApprover(user, c);
     }
 
-    public List<Role> getAllRoles() throws SystemException {
+    public List getAllRoles() throws SystemException {
         return realm.getAllRoles();
     }
 
@@ -406,11 +406,11 @@ public class SecuritySession {
      * @return List med userIds (String)
      * @throws SystemException
      */
-    public List<String> getUsersWithRole(String role) throws SystemException {
+    public List getUsersWithRole(String role) throws SystemException {
         return realm.lookupUsersWithRole(role);
     }
 
-    public List<User> searchUsers(String name) throws SystemException {
+    public List searchUsers(String name) throws SystemException {
         return realm.searchUsers(name);
     }
 

@@ -2,10 +2,10 @@ package no.kantega.publishing.admin.log.action;
 
 import com.google.common.base.Function;
 import com.google.common.io.PatternFilenameFilter;
+import no.kantega.publishing.common.Aksess;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
+import org.springframework.web.util.HtmlUtils;
 
 import static com.google.common.collect.Lists.transform;
 
@@ -21,8 +22,29 @@ import static com.google.common.collect.Lists.transform;
 public class ViewServerlogController {
     private static final Logger log = LoggerFactory.getLogger(ViewServerlogController.class);
 
-    @Value("${appDir}/logs")
-    private File logFilesDir;
+    private final File logFilesDir;
+
+    /**
+     * Create a new instance with a log dir set. Will try to read the "logDir" property from config, or fall back to
+     * "appDir"/logs if not set.
+     */
+    public ViewServerlogController() {
+        String logDir = Aksess.getConfiguration().getString("logDir");
+        String defaultLogDir = Aksess.getConfiguration().getString("appDir") + "/logs";
+        if (logDir != null) {
+            File l = new File(logDir);
+            if (!l.exists()) {
+                log.info("Log dir {} does not exists, using default {}", defaultLogDir);
+                logFilesDir = new File(defaultLogDir);
+            } else {
+                log.info("Using log dir {}", l);
+                logFilesDir = l;
+            }
+        } else {
+            log.info("Log dir not set, using default {}", defaultLogDir);
+            logFilesDir = new File(defaultLogDir);
+        }
+    }
 
     @RequestMapping(value = "/logfiles.action", method = RequestMethod.GET)
     public @ResponseBody List<String> getLogFileNames(){
@@ -50,7 +72,9 @@ public class ViewServerlogController {
             while ((line = br.readLine()) != null) {
                 if (startline <= lineNumber) {
                     numberOfLinesReturned++;
-                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber).append("</span>").append(line).append("</div>");
+                    lines.append("<div class=\"line\"><span class=\"linenumber\">").append(lineNumber)
+                            .append("</span><span class=\"logline\">")
+                            .append(HtmlUtils.htmlEscape(line)).append("</span></div>");
                 }
                 lineNumber++;
                 if (lineNumber > endline) {

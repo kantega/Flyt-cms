@@ -67,7 +67,7 @@ public class SearchRolesController extends AbstractUserAdminController {
 
         model.put("adminRole", Aksess.getAdminRole());
 
-        return new ModelAndView("/role/search", model);
+        return new ModelAndView("role/search", model);
     }
 }
 

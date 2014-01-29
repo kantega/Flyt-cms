@@ -31,8 +31,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.transform.TransformerException;
 import java.util.*;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 /**
  *
  */
@@ -104,7 +102,7 @@ public class ListAttribute extends Attribute {
 
     public List<String> getValues() {
         List<String> values = new ArrayList<>();
-        if (isNotBlank(value)) {
+        if (value != null && value.length() > 0) {
             String[] tmp = value.split(",");
             values.addAll(Arrays.asList(tmp));
         }

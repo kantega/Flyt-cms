@@ -1,7 +1,5 @@
 package no.kantega.openaksess.search.solr.config;
 
-import no.kantega.search.api.IndexableDocumentCustomizer;
-import no.kantega.search.api.provider.DocumentTransformer;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.CloudSolrServer;
@@ -9,7 +7,6 @@ import org.apache.solr.client.solrj.impl.HttpSolrServer;
 import org.apache.solr.core.CoreContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +16,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 import static no.kantega.openaksess.search.solr.config.SolrConfigInitializer.initSolrConfigIfAbsent;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
@@ -44,12 +37,6 @@ public class SolrConfiguration {
     @Value("${cloudSolrServer:}")
     private String cloudSolrServer;
 
-    @Autowired(required = false)
-    private List<DocumentTransformer<?>> transformers;
-
-    @Autowired(required = false)
-    private List<IndexableDocumentCustomizer<?>> customizers;
-
     @Bean(destroyMethod = "shutdown")
     public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         if(isNotBlank(cloudSolrServer)){
@@ -65,14 +52,5 @@ public class SolrConfiguration {
 
             return new EmbeddedSolrServer(container, "oacore");
         }
-    }
-
-    @Bean
-    public Map<DocumentTransformer<?>, Collection<IndexableDocumentCustomizer<?>>> mapCustomizersToTransformers(){
-
-        List<DocumentTransformer<?>> documentTransformers = transformers == null ? Collections.<DocumentTransformer<?>>emptyList() : transformers;
-        List<IndexableDocumentCustomizer<?>> documentCustomizers = customizers == null ? Collections. <IndexableDocumentCustomizer<?>>emptyList() : customizers;
-
-        return IndexableDocumentCustomizerPostProcessor.mapCustomizersToTransformers(documentTransformers, documentCustomizers);
     }
 }

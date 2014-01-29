@@ -182,7 +182,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
         if (url == null) {
             throw new ContentNotFoundException("");
         }
-        Matcher contentUrlMatcher = CONTENT_URL_PATTERN.matcher(url.trim());
+        Matcher contentUrlMatcher = CONTENT_URL_PATTERN.matcher(url);
         if(!contentUrlMatcher.matches()){
             throw new ContentNotFoundException(url);
         }

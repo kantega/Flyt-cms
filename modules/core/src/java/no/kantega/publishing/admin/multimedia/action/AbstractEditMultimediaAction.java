@@ -17,7 +17,6 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
@@ -53,7 +52,7 @@ public abstract class AbstractEditMultimediaAction extends AbstractController {
         if (!request.getMethod().equalsIgnoreCase("POST")) {
             modelAndView = handleGet(mm, request, response);
 
-            Map<String, Object> model = modelAndView.getModel();
+            Map model = modelAndView.getModel();
             model.put("canEdit", canEdit);
             model.put("media", mm);
             if (mm.getMimeType().getType().contains("image")) {
@@ -62,7 +61,7 @@ public abstract class AbstractEditMultimediaAction extends AbstractController {
             }
 
             // Find usages of this image/file
-            List<Content> usages = mediaService.getUsages(mm.getId());
+            List usages = mediaService.getUsages(mm.getId());
             model.put("usages", usages);
         } else {
             modelAndView = handlePost(mm, request, response);

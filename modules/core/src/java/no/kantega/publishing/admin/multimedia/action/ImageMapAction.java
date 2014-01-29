@@ -51,10 +51,10 @@ public class ImageMapAction extends AbstractEditMultimediaAction {
         RequestParameters param = new RequestParameters(request, "utf-8");
         MultimediaImageMap mim = new MultimediaImageMap();
 
-        Enumeration<String> e = request.getParameterNames();
+        Enumeration e = request.getParameterNames();
 
         while(e.hasMoreElements()){
-            String oneParam = e.nextElement();
+            String oneParam = (String)e.nextElement();
             if (oneParam.startsWith("coords")) {
                 String n = oneParam.substring(6); //
                 String url = param.getString("url" + n);
@@ -75,7 +75,7 @@ public class ImageMapAction extends AbstractEditMultimediaAction {
         mim.setMultimediaId(mm.getId());
         MultimediaImageMapAO.storeImageMap(mim);
 
-        Map<String, Integer> model = new HashMap<>();
+        Map<String, Integer> model = new HashMap<String, Integer>();
         model.put("id", mm.getId());
 
         return new ModelAndView(new RedirectView("EditMultimedia.action"), model);

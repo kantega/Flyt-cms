@@ -380,7 +380,7 @@ public class ContentQuery {
                     List<OrgUnit> orgUnits = manager.getOrgUnitsAboveUser(onHearingFor);
                     if(orgUnits.size() > 0) {
                         query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
-                                " and hearinginvitee.InviteeRef in (:unitids))");
+                                "     and hearinginvitee.InviteeRef in (:unitids))");
 
                         List<String> orgunitIds = transform(orgUnits, new Function<OrgUnit, String>() {
                             @Override
@@ -396,33 +396,31 @@ public class ContentQuery {
             query.append(")");
         }
 
-        if (attributes != null && !attributes.isEmpty()) {
-            // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
-            try (Connection c = dbConnectionFactory.getConnection()){
-                PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca " +
-                        "where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+        if (attributes != null) {
+            try {
+                // Må gjøres tungvint siden MySQL 4.0 ikke støtter subqueryes
+                try (Connection c = dbConnectionFactory.getConnection()){
+                    PreparedStatement st = c.prepareStatement("select cv.ContentId from contentversion cv, contentattributes ca where cv.IsActive = 1 and cv.ContentVersionId = ca.ContentVersionId and ca.name = ? and ca.value like ?");
+                    for (Attribute a : attributes) {
+                        st.setString(1, a.getName());
+                        st.setString(2, a.getValue());
 
-                for (int i = 0; i < attributes.size(); i++) {
-                    List<Integer> attributecontentids = new ArrayList<>();
-                    Attribute a = attributes.get(i);
-                    st.setString(1, a.getName());
-                    st.setString(2, a.getValue());
-
-                    int noFound = 0;
-                    ResultSet rs = st.executeQuery();
-
-                    while (rs.next()) {
-                        int id = rs.getInt("ContentId");
-                        attributecontentids.add(id);
-                        noFound++;
+                        int noFound = 0;
+                        ResultSet rs = st.executeQuery();
+                        query.append(" and content.ContentId in (:attributecontentids)");
+                        List<Integer> attributecontentids = new ArrayList<>();
+                        while (rs.next()) {
+                            int id = rs.getInt("ContentId");
+                            attributecontentids.add(id);
+                            noFound++;
+                        }
+                        if (noFound == 0) {
+                            return null;
+                        }
+                        parameters.put("attributecontentids", attributecontentids);
                     }
-                    if (noFound == 0) {
-                        attributecontentids.add(-1);
-                    }
-                    query.append(" and content.ContentId in (:attributecontentids").append(i).append(")");
-                    parameters.put("attributecontentids" + i, attributecontentids);
+                    st.close();
                 }
-                st.close();
             } catch (SQLException e) {
                 log.error("Error when getting contentid", e);
             }
@@ -775,8 +773,10 @@ public class ContentQuery {
 
             QueryWithParameters that = (QueryWithParameters) o;
 
-            return params.equals(that.params) && query.equals(that.query);
+            if (!params.equals(that.params)) return false;
+            if (!query.equals(that.query)) return false;
 
+            return true;
         }
 
         @Override

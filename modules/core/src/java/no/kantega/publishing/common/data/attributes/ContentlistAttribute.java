@@ -90,7 +90,7 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     private List<ListOption> createListOptions(ContentQuery query) {
-        List<ListOption> options = new ArrayList<>();
+        List<ListOption> options = new ArrayList<ListOption>();
         addEmptyOption(options);
         try {
             if(contentAO == null){

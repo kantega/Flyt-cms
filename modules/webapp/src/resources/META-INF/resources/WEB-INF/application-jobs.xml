@@ -51,7 +51,7 @@
 
     <bean id="expireContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="expireContentAlertJobDetail"/>
-        <property name="cronExpression" value="${jobs.expirecontent.trigger}"/>
+        <property name="cronExpression" value="0 30 6 ? * MON"/>
     </bean>
 
     <bean name="revisionContentAlertJob" class="no.kantega.publishing.jobs.alerts.RevisionContentAlertJob">
@@ -73,7 +73,7 @@
 
     <bean id="revisionContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
         <property name="jobDetail" ref="revisionContentAlertJobDetail"/>
-        <property name="cronExpression" value="${jobs.revision.trigger}"/>
+        <property name="cronExpression" value="0 45 6 ? * MON"/>
     </bean>
 
     <!-- Mail subscription -->

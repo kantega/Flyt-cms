@@ -79,6 +79,6 @@ public class ViewUserRolesController extends AbstractUserAdminController {
 
         model.put("roleSets", roleSets);
 
-        return new ModelAndView("/role/user", model);
+        return new ModelAndView("role/user", model);
     }
 }

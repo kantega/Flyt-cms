@@ -10,9 +10,7 @@ import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
-import no.kantega.search.api.IndexableDocumentCustomizer;
-import no.kantega.search.api.provider.DocumentTransformerAdapter;
-import org.apache.commons.lang3.StringUtils;
+import no.kantega.search.api.provider.DocumentTransformer;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,24 +23,16 @@ import org.xml.sax.helpers.DefaultHandler;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
-import static java.util.Arrays.asList;
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
-public class ContentTransformer extends DocumentTransformerAdapter<Content> {
-
-    public ContentTransformer() {
-        super(Content.class);
-    }
-
+public class ContentTransformer implements DocumentTransformer<Content> {
     private final Logger log = LoggerFactory.getLogger(getClass());
     public static final String HANDLED_DOCUMENT_TYPE = "aksess-document";
 
@@ -55,7 +45,6 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
     @Autowired
     private TopicDao topicDao;
 
-    @Override
     public IndexableDocument transform(Content content) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(content));
 
@@ -101,62 +90,20 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
             indexableDocument.addAttribute("url", content.getUrl());
             indexableDocument.addAttribute("topics", topicDao.getTopicNamesForContent(content.getId()));
 
-            for(Attribute value : getAttributes(content)){
+            for(Map.Entry<String, Attribute> attribute : content.getContentAttributes().entrySet()){
+                Attribute value = attribute.getValue();
                 String customFieldNameMapping = getCustomIndexFieldMapping(content, value);
-                String fieldName = getFieldName(value, language);
+                if(value.isSearchable() && isNotBlank(customFieldNameMapping)){
+                    log.debug("Attribute {} is indexed as {}", value.getName(), customFieldNameMapping);
+                    indexableDocument.addAttribute(customFieldNameMapping, getValue(value));
+                } else if(value.isSearchable() && !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches()){
+                    String fieldName = getFieldName(value, language);
 
-                if (shouldIndexAttribute(value, fieldName)) {
-                    indexAttribute(indexableDocument, value, fieldName, customFieldNameMapping);
-                } else {
-                    log.debug("Did not index attribute {} with value «{}»", fieldName, value.getValue());
+                    indexableDocument.addAttribute(fieldName, getValue(value));
                 }
             }
-
-            for (IndexableDocumentCustomizer<Content> customizer : getIndexableDocumentCustomizers()) {
-                indexableDocument = customizer.customizeIndexableDocument(content, indexableDocument);
-            }
         }
-
         return indexableDocument;
-    }
-
-    private List<Attribute> getAttributes(Content content) {
-        Collection<Attribute> values = content.getContentAttributes().values();
-        List<Attribute> attributes = new ArrayList<>(values.size());
-        for (Attribute value : values) {
-            if(value instanceof RepeaterAttribute){
-                Iterator<List<Attribute>> iterator = ((RepeaterAttribute) value).getIterator();
-                while (iterator.hasNext()){
-                    attributes.addAll(iterator.next());
-                }
-            } else {
-                attributes.add(value);
-            }
-        }
-        return attributes;
-    }
-
-    private void indexAttribute(IndexableDocument indexableDocument, Attribute value, String calculatedFieldName,  String customFieldNameMapping) {
-        if(isNotBlank(customFieldNameMapping)){
-            log.debug("Attribute {} is indexed as {}", value.getName(), customFieldNameMapping);
-            indexableDocument.addAttribute(customFieldNameMapping, getValue(value));
-        } else if(isNotTitleOrDescription(value)){
-
-            indexableDocument.addAttribute(calculatedFieldName, getValue(value));
-        }
-    }
-
-    private boolean shouldIndexAttribute(Attribute value, String fieldName) {
-        return value.isSearchable() && isNotBlankIntegerField(value, fieldName);
-    }
-
-    private boolean isNotBlankIntegerField(Attribute value, String fieldName) {
-        boolean isBlankIntegerField = fieldName.endsWith("_i") && isBlank(value.getValue());
-        return !isBlankIntegerField;
-    }
-
-    private boolean isNotTitleOrDescription(Attribute value) {
-        return !TITLE_OR_DESCRIPTION.matcher(value.getName()).matches();
     }
 
     private void setOwnerPerson(Content content, IndexableDocument indexableDocument) {
@@ -207,26 +154,23 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
     }
 
     private String getFieldName(Attribute attribute, int language) {
-        StringBuilder fieldname = new StringBuilder();
-        if(attribute.getParent() != null){
-            fieldname.append(attribute.getParent().getName()).append("_");
-        }
-        fieldname.append(attribute.getName());
+        StringBuilder fieldname = new StringBuilder(attribute.getName());
         fieldname.append("_");
-        if((attribute instanceof ListAttribute && !(attribute instanceof ContentlistAttribute)) ||
+        if(attribute instanceof ListAttribute ||
                 attribute instanceof EmailAttribute ||
                 attribute instanceof RoleAttribute ||
                 attribute instanceof UserAttribute ||
                 attribute instanceof TopicmapAttribute ||
                 attribute instanceof TopicAttribute){
             fieldname.append("txt");
-        } else if(attribute instanceof ContentidAttribute ||
-                attribute instanceof ContentlistAttribute ||
+        }else if(attribute instanceof ContentidAttribute ||
                 attribute instanceof FileAttribute ||
                 attribute instanceof NumberAttribute){
             fieldname.append("i");
-        } else if(attribute instanceof DateAttribute){
+        }else if(attribute instanceof DateAttribute){
             fieldname.append("dt");
+        }else if (attribute instanceof RepeaterAttribute){
+            fieldname = new StringBuilder(getFieldName(attribute.getParent(), language));
         } else if (attribute instanceof TextAttribute){
             if (isEnglishContent(attribute, language)) {
                 fieldname.append("en");
@@ -249,10 +193,6 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
             value = ((DateAttribute) attribute).getValueAsDate();
         }else if(attribute instanceof HtmltextAttribute){
             value = stripHtml(attribute.getValue());
-        } else if(attribute instanceof ListAttribute ){
-            value = ((ListAttribute) attribute).getValues();
-        } else if (attribute instanceof ContentidAttribute) {
-            value = asList(StringUtils.split(attribute.getValue(), ','));
         } else {
             value = attribute.getValue();
         }
@@ -280,9 +220,8 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
         return buffer.toString();
     }
 
-    @Override
     public String generateUniqueID(Content document) {
-        return HANDLED_DOCUMENT_TYPE + "-" + document.getId() + "-" + document.getAssociation().getSiteId();
+        return HANDLED_DOCUMENT_TYPE + "-" + document.getAssociation().getAssociationId();
     }
 
     public String generateUniqueID(Association association) {

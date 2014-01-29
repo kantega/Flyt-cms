@@ -57,15 +57,6 @@ public class ContentPatternTest {
     }
 
     @Test
-    public void shouldExtractThisIdWhenContextPath(){
-        Pattern pattern = Pattern.compile(ContentPatterns.getPatternWithContextPath("/hist-webapp"), Pattern.UNICODE_CHARACTER_CLASS);
-        String url = "/hist-webapp/content.ap?thisId=110";
-        Matcher matcher = pattern.matcher(url);
-        assertTrue("Pattern did not match!", matcher.matches());
-        assertEquals("110", matcher.group("thisId"));
-    }
-
-    @Test
     public void basePatternShouldExtractProtocolHostAndPort(){
         Pattern pattern = Pattern.compile(ContentPatterns.BASE_PATTERN);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
@@ -108,12 +99,11 @@ public class ContentPatternTest {
         values.put("/alias", asList(new Pair<>("alias", "/alias")));
         values.put("/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));
         values.put("/alias/aliaspart2", asList(new Pair<>("alias", "/alias/aliaspart2")));
-        values.put("/alias/mypage.dk", asList(new Pair<>("alias", "/alias/mypage.dk")));
 
         values.put("/content/1234/TittelHer", asList(new Pair<>("alias", "/content/1234/TittelHer")));
 
         testPatternWithValues(pattern, values);
-        assertFalse("Pattern should not have matched", pattern.matcher("/alias/pattern,png").matches());
+        assertFalse("Pattern should not have matched", pattern.matcher("/images/image.png").matches());
     }
 
     @Test
