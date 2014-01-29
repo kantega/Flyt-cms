@@ -28,8 +28,8 @@
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/trunk</developerConnection>
+        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/webfragment</connection>
+        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/branches/webfragment</developerConnection>
     </scm>
 
     <pluginRepositories>
