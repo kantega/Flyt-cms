@@ -55,11 +55,5 @@
             <artifactId>openaksess-jobexecuter-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
-
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>openaksess-metrics-plugin</artifactId>
-            <version>${project.version}</version>
-        </dependency>
     </dependencies>
 </project>
