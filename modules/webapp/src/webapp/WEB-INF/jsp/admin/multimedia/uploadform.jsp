@@ -59,6 +59,12 @@
                 }
             }
             <c:if test="${id == -1}">
+            <c:if test="${altNameRequired}">
+            if (document.uploadForm.elements['altname'].value == "") {
+                alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
+                return false;
+            }
+            </c:if>
             <c:if test="${fileUploadedFromEditor}">
             if ($("#MultimediaAddToArchive").is(":checked") && document.uploadForm.elements['parentId'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.selectfolder.missing" escapeJavascript="true"/>');
@@ -150,6 +156,35 @@
                         <input type="hidden" name="parentId" value="${parentId}">
                     </c:otherwise>
                 </c:choose>
+                <div class="hidden uploadMetadata">
+                    <div class="formElement ">
+                        <div class="heading">
+                            <label><kantega:label key="aksess.multimedia.medianame"/></label>
+                        </div>
+                        <div class="inputs">
+                            <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
+                        </div>
+                    </div>
+                    <div class="formElement">
+                        <div class="heading">
+                            <label><kantega:label key="aksess.multimedia.altname"/></label>
+                        </div>
+                        <div class="inputs">
+                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
+                            <div class="ui-state-highlight">
+                                <kantega:label key="aksess.multimedia.altinfo"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="formElement">
+                        <div class="heading">
+                            <label><kantega:label key="aksess.multimedia.author"/></label>
+                        </div>
+                        <div class="inputs">
+                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
+                        </div>
+                    </div>
+                </div>
             </c:if>
 
             <div id="UploadFormButtons" class="buttonGroup hidden">
