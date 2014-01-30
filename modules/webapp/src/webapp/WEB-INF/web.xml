@@ -38,6 +38,10 @@ not work if you try adding them -->
         </init-param>
     </filter>
 
+    <listener>
+        <listener-class>no.kantega.publishing.spring.DatabaseDriversContextListener</listener-class>
+    </listener>
+
     <filter>
         <filter-name>ParamEncodingFilter</filter-name>
         <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
