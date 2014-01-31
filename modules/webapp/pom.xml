@@ -267,7 +267,7 @@
             <plugin>
                 <groupId>${project.groupId}</groupId>
                 <artifactId>aksess-maven-plugin</artifactId>
-                <version>1.30</version>
+                <version>${aksess-maven-plugin.version}</version>
                 <configuration>
                     <versionFile>${project.build.outputDirectory}/aksess-version.properties</versionFile>
                 </configuration>
