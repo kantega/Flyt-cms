@@ -189,7 +189,7 @@ public class TemplateConfigurationExportHelper {
                 template.setPublicId(template.getName());
             }
 
-            Set<DisplayTemplateControllerId> controllers = new HashSet<DisplayTemplateControllerId>();
+            List<DisplayTemplateControllerId> controllers = new ArrayList<>();
             template.setControllers(controllers);
 
             ResultSet controllersRs = SQLHelper.getResultSet(c, "select * from displaytemplatecontroller where displaytemplateid = " + template.getId());

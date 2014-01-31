@@ -24,10 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
@@ -100,7 +97,7 @@ public class SaveFormSubmissionController implements AksessController {
                 if (prefillValues.size() > 0) {
                     FormSubmission formSubmission = formSubmissionBuilder.buildFormSubmission(prefillValues, form, true);
                     if (formSubmission.getValues() != null) {
-                        form = filledFormBuilder.buildFilledForm(formSubmission, null);
+                        form = filledFormBuilder.buildFilledForm(formSubmission, new ArrayList<FormError>());
                     }
                 }
             }

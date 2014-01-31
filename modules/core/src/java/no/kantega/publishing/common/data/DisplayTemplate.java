@@ -46,7 +46,7 @@ public class DisplayTemplate implements PublicIdObject {
 
     private List<Site> sites;
 
-    private Set<DisplayTemplateControllerId> controllers;
+    private List<DisplayTemplateControllerId> controllers;
 
     private int id = -1;
     private String publicId = "";
@@ -170,11 +170,11 @@ public class DisplayTemplate implements PublicIdObject {
         this.defaultForumId = defaultForumId;
     }
 
-    public Set<DisplayTemplateControllerId> getControllers() {
+    public List<DisplayTemplateControllerId> getControllers() {
         return controllers;
     }
 
-    public void setControllers(Set<DisplayTemplateControllerId> controllers) {
+    public void setControllers(List<DisplayTemplateControllerId> controllers) {
         this.controllers = controllers;
     }
 
