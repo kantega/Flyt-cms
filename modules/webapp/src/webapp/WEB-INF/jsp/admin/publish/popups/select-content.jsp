@@ -28,7 +28,8 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
     <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
     <script type="text/javascript">
-        var currentItemIdentifier = "?thisId=${currentId}";
+        var currentItemIdentifier = "/content/${currentId}/dummytitle";
+        var expand = true;
 
         $(document).ready(function() {
             openaksess.common.debug("$(document).ready(): select-content");
@@ -52,7 +53,14 @@
         };
 
         openaksess.navigate.getNavigatorAction = function() {
-            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action?startId=${startId}&highlightCurrent=false";
+            return "${pageContext.request.contextPath}/admin/publish/ContentNavigator.action";
+        };
+
+        openaksess.navigate.getNavigatorParams = function(){
+            return {
+                startId: '${startId}',
+                highlightCurrent: false
+            };
         };
 
         openaksess.navigate.onNavigatorTitleClick = function(elm) {
