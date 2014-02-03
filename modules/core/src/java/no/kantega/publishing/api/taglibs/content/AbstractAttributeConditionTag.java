@@ -89,6 +89,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
 
                 result = evaluateCondition(attributeValue);
             } else {
+                result = getDefaultConditionIfNoContent();
                 log.debug( "Content object was null. ContentId: {}", contentId);
             }
         } catch (Exception e) {
@@ -110,6 +111,9 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
      */
     protected abstract boolean evaluateCondition(String attributeValue);
 
+    protected boolean getDefaultConditionIfNoContent() {
+        return false;
+    }
 
     public int doEndTag() throws JspException {
         contentId = null;
