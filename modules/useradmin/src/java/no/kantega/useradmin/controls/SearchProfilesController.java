@@ -76,6 +76,6 @@ public class SearchProfilesController extends AbstractUserAdminController  {
             }
         }
 
-        return new ModelAndView("/profile/search", model);
+        return new ModelAndView("profile/search", model);
     }
 }

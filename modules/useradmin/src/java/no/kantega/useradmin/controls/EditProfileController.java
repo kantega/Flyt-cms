@@ -89,7 +89,7 @@ public class EditProfileController extends AbstractUserAdminController {
                     model.put("errors", errors);
                     errors.add(null, "useradmin.profile.duplicateuserid");
                     model.put("error", "useradmin.profile.duplicateuserid");
-                    return new ModelAndView("/profile/edit", model);
+                    return new ModelAndView("profile/edit", model);
                 } else {
                     profile.setRawAttributes(oldProfile.getRawAttributes());
                 }
@@ -97,10 +97,10 @@ public class EditProfileController extends AbstractUserAdminController {
 
             if (id == null || id.length() < 3) {
                 errors.add(null, "useradmin.profile.useridmissing");
-                return new ModelAndView("/profile/edit", model);
+                return new ModelAndView("profile/edit", model);
             } else if (profile.getGivenName() == null || profile.getGivenName().length() < 1) {
                 errors.add(null, "useradmin.profile.givennameepty");
-                return new ModelAndView("/profile/edit", model);
+                return new ModelAndView("profile/edit", model);
             }
 
             // Lagre profil
@@ -142,7 +142,7 @@ public class EditProfileController extends AbstractUserAdminController {
                 model.put("isNew", Boolean.TRUE);
             }
 
-            return new ModelAndView("/profile/edit", model);
+            return new ModelAndView("profile/edit", model);
         }
     }
 }

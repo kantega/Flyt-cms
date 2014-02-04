@@ -16,23 +16,20 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.profile.Profile;
+import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.profile.ProfileUpdateManager;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
-import no.kantega.security.api.profile.ProfileManager;
-import no.kantega.security.api.profile.Profile;
-import no.kantega.security.api.profile.ProfileUpdateManager;
-import no.kantega.security.api.identity.DefaultIdentity;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -67,7 +64,7 @@ public class DeleteProfileController extends AbstractUserAdminController {
             // Confirm deletion
             Profile profile = manager.getProfileForUser(identity);
             model.put("profile", profile);
-            return new ModelAndView("/profile/delete", model);
+            return new ModelAndView("profile/delete", model);
         }
     }
 }

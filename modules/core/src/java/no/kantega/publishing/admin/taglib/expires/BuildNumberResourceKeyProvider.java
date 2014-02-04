@@ -28,7 +28,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,8 +51,6 @@ public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, Init
                 } else {
                     return Long.toString(System.currentTimeMillis());
                 }
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -68,9 +65,7 @@ public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, Init
             MessageDigest dig = MessageDigest.getInstance("MD5");
             dig.update(Aksess.getWebappRevision().getBytes("utf-8"));
             key = DigestPrettyPrinter.prettyPrintDigest(dig.digest()).substring(0, 10);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (UnsupportedEncodingException e) {
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }
     }

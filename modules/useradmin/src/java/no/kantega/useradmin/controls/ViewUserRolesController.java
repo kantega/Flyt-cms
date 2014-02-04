@@ -16,20 +16,20 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.role.RoleUpdateManager;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
+import no.kantega.useradmin.model.RoleSet;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.useradmin.model.RoleSet;
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.role.RoleUpdateManager;
-import no.kantega.security.api.identity.DefaultIdentity;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -79,6 +79,6 @@ public class ViewUserRolesController extends AbstractUserAdminController {
 
         model.put("roleSets", roleSets);
 
-        return new ModelAndView("/role/user", model);
+        return new ModelAndView("role/user", model);
     }
 }

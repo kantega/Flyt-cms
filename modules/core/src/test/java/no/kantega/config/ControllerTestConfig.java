@@ -10,7 +10,6 @@ import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.client.ContentRequestDispatcher;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.templates.XMLFileInputStreamSource;
 import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.templates.ContentTemplateReader;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
@@ -21,6 +20,7 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
 
 import java.util.HashSet;
@@ -37,7 +37,7 @@ public class ControllerTestConfig {
     @Bean
     public TemplateConfigurationCache getTemplateConfiguration(){
         XStreamTemplateConfigurationFactory factory = new XStreamTemplateConfigurationFactory();
-        factory.setInputStreamSource(new XMLFileInputStreamSource("test-templateconfig-valid.xml"));
+        factory.setTemplateConfig(new ClassPathResource("test-templateconfig-valid.xml"));
 
         TemplateConfigurationCache templateConfigurationCache = new TemplateConfigurationCache();
         templateConfigurationCache.setConfigurationFactory(factory);

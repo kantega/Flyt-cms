@@ -166,7 +166,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
         }
         model.put("userId", id);
 
-        return new ModelAndView("/password/reset", model);
+        return new ModelAndView("password/reset", model);
     }
 
     public void setPasswordValidator(PasswordValidator passwordValidator) {

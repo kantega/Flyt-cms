@@ -93,7 +93,7 @@ public class ProfileImageController extends AbstractUserAdminController {
         }
 
 
-        return new ModelAndView("/profile/profileimage", model);
+        return new ModelAndView("profile/profileimage", model);
     }
 
     public void setImgPreviewMaxHeight(int imgPreviewMaxHeight) {

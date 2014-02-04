@@ -16,22 +16,21 @@
 
 package no.kantega.useradmin.controls;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.security.api.role.DefaultRole;
+import no.kantega.security.api.role.DefaultRoleId;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.role.RoleUpdateManager;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.HashMap;
 import java.net.URLEncoder;
-
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.role.DefaultRoleId;
-import no.kantega.security.api.role.RoleUpdateManager;
-import no.kantega.security.api.role.DefaultRole;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditRoleController extends AbstractUserAdminController {
 
@@ -69,7 +68,7 @@ public class EditRoleController extends AbstractUserAdminController {
                 model.put("canEdit", Boolean.TRUE);
                 model.put("role", role);
                 errors.add(null, "useradmin.role.rolenamemissing");
-                return new ModelAndView("/role/edit", model);
+                return new ModelAndView("role/edit", model);
             } else if (updateManager != null) {
                 updateManager.saveOrUpdateRole(role);
                 return new ModelAndView(new RedirectView("search?message=useradmin.role.saved&domain=" + URLEncoder.encode(domain, "iso-8859-1")));
@@ -91,7 +90,7 @@ public class EditRoleController extends AbstractUserAdminController {
 
         model.put("configurations", getRoleConfiguration());
 
-        return new ModelAndView("/role/edit", model);
+        return new ModelAndView("role/edit", model);
 
     }
 }

@@ -29,14 +29,16 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Controller for viewing information about the application.
@@ -83,23 +85,11 @@ public class ViewSystemInformationAction extends AbstractController {
     }
 
     private void addOAAndWebappVersionInformation(Map<String, Object> model) {
-        try {
-            Properties versionInfo = new Properties();
-            versionInfo.load(getClass().getResourceAsStream("/aksess-version.properties"));
-            model.put("aksessRevision", versionInfo.get("revision"));
-            model.put("aksessTimestamp", parseDate((String) versionInfo.get("date")));
-        } catch (IOException e) {
-            log.info( "aksess-version.properties not found");
-        }
-        try {
-            Properties webappVersionInfo = new Properties();
-            webappVersionInfo.load(getClass().getResourceAsStream("/aksess-webapp-version.properties"));
-            model.put("webappRevision", webappVersionInfo.get("revision"));
-            model.put("webappVersion", webappVersionInfo.get("version"));
-            model.put("webappTimestamp", parseDate((String) webappVersionInfo.get("date")));
-        } catch (IOException e) {
-            log.info( "aksess-webapp-version.properties not found");
-        }
+        model.put("aksessRevision", Aksess.getBuildRevision());
+        model.put("aksessTimestamp", parseDate(Aksess.getBuildDate()));
+        model.put("webappRevision", Aksess.getWebappRevision());
+        model.put("webappVersion", Aksess.getWebappVersion());
+        model.put("webappTimestamp", parseDate(Aksess.getWebappDate()));
     }
 
     private void addVMStartDate(Map<String, Object> model, RuntimeMXBean runtimeMXBean) {

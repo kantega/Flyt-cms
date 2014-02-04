@@ -16,19 +16,17 @@
 
 package no.kantega.useradmin.controls;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.Aksess;
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.search.SearchResult;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
-
-import no.kantega.security.api.search.SearchResult;
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.commons.client.util.RequestParameters;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -67,7 +65,7 @@ public class SearchRolesController extends AbstractUserAdminController {
 
         model.put("adminRole", Aksess.getAdminRole());
 
-        return new ModelAndView("/role/search", model);
+        return new ModelAndView("role/search", model);
     }
 }
 

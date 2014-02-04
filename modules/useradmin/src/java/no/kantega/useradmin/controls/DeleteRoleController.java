@@ -16,23 +16,20 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.security.api.role.DefaultRoleId;
+import no.kantega.security.api.role.Role;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.role.RoleUpdateManager;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.security.api.role.RoleManager;
-import no.kantega.security.api.role.DefaultRoleId;
-import no.kantega.security.api.role.RoleUpdateManager;
-import no.kantega.security.api.role.Role;
-
-import java.util.Map;
-import java.util.HashMap;
 import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: Anders Skar, Kantega AS
@@ -67,7 +64,7 @@ public class DeleteRoleController extends AbstractUserAdminController {
             // Confirm deletion
             Role role = manager.getRoleById(roleId);
             model.put("role", role);
-            return new ModelAndView("/role/delete", model);
+            return new ModelAndView("role/delete", model);
         }
     }
 }
