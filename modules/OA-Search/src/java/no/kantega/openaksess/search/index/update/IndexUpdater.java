@@ -53,20 +53,20 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     public void contentDeleted(ContentEvent event) {
         Content content = event.getContent();
         List<String> uids = new ArrayList<>();
-        List<Association> associations = AssociationAO.getAssociationsByContentId(content.getId());
+        List<Association> associations = AssociationAO.getAssociationsByContentId(event.getContent().getId());
         if (associations != null) {
             for (Association association : associations) {
-                if (association.getAssociationtype() != AssociationType.SHORTCUT) {
-                    uids.add(contentTransformer.generateUniqueID(association));
-                }
+                uids.add(contentTransformer.generateUniqueID(content, association.getSiteId()));
             }
         }
 
         for (Attachment attachment : AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
             uids.add(attachmentTransformer.generateUniqueID(attachment));
         }
+
         documentIndexer.deleteById(uids);
     }
+
 
     @Override
     public void contentExpired(ContentEvent event) {
@@ -92,11 +92,31 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
     @Override
     public void associationDeleted(ContentEvent event) {
-        // TODO: Should reindex children
+        // TODO: Should remove children
         List<String> uids = new ArrayList<>();
-        uids.add(contentTransformer.generateUniqueID(event.getAssociation()));
+
+        int siteId = event.getAssociation().getSiteId();
+
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(event.getAssociation().getAssociationId());
+        Content content = contentAO.getContent(cid, true);
+        if (content != null) {
+            boolean lastInstanceOnSite = true;
+            for (Association association : content.getAssociations()) {
+                if (association.getSiteId() == siteId) {
+                    // Don't remove from index if there still instances of this page is this site
+                    lastInstanceOnSite = false;
+                }
+            }
+            if (lastInstanceOnSite) {
+                uids.add(contentTransformer.generateUniqueID(content, siteId));
+            }
+        } else {
+            // Content was deleted (all associations deleted), handled by contentDeleted method
+        }
+
         documentIndexer.deleteById(uids);
     }
+
 
     @Override
     public void associationAdded(ContentEvent event) {
