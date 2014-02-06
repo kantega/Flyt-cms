@@ -285,8 +285,8 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
         return HANDLED_DOCUMENT_TYPE + "-" + document.getId() + "-" + document.getAssociation().getSiteId();
     }
 
-    public String generateUniqueID(Association association) {
-        return HANDLED_DOCUMENT_TYPE + "-" + association.getAssociationId();
+    public String generateUniqueID(Content document, int siteId) {
+        return HANDLED_DOCUMENT_TYPE + "-" + document.getId() + "-" + siteId;
     }
 
     private String getCustomIndexFieldMapping(Content content, Attribute value) {

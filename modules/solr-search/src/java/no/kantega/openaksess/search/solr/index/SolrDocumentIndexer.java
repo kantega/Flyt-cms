@@ -77,6 +77,9 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     }
 
     public void deleteById(List<String> uids) {
+        if (uids.size() == 0) {
+            return;
+        }
         try {
             UpdateResponse updateResponse = solrServer.deleteById(uids, 0);
         } catch (Exception e) {
