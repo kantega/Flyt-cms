@@ -64,7 +64,8 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             uids.add(attachmentTransformer.generateUniqueID(attachment));
         }
 
-        documentIndexer.deleteById(uids);
+        documentIndexer.deleteByUid(uids);
+        documentIndexer.commit();
     }
 
     @Override
@@ -113,7 +114,8 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             // Content was deleted (all associations deleted), handled by contentDeleted method
         }
 
-        documentIndexer.deleteById(uids);
+        documentIndexer.deleteByUid(uids);
+        documentIndexer.commit();
     }
 
     @Override

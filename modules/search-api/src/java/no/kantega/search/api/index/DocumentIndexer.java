@@ -26,9 +26,9 @@ public interface DocumentIndexer {
 
     /**
      * Delete documents identified by the given ids
-     * @param Ids of the documents to be deleted.
+     * @param Uids of the documents to be deleted.
      */
-    public void deleteById(List<String> Ids);
+    public void deleteByUid(List<String> Uids);
 
     /**
      * Delete all documents in the index.
