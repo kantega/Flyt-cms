@@ -14,13 +14,13 @@ import javax.servlet.http.HttpSession;
 
 @Configuration
 public class SecuritySessionConfiguration {
-    private final SecuritySession unauthenticatedInstance = createNewSecuritySession();
 
     private SecurityRealm securityRealm;
 
     @Bean
     @Scope("request")
     public SecuritySession securitySession(HttpServletRequest request){
+        SecuritySession unauthenticatedInstance = createNewSecuritySession();
         SecuritySession securitySession;
         HttpSession session = request.getSession(false);
         if(session == null){
