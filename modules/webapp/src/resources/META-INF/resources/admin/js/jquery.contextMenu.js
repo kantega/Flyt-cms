@@ -132,8 +132,8 @@ if(jQuery)( function() {
                             });
 
                             // When items are selected
-                            $('#' + o.menu).find('A').unbind('click');
-                            $('#' + o.menu).find('LI:not(.disabled) A').click( function() {
+                            menu.find('A').unbind('click');
+                            menu.find('LI:not(.disabled) A').click( function() {
                                 $(document).unbind('click.contextMenu').unbind('keypress.contextMenu');
                                 $(".contextMenu").hide();
                                 // Callback
@@ -142,7 +142,7 @@ if(jQuery)( function() {
                             });
 
 
-                            // Feilen ligger i at det brukes unbind og bind på click på document
+                            // Feilen ligger i at det brukes unbind og bind pï¿½ click pï¿½ document
 
                             // Hide bindings
                             setTimeout( function() { // Delay for Mozilla
