@@ -40,6 +40,7 @@ import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
@@ -57,7 +58,6 @@ import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
-import no.kantega.publishing.event.ContentListenerUtil;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
@@ -79,8 +79,8 @@ import static com.google.common.collect.Collections2.filter;
  */
 public class ContentManagementService {
     private static final Logger log = LoggerFactory.getLogger(ContentManagementService.class);
-
     HttpServletRequest request = null;
+
     SecuritySession securitySession = null;
     private final Ehcache contentCache;
     private final Ehcache contentListCache;
@@ -92,7 +92,8 @@ public class ContentManagementService {
     private SiteCache siteCache;
     private ContentAO contentAO;
     private ContentIdHelper contentIdHelper;
-    
+    private ContentEventListener contentNotifier;
+
     private ContentManagementService() {
         ApplicationContext context = RootContext.getInstance();
 
@@ -108,7 +109,7 @@ public class ContentManagementService {
         contentAO = context.getBean(ContentAO.class);
         contentIdHelper = context.getBean(ContentIdHelper.class);
         cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
-
+        contentNotifier = context.getBean("contentListenerNotifier", ContentEventListener.class);
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
@@ -198,7 +199,7 @@ public class ContentManagementService {
         EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());
 
         // Kjør plugins
-        ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(content));
+        contentNotifier.contentCreated(new ContentEvent().setContent(content));
 
         return content;
     }
@@ -390,7 +391,7 @@ public class ContentManagementService {
             }
         }
 
-        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
+        ContentEventListener contentNotifier = this.contentNotifier;
         contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
 
         Content c = contentAO.checkInContent(content, newStatus);
@@ -450,44 +451,34 @@ public class ContentManagementService {
         Content destParent = contentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
 
-        // Modifiserer sourcecontent, nullstill id'er
-        sourceContent.setId(-1);
-        sourceContent.setVersionId(-1);
-        sourceContent.setVersion(1);
-
-        sourceContent.setAlias("");
-        sourceContent.setLocked(false);
+        Content newContent = copyContent(sourceContent);
 
         // Ta egenskaper fra ny parent
-        sourceContent.setSecurityId(destParent.getSecurityId());
-        sourceContent.setOwner(destParent.getOwner());
-        sourceContent.setOwnerPerson(destParent.getOwnerPerson());
-        sourceContent.setLanguage(destParent.getLanguage());
+        newContent.setSecurityId(destParent.getSecurityId());
+        newContent.setOwner(destParent.getOwner());
+        newContent.setOwnerPerson(destParent.getOwnerPerson());
+        newContent.setLanguage(destParent.getLanguage());
 
         if (sourceContent.getDisplayTemplateId() > 0) {
             DisplayTemplate displayTemplate = DisplayTemplateCache.getTemplateById(sourceContent.getDisplayTemplateId());
             if (displayTemplate.isNewGroup()) {
                 // Arver egenskaper fra sider over.  GroupId brukes til å lage ting som skal være spesielt for en struktur, f.eks meny
-                sourceContent.setGroupId(destParent.getGroupId());
+                newContent.setGroupId(destParent.getGroupId());
             }
         }
 
-        // Kjør plugins
-        ContentListenerUtil.getContentNotifier().contentCreated(new ContentEvent().setContent(sourceContent));
-
         // Legg til kopling til parent
-        List<Association> associations = new ArrayList<Association>();
-
         Association association = new Association();
 
         association.setParentAssociationId(target.getId());
         association.setCategory(category);
         association.setSiteId(target.getSiteId());
 
-        associations.add(association);
-        sourceContent.setAssociations(associations);
+        newContent.setAssociations(Collections.singletonList(association));
 
-        Content content = checkInContent(sourceContent, sourceContent.getStatus());
+        contentNotifier.contentCreated(new ContentEvent().setContent(newContent));
+
+        Content content = checkInContent(newContent, sourceContent.getStatus());
         AttachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
 
         if(copyChildren){
@@ -503,6 +494,49 @@ public class ContentManagementService {
         return content;
     }
 
+    private Content copyContent(Content sourceContent) {
+        Content newContent = new Content();
+        newContent.setTitle(sourceContent.getTitle());
+        newContent.setAltTitle(sourceContent.getAltTitle());
+        newContent.setApprovedBy(sourceContent.getApprovedBy());
+        newContent.setAttributes(sourceContent.getAttributes(AttributeDataType.CONTENT_DATA), AttributeDataType.CONTENT_DATA);
+        newContent.setAttributes(sourceContent.getAttributes(AttributeDataType.META_DATA), AttributeDataType.META_DATA);
+        newContent.setChangeDescription(sourceContent.getChangeDescription());
+        newContent.setChangeFromDate(sourceContent.getChangeFromDate());
+        newContent.setContentTemplateId(sourceContent.getContentTemplateId());
+        newContent.setDisplayTemplateId(sourceContent.getDisplayTemplateId());
+        newContent.setDocumentTypeId(sourceContent.getDocumentTypeId());
+        newContent.setDocumentTypeIdForChildren(sourceContent.getDocumentTypeIdForChildren());
+        newContent.setCreateDate(sourceContent.getCreateDate());
+        newContent.setExpireDate(sourceContent.getExpireDate());
+        newContent.setExpireAction(sourceContent.getExpireAction());
+        newContent.setDoOpenInNewWindow(sourceContent.isOpenInNewWindow());
+        newContent.setForumId(sourceContent.getForumId());
+        newContent.setHearing(sourceContent.getHearing());
+        newContent.setImage(sourceContent.getImage());
+        newContent.setKeywords(sourceContent.getKeywords());
+        newContent.setLastMajorChange(sourceContent.getLastMajorChange());
+        newContent.setLastMajorChangeBy(sourceContent.getLastMajorChangeBy());
+        newContent.setLastModified(sourceContent.getLastModified());
+        newContent.setLocation(sourceContent.getLocation());
+        newContent.setMetaDataTemplateId(sourceContent.getMetaDataTemplateId());
+        newContent.setModifiedBy(sourceContent.getModifiedBy());
+        newContent.setApprovedBy(sourceContent.getApprovedBy());
+        newContent.setNumberOfComments(sourceContent.getNumberOfComments());
+        newContent.setNumberOfNotes(sourceContent.getNumberOfNotes());
+        newContent.setNumberOfRatings(sourceContent.getNumberOfRatings());
+        newContent.setPublishDate(sourceContent.getPublishDate());
+        newContent.setPublisher(sourceContent.getPublisher());
+        newContent.setRatingScore(sourceContent.getRatingScore());
+        newContent.setRevisionDate(sourceContent.getRevisionDate());
+        newContent.setSearchable(sourceContent.isSearchable());
+        newContent.setStatus(sourceContent.getStatus());
+        newContent.setTopics(sourceContent.getTopics());
+        newContent.setType(sourceContent.getType());
+        newContent.setVisibilityStatus(sourceContent.getVisibilityStatus());
+        return newContent;
+    }
+
     /**
      * Updates the visibility status of a content object
      * @param content to set visibility status for
@@ -512,7 +546,6 @@ public class ContentManagementService {
         contentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
         ContentEvent event = new ContentEvent().setContent(content);
-        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
         if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
             contentNotifier.contentExpired(event);
         } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
@@ -581,7 +614,6 @@ public class ContentManagementService {
         Content content = contentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
         ContentEvent contentEvent = new ContentEvent().setContent(content);
-        ContentEventListener contentNotifier = ContentListenerUtil.getContentNotifier();
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
             contentNotifier.newContentPublished(contentEvent);
         }
@@ -616,14 +648,14 @@ public class ContentManagementService {
                     title = c.getTitle();
                 }
 
-                ContentListenerUtil.getContentNotifier().beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
+                contentNotifier.beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
 
                 contentAO.deleteContent(id);
                 if (title != null) {
                     eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }
 
-                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
+                contentNotifier.contentDeleted(new ContentEvent().setContent(c));
 
 
             }
@@ -1065,7 +1097,7 @@ public class ContentManagementService {
      */
     public void setAssociationsPriority(List<Association> associations) throws SystemException {
         AssociationAO.setAssociationsPriority(associations);
-        ContentListenerUtil.getContentNotifier().setAssociationsPriority(new ContentEvent());
+        contentNotifier.setAssociationsPriority(new ContentEvent());
     }
 
     /**
@@ -1090,7 +1122,7 @@ public class ContentManagementService {
      */
     public void copyAssociations(Association source, Association target, AssociationCategory category, boolean copyChildren) throws SystemException {
         AssociationAO.copyAssociations(source, target, category, copyChildren);
-        ContentListenerUtil.getContentNotifier().associationCopied(new ContentEvent().setAssociation(source));
+        contentNotifier.associationCopied(new ContentEvent().setAssociation(source));
     }
 
 
@@ -1102,7 +1134,7 @@ public class ContentManagementService {
      */
     public void addAssociation(Association association) throws SystemException {
         AssociationAO.addAssociation(association);
-        ContentListenerUtil.getContentNotifier().associationAdded(new ContentEvent().setAssociation(association));
+        contentNotifier.associationAdded(new ContentEvent().setAssociation(association));
     }
 
 
@@ -1156,11 +1188,11 @@ public class ContentManagementService {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (Content c : pagesToBeDeleted) {
                 eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
-                ContentListenerUtil.getContentNotifier().contentDeleted(new ContentEvent().setContent(c));
+                contentNotifier.contentDeleted(new ContentEvent().setContent(c));
             }
 
             for (Association a : associations) {
-                ContentListenerUtil.getContentNotifier().associationDeleted(new ContentEvent().setAssociation(a));
+                contentNotifier.associationDeleted(new ContentEvent().setAssociation(a));
             }
 
         }
@@ -1197,11 +1229,11 @@ public class ContentManagementService {
             }
         }
 
-        ContentListenerUtil.getContentNotifier().beforeAssociationUpdate(new ContentEvent().setAssociation(association));
+        contentNotifier.beforeAssociationUpdate(new ContentEvent().setAssociation(association));
 
         AssociationAO.modifyAssociation(association, true, true);
 
-        ContentListenerUtil.getContentNotifier().associationUpdated(new ContentEvent().setAssociation(association));
+        contentNotifier.associationUpdated(new ContentEvent().setAssociation(association));
     }
 
     /**
@@ -1301,7 +1333,7 @@ public class ContentManagementService {
         int id = AttachmentAO.setAttachment(attachment);
         attachment.setId(id);
 
-        ContentListenerUtil.getContentNotifier().attachmentUpdated(new ContentEvent().setAttachment(attachment));
+        contentNotifier.attachmentUpdated(new ContentEvent().setAttachment(attachment));
 
         return attachment.getId();
     }

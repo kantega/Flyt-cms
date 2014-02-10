@@ -74,7 +74,7 @@ openaksess.common = {
      * @param associationId
      */
     getContentUrlFromAssociationId : function(associationId) {
-        var url = " " + properties.contextPath + "/" + properties.contentRequestHandler + "?" + properties.thisId + "=" + associationId;
+        var url = properties.contextPath + "/" + properties.contentRequestHandler + "?" + properties.thisId + "=" + associationId;
         openaksess.common.debug("openaksess.common.getContentUrlFromAssociationId(): associationId: " + associationId + ", returns: " + url);
         return url;
     },

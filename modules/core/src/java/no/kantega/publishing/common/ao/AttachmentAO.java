@@ -195,17 +195,13 @@ public class AttachmentAO {
     /**
      * Copies each attachment with contentId to a new with a new contentId.
      * @param contentId of the old attachment.
-     * @param newNontentId, if of the new attachment.
+     * @param newContentId, if of the new attachment.
      */
-    public static void copyAttachment(int contentId, int newNontentId) {
-        try (Connection c = dbConnectionFactory.getConnection()) {
-
-            PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
-                    "select " + newNontentId +", Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = " + contentId);
-            st.execute();
-
-            st.close();
-        } catch (SQLException e) {
+    public static void copyAttachment(int contentId, int newContentId) {
+        try {
+            dbConnectionFactory.getJdbcTemplate().update("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
+                    "select ?, Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = ?", newContentId, contentId);
+        } catch (Exception e) {
             throw new SystemException("SQL feil ved kopiering av vedlegg", e);
         }
     }

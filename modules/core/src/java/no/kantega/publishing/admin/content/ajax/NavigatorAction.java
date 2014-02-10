@@ -139,7 +139,7 @@ public class NavigatorAction implements Controller {
         }
 
         int[] openIds = StringHelper.getInts(openFoldersList, ",");
-        List<SiteMapEntry> sites = new ArrayList<SiteMapEntry>();
+        List<SiteMapEntry> sites = new ArrayList<>();
         for (Site site : siteCache.getSites()) {
             if (!site.isDisabled() && !isHiddenByUser(site.getId(), request)) {
                 SiteMapEntry sitemap = cms.getNavigatorMenu(site.getId(), openIds, sort, isShowExpired(request), categoryList);

@@ -82,8 +82,8 @@ public class ConfirmCopyPasteContentAction implements Controller {
             return new ModelAndView(errorView, model);
         }
 
-        ContentManagementService cms = new ContentManagementService(request);
         SecuritySession securitySession = SecuritySession.getInstance(request);
+        ContentManagementService cms = new ContentManagementService(securitySession, request);
 
         Content selectedContent = (Content)clipboard.getItems().get(0);
         

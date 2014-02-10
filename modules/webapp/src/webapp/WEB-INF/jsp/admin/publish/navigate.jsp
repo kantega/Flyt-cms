@@ -1,7 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess"%>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ page import="no.kantega.publishing.common.Aksess" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~

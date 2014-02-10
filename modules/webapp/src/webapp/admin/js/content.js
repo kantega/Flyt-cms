@@ -866,7 +866,7 @@ openaksess.navigate.getNavigatorParams = function() {
  * @param suppressNavigatorUpdate true/false. A contentupdate event will be triggered unless set to true.
  */
 openaksess.navigate.updateMainPane = function(id, suppressNavigatorUpdate) {
-    openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate"+suppressNavigatorUpdate);
+    openaksess.common.debug("navigate.updateMainPane(): itemIdentifier: " + id + ", suppressNavigatorUpdate: "+suppressNavigatorUpdate);
     if (suppressNavigatorUpdate) {
         suppressNavigatorUpdate = true;
     }

@@ -113,7 +113,7 @@ openaksess.navigate = {
                     itemIdentifier = openaksess.navigate.getItemIdentifierFromNavigatorHref(href);
                     // Always open tree when you navigator to it
                     openaksess.navigate.setFolderOpen(itemIdentifier);
-                    openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: "+itemIdentifier);
+                    openaksess.common.debug("openaksess.navigate.bindNavigatorClickEvents(): ItemIdentifier: " + itemIdentifier);
                     if(typeof openaksess.navigate.onNavigatorTitleClick == 'function') {
                         openaksess.navigate.onNavigatorTitleClick($target);
                     }
