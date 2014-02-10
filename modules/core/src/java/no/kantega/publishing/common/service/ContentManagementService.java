@@ -122,6 +122,13 @@ public class ContentManagementService {
         this.securitySession = securitySession;
     }
 
+    public ContentManagementService(SecuritySession securitySession, HttpServletRequest request) {
+        this();
+        this.request = request;
+        this.securitySession = securitySession;
+    }
+
+
     /**
      * @return - the user's SecuritySession
      */

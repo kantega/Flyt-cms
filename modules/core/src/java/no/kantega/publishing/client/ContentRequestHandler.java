@@ -104,7 +104,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
         long start = System.currentTimeMillis();
         SecuritySession securitySession = getSecuritySession();
 
-        ContentManagementService cms = new ContentManagementService(securitySession);
+        ContentManagementService cms = new ContentManagementService(securitySession, request);
         try {
             Content content = cms.getContent(cid, true);
             // Send NOT_FOUND if expired or not published
