@@ -26,4 +26,6 @@
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
 
     <bean class="no.kantega.publishing.spring.RootContext"/>
+
+    <bean id="contentListenerNotifier" class="no.kantega.publishing.event.ContentEventListenerAdapter"/>
 </beans>
