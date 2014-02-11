@@ -3,6 +3,7 @@ package no.kantega.publishing.client;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -58,6 +59,7 @@ public class ContentRequestHandlerTest {
         Association association = new Association();
         association.setSiteId(1);
         content.setAssociations(Collections.singletonList(association));
+        content.setStatus(ContentStatus.PUBLISHED);
         when(contentAO.getContent(isA(ContentIdentifier.class), isA(Boolean.class))).thenReturn(content);
         when(contentIdentifierDao.getContentIdentifierBySiteIdAndAlias(isA(Integer.class), isA(String.class))).thenReturn(ContentIdentifier.fromAssociationId(1));
     }
