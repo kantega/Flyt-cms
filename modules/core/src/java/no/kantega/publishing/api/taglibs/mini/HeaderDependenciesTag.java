@@ -57,7 +57,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
             out.write("  $(document).ready(function(){\n" +
                     "       // Set focus to first input field in form\n" +
                     "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
-                    "    }");
+                    "    });");
         }
         out.write("" +
                 "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +

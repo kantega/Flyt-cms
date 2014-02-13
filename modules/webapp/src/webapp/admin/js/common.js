@@ -86,7 +86,7 @@ openaksess.common = {
      */
     debug : function (msg) {
         var debugEnabled = properties.debug;
-        if (debugEnabled && $.browser.mozilla && typeof console != 'undefined') {
+        if (debugEnabled && typeof console != 'undefined') {
             var now = new Date();
             console.log(now.getHours()+":"+now.getMinutes()+":"+now.getSeconds()+now.getMilliseconds()+ " - " + msg);
         }
