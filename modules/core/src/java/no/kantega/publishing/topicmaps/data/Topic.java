@@ -158,20 +158,22 @@ public class Topic {
         occurences.add(occurence);
     }
 
-    public boolean equals(Object obj) {
-        try {
-            Topic t = (Topic)obj;
-            if(this.id == null && t.getId() == null && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            if(this.id.equals(t.getId()) && this.topicMapId == t.getTopicMapId()) {
-                return true;
-            }
-            return false;
-            
-        } catch (ClassCastException e) {
-            return false;
-        }
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Topic topic = (Topic) o;
+
+        if (topicMapId != topic.topicMapId) return false;
+        if (id != null ? !id.equals(topic.id) : topic.id != null) return false;
+
+        return true;
+    }
+
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + topicMapId;
+        return result;
     }
 
     public boolean isSelectable() {
