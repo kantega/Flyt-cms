@@ -34,6 +34,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.tagext.TagSupport;
 import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -45,7 +46,6 @@ public class GetUserTag  extends TagSupport {
     private String userid = null;
     private boolean getRoles = false;
     private boolean getRoleTopics = false;
-    private boolean useCache = true;
 
     public int doStartTag() throws JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -58,9 +58,17 @@ public class GetUserTag  extends TagSupport {
             SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
             User user = null;
             if(!isBlank(userid)) {
-                SecurityRealm realm = webApplicationContext.getBean(SecurityRealm.class);
                 try {
-                    user = realm.lookupUser(userid, useCache);
+                    SecurityRealm realm = null;
+                    Map<String,SecurityRealm> beansOfType = webApplicationContext.getBeansOfType(SecurityRealm.class);
+                    for (SecurityRealm r : beansOfType.values()) {
+                        user = r.lookupUser(userid);
+                        if(user != null){
+                            realm = r;
+                            break;
+
+                        }
+                    }
 
                     if (user != null) {
                         if (getRoles || getRoleTopics) {
@@ -104,7 +112,6 @@ public class GetUserTag  extends TagSupport {
     public int doEndTag() throws JspException {
         userid = null;
         name = "currentuser";
-        useCache = true;
         return EVAL_PAGE;
     }
 
@@ -124,10 +131,6 @@ public class GetUserTag  extends TagSupport {
 
     public void setGetroletopics(boolean getTopics) {
         this.getRoleTopics = getTopics;
-    }
-
-    public void setUsecache(boolean useCache) {
-        this.useCache = useCache;
     }
 }
 
