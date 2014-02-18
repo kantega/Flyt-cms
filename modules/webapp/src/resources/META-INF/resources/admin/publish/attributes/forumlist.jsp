@@ -21,7 +21,7 @@
 %>
 <div class="inputs">
     <select name="${fieldName}" class="fullWidth" tabindex="<%=attribute.getTabIndex()%>">
-        <option value="-1"><kantega:label key="aksess.editmetadata.forum.dontuse"/></option>
+        <option value="-1"><kantega:label key="aksess.contentproperty.forum.dontuse"/></option>
         <%=attribute.getForumListAsString()%>
     </select>
 </div>
