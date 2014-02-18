@@ -17,8 +17,11 @@
 package no.kantega.openaksess.search.controller;
 
 import no.kantega.openaksess.search.index.rebuild.IndexRebuilder;
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.index.ProgressReporter;
 import no.kantega.search.api.provider.IndexableDocumentProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
@@ -35,6 +38,8 @@ import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.n
 
 @Controller
 public class RebuildIndexAction {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private String formView;
     private String statusView;
@@ -64,7 +69,10 @@ public class RebuildIndexAction {
         Map<String, Object> map = new HashMap<>();
 
         if (progressReporters == null) {
-            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, getProvidersToInclude(request), clearIndex);
+            SecuritySession securitySession = SecuritySession.getInstance(request);
+            List<String> providersToInclude = getProvidersToInclude(request);
+            log.info("Rebuild index started by {}. Providers: {}, clear index: {}", securitySession.getUser().getId(), providersToInclude, clearIndex);
+            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, providersToInclude, clearIndex);
         }
         return new ModelAndView(statusView, map);
     }
