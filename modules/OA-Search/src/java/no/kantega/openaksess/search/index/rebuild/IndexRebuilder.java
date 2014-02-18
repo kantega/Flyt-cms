@@ -13,7 +13,6 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -101,7 +100,7 @@ public class IndexRebuilder {
     private Collection<IndexableDocumentProvider> filterProviders(final List<String> providersToInclude) {
         return filter(indexableDocumentProviders, new Predicate<IndexableDocumentProvider>() {
             @Override
-            public boolean apply(@Nullable IndexableDocumentProvider input) {
+            public boolean apply(IndexableDocumentProvider input) {
                 return providersToInclude.contains(input.getClass().getSimpleName());
             }
         });
@@ -109,9 +108,8 @@ public class IndexRebuilder {
 
     private ArrayList<ProgressReporter> getProgressReporters(Collection<IndexableDocumentProvider> providers) {
         return new ArrayList<>(transform(providers, new Function<IndexableDocumentProvider, ProgressReporter>() {
-            @Nullable
             @Override
-            public ProgressReporter apply(@Nullable IndexableDocumentProvider input) {
+            public ProgressReporter apply(IndexableDocumentProvider input) {
                 return input.getProgressReporter();
             }
         }));
