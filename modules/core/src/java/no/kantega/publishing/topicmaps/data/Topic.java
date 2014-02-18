@@ -153,21 +153,21 @@ public class Topic {
 
     public void addOccurence(TopicOccurence occurence) {
         if (occurences == null) {
-            occurences = new ArrayList<TopicOccurence>();
+            occurences = new ArrayList<>();
         }
         occurences.add(occurence);
     }
 
-    public boolean equals(Object obj) {
-        try {
-            Topic t = (Topic)obj;
-            return this.id == null && t.getId() == null
-                    && this.topicMapId == t.getTopicMapId() || this.id.equals(t.getId())
-                    && this.topicMapId == t.getTopicMapId();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        } catch (ClassCastException e) {
-            return false;
-        }
+        Topic topic = (Topic) o;
+
+        if (topicMapId != topic.topicMapId) return false;
+        if (id != null ? !id.equals(topic.id) : topic.id != null) return false;
+
+        return true;
     }
 
     public boolean isSelectable() {
