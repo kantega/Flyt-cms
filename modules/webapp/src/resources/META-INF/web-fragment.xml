@@ -235,6 +235,11 @@
         <servlet-class>com.yammer.metrics.reporting.MetricsServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>StatusServlet</servlet-name>
+        <servlet-class>no.kantega.publishing.web.servlet.StatusServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/</url-pattern>
@@ -278,6 +283,11 @@
     <servlet-mapping>
         <servlet-name>metricsServlet</servlet-name>
         <url-pattern>/admin/metrics</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>StatusServlet</servlet-name>
+        <url-pattern>/status</url-pattern>
     </servlet-mapping>
 
     <welcome-file-list>
