@@ -72,7 +72,7 @@ public class dbConnectionFactory {
 
     private static AtomicInteger openedConnections = new AtomicInteger();
     private static AtomicInteger closedConnections = new AtomicInteger();
-    public static Map<Connection, StackTraceElement[]> connections  = new ConcurrentHashMap<Connection, StackTraceElement[]>();
+    public static Map<Connection, StackTraceElement[]> connections  = new ConcurrentHashMap<>();
 
     private static boolean debugConnections = false;
 

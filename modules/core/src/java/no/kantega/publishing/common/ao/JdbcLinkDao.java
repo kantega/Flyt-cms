@@ -122,7 +122,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                 while(rs.next()) {
                     int id = rs.getInt("Id");
                     String url = rs.getString("url");
-
+                    log.debug("Checking url {}", url);
                     LinkOccurrence occurrence = new LinkOccurrence();
                     handler.handleLink(id, url, occurrence);
 
