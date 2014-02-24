@@ -198,34 +198,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>webdav</servlet-name>
-        <servlet-class>com.bradmcevoy.http.MiltonServlet</servlet-class>
-        <init-param>
-            <param-name>resource.factory.factory.class</param-name>
-            <param-value>no.kantega.publishing.webdav.AksessResourceFactoryFactory</param-value>
-        </init-param>
-        <!--
-        To disable digest authentication uncomment the following. To completely disable
-        all authentication provide an empty value. If this init-param is missing milton
-        will default to basic and digest authentication.
-        -->
-        <init-param>
-            <param-name>authentication.handler.classes</param-name>
-            <param-value>com.bradmcevoy.http.http11.auth.BasicAuthHandler</param-value>
-        </init-param>
-
-        <init-param>
-            <param-name>not.found.url</param-name>
-            <param-value>/404.jsp</param-value>
-        </init-param>
-        <init-param>
-            <param-name>filter_0</param-name>
-            <param-value>com.bradmcevoy.http.DebugFilter</param-value>
-        </init-param>
-        <load-on-startup>0</load-on-startup>
-    </servlet>
-
-    <servlet>
         <servlet-name>TinyMCEServlet</servlet-name>
         <servlet-class>no.kantega.publishing.TinyMCEServlet</servlet-class>
     </servlet>
@@ -268,11 +240,6 @@
     <servlet-mapping>
         <servlet-name>jsp</servlet-name>
         <url-pattern>*.jsp</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>webdav</servlet-name>
-        <url-pattern>/webdav/*</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

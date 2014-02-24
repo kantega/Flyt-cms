@@ -70,7 +70,6 @@
         <module>modules/core-plugins</module>
         <module>modules/rating</module>
         <module>modules/useradmin</module>
-        <module>modules/webdav</module>
         <module>modules/webapp</module>
         <module>modules/solr-search</module>
         <module>modules/search-api</module>
