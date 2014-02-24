@@ -91,7 +91,7 @@ public class SlaveCacheExpiratorJob {
         for(XMLCacheEntry e : xmlCache.getSummary()) {
             if(e.getLastUpdated().getTime() > lastRun) {
                 final Object key = e.getId();
-                log.debug("Flushing XML cache " + key);
+                log.debug("Flushing XML cache {}", key);
                 cacheManager.getEhcache(CacheManagerFactory.CacheNames.XmlCache.name()).remove(key);
             }
         }

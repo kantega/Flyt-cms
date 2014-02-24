@@ -36,7 +36,7 @@ public class AliasRequestHandler {
             return contentRequestHandler.handleFromContentIdentifier(cid, request, response);
         } catch (Exception e) {
             LOG.error("Error handling alias {}, cid {}", alias, cid);
-            LOG.error("Error handling alias {}", e);
+            LOG.error("Error handling alias", e);
             throw e;
         }
     }

@@ -10,6 +10,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +37,8 @@ import java.util.*;
  * Controller that lists all jobs and may execute them.
  */
 public class ListJobsController extends AbstractController {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private PluginManager<OpenAksessPlugin> pluginManager;
@@ -93,6 +97,7 @@ public class ListJobsController extends AbstractController {
     private void executeSchedulerJobs(String runJob, String runGroupName, List<Scheduler> schedulers) throws SchedulerException {
         for (Scheduler scheduler : schedulers) {
             if (scheduler.getJobDetail(runJob,runGroupName) != null) {
+                log.info("Triggering job {}", runJob);
                 scheduler.triggerJob(runJob,runGroupName);
             }
         }
@@ -112,7 +117,7 @@ public class ListJobsController extends AbstractController {
      * @return true if the bean is found in this context.
      * If it is the job is run.
      */
-    private boolean tryToExecuteAnnotatedScheduledJob(String runAnnotatedBeanJob, final String runAnnotatedMethodJob, ApplicationContext rootcontext) {
+    private boolean tryToExecuteAnnotatedScheduledJob(final String runAnnotatedBeanJob, final String runAnnotatedMethodJob, ApplicationContext rootcontext) {
         final Object bean;
         Class<?> targetClass;
         try {
@@ -129,6 +134,7 @@ public class ListJobsController extends AbstractController {
         ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                 if (method.getName().equals(runAnnotatedMethodJob)) {
+                    log.info("Triggering job {} {}", runAnnotatedBeanJob, runAnnotatedMethodJob);
                     MethodInvokingRunnable runnable = new MethodInvokingRunnable();
                     runnable.setTargetObject(bean);
                     runnable.setTargetMethod(method.getName());

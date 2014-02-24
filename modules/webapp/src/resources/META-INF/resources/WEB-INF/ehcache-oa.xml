@@ -113,8 +113,6 @@
            maxElementsInMemory="100"
            eternal="true"
            overflowToDisk="true"
-           timeToIdleSeconds="600"
-           timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            diskPersistent="true"
            statistics="true" >
@@ -122,7 +120,7 @@
     </cache>
     <cache name="permissionCache"
            maxElementsInMemory="100"
-           eternal="true"
+           eternal="false"
            overflowToDisk="true"
            timeToIdleSeconds="600"
            timeToLiveSeconds="600"

@@ -55,7 +55,7 @@ public class ReloadTemplateConfigurationAction extends AbstractController {
         if (request.getMethod().equalsIgnoreCase("POST")) {
             TemplateConfiguration config =  templateConfigurationFactory.getConfiguration();
 
-            List<TemplateConfigurationValidationError> errors = new ArrayList<TemplateConfigurationValidationError>();
+            List<TemplateConfigurationValidationError> errors = new ArrayList<>();
             errors.addAll(templateConfigurationValidator.validate(config));
 
             // Validate content templates
