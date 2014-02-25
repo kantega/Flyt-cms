@@ -9,7 +9,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Set;
 
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.matchers.JUnitMatchers.hasItem;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations= "classpath*:spring/testContext.xml")
@@ -21,6 +23,12 @@ public class ContentAliasDaoJdbcImplTest {
     @Test
     public void shouldReturnAllAliases(){
         Set<String> allAliases = dao.getAllAliases();
-        assertTrue("Did not contain /alias/", allAliases.contains("/alias/"));
+        assertThat("Should contain /alias/", allAliases, hasItem("/alias/"));
+    }
+
+    @Test
+    public void shouldNotReturnDeletedAlias(){
+        Set<String> allAliases = dao.getAllAliases();
+        assertThat("Should not contain /deletedalias/", allAliases, not(hasItem("/deletedalias/")));
     }
 }

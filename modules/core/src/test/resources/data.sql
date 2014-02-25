@@ -18,6 +18,10 @@ INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailIn
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (40, 2, -1, 0, 'mailz4@stinessen.com', 'immediate');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (50, 1, -1, 0, 'mailz5@mail.com', 'weekly');
 INSERT INTO mailsubscription (Id, Channel, DocumentType, Language, Email, MailInterval) VALUES (60, 2, -1, 0, 'mailz6@email.com', 'weekly');
+
+INSERT INTO content (ContentId, ContentType, ContentTemplateId, MetaDataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, Location, Alias, PublishDate, ExpireDate, ExpireAction, VisibilityStatus, NumberOfNotes, OwnerPerson, RevisionDate, ForumId, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) VALUES (2, 0, 2, -1, 2, -1, 1, '', null, '/deletedalias/', '2012-01-04 13:21:35', null, 'HIDE', 10, 0, '', null, -1, 0, -1, 0, 0, 0, 1, 0);
+INSERT INTO associations (UniqueId, AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) VALUES (2, 2, 2, 0, 0, 1, 1, 1, 1225741972, '/', 0, 1, 12, 298);
+
 ALTER TABLE Content ALTER ContentId restart with 11;
 ALTER TABLE ContentVersion ALTER ContentVersionId restart with 11;
 ALTER TABLE Associations ALTER UniqueId restart with 11;

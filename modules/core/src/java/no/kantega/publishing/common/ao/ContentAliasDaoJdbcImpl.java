@@ -13,6 +13,6 @@ public class ContentAliasDaoJdbcImpl extends JdbcDaoSupport implements ContentAl
 
     @Cacheable(value="AliasCache", key="#root.methodName")
     public Set<String> getAllAliases() {
-        return new HashSet<>(getJdbcTemplate().queryForList("select alias from content", String.class));
+        return new HashSet<>(getJdbcTemplate().queryForList("select alias from content, associations where content.contentId = associations.contentId and associations.IsDeleted = 0", String.class));
     }
 }
