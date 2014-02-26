@@ -78,6 +78,10 @@ public class CacheExpirator extends ContentEventListenerAdapter {
     @Override
     public void associationDeleted(ContentEvent event) {
         Association a = event.getAssociation();
+        evictForAssociation(a);
+    }
+
+    private void evictForAssociation(Association a) {
         if (a != null) {
             int id = a.getAssociationId();
             contentCache.evict(id);
@@ -86,6 +90,7 @@ public class CacheExpirator extends ContentEventListenerAdapter {
     }
 
     private void removeContentFromCache(ContentEvent event) {
+        evictForAssociation(event.getContent().getAssociation());
         aliasCache.clear();
         contentIdentifierCache.clear();
         contentListCache.clear();
