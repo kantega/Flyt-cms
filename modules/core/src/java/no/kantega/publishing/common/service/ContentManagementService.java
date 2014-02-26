@@ -1184,7 +1184,7 @@ public class ContentManagementService {
         List<Content> pagesToBeDeleted = AssociationAO.deleteAssociationsById(associations, deleteMultiple, securitySession.getUser().getId());
 
         // Hvis ikke brukeren har angitt at flere skal kunne slettes så blir de ikke slettet
-        if (pagesToBeDeleted.size() == 1 || deleteMultiple) {
+        if (aDeleteHasHappened(deleteMultiple, pagesToBeDeleted)) {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (Content c : pagesToBeDeleted) {
                 eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
@@ -1198,6 +1198,10 @@ public class ContentManagementService {
         }
 
         return pagesToBeDeleted;
+    }
+
+    private boolean aDeleteHasHappened(boolean deleteMultiple, List<Content> pagesToBeDeleted) {
+        return pagesToBeDeleted.size() == 1 || deleteMultiple;
     }
 
 

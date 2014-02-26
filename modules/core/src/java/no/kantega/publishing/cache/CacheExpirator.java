@@ -75,14 +75,17 @@ public class CacheExpirator extends ContentEventListenerAdapter {
         removeContentFromCache(event);
     }
 
-    private void removeContentFromCache(ContentEvent event) {
-        // Remove the content that was changed
-        Association a = event.getContent().getAssociation();
+    @Override
+    public void associationDeleted(ContentEvent event) {
+        Association a = event.getAssociation();
         if (a != null) {
             int id = a.getAssociationId();
             contentCache.evict(id);
             contentUrlCache.evict(id);
         }
+    }
+
+    private void removeContentFromCache(ContentEvent event) {
         aliasCache.clear();
         contentIdentifierCache.clear();
         contentListCache.clear();
