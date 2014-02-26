@@ -48,13 +48,13 @@ public class SearchQuery {
      */
     public SearchQuery(SearchContext searchContext, String originalQuery, List<String> filterQueries) {
         this.searchContext = searchContext;
-        this.originalQuery = originalQuery;
+        this.originalQuery = originalQuery.trim();
         this.filterQueries = filterQueries;
     }
 
     public SearchQuery(SearchContext searchContext, String originalQuery, String... filterQueries) {
         this.searchContext = searchContext;
-        this.originalQuery = originalQuery;
+        this.originalQuery = originalQuery.trim();
         this.filterQueries = Arrays.asList(filterQueries);
     }
 
@@ -66,7 +66,7 @@ public class SearchQuery {
      */
     public SearchQuery(SearchContext searchContext, String originalQuery) {
         this.searchContext = searchContext;
-        this.originalQuery = originalQuery;
+        this.originalQuery = originalQuery.trim();
     }
 
     /**

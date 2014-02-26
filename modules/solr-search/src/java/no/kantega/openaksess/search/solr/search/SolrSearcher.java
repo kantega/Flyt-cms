@@ -10,6 +10,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.*;
+import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
 import org.apache.solr.common.params.DisMaxParams;
@@ -162,17 +163,18 @@ public class SolrSearcher implements Searcher {
     }
 
     private String[] getBoostQueries(List<String> additionalBoostQueries, String query, String language) {
-        String[] terms = query.split(" ");
+        String[] terms = boundary.split(query);
         List<String> boostQueries = new ArrayList<>(additionalBoostQueries.size() + terms.length * 6);
         boostQueries.addAll(additionalBoostQueries);
 
         for (String term : terms) {
-            boostQueries.add("all_text_unanalyzed:" + term);
-            boostQueries.add("title_" + language + ":" + term);
-            boostQueries.add("altTitle_" + language + ":" + term);
-            boostQueries.add("description_" + language + ":" + term);
-            boostQueries.add("keywords:" + term);
-            boostQueries.add("topics:" + term);
+            String escapedTerm = ClientUtils.escapeQueryChars(term);
+            boostQueries.add("all_text_unanalyzed:" + escapedTerm);
+            boostQueries.add("title_" + language + ":" + escapedTerm);
+            boostQueries.add("altTitle_" + language + ":" + escapedTerm);
+            boostQueries.add("description_" + language + ":" + escapedTerm);
+            boostQueries.add("keywords:" + escapedTerm);
+            boostQueries.add("topics:" + escapedTerm);
         }
 
         return boostQueries.toArray(new String[boostQueries.size()]);
