@@ -227,7 +227,7 @@ public class AssociationAO  {
 
 
     public static List<Association> getAssociationsByContentId(int contentId) throws SystemException {
-        List<Association> associations = new ArrayList<Association>();
+        List<Association> associations = new ArrayList<>();
 
         try (Connection c = dbConnectionFactory.getConnection()){
 
@@ -465,7 +465,14 @@ public class AssociationAO  {
         where.append(")");
     }
 
-
+    /**
+     * @param associations - that we want to delete. The implementation assumes these point to the same contentId
+     * @param deleteMultiple - Do we accept that subpages should be deleted? If false no content will be deleted when
+     *                       the content has sub pages.
+     * @param userId - User that is deleting.
+     * @return list with the content deleted. These content will contain only contentId and title.
+     * @throws SystemException
+     */
     public static List<Content> deleteAssociationsById(List<Association> associations, boolean deleteMultiple, String userId) throws SystemException {
 
         List<Content> deletedContent = new ArrayList<>();
