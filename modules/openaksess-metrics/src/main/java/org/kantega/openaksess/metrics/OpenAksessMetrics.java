@@ -5,6 +5,7 @@ import com.codahale.metrics.JvmAttributeGaugeSet;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
+import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
 import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
@@ -20,6 +21,7 @@ public class OpenAksessMetrics {
         METRIC_REGISTRY.registerAll(new GarbageCollectorMetricSet());
         METRIC_REGISTRY.registerAll(new JvmAttributeGaugeSet());
         METRIC_REGISTRY.registerAll(new ThreadStatesGaugeSet());
+        METRIC_REGISTRY.registerAll(new MemoryUsageGaugeSet());
         METRIC_REGISTRY.register(MetricRegistry.name(FileDescriptorRatioGauge.class), new FileDescriptorRatioGauge());
     }
 

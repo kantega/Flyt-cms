@@ -55,7 +55,7 @@
             $(this).val("" + updateInterval);
         }
     });
-
+    var g_data = null;
     var requestValues = [];
 
     var memoryMax = [];
@@ -198,19 +198,45 @@
         $.getJSON(
                 '${pageContext.request.contextPath}/admin/metrics',
                 function(data) {
-                    var memory = data.jvm.memory;
-                    var db = data["no.kantega.publishing.common.util.database.dbConnectionFactory"];
-                    var webAppMetrics = data["com.codahale.metrics.web.WebappMetricsFilter"];
-                    var requests = webAppMetrics.activeRequests.count;
+                    g_data = data;
+
+                    var memory = {
+                        totalMax : data.gauges["total.max"].value,
+                        totalUsed : data.gauges["total.used"].value,
+                        totalInit : data.gauges["total.init"].value,
+                        totalCommitted : data.gauges["total.committed"].value,
+                        heapMax : data.gauges["heap.max"].value,
+                        heapUsed : data.gauges["heap.used"].value,
+                        heapInit : data.gauges["heap.init"].value,
+                        heapCommitted : data.gauges["heap.committed"].value,
+                        heap_usage : data.gauges["heap.usage"].value,
+                        non_heap_usage : data.gauges["non-heap.usage"].value
+                    }
+
+                    var db = {
+                        "max-connections": data.gauges["no.kantega.publishing.common.util.database.dbConnectionFactory.max-connections"],
+                        "idle-connections": data.gauges["no.kantega.publishing.common.util.database.dbConnectionFactory.idle-connections"],
+                        "open-connections": data.gauges["no.kantega.publishing.common.util.database.dbConnectionFactory.open-connections"]
+                    }
+
+                    var webAppMetrics = {
+                        'responseCodes.badRequest': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.badRequest'],
+                        'responseCodes.created': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.created'],
+                        'responseCodes.noContent': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.noContent'],
+                        'responseCodes.notFound': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.notFound'],
+                        'responseCodes.ok': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.ok'],
+                        'responseCodes.other': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.other'],
+                        'responseCodes.serverError': data.meters['com.codahale.metrics.servlet.AbstractInstrumentedFilter.responseCodes.serverError']
+                    }
+                    var requests = data.counters["com.codahale.metrics.servlet.AbstractInstrumentedFilter.activeRequests"].count;
 
                     activeRequests(requests);
+                    dbValues(db);
                     memoryValues(memory);
                     heapValues(memory);
-                    dbValues(db);
                     heapUsageValues(memory);
                     memoryUsageValues(memory);
                     responseCodes(webAppMetrics);
-
                     setTimeout(update, updateInterval);
                 });
     }
