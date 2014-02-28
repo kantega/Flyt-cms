@@ -29,13 +29,18 @@
     <name>OpenAksess api</name>
 
     <dependencies>
+        <dependency>
+            <groupId>com.codahale.metrics</groupId>
+            <artifactId>metrics-core</artifactId>
+            <version>${metrics.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.kantega.security-api</groupId>
             <artifactId>security-api</artifactId>
             <version>${securityapi.version}</version>
         </dependency>
-        
+
         <dependency>
             <groupId>org.kantega.jexmec</groupId>
             <artifactId>jexmec-api</artifactId>

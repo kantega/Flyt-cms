@@ -18,7 +18,7 @@
            timeToLiveSeconds="0"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+            <cacheDecoratorFactory properties="metric-registry-name=AliasCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="ContentCache"
@@ -29,7 +29,7 @@
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=ContentCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="ContentListCache"
@@ -40,7 +40,7 @@
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=ContentListCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="SiteMapCache"
@@ -51,7 +51,7 @@
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=SiteMapCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="XmlCache"
@@ -62,7 +62,7 @@
            timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=XmlCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="FacetLabelCache"
@@ -73,7 +73,7 @@
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=FacetLabelCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="ContentUrlCache"
@@ -84,7 +84,7 @@
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=ContentUrlCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="ContentIdentifierCache"
@@ -95,7 +95,7 @@
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=ContentIdentifierCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="UserCache"
@@ -106,7 +106,7 @@
            timeToLiveSeconds="600"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=UserCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="ImageCache"
@@ -116,7 +116,7 @@
            memoryStoreEvictionPolicy="LFU"
            diskPersistent="true"
            statistics="true" >
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=ImageCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
     <cache name="permissionCache"
            maxElementsInMemory="100"
@@ -127,7 +127,7 @@
            memoryStoreEvictionPolicy="LFU"
            diskPersistent="true"
            statistics="true" >
-        <cacheDecoratorFactory class="com.yammer.metrics.ehcache.InstrumentedEhcacheFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=permissionCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
 </ehcache>

@@ -74,6 +74,7 @@
         <module>modules/solr-search</module>
         <module>modules/search-api</module>
         <module>modules/OA-Search</module>
+        <module>modules/openaksess-metrics</module>
     </modules>
 
     <dependencyManagement>
@@ -127,7 +128,7 @@
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
+                <version>${commons-lang.version}</version>
             </dependency>
 
             <dependency>
@@ -252,12 +253,13 @@
         <aspectj.version>1.6.12</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <guava.version>13.0.1</guava.version>
-        <metrics.version>2.2.0</metrics.version>
+        <metrics.version>3.0.1</metrics.version>
         <groovy.version>2.1.8</groovy.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
         <logback.version>1.0.13</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
         <aksess-maven-plugin.version>2.0</aksess-maven-plugin.version>
+        <commons-lang.version>2.6</commons-lang.version>
     </properties>
 
     <profiles>

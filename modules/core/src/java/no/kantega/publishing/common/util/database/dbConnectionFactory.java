@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.common.util.database;
 
-import com.yammer.metrics.Metrics;
-import com.yammer.metrics.core.Gauge;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
@@ -157,29 +155,6 @@ public class dbConnectionFactory {
         }
 
 
-        addMetricsGauges();
-    }
-
-    private static void addMetricsGauges() {
-        Metrics.newGauge(dbConnectionFactory.class, "open-connections", new Gauge<Integer>() {
-            @Override
-            public Integer value() {
-                return getActiveConnections();
-            }
-        });
-        Metrics.newGauge(dbConnectionFactory.class, "idle-connections", new Gauge<Integer>() {
-            @Override
-            public Integer value() {
-                return getIdleConnections();
-            }
-        });
-
-        Metrics.newGauge(dbConnectionFactory.class, "max-connections", new Gauge<Integer>() {
-            @Override
-            public Integer value() {
-                return getMaxConnections();
-            }
-        });
     }
 
     private static void setConfiguration() throws ConfigurationException {

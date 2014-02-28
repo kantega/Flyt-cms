@@ -72,6 +72,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.kantega.openaksess</groupId>
+            <artifactId>openaksess-metrics</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aop</artifactId>
         </dependency>
@@ -139,7 +145,7 @@
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
             <version>${derby.version}</version>
-        </dependency>        
+        </dependency>
 
         <dependency>
             <groupId>org.kantega.security-api</groupId>
@@ -227,24 +233,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-servlet</artifactId>
-            <version>${metrics.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
-            <artifactId>metrics-web</artifactId>
-            <version>${metrics.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.yammer.metrics</groupId>
+            <groupId>com.codahale.metrics</groupId>
             <artifactId>metrics-ehcache</artifactId>
             <version>${metrics.version}</version>
-            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
