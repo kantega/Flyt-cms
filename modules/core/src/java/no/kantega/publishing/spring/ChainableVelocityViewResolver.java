@@ -38,15 +38,18 @@ public class ChainableVelocityViewResolver extends VelocityViewResolver {
     }
 
     private ClassLoader getClassLoader() {
-        OpenAksessPlugin plugin = (OpenAksessPlugin) AksessRequestFilter.getRequest().getAttribute(PluginDelegatingHandlerMapping.DELEGATED_PLUGIN_ATTR);
+        //Workaround for NullPointer AksessRequestFilter.getRequest()
 
-        if(plugin != null) {
-            ClassLoader pluginClassLoader = pluginManager.getClassLoader(plugin);
-            if(pluginClassLoader != null) {
-                return pluginClassLoader;
+        if(AksessRequestFilter.getRequest() != null){
+            OpenAksessPlugin plugin = (OpenAksessPlugin) AksessRequestFilter.getRequest().getAttribute(PluginDelegatingHandlerMapping.DELEGATED_PLUGIN_ATTR);
+
+            if(plugin != null) {
+                ClassLoader pluginClassLoader = pluginManager.getClassLoader(plugin);
+                if(pluginClassLoader != null) {
+                    return pluginClassLoader;
+                }
             }
         }
         return getClass().getClassLoader();
-
     }
 }
