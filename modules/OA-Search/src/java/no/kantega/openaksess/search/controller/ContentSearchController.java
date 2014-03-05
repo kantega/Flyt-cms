@@ -19,8 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
+import static java.util.Collections.emptyList;
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
 /**
@@ -41,8 +43,8 @@ public class ContentSearchController implements AksessController {
     private boolean searchAllSites = false;
     private boolean showOnlyVisibleContent = true;
     private boolean showOnlyPublishedContent = true;
-    private List<String> facetFields = Collections.emptyList();
-    private List<String> facetQueries = Collections.emptyList();
+    private List<String> facetFields = emptyList();
+    private List<String> facetQueries = emptyList();
 
     /**
      * q - The query string. e.g. «cheese sale».
@@ -83,9 +85,13 @@ public class ContentSearchController implements AksessController {
     @RequestMapping("/suggest")
     public @ResponseBody List<String> suggest(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String term = getQorTerm(request);
-        SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
-        query.setResultsPerPage(limit);
-        return searcher.suggest(query);
+        if (isNotBlank(term)) {
+            SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
+            query.setResultsPerPage(limit);
+            return searcher.suggest(query);
+        } else {
+            return emptyList();
+        }
     }
 
     private String getQorTerm(HttpServletRequest request) {
@@ -101,10 +107,14 @@ public class ContentSearchController implements AksessController {
     @RequestMapping("/spelling")
     public @ResponseBody List<String> spelling(HttpServletRequest request, @RequestParam(required = false, defaultValue = "5") Integer limit) {
         String term = getQorTerm(request);
-        SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
-        setLanguage(request, query);
-        query.setResultsPerPage(limit);
-        return searcher.spell(query);
+        if (isNotBlank(term)) {
+            SearchQuery query = new SearchQuery(aksessSearchContextCreator.getSearchContext(request), term);
+            setLanguage(request, query);
+            query.setResultsPerPage(limit);
+            return searcher.spell(query);
+        } else {
+            return emptyList();
+        }
     }
 
     private void setLanguage(HttpServletRequest request, SearchQuery query) {
