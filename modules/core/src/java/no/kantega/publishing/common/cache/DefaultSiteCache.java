@@ -90,8 +90,7 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
         sites = templateConfigurationCache.getTemplateConfiguration().getSites();
 
 
-        Configuration c;
-        c = Aksess.getConfiguration();
+        Configuration c = Aksess.getConfiguration();
         // Get hostnames from database and store in hashmap
 
         hostnames = new HashMap<>();

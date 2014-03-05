@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.common.cache;
 
-import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.AssociationCategory;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Date;
 
 public class AssociationCategoryCache {
-    private static final HashMap<String, AssociationCategory> associationcategoriesByPublicId = new HashMap<String, AssociationCategory>();
+    private static final HashMap<String, AssociationCategory> associationcategoriesByPublicId = new HashMap<>();
     private static Date lastUpdate = null;
 
     public static AssociationCategory getAssociationCategoryById(int id) throws SystemException {
@@ -49,15 +49,14 @@ public class AssociationCategoryCache {
     }
 
     public static void reloadCache() throws SystemException {
-        List alist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getAssociationCategories();
+        List<AssociationCategory> alist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getAssociationCategories();
 
         synchronized (associationcategoriesByPublicId) {
             associationcategoriesByPublicId.clear();
-            for (int i = 0; i < alist.size(); i++) {
-                AssociationCategory category = (AssociationCategory)alist.get(i);
+            for (AssociationCategory category : alist) {
                 String id = category.getPublicId();
                 if (id != null) {
-                    associationcategoriesByPublicId.put(id.toLowerCase(), category);                    
+                    associationcategoriesByPublicId.put(id.toLowerCase(), category);
                 }
             }
         }

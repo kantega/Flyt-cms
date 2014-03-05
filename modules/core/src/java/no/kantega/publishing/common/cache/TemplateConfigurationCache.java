@@ -40,10 +40,15 @@ public class TemplateConfigurationCache {
     private ContentTemplateReader contentTemplateReader;
 
     public TemplateConfiguration getTemplateConfiguration() throws SystemException {
-        if ((configuration == null) || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime())) {
+        if (needsUpdate()) {
             updateCache();
         }
         return configuration;
+    }
+
+    private synchronized boolean needsUpdate() {
+        return (configuration == null || lastUpdate == null)
+                || (Aksess.getDatabaseCacheTimeout() > 0 && lastUpdate.getTime() + (Aksess.getDatabaseCacheTimeout()) < new Date().getTime());
     }
 
     public Date getLastUpdate() {
