@@ -39,7 +39,7 @@ public class NoSpringContextCapableMultipartFilter extends MultipartFilter {
     protected MultipartResolver lookupMultipartResolver(HttpServletRequest request) {
         final WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         if(wac != null) {
-            return (MultipartResolver) wac.getBean(getMultipartResolverBeanName(), MultipartResolver.class);
+            return wac.getBean(getMultipartResolverBeanName(), MultipartResolver.class);
         } else {
             return new CommonsMultipartResolver(getServletContext());
         }

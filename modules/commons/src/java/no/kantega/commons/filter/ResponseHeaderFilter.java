@@ -35,7 +35,7 @@ public class ResponseHeaderFilter implements Filter {
 
     public static final String HEADER_PARAM_PREFIX = "H_";
     private Set<String> extensions;
-    private Map<String, String> headers = new HashMap<String, String>();
+    private Map<String, String> headers = new HashMap<>();
 
 
     public void init(FilterConfig config) throws ServletException {
