@@ -830,6 +830,10 @@ openaksess.navigate.getCurrentLocation = function() {
  */
 openaksess.navigate.getItemIdentifierFromNavigatorHref = function (href) {
     var thisId = openaksess.common.getQueryParam("thisId", href);
+    if(thisId === null){
+        var urlPattern = /\/content\/(\d+)\/.*/g;
+        thisId = href.match(/\/content\/(\d+)\/.*/)[1];
+    }
     openaksess.common.debug("openaksess.content.getItemIdentifierFromNavigatorHref(): href: " + href + ", returns: " + thisId);
     return thisId;
 };
