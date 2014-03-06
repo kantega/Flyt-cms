@@ -54,7 +54,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                     "            } else { " +
                     "                elementPosition = 0;" +
                     "            }" +
-                    "            $(\"body\").scrollTop(elementPosition);\n" +
+                    "            $(\"html,body\").scrollTop(elementPosition);\n" +
                     "        }\n" +
                     "\n");
             out.write("  $(document).ready(function(){\n" +
