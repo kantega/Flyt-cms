@@ -45,6 +45,12 @@ public class AdminFilter implements Filter {
 
     private static String[] excludedStaticResources = {".png", ".jpg", ".gif", ".jjs", ".js", ".css"};
 
+    public AdminFilter() { }
+
+    public AdminFilter(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }

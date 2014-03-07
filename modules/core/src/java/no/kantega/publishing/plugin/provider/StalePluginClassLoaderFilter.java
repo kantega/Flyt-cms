@@ -23,11 +23,19 @@ import java.util.Set;
 public class StalePluginClassLoaderFilter implements Filter {
     private RuntimeMode runtimeMode;
 
-    private Map<String, JavaCompilingPluginClassLoader> classLoaders = new HashMap<String, JavaCompilingPluginClassLoader>();
+    private Map<String, JavaCompilingPluginClassLoader> classLoaders = new HashMap<>();
     private PluginHotDeployProvider provider;
     private ThreadLocalPluginLoaderErrors pluginLoadingErrors;
 
+    public StalePluginClassLoaderFilter() {
+        doInit();
+    }
+
     public void init(FilterConfig filterConfig) throws ServletException {
+        doInit();
+    }
+
+    private void doInit() {
         ApplicationContext context = RootContext.getInstance();
         runtimeMode = context.getBean(RuntimeMode.class);
         pluginLoadingErrors = context.getBean(ThreadLocalPluginLoaderErrors.class);

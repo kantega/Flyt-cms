@@ -47,9 +47,22 @@ public class OpenAksessConfiguredFilter implements Filter {
 
     private Filter wrappedFilter;
 
+    public OpenAksessConfiguredFilter() { }
+
+    public OpenAksessConfiguredFilter(String filterClass, String filterName, ServletContext servletContext) throws ServletException {
+        init(filterClass, filterName, servletContext);
+    }
+
+
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String filterClass = filterConfig.getInitParameter("wrappedFilterClass");
+        final String filterName = filterConfig.getFilterName();
+        final ServletContext servletContext = filterConfig.getServletContext();
 
+        init(filterClass, filterName, servletContext);
+    }
+
+    private void init(String filterClass, final String filterName, final ServletContext servletContext) throws ServletException {
         try {
             final Class<?> clazz = getClass().getClassLoader().loadClass(filterClass);
             wrappedFilter = (Filter) clazz.newInstance();
@@ -62,18 +75,18 @@ public class OpenAksessConfiguredFilter implements Filter {
 
             while(names.hasMoreElements()) {
                 String name = names.nextElement();
-                if (name.startsWith(filterConfig.getFilterName() + ".")) {
-                    filterProperties.setProperty(name.substring(filterConfig.getFilterName().length()+".".length()), aksessProperties.getProperty(name));
+                if (name.startsWith(filterName + ".")) {
+                    filterProperties.setProperty(name.substring(filterName.length()+".".length()), aksessProperties.getProperty(name));
                 }
             }
 
             wrappedFilter.init(new FilterConfig() {
                 public String getFilterName() {
-                    return filterConfig.getFilterName();
+                    return filterName;
                 }
 
                 public ServletContext getServletContext() {
-                    return filterConfig.getServletContext();
+                    return servletContext;
                 }
 
                 public String getInitParameter(String name) {
@@ -84,7 +97,7 @@ public class OpenAksessConfiguredFilter implements Filter {
                     return filterProperties.propertyNames();
                 }
             });
-            
+
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
             throw new ServletException(e);
         }

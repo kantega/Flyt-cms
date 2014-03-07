@@ -27,63 +27,12 @@
         <param-value>/WEB-INF/applicationContext.xml</param-value>
     </context-param>
 
-    <filter>
-        <filter-name>ResponseHeaderFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.ResponseHeaderFilter</filter-class>
-        <init-param>
-            <param-name>extensions</param-name>
-            <param-value>jpg,png,gif</param-value>
-        </init-param>
-        <init-param>
-            <param-name>expiresInDays</param-name>
-            <param-value>365</param-value>
-        </init-param>
-    </filter>
-
-    <listener>
-        <listener-class>no.kantega.publishing.spring.DatabaseDriversContextListener</listener-class>
-    </listener>
-
-    <filter>
-        <filter-name>ParamEncodingFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.ParamEncodingFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>StalePluginClassLoaderFilter</filter-name>
-        <filter-class>no.kantega.publishing.plugin.provider.StalePluginClassLoaderFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>MultipartFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.NoSpringContextCapableMultipartFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>AdminFilter</filter-name>
-        <filter-class>no.kantega.publishing.security.filter.AdminFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>AdminRoleFilter</filter-name>
-        <filter-class>no.kantega.publishing.security.filter.RoleFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>ContentRewriteFilter</filter-name>
-        <filter-class>no.kantega.publishing.client.filter.ContentRewriteFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>AksessRequestFilter</filter-name>
-        <filter-class>no.kantega.commons.filter.AksessRequestFilter</filter-class>
-    </filter>
-
-    <filter>
-        <filter-name>PluginDelgatingFilter</filter-name>
-        <filter-class>no.kantega.publishing.security.PluginDelegatingFilter</filter-class>
-    </filter>
-
+    <!-- This filter is registere here, instead of in OpenAksessServletContainerInitializer because OpenAksessServletContainerInitializer.onStartup
+     is called before ContextLoaderListener.contextInitialized.
+     Because of this Aksess.configuration is not initialized when onStartup is called.
+      Other filters that rely on this is declared in OpenAksessServletContainerInitializer Filtername.class, but this is not
+      possible in this case because OpenAksessConfiguredFilter has init-params.
+     -->
     <filter>
         <filter-name>aksesswro</filter-name>
         <filter-class>no.kantega.publishing.client.filter.OpenAksessConfiguredFilter</filter-class>
@@ -93,62 +42,6 @@
         </init-param>
     </filter>
 
-
-    <filter>
-        <filter-name>FakeDirectoryExpires</filter-name>
-        <filter-class>no.kantega.commons.filter.FarFutureExpiresDirectoryFilter</filter-class>
-    </filter>
-
-    <filter-mapping>
-        <filter-name>FakeDirectoryExpires</filter-name>
-        <url-pattern>/expires/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>ResponseHeaderFilter</filter-name>
-        <url-pattern>/admin/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>ParamEncodingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>StalePluginClassLoaderFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>PluginDelgatingFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-
-    <filter-mapping>
-        <filter-name>MultipartFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/admin/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>AdminRoleFilter</filter-name>
-        <url-pattern>/admin/tools/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>ContentRewriteFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <filter-mapping>
-        <filter-name>AksessRequestFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <filter-mapping>
         <filter-name>aksesswro</filter-name>
         <url-pattern>/wro-oa/*</url-pattern>
@@ -156,22 +49,6 @@
         <dispatcher>INCLUDE</dispatcher>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
-
-    <listener>
-        <listener-class>no.kantega.publishing.spring.DataDirectoryContextListener</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>no.kantega.publishing.spring.LogInitListener</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>no.kantega.publishing.spring.OpenAksessContextLoaderListener</listener-class>
-    </listener>
-
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
 
     <servlet>
         <servlet-name>aksess</servlet-name>

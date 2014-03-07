@@ -37,12 +37,19 @@ public class ResponseHeaderFilter implements Filter {
     private Set<String> extensions;
     private Map<String, String> headers = new HashMap<>();
 
+    public ResponseHeaderFilter() {}
+
+    public ResponseHeaderFilter(Set<String> extensions, Map<String, String> headers, int expireInDays) {
+        this.extensions = extensions;
+        headers.putAll(headers);
+        addExpiresInHeader(expireInDays);
+    }
 
     public void init(FilterConfig config) throws ServletException {
         // extensions-param
         String extensionsParam = config.getInitParameter("extensions");
         if (extensionsParam != null && !"".equals(extensionsParam)) {
-            extensions = new HashSet<String>();
+            extensions = new HashSet<>();
             String[] extensionsArr = extensionsParam.split(",");
             for (String ext : extensionsArr) {
                 this.extensions.add(ext.trim().toLowerCase());
@@ -64,16 +71,20 @@ public class ResponseHeaderFilter implements Filter {
         if (expiresInDaysParam != null && !"".equals(expiresInDaysParam)) {
             try {
                 int expiresInDaysInt = Integer.parseInt(expiresInDaysParam);
-                Calendar cal = Calendar.getInstance();
-                cal.add(Calendar.DAY_OF_YEAR, expiresInDaysInt);
-                Date d = cal.getTime();
-                DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
-                dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
-                headers.put("Expires", dateFormat.format(d));
+                addExpiresInHeader(expiresInDaysInt);
             } catch (NumberFormatException e) {
                 log.error("Could not format expire date", e);
             }
         }
+    }
+
+    private void addExpiresInHeader(int expiresInDaysInt) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, expiresInDaysInt);
+        Date d = cal.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.ENGLISH);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+        headers.put("Expires", dateFormat.format(d));
     }
 
     public void destroy() {

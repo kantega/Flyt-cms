@@ -17,21 +17,24 @@ import java.util.List;
 public class PluginDelegatingFilter implements Filter {
     PluginManager<OpenAksessPlugin> pluginManager;
 
-    public PluginDelegatingFilter() {
-
-    }
+    public PluginDelegatingFilter() {}
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        final WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(filterConfig.getServletContext());
-         pluginManager = (PluginManager<OpenAksessPlugin>) context.getBean("pluginManager");
+        setPluginmanager(filterConfig.getServletContext());
     }
+
+    private void setPluginmanager(ServletContext servletContext) {
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+        pluginManager = (PluginManager<OpenAksessPlugin>) context.getBean("pluginManager");
+    }
+
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain wrappedChain) throws IOException, ServletException {
         buildFilterChain(wrappedChain).doFilter(request, response);
     }
 
     private FilterChain buildFilterChain(FilterChain wrappedChain) {
-        List<Filter> filters = new ArrayList<Filter>();
+        List<Filter> filters = new ArrayList<>();
         for(OpenAksessPlugin plugin : getPlugins()) {
             for(Filter filter : plugin.getRequestFilters()) {
                 filters.add(filter);

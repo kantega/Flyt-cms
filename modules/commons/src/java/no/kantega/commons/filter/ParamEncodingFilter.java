@@ -16,6 +16,8 @@
 
 package no.kantega.commons.filter;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -26,9 +28,16 @@ import java.util.Iterator;
  */
 public class ParamEncodingFilter implements Filter {
     private String encoding;
+
+    public ParamEncodingFilter() {}
+
+    public ParamEncodingFilter(String encoding) {
+        this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");
+    }
+
     public void init(FilterConfig filterConfig) throws ServletException {
         String encoding = filterConfig.getInitParameter("encoding");
-        this.encoding = (encoding == null) ? "utf-8" : encoding;
+        this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
