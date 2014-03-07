@@ -30,12 +30,6 @@ import java.util.Map;
 public class ContentRewriteFilter implements Filter {
     private ServletContext servletContext;
 
-    public ContentRewriteFilter() {}
-
-    public ContentRewriteFilter(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
-
     public void init(FilterConfig filterConfig) throws ServletException {
         this.servletContext = filterConfig.getServletContext();
     }

@@ -32,6 +32,7 @@ public class FarFutureExpiresDirectoryFilter implements Filter {
     private Pattern resourcePattern = Pattern.compile("/expires/([a-f0-9]*)(/.*)");
 
     private static final long YEAR = (long) 365*24*60*60*1000;
+
     public void init(FilterConfig filterConfig) throws ServletException {
     }
 

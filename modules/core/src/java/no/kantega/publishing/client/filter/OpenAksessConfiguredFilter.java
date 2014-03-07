@@ -47,13 +47,6 @@ public class OpenAksessConfiguredFilter implements Filter {
 
     private Filter wrappedFilter;
 
-    public OpenAksessConfiguredFilter() { }
-
-    public OpenAksessConfiguredFilter(String filterClass, String filterName, ServletContext servletContext) throws ServletException {
-        init(filterClass, filterName, servletContext);
-    }
-
-
     public void init(final FilterConfig filterConfig) throws ServletException {
         final String filterClass = filterConfig.getInitParameter("wrappedFilterClass");
         final String filterName = filterConfig.getFilterName();

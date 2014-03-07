@@ -47,10 +47,6 @@ public class AdminFilter implements Filter {
 
     public AdminFilter() { }
 
-    public AdminFilter(ServletContext servletContext) {
-        this.servletContext = servletContext;
-    }
-
     public void init(FilterConfig filterConfig) throws ServletException {
         servletContext = filterConfig.getServletContext();
     }

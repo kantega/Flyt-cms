@@ -17,8 +17,6 @@ import java.util.List;
 public class PluginDelegatingFilter implements Filter {
     PluginManager<OpenAksessPlugin> pluginManager;
 
-    public PluginDelegatingFilter() {}
-
     public void init(FilterConfig filterConfig) throws ServletException {
         setPluginmanager(filterConfig.getServletContext());
     }

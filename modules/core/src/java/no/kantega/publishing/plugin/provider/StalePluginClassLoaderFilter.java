@@ -27,10 +27,6 @@ public class StalePluginClassLoaderFilter implements Filter {
     private PluginHotDeployProvider provider;
     private ThreadLocalPluginLoaderErrors pluginLoadingErrors;
 
-    public StalePluginClassLoaderFilter() {
-        doInit();
-    }
-
     public void init(FilterConfig filterConfig) throws ServletException {
         doInit();
     }

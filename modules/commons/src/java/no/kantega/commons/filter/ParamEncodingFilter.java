@@ -31,10 +31,6 @@ public class ParamEncodingFilter implements Filter {
 
     public ParamEncodingFilter() {}
 
-    public ParamEncodingFilter(String encoding) {
-        this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");
-    }
-
     public void init(FilterConfig filterConfig) throws ServletException {
         String encoding = filterConfig.getInitParameter("encoding");
         this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");

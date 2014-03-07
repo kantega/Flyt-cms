@@ -2,6 +2,7 @@ package no.kantega.publishing.web.servlet;
 
 import no.kantega.commons.filter.*;
 import no.kantega.publishing.client.filter.ContentRewriteFilter;
+import no.kantega.publishing.client.filter.OpenAksessConfiguredFilter;
 import no.kantega.publishing.plugin.provider.StalePluginClassLoaderFilter;
 import no.kantega.publishing.security.PluginDelegatingFilter;
 import no.kantega.publishing.security.filter.AdminFilter;
@@ -14,22 +15,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.request.RequestContextListener;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContainerInitializer;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.Collections;
+import javax.servlet.*;
 import java.util.EnumSet;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
-
-import static java.util.Arrays.asList;
 
 /**
  * ServletContainerInitializer that adds OpenAksess' Filters such that they are run before the Filters
  * declared in the project.
- * onStartup is run before ContextLoaderListener.contextInitialized is called, so the filters that rely on
- * the applicationContext are registered with class such that the container instantiates the instance later.
  */
 public class OpenAksessServletContainerInitializer implements ServletContainerInitializer {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -44,39 +38,51 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         ctx.addListener(OpenAksessContextLoaderListener.class);
         ctx.addListener(RequestContextListener.class);
 
-        ctx.addFilter("ResponseHeaderFilter", getAdminResponseHeaderFilter())
-                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/admin/*");
+        FilterRegistration.Dynamic responseHeaderFilter = ctx.addFilter("ResponseHeaderFilter", ResponseHeaderFilter.class);
+        responseHeaderFilter.setInitParameters(getAdminResponseHeaderFilterParams());
+        responseHeaderFilter.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/admin/*");
 
-        ctx.addFilter("ParamEncodingFilter", new ParamEncodingFilter("utf-8"))
+        FilterRegistration.Dynamic paramEncodingFilter = ctx.addFilter("ParamEncodingFilter", ParamEncodingFilter.class);
+        paramEncodingFilter.setInitParameter("encoding", "utf-8");
+        paramEncodingFilter
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
-        ctx.addFilter("AksessRequestFilter", new AksessRequestFilter())
+        ctx.addFilter("AksessRequestFilter", AksessRequestFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
         ctx.addFilter("StalePluginClassLoaderFilter", StalePluginClassLoaderFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
-        ctx.addFilter("NoSpringContextCapableMultipartFilter", new NoSpringContextCapableMultipartFilter())
+        ctx.addFilter("NoSpringContextCapableMultipartFilter", NoSpringContextCapableMultipartFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
-        ctx.addFilter("AdminFilter", new AdminFilter(ctx))
+        ctx.addFilter("AdminFilter", AdminFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/admin/*");
 
-        ctx.addFilter("AdminRoleFilter", new RoleFilter())
+        ctx.addFilter("AdminRoleFilter", RoleFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/admin/tools/*");
 
-        ctx.addFilter("ContentRewriteFilter", new ContentRewriteFilter(ctx))
+        ctx.addFilter("ContentRewriteFilter", ContentRewriteFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
         ctx.addFilter("PluginDelegatingFilter", PluginDelegatingFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
-        ctx.addFilter("FakeDirectoryExpires", new FarFutureExpiresDirectoryFilter())
+        ctx.addFilter("FakeDirectoryExpires", FarFutureExpiresDirectoryFilter.class)
                 .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/expires/*");
+
+        FilterRegistration.Dynamic aksesswro = ctx.addFilter("aksesswro", OpenAksessConfiguredFilter.class);
+        aksesswro.setInitParameter("wrappedFilterClass", "ro.isdc.wro.http.WroFilter");
+        aksesswro.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST), false, "/wro-oa/*");
+
 
     }
 
-    private ResponseHeaderFilter getAdminResponseHeaderFilter() {
-        return new ResponseHeaderFilter(new HashSet<>(asList("jpg", "png", "gif")), Collections.<String, String>emptyMap(), 365);
+    private Map<String, String> getAdminResponseHeaderFilterParams() {
+        HashMap<String, String> params = new HashMap<>();
+        params.put("extensions", "jpg,png,gif");
+        params.put("expiresInDays", "365");
+
+        return params;
     }
 }

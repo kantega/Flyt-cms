@@ -35,10 +35,6 @@ public class RoleFilter implements Filter {
 
     private String specifiedRole;
 
-    public RoleFilter() {
-        specifiedRole = Aksess.getAdminRole();
-    }
-
     public void init(FilterConfig filterConfig) throws ServletException {
         specifiedRole = Aksess.getAdminRole();
     }

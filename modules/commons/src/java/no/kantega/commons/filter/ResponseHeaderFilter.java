@@ -39,12 +39,6 @@ public class ResponseHeaderFilter implements Filter {
 
     public ResponseHeaderFilter() {}
 
-    public ResponseHeaderFilter(Set<String> extensions, Map<String, String> headers, int expireInDays) {
-        this.extensions = extensions;
-        headers.putAll(headers);
-        addExpiresInHeader(expireInDays);
-    }
-
     public void init(FilterConfig config) throws ServletException {
         // extensions-param
         String extensionsParam = config.getInitParameter("extensions");
