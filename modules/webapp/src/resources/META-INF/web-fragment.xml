@@ -27,6 +27,27 @@
         <param-value>/WEB-INF/applicationContext.xml</param-value>
     </context-param>
 
+    <listener>
+        <listener-class>no.kantega.publishing.spring.DatabaseDriversContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.DataDirectoryContextListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.LogInitListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>no.kantega.publishing.spring.OpenAksessContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+
+
     <servlet>
         <servlet-name>aksess</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
