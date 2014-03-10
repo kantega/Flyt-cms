@@ -61,7 +61,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
 
         FilterRegistration.Dynamic aksesswro = ctx.addFilter("aksesswro", OpenAksessConfiguredFilter.class);
         aksesswro.setInitParameter("wrappedFilterClass", "ro.isdc.wro.http.WroFilter");
-        aksesswro.addMappingForServletNames(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, "/wro-oa/*");
+        aksesswro.addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST, DispatcherType.FORWARD, DispatcherType.INCLUDE), false, "/wro-oa/*");
 
         ctx.addFilter("FakeDirectoryExpires", FarFutureExpiresDirectoryFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/expires/*");
