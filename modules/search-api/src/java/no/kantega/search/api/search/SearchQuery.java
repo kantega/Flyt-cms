@@ -31,6 +31,7 @@ public class SearchQuery {
     private List<String> additionalQueryFields;
     private List<String> boostFunctions = Collections.emptyList();
     private List<String> boostQueries = Collections.emptyList();
+    private List<String> resultFields = Collections.emptyList();
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -384,4 +385,22 @@ public class SearchQuery {
     public void setBoostQueries(List<String> boostQueries) {
         this.boostQueries = boostQueries;
     }
+
+    /**
+     * @see no.kantega.search.api.search.SearchQuery#setResultFields(java.util.List)
+     * @return a list of fields to be added to search results in addition to default fields
+     */
+    public List<String> getResultFields() {
+        return resultFields;
+    }
+
+    /**
+     * Specify a list of fields that are added to search result.
+     * These fields are added in addition to the default set of fields.
+     * @param resultFields to be added to search results
+     */
+    public void setResultFields(List<String> resultFields) {
+        this.resultFields = resultFields;
+    }
+
 }

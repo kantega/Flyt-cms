@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.solr.search;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.openaksess.search.solr.provider.DefaultSearchResultDecorator;
@@ -118,6 +119,26 @@ public class SolrSearcher implements Searcher {
         addFacetQueryInformation(query, solrQuery);
 
         addResultGrouping(query, solrQuery);
+        solrQuery.add("fl", Joiner.on(",").join(query.getResultFields()));
+
+        // Define what fields the search result hits will contain
+        List<String> resultFields = new ArrayList<>();
+        resultFields.add("uid");
+        resultFields.add("id");
+        resultFields.add("associationId");
+        resultFields.add("parentId");
+        resultFields.add("securityId");
+        resultFields.add("title_*");
+        resultFields.add("description*");
+        resultFields.add("indexedContentType");
+        resultFields.add("author");
+        resultFields.add("url");
+        resultFields.add("language");
+
+        // Adding custom result fields
+        resultFields.addAll(query.getResultFields());
+
+        solrQuery.add("fl", resultFields.toArray(new String[resultFields.size()]));
 
         if (query.getQueryType() == QueryType.Default) {
             solrQuery.add(QueryParsing.DEFTYPE, ExtendedDismaxQParserPlugin.NAME);

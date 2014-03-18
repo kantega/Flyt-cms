@@ -93,10 +93,10 @@
         <field name="altTitle_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
         <field name="description_no" type="text_no" indexed="true" stored="true" termVectors="true"/>
         <field name="description_en" type="text_en" indexed="true" stored="true" termVectors="true"/>
-        <field name="contentTemplateId" type="int" indexed="true" stored="false" />
+        <field name="contentTemplateId" type="int" indexed="true" stored="true" />
         <field name="contentTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
         <field name="metaDataTemplateId" type="int" indexed="true" stored="false" />
-        <field name="displayTemplateId" type="int" indexed="true" stored="false" />
+        <field name="displayTemplateId" type="int" indexed="true" stored="true" />
         <field name="displayTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
         <field name="documentTypeId" type="int" indexed="true" stored="false" />
         <field name="documentTypeName" type="string" indexed="true" stored="false" docValues="true"/>
@@ -140,22 +140,22 @@
         <copyField source="topics" dest="all_text_unanalyzed" />
         <copyField source="*_name" dest="all_text_unanalyzed" />
 
-        <dynamicField name="*_i"  type="int"    indexed="true"  stored="false" multiValued="true"/>
-        <dynamicField name="*_l"  type="long"   indexed="true"  stored="false" multiValued="true"/>
+        <dynamicField name="*_i"  type="int"    indexed="true"  stored="true" multiValued="true"/>
+        <dynamicField name="*_l"  type="long"   indexed="true"  stored="true" multiValued="true"/>
         <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
         <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
         <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
-        <dynamicField name="*_b"  type="boolean" indexed="true"  stored="false"/>
-        <dynamicField name="*_f"  type="float"  indexed="true"  stored="false"/>
-        <dynamicField name="*_d"  type="double" indexed="true"  stored="false"/>
-        <dynamicField name="*_dt" type="date"    indexed="true"  stored="false"/>
+        <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
+        <dynamicField name="*_f"  type="float"  indexed="true"  stored="true"/>
+        <dynamicField name="*_d"  type="double" indexed="true"  stored="true"/>
+        <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
         <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
-        <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="true" termVectors="true"/>
         <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_path" type="text_path"    indexed="true"  stored="false" termVectors="true"/>
         <!-- Type used to index the lat and lon components for the "location" FieldType -->
-        <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="false"/>
-        <dynamicField name="*_location"  type="location" indexed="true" stored="false"/>
+        <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="true"/>
+        <dynamicField name="*_location"  type="location" indexed="true" stored="true"/>
 
         <dynamicField name="*" type="ignored" multiValued="true" />
     </fields>
