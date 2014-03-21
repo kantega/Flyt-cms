@@ -29,7 +29,6 @@
                    queue-capacity="100"
                    rejection-policy="CALLER_RUNS"/>
     <task:annotation-driven executor="executorWithCallerRunsPolicy" mode="proxy" />
-    <aop:aspectj-autoproxy/>
 
     <import resource="application-jobs.xml"/>
     <import resource="application-datasources.xml"/>

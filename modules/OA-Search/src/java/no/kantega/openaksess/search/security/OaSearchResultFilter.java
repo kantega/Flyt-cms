@@ -6,13 +6,7 @@ import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.search.api.retrieve.IndexableContentTypeToObjectTypeMapping;
-import no.kantega.search.api.search.GroupResultResponse;
-import no.kantega.search.api.search.SearchQuery;
-import no.kantega.search.api.search.SearchResponse;
-import no.kantega.search.api.search.SearchResult;
-import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
+import no.kantega.search.api.search.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +20,8 @@ import java.util.Map;
 
 import static com.google.common.collect.Collections2.filter;
 
-@Aspect
 @Component
-public class SearchResultFilterAspect {
+public class OaSearchResultFilter implements SearchResultFilter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
@@ -39,16 +32,15 @@ public class SearchResultFilterAspect {
 
     private Map<String, Integer> indexedContentTypeToObjectTypeMapping = new HashMap<>();
 
-    @Around("execution(* no.kantega.search.api.search.Searcher.search(..))")
-    public Object doFilterSearchResults(ProceedingJoinPoint pjp) throws Throwable {
+
+    public void filterSearchResponse(SearchResponse searchResponse) {
         log.debug("Filtering search results");
-        SearchResponse searchResponse = (SearchResponse) pjp.proceed();
+
         AksessSearchContext searchContext = (AksessSearchContext) searchResponse.getQuery().getSearchContext();
         SecuritySession session = searchContext.getSecuritySession();
 
         filterHits(searchResponse, session);
         registerPerformedSearch(searchResponse, searchContext);
-        return searchResponse;
     }
 
     private void registerPerformedSearch(final SearchResponse searchResponse, final AksessSearchContext searchContext) {

@@ -16,9 +16,11 @@
 
 package no.kantega.commons.util;
 
-import org.apache.xpath.XPathAPI;
-import org.apache.xpath.objects.XObject;
 import org.w3c.dom.Element;
+
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
 
 /**
  *
@@ -26,41 +28,13 @@ import org.w3c.dom.Element;
 public class XPathHelper {
 
     public static String getString(Element element, String expr) {
-        XObject obj = null;
 
         try {
-            obj = XPathAPI.eval(element, expr + "/child::text()");
-            return obj.str();
+            XPath xPath = XPathFactory.newInstance().newXPath();
+            return xPath.evaluate(expr + "/child::text()", element, XPathConstants.STRING).toString();
         } catch (Exception e) {
             return "";
         }
     }
 
-    public static double getNum(Element element, String expr) {
-        XObject obj = null;
-
-        try {
-            obj = XPathAPI.eval(element, expr + "/child::text()");
-            return obj.num();
-        } catch (Exception e) {
-            return Double.NaN;
-        }
-    }
-
-    public static boolean getBool(Element element, String expr, boolean defaultValue) {
-        XObject obj = null;
-
-        try {
-            obj = XPathAPI.eval(element, expr + "/child::text()");
-            if (obj.num() == 1.0) {
-                return true;
-            } else if (obj.num() == 0.0) {
-                return false;
-            } else {
-                return defaultValue;
-            }
-        } catch (Exception e) {
-            return defaultValue;
-        }
-    }
 }

@@ -113,11 +113,6 @@
         </dependency>
 
         <dependency>
-            <groupId>xalan</groupId>
-            <artifactId>xalan</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>${dbcp.version}</version>
@@ -379,6 +374,10 @@
                     <groupId>com.github.sommeri</groupId>
                     <artifactId>less4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.mozilla</groupId>
+                    <artifactId>rhino</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -426,6 +425,18 @@
             <artifactId>groovy-all</artifactId>
             <version>${groovy.version}</version>
             <classifier>indy</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-xml</artifactId>
+            <version>${groovy.version}</version>
+            <classifier>indy</classifier>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.codehaus.groovy</groupId>
+                    <artifactId>groovy</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>

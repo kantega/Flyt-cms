@@ -17,8 +17,10 @@
 package no.kantega.commons.xmlfilter;
 
 import no.kantega.commons.exception.SystemException;
-import org.apache.xalan.processor.TransformerFactoryImpl;
+import org.apache.xml.serializer.Method;
 import org.apache.xml.serializer.OutputPropertiesFactory;
+import org.apache.xml.serializer.Serializer;
+import org.apache.xml.serializer.SerializerFactory;
 import org.cyberneko.html.parsers.SAXParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,18 +80,22 @@ public class FilterPipeline extends XMLFilterImpl {
 
             URL resourceUrl = contextClassLoader.getResource("no/kantega/xml/serializer/XMLEntities.properties");
 
-            SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactoryImpl.newInstance();
+            java.util.Properties props =
+                    OutputPropertiesFactory.getDefaultMethodProperties(Method.HTML);
+            props.setProperty(OutputPropertiesFactory.S_KEY_ENTITIES, resourceUrl.toString());
 
-            final TransformerHandler mainTransformer = factory.newTransformerHandler();
-            mainTransformer.getTransformer().setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            mainTransformer.getTransformer().setOutputProperty(OutputKeys.METHOD, method);
-            mainTransformer.getTransformer().setOutputProperty(OutputKeys.INDENT, "no");
-            mainTransformer.getTransformer().setOutputProperty(OutputPropertiesFactory.S_KEY_ENTITIES, resourceUrl.toString());
-            mainTransformer.setResult(new StreamResult(writer));
+            props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            props.setProperty(OutputKeys.METHOD, method);
+            props.setProperty(OutputKeys.INDENT, "no");
 
-            this.setEnd(mainTransformer);
+            Serializer serializer = SerializerFactory.getSerializer(props);
+
+            serializer.setWriter(writer);
+
+            ContentHandler end = serializer.asContentHandler();
+            this.setEnd(end);
             if(filters.size() == 0) {
-                this.setContentHandler(mainTransformer);
+                this.setContentHandler(end);
             }
 
             parser.setContentHandler(this);

@@ -50,13 +50,21 @@ public class SolrSearcher implements Searcher {
     @Value("#{runtimeMode?.name() == 'DEVELOPMENT'}")
     private boolean includeDebugInfo = false;
 
+    @Autowired
+    private SearchResultFilter resultFilter;
+
+
     public SearchResponse search(SearchQuery query) {
         try {
             SolrQuery params = createSearchParams(query);
 
             QueryResponse queryResponse = solrServer.query(params);
 
-            return createSearchReponse(query, queryResponse);
+            SearchResponse searchReponse = createSearchReponse(query, queryResponse);
+
+            resultFilter.filterSearchResponse(searchReponse);
+
+            return searchReponse;
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
         }
