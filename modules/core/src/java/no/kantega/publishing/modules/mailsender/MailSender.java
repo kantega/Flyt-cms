@@ -54,8 +54,9 @@ import java.util.Properties;
  */
 public class MailSender {
     private static final Logger log = LoggerFactory.getLogger(MailSender.class);
-
     private static EventLog eventLog;
+
+
     /**
      * Sends a mail message. The message body is created by using a simple template mechanism. See MailTextReader.
      *
@@ -199,7 +200,9 @@ public class MailSender {
      * @param parameters   The values to merge into the template.
      * @return The result of the merge.
      * @throws SystemException if template handling fails.
+     * @deprecated Doesn't do HTML-escaping. Use the safer createVelocityTemplateRenderer() member method instead
      */
+    @Deprecated
     public static String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) throws SystemException {
         try {
             Velocity.init();
@@ -215,7 +218,6 @@ public class MailSender {
             String templateText = IOUtils.toString(resource.getInputStream(), encoding);
 
             VelocityContext context = new VelocityContext(parameters);
-
             StringWriter textWriter = new StringWriter();
             Velocity.evaluate(context, textWriter, "body", templateText);
 
@@ -223,6 +225,16 @@ public class MailSender {
         } catch (Exception e) {
             throw new SystemException("Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }
+    }
+
+    /**
+     * Helper method to create a string from a Velocity template.
+     *
+     * @param templateFile The name of the template file to use.
+     * @return A VelocityTemplateRenderer you can configure to render the template to a string
+     */
+    public static VelocityTemplateRenderer createVelocityTemplateRenderer(String templateFile) throws SystemException{
+        return new VelocityTemplateRenderer(templateFile);
     }
 
     /**
