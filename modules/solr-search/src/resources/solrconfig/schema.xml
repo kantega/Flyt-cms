@@ -63,6 +63,12 @@
             </analyzer>
         </fieldtype>
 
+        <fieldtype name="strings" stored="true" indexed="true" multiValued="true" class="solr.TextField">
+            <analyzer>
+                <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*"/>
+            </analyzer>
+        </fieldtype>
+
         <fieldtype name="name" stored="false" indexed="true" multiValued="true" class="solr.TextField">
             <analyzer>
                 <filter class="solr.LowerCaseFilterFactory" />
@@ -149,7 +155,8 @@
         <dynamicField name="*_f"  type="float"  indexed="true"  stored="true"/>
         <dynamicField name="*_d"  type="double" indexed="true"  stored="true"/>
         <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
-        <dynamicField name="*_str" type="string"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_str" type="string" indexed="true"  stored="true" termVectors="true"/>
+        <dynamicField name="*_strs" type="strings" indexed="true"  stored="true" termVectors="true"/>
         <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="true" termVectors="true"/>
         <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
         <dynamicField name="*_path" type="text_path"    indexed="true"  stored="false" termVectors="true"/>
