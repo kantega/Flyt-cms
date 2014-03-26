@@ -28,6 +28,7 @@ import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.publishing.topicmaps.data.Topic;
@@ -233,9 +234,13 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (relevance != null) {
                 if (relevance.equalsIgnoreCase("user")) {
                     // Find pages marked with topics in current users profile
-                    if (cs.getSecuritySession() != null && cs.getSecuritySession().getUser() != null && cs.getSecuritySession().getUser().getTopics() != null) {
-                        query.setTopics(cs.getSecuritySession().getUser().getTopics());
+                    if (cs.getSecuritySession() != null){
+                        User user = cs.getSecuritySession().getUser();
+                        if (user != null && user.getTopics() != null) {
+                            query.setTopics(user.getTopics());
+                        }
                     }
+
                 }
             }
 
