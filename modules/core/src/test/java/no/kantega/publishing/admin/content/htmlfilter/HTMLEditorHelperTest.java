@@ -24,11 +24,9 @@ public class HTMLEditorHelperTest {
 
     @Test
     public void shouldRemoveEmptySpanTag() {
-        HTMLEditorHelper editorHelper = new HTMLEditorHelper();
-
         String htmlBefore = "<span> </span><p>Test</p>";
 
-        String htmlAfter = editorHelper.postEditFilter(htmlBefore);
+        String htmlAfter = HTMLEditorHelper.postEditFilter(htmlBefore);
 
         assertEquals("<p>Test</p>", htmlAfter);
 
@@ -36,11 +34,9 @@ public class HTMLEditorHelperTest {
 
     @Test
     public void shouldNotRemoveSpanTagWithContent() {
-        HTMLEditorHelper editorHelper = new HTMLEditorHelper();
-
         String htmlBefore = "<span>test</span><p>Test</p>";
 
-        String htmlAfter = editorHelper.postEditFilter(htmlBefore);
+        String htmlAfter = HTMLEditorHelper.postEditFilter(htmlBefore);
 
         assertEquals(htmlBefore, htmlAfter);
 

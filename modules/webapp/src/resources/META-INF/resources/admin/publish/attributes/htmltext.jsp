@@ -39,8 +39,7 @@
     Content   content   = (Content)request.getAttribute("content");
     String    fieldName = (String)request.getAttribute("fieldName");
     String value = attribute.getValue();
-    HTMLEditorHelper helper = new HTMLEditorHelper();
-    value = helper.preEditFilter(value, URLHelper.getRootURL(request));
+    value = HTMLEditorHelper.preEditFilter(value, URLHelper.getRootURL(request));
 
     Configuration conf = Aksess.getConfiguration();
 

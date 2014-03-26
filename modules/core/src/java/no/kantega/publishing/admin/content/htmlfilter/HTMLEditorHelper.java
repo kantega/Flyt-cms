@@ -29,15 +29,15 @@ import java.util.regex.Pattern;
 public class HTMLEditorHelper {
     private static final Logger log = LoggerFactory.getLogger(HTMLEditorHelper.class);
     private static final Pattern emptyTagsPattern = Pattern.compile("<(i|I|b|B|em|EM|b|B|span|SPAN)>(\\s|&nbsp;)*</\\1>");
-    private static String BODY_START = "<BODY>";
-    private static String BODY_END   = "</BODY>";
+    private static final String BODY_START = "<BODY>";
+    private static final String BODY_END   = "</BODY>";
 
     /**
      * Cleanup / replacement done after editing content
      * @param value - HTML text
      * @return - cleaned HTML
      */
-    public String postEditFilter(String value) {
+    public static String postEditFilter(String value) {
         FilterPipeline pipe = new FilterPipeline();
 
         value = value.trim();
@@ -129,7 +129,7 @@ public class HTMLEditorHelper {
      * @param contextPath - context path
      * @return - cleaned HTML
      */
-    public String preEditFilter(String value, String contextPath) {
+    public static String preEditFilter(String value, String contextPath) {
 
         value = StringHelper.replace(value, "\"" + Aksess.VAR_WEB + "\"/", contextPath);
         value = StringHelper.replace(value, Aksess.VAR_WEB + "/", contextPath);
