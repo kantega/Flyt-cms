@@ -400,6 +400,7 @@
             <artifactId>metadata-extractor</artifactId>
             <version>2.6.2-kantega</version>
         </dependency>
+
         <dependency>
             <groupId>net.sourceforge.jtds</groupId>
             <artifactId>jtds</artifactId>

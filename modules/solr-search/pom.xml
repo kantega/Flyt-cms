@@ -201,6 +201,10 @@
                     <groupId>edu.ucar</groupId>
                     <artifactId>netcdf</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.adobe.xmp</groupId>
+                    <artifactId>xmpcore</artifactId>
+                </exclusion>
             </exclusions>
             <scope>runtime</scope>
         </dependency>

@@ -11,19 +11,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
     private static final Logger log = LoggerFactory.getLogger(DrewNoakesExifMetadataExtractor.class);
+
     public List<ExifMetadata> getMetadataForImage(byte[] imageData) {
         List<ExifMetadata> exifMetadatas = new ArrayList<ExifMetadata>();
 
-        ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData);
-
-        try {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData)){
             exifMetadatas = extractMetadata(inputStream);
-        } catch (JpegProcessingException e) {
+        } catch (IOException | JpegProcessingException e) {
             log.error("", e);
         }
 
@@ -31,7 +31,7 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
     }
 
     private List<ExifMetadata> extractMetadata(ByteArrayInputStream inputStream) throws JpegProcessingException {
-        List<ExifMetadata> exifMetadatas = new ArrayList<ExifMetadata>();
+        List<ExifMetadata> exifMetadatas = new ArrayList<>();
 
         Metadata metadata = JpegMetadataReader.readMetadata(inputStream);
 
