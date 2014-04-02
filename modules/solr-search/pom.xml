@@ -47,7 +47,19 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
-                    <artifactId>*</artifactId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-hdfs</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-auth</artifactId>
                 </exclusion>
                 <!-- Not in Maven Central, and not in use in OA -->
                 <exclusion>
@@ -134,11 +146,19 @@
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-common</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
+                    <artifactId>hadoop-annotations</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.hadoop</groupId>
                     <artifactId>hadoop-hdfs</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.hadoop</groupId>
-                    <artifactId>hadoop-common</artifactId>
+                    <artifactId>hadoop-auth</artifactId>
                 </exclusion>
                 <exclusion>
                     <groupId>org.apache.poi</groupId>
@@ -204,6 +224,14 @@
                 <exclusion>
                     <groupId>com.adobe.xmp</groupId>
                     <artifactId>xmpcore</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>asm</groupId>
+                    <artifactId>asm</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>jdom</groupId>
+                    <artifactId>jdom</artifactId>
                 </exclusion>
             </exclusions>
             <scope>runtime</scope>
@@ -283,6 +311,7 @@
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
