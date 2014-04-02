@@ -95,10 +95,13 @@ function formEditElement(element) {
         $("#form_NoBreak").attr("checked", false);
     }
 
-    var inputClasses = $("div.inputs", element).attr("class").split(" ");
     var type = "text";
-    if (inputClasses.length > 1) {
-        type = inputClasses[inputClasses.length - 1];
+    var inputs = $("div.inputs", element);
+    if (inputs.length > 0) {
+        var inputClasses = inputs.attr("class").split(" ");
+        if (inputClasses.length > 1) {
+            type = inputClasses[inputClasses.length - 1];
+        }
     }
 
     var form_FieldType = $("#form_FieldType");
