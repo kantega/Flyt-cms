@@ -51,6 +51,8 @@ import org.w3c.dom.NodeList;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class EditContentHelper {
     private static final Logger log = LoggerFactory.getLogger(EditContentHelper.class);
 
@@ -125,7 +127,7 @@ public class EditContentHelper {
         if (contentTemplate.getDocumentTypeForChildren() != null) {
             content.setDocumentTypeIdForChildren(contentTemplate.getDocumentTypeForChildren().getId());
         }
-        if (contentTemplate.getDefaultPageUrlAlias() != null && contentTemplate.getDefaultPageUrlAlias().length() > 0) {
+        if (isNotBlank(contentTemplate.getDefaultPageUrlAlias())) {
             content.setAlias(contentTemplate.getDefaultPageUrlAlias());
         }
 
