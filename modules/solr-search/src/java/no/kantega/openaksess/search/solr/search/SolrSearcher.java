@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.solr.search;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.openaksess.search.solr.provider.DefaultSearchResultDecorator;
@@ -127,7 +126,6 @@ public class SolrSearcher implements Searcher {
         addFacetQueryInformation(query, solrQuery);
 
         addResultGrouping(query, solrQuery);
-        solrQuery.add("fl", Joiner.on(",").join(query.getResultFields()));
 
         // Define what fields the search result hits will contain
         List<String> resultFields = new ArrayList<>();
