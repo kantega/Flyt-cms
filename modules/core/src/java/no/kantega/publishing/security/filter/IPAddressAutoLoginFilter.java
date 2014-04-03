@@ -18,6 +18,8 @@ package no.kantega.publishing.security.filter;
 
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -27,6 +29,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class IPAddressAutoLoginFilter implements Filter {
+    private Logger log = LoggerFactory.getLogger(getClass());
+
     private Pattern includedHostsPattern = null;
     private Pattern ipAddressPattern = null;
     private String defaultUserId = null;
@@ -48,7 +52,10 @@ public class IPAddressAutoLoginFilter implements Filter {
         defaultUserId = filterConfig.getInitParameter("userid");
         defaultDomain = filterConfig.getInitParameter("domain");
 
-        isEnabled = defaultUserId == null;
+        isEnabled = defaultUserId != null;
+        if(isEnabled){
+            log.warn("IPAddressAutoLoginFilter is enabled");
+        }
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
