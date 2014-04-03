@@ -328,7 +328,7 @@ public class ContentQuery {
                     if (i > 0){
                         query.append(" and ct2topic.contentId in (select ct2topic.contentId from ct2topic where ");
                     }
-                    query.append(" (TopicMapId = :TopicMapId + " + i + "  and TopicId = :TopicId" + i + ")");
+                    query.append(" (TopicMapId = :TopicMapId").append(i).append("  and TopicId = :TopicId").append(i).append(")");
                     parameters.put("TopicMapId" + i, topic.getTopicMapId());
                     parameters.put("TopicId" + i, topic.getId());
                     if (i > 0){
@@ -344,7 +344,7 @@ public class ContentQuery {
                     if (i > 0) {
                         query.append(" or ");
                     }
-                    query.append(" (TopicMapId = :TopicMapId + ").append(i).append(" and TopicId = :TopicId").append(i).append(")");
+                    query.append(" (TopicMapId = :TopicMapId").append(i).append(" and TopicId = :TopicId").append(i).append(")");
                     parameters.put("TopicMapId" + i, topic.getTopicMapId());
                     parameters.put("TopicId" + i, topic.getId());
                 }
