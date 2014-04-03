@@ -71,6 +71,7 @@
         <property name="exposedBeanNames">
             <list>
                 <value>adminRoleInterceptor</value>
+                <value>contentAO</value>
             </list>
         </property>
         <property name="pluginClassLoaderProviders">
