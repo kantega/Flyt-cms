@@ -62,7 +62,7 @@
     String buttons = conf.getString(confPrefix + "buttons");
     if (buttons == null) {
         buttons = conf.getString("editor.default.buttons");
-        log.error("htmltext.jsp", "Button set not defined:" + confPrefix + "buttons", null, null);
+        log.error("Button set not defined:" + confPrefix + "buttons");
     }
     String[] buttonRows = null;
     if (buttons != null) {
