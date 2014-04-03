@@ -21,26 +21,19 @@ import no.kantega.security.api.identity.DefaultIdentityResolver;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Oct 18, 2007
- * Time: 3:33:11 PM
- */
 public class IPAddressAutoLoginFilter implements Filter {
-    private ServletContext servletContext;
     private Pattern includedHostsPattern = null;
     private Pattern ipAddressPattern = null;
     private String defaultUserId = null;
     private String defaultDomain = null;
+    private boolean isEnabled;
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        servletContext = filterConfig.getServletContext();
 
         String ipPattern = filterConfig.getInitParameter("ip-address");
         if(ipPattern != null) {
@@ -54,43 +47,46 @@ public class IPAddressAutoLoginFilter implements Filter {
 
         defaultUserId = filterConfig.getInitParameter("userid");
         defaultDomain = filterConfig.getInitParameter("domain");
+
+        isEnabled = defaultUserId == null;
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletResponse response = (HttpServletResponse) servletResponse;
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        if (isEnabled) {
+            HttpServletRequest request = (HttpServletRequest) servletRequest;
 
+            try {
+                SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        try {
-            SecuritySession securitySession = SecuritySession.getInstance(request);
+                // Hvis bruker er logget inn skal vi ikke gjøre noe som helst
+                if (!securitySession.isLoggedIn()) {
+                    // Sjekk om autoinnlogging gjelder denne hosten
+                    boolean includeHost = true;
+                    if (includedHostsPattern != null) {
+                        Matcher m = includedHostsPattern.matcher(request.getServerName());
+                        includeHost = m.matches();
+                    }
 
-            // Hvis bruker er logget inn skal vi ikke gjøre noe som helst
-            if (!securitySession.isLoggedIn()) {
-                // Sjekk om autoinnlogging gjelder denne hosten
-                boolean includeHost = true;
-                if (includedHostsPattern != null) {
-                    Matcher m = includedHostsPattern.matcher(request.getServerName());
-                    includeHost = m.matches();
+                    // Sjekk om brukeren sin IP adresse er den som er angitt
+                    if (includeHost) {
+                        boolean ipIsIncluded = false;
+                        if (ipAddressPattern != null) {
+                            Matcher m = ipAddressPattern.matcher(request.getRemoteAddr());
+                            ipIsIncluded = m.matches();
+                        }
+                        if (ipIsIncluded) {
+                            HttpSession session = request.getSession(true);
+                            session.setAttribute(defaultDomain + DefaultIdentityResolver.SESSION_IDENTITY_NAME, defaultUserId);
+                        }
+                    }
                 }
 
-                // Sjekk om brukeren sin IP adresse er den som er angitt
-                if (includeHost) {
-                    boolean ipIsIncluded = false;
-                    if (ipAddressPattern != null) {
-                        Matcher m = ipAddressPattern.matcher(request.getRemoteAddr());
-                        ipIsIncluded = m.matches();
-                    }
-                    if (ipIsIncluded) {
-                        HttpSession session = request.getSession(true);
-                        session.setAttribute(defaultDomain + DefaultIdentityResolver.SESSION_IDENTITY_NAME, defaultUserId);
-                    }
-                }
+            } catch (Exception e) {
+                throw new ServletException(e);
             }
-
-            filterChain.doFilter(request, response);
-        } catch (Exception e) {
-            throw new ServletException(e);
         }
+
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     public void destroy() {
