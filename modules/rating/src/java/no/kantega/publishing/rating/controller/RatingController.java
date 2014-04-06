@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Controller
 @RequestMapping("/Rating.action")
@@ -51,7 +51,7 @@ public class RatingController {
             setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
         }
 
-        if(isNotBlank(redirect)) {
+        if(isBlank(redirect)) {
             model.put("rating", ratingValue);
             List<Rating> allRatings = ratingService.getRatingsForObject(objectId, context);
             if (allRatings != null) {

@@ -27,7 +27,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
     public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
         log.info("Registering OpenAksess filters");
 
-        EnumSet<DispatcherType> dispatchRequests = EnumSet.of(DispatcherType.REQUEST);
+        EnumSet<DispatcherType> dispatchRequests = EnumSet.allOf(DispatcherType.class);
 
         FilterRegistration.Dynamic responseHeaderFilter = ctx.addFilter("ResponseHeaderFilter", ResponseHeaderFilter.class);
         responseHeaderFilter.setInitParameters(getAdminResponseHeaderFilterParams());

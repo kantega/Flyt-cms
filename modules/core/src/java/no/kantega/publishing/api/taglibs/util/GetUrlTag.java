@@ -120,7 +120,7 @@ public class GetUrlTag extends TagSupport {
                 }
 
             } catch (ContentNotFoundException e) {
-                log.error(e.getMessage());
+                log.debug(e.getMessage());
             }
         }
     }
