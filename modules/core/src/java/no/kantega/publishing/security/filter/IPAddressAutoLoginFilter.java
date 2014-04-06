@@ -84,6 +84,7 @@ public class IPAddressAutoLoginFilter implements Filter {
                         if (ipIsIncluded) {
                             HttpSession session = request.getSession(true);
                             session.setAttribute(defaultDomain + DefaultIdentityResolver.SESSION_IDENTITY_NAME, defaultUserId);
+                            log.info("Logged in user {} from ip {}", defaultUserId, request.getRemoteAddr());
                         }
                     }
                 }
