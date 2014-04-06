@@ -63,7 +63,7 @@ public class ListAssociatedTopicsAction extends AbstractTopicInfoAction {
         }
 
         SecuritySession session = SecuritySession.getInstance(request);
-        if (session.isUserInRole(Aksess.getAdminRole())) {
+        if (topic != null && session.isUserInRole(Aksess.getAdminRole())) {
             TopicMap tm = topicService.getTopicMap(topic.getTopicMapId());
             if (tm.isEditable()) {
                 model.put("canAdd", Boolean.TRUE);

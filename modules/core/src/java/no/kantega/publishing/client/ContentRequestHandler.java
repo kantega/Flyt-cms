@@ -174,16 +174,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();
-        StringBuilder message = new StringBuilder("Execution time: ");
-        message.append((end - start));
-        message.append(" ms (");
-        message.append(content.getTitle());
-        message.append(", id: ");
-        message.append(content.getId());
-        message.append(", template:");
-        message.append(content.getDisplayTemplateId());
-        message.append(")");
-        log.info( message.toString());
+        log.info("Execution time: {} ms ({}, id: {}, template:{})", (end - start), content.getTitle(), content.getId(), content.getDisplayTemplateId());
     }
 
     private boolean redirectToCorrectSiteIfOtherSite(HttpServletRequest request, HttpServletResponse response, boolean adminMode, Content content) throws IOException {
