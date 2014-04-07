@@ -237,7 +237,7 @@ public class ContentSearchController implements AksessController {
         }
     }
 
-    private String getQuery(HttpServletRequest request) {
+    public String getQuery(HttpServletRequest request) {
         return getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
     }
 
