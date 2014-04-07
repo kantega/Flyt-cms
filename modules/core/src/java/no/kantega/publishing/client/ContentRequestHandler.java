@@ -75,8 +75,9 @@ public abstract class ContentRequestHandler implements ServletContextAware {
     }
 
     @RequestMapping("/content/{thisId:[0-9]+}/*")
-    public ModelAndView handlePrettyUrl(@PathVariable int thisId, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handlePrettyUrl(@PathVariable int thisId, @RequestParam(required = false) ContentStatus status, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ContentIdentifier cid = ContentIdentifier.fromAssociationId(thisId);
+	cid.setStatus(contentStatus);
         return handleFromContentIdentifier(cid, request, response);
     }
 
@@ -85,7 +86,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
                                          @RequestParam(required = false, defaultValue = "-1") int contentId,
                                          @RequestParam(required = false, defaultValue = "-1") int version,
                                          @RequestParam(required = false, defaultValue = "-1") int language,
-                                         @RequestParam(required = false, defaultValue = "PUBLISHED") ContentStatus contentStatus,
+                                         @RequestParam(required = false) ContentStatus contentStatus,
                                          @RequestParam(required = false, defaultValue = "-1") int siteId,
                                          @RequestParam(required = false, defaultValue = "-1") int contextId,
                                          HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
