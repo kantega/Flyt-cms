@@ -200,9 +200,7 @@ public class MailSender {
      * @param parameters   The values to merge into the template.
      * @return The result of the merge.
      * @throws SystemException if template handling fails.
-     * @deprecated Doesn't do HTML-escaping. Use the safer createVelocityTemplateRenderer() member method instead
      */
-    @Deprecated
     public static String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) throws SystemException {
         try {
             Velocity.init();
