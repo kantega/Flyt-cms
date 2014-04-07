@@ -63,12 +63,6 @@
             </analyzer>
         </fieldtype>
 
-        <fieldtype name="strings" stored="true" indexed="true" multiValued="true" class="solr.TextField">
-            <analyzer>
-                <tokenizer class="solr.PatternTokenizerFactory" pattern=",\s*"/>
-            </analyzer>
-        </fieldtype>
-
         <fieldtype name="name" stored="false" indexed="true" multiValued="true" class="solr.TextField">
             <analyzer>
                 <filter class="solr.LowerCaseFilterFactory" />
@@ -148,18 +142,17 @@
 
         <dynamicField name="*_i"  type="int"    indexed="true"  stored="true" multiValued="true"/>
         <dynamicField name="*_l"  type="long"   indexed="true"  stored="true" multiValued="true"/>
-        <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
-        <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
-        <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="false" multiValued="true" termVectors="true"/>
-        <dynamicField name="*_b"  type="boolean" indexed="true"  stored="true"/>
-        <dynamicField name="*_f"  type="float"  indexed="true"  stored="true"/>
-        <dynamicField name="*_d"  type="double" indexed="true"  stored="true"/>
-        <dynamicField name="*_dt" type="date"    indexed="true"  stored="true"/>
-        <dynamicField name="*_str" type="string" indexed="true"  stored="true" termVectors="true"/>
-        <dynamicField name="*_strs" type="strings" indexed="true"  stored="true" termVectors="true"/>
-        <dynamicField name="*_tlf" type="tlf"    indexed="true"  stored="true" termVectors="true"/>
-        <dynamicField name="*_name" type="name"    indexed="true"  stored="false" termVectors="true"/>
-        <dynamicField name="*_path" type="text_path"    indexed="true"  stored="false" termVectors="true"/>
+        <dynamicField name="*_txt" type="text_general"    indexed="true"  stored="true" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_en"  type="text_en"    indexed="true"  stored="true" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_no"  type="text_no"    indexed="true"  stored="true" multiValued="true" termVectors="true"/>
+        <dynamicField name="*_b"  type="boolean" indexed="true" multiValued="true" stored="true"/>
+        <dynamicField name="*_f"  type="float"  indexed="true" multiValued="true" stored="true"/>
+        <dynamicField name="*_d"  type="double" indexed="true" multiValued="true" stored="true"/>
+        <dynamicField name="*_dt" type="date"    indexed="true" multiValued="true" stored="true"/>
+        <dynamicField name="*_str" type="string" indexed="true" multiValued="true" stored="true" termVectors="true"/>
+        <dynamicField name="*_tlf" type="tlf"    indexed="true" multiValued="true"  stored="true" termVectors="true"/>
+        <dynamicField name="*_name" type="name"    indexed="true" multiValued="true" stored="false" termVectors="true"/>
+        <dynamicField name="*_path" type="text_path"    indexed="true" multiValued="true" stored="false" termVectors="true"/>
         <!-- Type used to index the lat and lon components for the "location" FieldType -->
         <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="true"/>
         <dynamicField name="*_location"  type="location" indexed="true" stored="true"/>
