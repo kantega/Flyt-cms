@@ -88,8 +88,6 @@
 
         <c:if test="${numberOfUsers > 0}">
             <p><kantega:label key="useradmin.searchprofiles.foundnusers" numberOfUsers="${numberOfUsers}"/></p>
-            <br/>
-            <div>adsadsadsadsadas</div>
         </c:if>
 
         <c:if test="${canEdit}">
