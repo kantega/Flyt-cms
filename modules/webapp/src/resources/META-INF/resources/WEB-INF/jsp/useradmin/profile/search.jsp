@@ -61,7 +61,14 @@
             <c:forEach var="user" items="${users}" varStatus="status">
                 <c:set var="numberOfUsers" value="${numberOfUsers+1}"/>
                 <tr class="tableRow${status.index mod 2}">
-                    <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')">${user.givenName} ${user.surname}</a></td>
+                    <c:choose>
+                        <c:when test="${not empty user.givenName}">
+                            <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')">${user.givenName} ${user.surname}</a></td>
+                        </c:when>
+                        <c:otherwise>
+                            <td><a href="Javascript:doAction('edit', '${user.identity.domain}', '${user.identity.userId}')">${user.identity.userId}</a></td>
+                        </c:otherwise>
+                    </c:choose>
                     <td>${user.department}</td>
                     <td align="right">
                         <c:if test="${canSetPassword}">
@@ -81,6 +88,8 @@
 
         <c:if test="${numberOfUsers > 0}">
             <p><kantega:label key="useradmin.searchprofiles.foundnusers" numberOfUsers="${numberOfUsers}"/></p>
+            <br/>
+            <div>adsadsadsadsadas</div>
         </c:if>
 
         <c:if test="${canEdit}">
