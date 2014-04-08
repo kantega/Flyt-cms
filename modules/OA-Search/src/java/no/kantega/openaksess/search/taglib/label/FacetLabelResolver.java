@@ -52,7 +52,7 @@ public class FacetLabelResolver {
 
     @Autowired
     public void setLabelResolvers(Collection<LabelResolver> labelResolvers){
-        this.labelResolvers = new HashMap<String, LabelResolver>();
+        this.labelResolvers = new HashMap<>();
         for (LabelResolver labelResolver : labelResolvers) {
             this.labelResolvers.put(labelResolver.handledPrefix(), labelResolver);
         }
