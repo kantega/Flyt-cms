@@ -158,8 +158,8 @@ public class ContentlistAttribute extends ListAttribute {
     }
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {
-        List<ContentIdentifier> cids = new ArrayList<>();
         List<String> values = super.getValues();
+        List<ContentIdentifier> cids = new ArrayList<>(values.size());
         for (String v : values) {
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(Integer.parseInt(v));
             cids.add(cid);
