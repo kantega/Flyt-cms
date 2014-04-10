@@ -29,6 +29,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 
 @Component
@@ -195,13 +196,15 @@ public class SolrSearcher implements Searcher {
         boostQueries.addAll(additionalBoostQueries);
 
         for (String term : terms) {
-            String escapedTerm = ClientUtils.escapeQueryChars(term);
-            boostQueries.add("all_text_unanalyzed:" + escapedTerm);
-            boostQueries.add("title_" + language + ":" + escapedTerm);
-            boostQueries.add("altTitle_" + language + ":" + escapedTerm);
-            boostQueries.add("description_" + language + ":" + escapedTerm);
-            boostQueries.add("keywords:" + escapedTerm);
-            boostQueries.add("topics:" + escapedTerm);
+            if (isNotBlank(term)) {
+                String escapedTerm = ClientUtils.escapeQueryChars(term);
+                boostQueries.add("all_text_unanalyzed:" + escapedTerm);
+                boostQueries.add("title_" + language + ":" + escapedTerm);
+                boostQueries.add("altTitle_" + language + ":" + escapedTerm);
+                boostQueries.add("description_" + language + ":" + escapedTerm);
+                boostQueries.add("keywords:" + escapedTerm);
+                boostQueries.add("topics:" + escapedTerm);
+            }
         }
 
         return boostQueries.toArray(new String[boostQueries.size()]);
