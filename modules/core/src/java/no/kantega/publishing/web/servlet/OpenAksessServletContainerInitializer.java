@@ -34,9 +34,11 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         responseHeaderFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
 
         FilterRegistration.Dynamic paramEncodingFilter = ctx.addFilter("ParamEncodingFilter", ParamEncodingFilter.class);
-        paramEncodingFilter.setInitParameter("encoding", "utf-8");
-        paramEncodingFilter
-                .addMappingForUrlPatterns(dispatchRequests, false, "/*");
+        if (paramEncodingFilter != null) {
+            paramEncodingFilter.setInitParameter("encoding", "utf-8");
+            paramEncodingFilter
+                    .addMappingForUrlPatterns(dispatchRequests, false, "/*");
+        }
 
         ctx.addFilter("StalePluginClassLoaderFilter", StalePluginClassLoaderFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/*");
@@ -65,6 +67,8 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
 
         ctx.addFilter("FakeDirectoryExpires", FarFutureExpiresDirectoryFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/expires/*");
+
+        ctx.getServletRegistration("jsp").addMapping("*.jjs");
     }
 
     private Map<String, String> getAdminResponseHeaderFilterParams() {

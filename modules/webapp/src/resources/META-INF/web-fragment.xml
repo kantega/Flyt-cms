@@ -89,16 +89,6 @@
     </servlet-mapping>
 
     <servlet-mapping>
-        <servlet-name>jsp</servlet-name>
-        <url-pattern>*.jjs</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>jsp</servlet-name>
-        <url-pattern>*.jsp</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
         <servlet-name>TinyMCEServlet</servlet-name>
         <url-pattern>/aksess/tiny_mce/tiny_mce_gzip.jsp</url-pattern>
     </servlet-mapping>
