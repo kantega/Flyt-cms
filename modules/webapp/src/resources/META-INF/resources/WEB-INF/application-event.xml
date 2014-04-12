@@ -33,4 +33,11 @@
 
     <bean id="contentListenerNotifier" factory-bean="contentListenerNotifierFactory" factory-method="createInstance"/>
 
+    <bean id="multimediaListenerNotifierFactory" class="no.kantega.publishing.event.MultimediaListenerNotifierFactory">
+        <property name="multimediaListenerNotifierId" value="multimediaListenerNotifier"/>
+    </bean>
+
+    <bean id="multimediaListenerNotifier" factory-bean="multimediaListenerNotifierFactory" factory-method="createInstance"/>
+
+    <bean class="no.kantega.publishing.event.impl.LoggingMultimediaEventListener"/>
 </beans>
