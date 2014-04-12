@@ -17,9 +17,9 @@
 package no.kantega.publishing.security.service;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.Role;

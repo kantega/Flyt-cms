@@ -1,7 +1,7 @@
 package no.kantega.publishing.admin.ajax;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.service.MultimediaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

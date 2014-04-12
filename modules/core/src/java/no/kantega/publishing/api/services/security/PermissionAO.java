@@ -1,6 +1,6 @@
 package no.kantega.publishing.api.services.security;
 
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.security.data.ObjectPermissionsOverview;
 import no.kantega.publishing.security.data.Permission;
 

@@ -17,11 +17,11 @@
 package no.kantega.publishing.security.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.common.data.BaseObject;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.security.data.*;

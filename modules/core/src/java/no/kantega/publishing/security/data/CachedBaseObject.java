@@ -16,8 +16,7 @@
 
 package no.kantega.publishing.security.data;
 
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.api.model.BaseObject;
 
 /**
  * User: Anders Skar, Kantega AS

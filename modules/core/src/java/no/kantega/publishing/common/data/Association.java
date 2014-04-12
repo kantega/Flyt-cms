@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 

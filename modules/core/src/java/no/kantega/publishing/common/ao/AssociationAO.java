@@ -17,9 +17,13 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.AssociationHelper;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DeletedItem;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.database.SQLHelper;

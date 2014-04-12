@@ -16,24 +16,24 @@
 
 package no.kantega.publishing.admin.security.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.model.BaseObject;
+import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.security.data.Permission;
+import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.common.data.BaseObject;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.commons.client.util.RequestParameters;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
 
 public class AddUserRolePermissionAction extends AbstractController {
     private String view;

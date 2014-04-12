@@ -19,6 +19,7 @@ package no.kantega.publishing.common.data;
 import no.kantega.commons.media.MimeType;
 import no.kantega.commons.media.MimeTypes;
 import no.kantega.commons.util.FormatHelper;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;

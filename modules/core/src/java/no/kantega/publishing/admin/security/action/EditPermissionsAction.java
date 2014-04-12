@@ -18,7 +18,7 @@ package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.ObjectType;

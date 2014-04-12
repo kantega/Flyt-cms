@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.admin.model;
 
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 
 import java.util.List;
 

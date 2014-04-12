@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data;
 
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.model.BaseObject;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,7 +2,7 @@ package no.kantega.publishing.admin.ajax;
 
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.model.ClipboardStatus;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;

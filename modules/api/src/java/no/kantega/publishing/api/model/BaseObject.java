@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.data;
+package no.kantega.publishing.api.model;
 
 public abstract class BaseObject {
     protected int id = -1;

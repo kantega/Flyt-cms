@@ -2,7 +2,7 @@ package no.kantega.openaksess.search.security;
 
 import com.google.common.base.Predicate;
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.search.api.retrieve.IndexableContentTypeToObjectTypeMapping;

@@ -17,7 +17,7 @@
 package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;

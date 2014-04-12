@@ -17,7 +17,7 @@
 package no.kantega.publishing.common.ao;
 
 import com.google.gdata.util.common.base.Pair;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;

@@ -1,6 +1,6 @@
 package no.kantega.publishing.eventlog;
 
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
 
 import javax.servlet.http.HttpServletRequest;

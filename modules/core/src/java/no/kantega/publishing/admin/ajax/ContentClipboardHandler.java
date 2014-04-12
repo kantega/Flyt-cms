@@ -3,7 +3,7 @@ package no.kantega.publishing.admin.ajax;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.data.BaseObject;
+import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
