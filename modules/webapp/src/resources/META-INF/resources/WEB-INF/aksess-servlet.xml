@@ -240,6 +240,13 @@
     </bean>
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
 
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/admin/tools/**"  />
+            <ref bean="adminRoleInterceptor"/>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
     <bean id="adminRoleInterceptedMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
         <property name="alwaysUseFullPath" value="true"/>
         <property name="interceptors">
