@@ -16,23 +16,30 @@
 
 package no.kantega.publishing.common.data.enums;
 
-import java.util.HashMap;
-import java.util.Map;
+public enum ContentVisibilityStatus {
+    WAITING(0),
+    ACTIVE(10),
+    ARCHIVED(15),
+    EXPIRED(20);
 
-public class ContentVisibilityStatus {
-    public static final int WAITING = 0;
-    public static final int ACTIVE  = 10;
-    public static final int ARCHIVED  = 15;
-    public static final int EXPIRED = 20;
-    private final static Map<Integer, String> names = new HashMap<>();
-    static {
-        names.put(WAITING, "WAITING");
-        names.put(ACTIVE, "ACTIVE");
-        names.put(ARCHIVED, "ARCHIVED");
-        names.put(EXPIRED, "EXPIRED");
+    public final int statusId;
+
+    ContentVisibilityStatus(int statusId) {
+        this.statusId = statusId;
     }
 
-    public static String getName(int status) {
-        return names.get(status);
+
+    public static ContentVisibilityStatus fromId(int statusId) {
+        if(statusId == WAITING.statusId){
+            return WAITING;
+        } else if (statusId == ACTIVE.statusId) {
+            return ACTIVE;
+        } else if (statusId == ARCHIVED.statusId) {
+            return ARCHIVED;
+        } else if (statusId == EXPIRED.statusId) {
+            return EXPIRED;
+        } else {
+            throw new IllegalArgumentException("statusId should be one of 0, 10, 15, 20");
+        }
     }
 }

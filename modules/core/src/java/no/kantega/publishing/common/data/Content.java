@@ -70,7 +70,7 @@ public class Content extends BaseObject {
     private Date revisionDate = null;
     private Date changeFromDate = null;
     private ExpireAction expireAction = ExpireAction.HIDE;
-    private int visibilityStatus = ContentVisibilityStatus.ACTIVE;
+    private ContentVisibilityStatus visibilityStatus = ContentVisibilityStatus.ACTIVE;
     private int numberOfNotes = 0;
 
     // Versionable information
@@ -203,11 +203,11 @@ public class Content extends BaseObject {
         return cid;
     }
 
-    public int getVisibilityStatus() {
+    public ContentVisibilityStatus getVisibilityStatus() {
         return visibilityStatus;
     }
 
-    public void setVisibilityStatus(int visibilityStatus) {
+    public void setVisibilityStatus(ContentVisibilityStatus visibilityStatus) {
         this.visibilityStatus = visibilityStatus;
     }
 

@@ -219,7 +219,7 @@ public class ContentSearchController implements AksessController {
     }
 
     private void addVisibilityFilter(List<String> filterQueries) {
-        String visibleContentFilter = "visibilityStatus:" + ContentVisibilityStatus.getName(ContentVisibilityStatus.ACTIVE);
+        String visibleContentFilter = "visibilityStatus:" + ContentVisibilityStatus.ACTIVE.name();
         if(!filterQueries.contains(visibleContentFilter) && showOnlyVisibleContent){
             filterQueries.add(visibleContentFilter);
         }

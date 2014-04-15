@@ -296,7 +296,7 @@ public class ContentManagementService {
      * @return - liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getAllContentVersions(ContentIdentifier id) throws SystemException {
+    public List<Content> getAllContentVersions(ContentIdentifier id) throws SystemException {
         return contentAO.getAllContentVersions(id);
     }
 
@@ -546,15 +546,15 @@ public class ContentManagementService {
         contentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
         ContentEvent event = new ContentEvent().setContent(content);
-        if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
+        if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED.statusId || newVisibilityStatus == ContentVisibilityStatus.EXPIRED.statusId) {
             contentNotifier.contentExpired(event);
-        } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
+        } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE.statusId) {
             contentNotifier.contentActivated(event);
             if (content.getStatus() == ContentStatus.PUBLISHED) {
                 contentNotifier.newContentPublished(event);
             }
         }
-        eventLog.log(securitySession, request, "CV-STATUS-" + ContentVisibilityStatus.getName(newVisibilityStatus), content.getTitle(), content);
+        eventLog.log(securitySession, request, "CV-STATUS-" + ContentVisibilityStatus.fromId(newVisibilityStatus), content.getTitle(), content);
     }
 
     /**
@@ -858,7 +858,7 @@ public class ContentManagementService {
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List getNoChangesPerUser(int months) throws SystemException {
+    public List<UserContentChanges> getNoChangesPerUser(int months) throws SystemException {
         return contentAO.getNoChangesPerUser(months);
     }
 
@@ -922,13 +922,7 @@ public class ContentManagementService {
     }
 
     private String createSiteMapKey(int siteId, int depth, int language, int rootId, int[] path, int categoryId) {
-        StringBuilder keybuilder = new StringBuilder(Integer.toString(siteId));
-        keybuilder.append(depth);
-        keybuilder.append(language);
-        keybuilder.append(rootId);
-        keybuilder.append(Arrays.toString(path));
-        keybuilder.append(categoryId);
-        return keybuilder.toString();
+        return Integer.toString(siteId) + depth + language + rootId + Arrays.toString(path) + categoryId;
     }
 
     /**
@@ -964,7 +958,7 @@ public class ContentManagementService {
      * @return Liste av DocumentType
      * @throws SystemException
      */
-    public List getDocumentTypes() throws SystemException {
+    public List<DocumentType> getDocumentTypes() throws SystemException {
         return DocumentTypeCache.getDocumentTypes();
     }
 

@@ -43,7 +43,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
     private boolean includeRoot = false;
     private boolean includeCurrent = true;
 
-    private List pathitems = null;
+    private List<SiteMapEntry> pathitems = null;
     private int offset = 0;
     private String var = "entry";
 
@@ -81,7 +81,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
 
     public int doStartTag() throws JspException {
-        pathitems = new ArrayList();
+        pathitems = new ArrayList<>();
 
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
@@ -94,12 +94,12 @@ public class GetNavigationPathTag  extends BodyTagSupport {
 
             if (content != null) {
                 List tmp = cms.getPathByAssociation(content.getAssociation());
-                pathitems = new ArrayList();
+                pathitems = new ArrayList<>();
                 for (int i = 0; i < tmp.size(); i++) {
                     PathEntry p = (PathEntry)tmp.get(i);
                     if (i > 0 || includeRoot) {
                         if (pathitems.size() > 0 || startId == p.getId() || startId == -1){
-                            SiteMapEntry s = new SiteMapEntry(p.getId(), p.getId(), -1, ContentType.PAGE, ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE, p.getTitle(), 0, p.getContentTemplateId());
+                            SiteMapEntry s = new SiteMapEntry(p.getId(), p.getId(), -1, ContentType.PAGE, ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE.statusId, p.getTitle(), 0, p.getContentTemplateId());
                             pathitems.add(s);
                         }
                     }
@@ -110,7 +110,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
                 if (includeCurrent && content != null) {
                     // Vis dersom root skal vises
                     if (includeRoot || content.getAssociation().getParentAssociationId() > 0) {
-                        SiteMapEntry s = new SiteMapEntry(content.getAssociation().getId(), content.getAssociation().getAssociationId(), -1, content.getType(), ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE, content.getTitle(), content.getNumberOfNotes(), content.getContentTemplateId());
+                        SiteMapEntry s = new SiteMapEntry(content.getAssociation().getId(), content.getAssociation().getAssociationId(), -1, content.getType(), ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE.statusId, content.getTitle(), content.getNumberOfNotes(), content.getContentTemplateId());
                         s.setSelected(true);
                         pathitems.add(s);
                     }
@@ -127,9 +127,9 @@ public class GetNavigationPathTag  extends BodyTagSupport {
     private int doIter() {
         int size = pathitems.size();
         if (offset < size) {
-            pageContext.setAttribute("aksess_menu_" + name, (SiteMapEntry)pathitems.get(offset));
+            pageContext.setAttribute("aksess_menu_" + name, pathitems.get(offset));
             if(var != null) {
-                pageContext.setAttribute(var, (SiteMapEntry)pathitems.get(offset));
+                pageContext.setAttribute(var, pathitems.get(offset));
             }
             pageContext.setAttribute("aksess_menu_" + name, offset);
             offset++;

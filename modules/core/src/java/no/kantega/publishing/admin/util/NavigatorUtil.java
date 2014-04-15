@@ -37,11 +37,11 @@ public class NavigatorUtil {
      * @return
      */
     public static String getIcon(ContentType type, int vStatus, ContentStatus status) {
-        if (vStatus == ContentVisibilityStatus.WAITING) {
+        if (vStatus == ContentVisibilityStatus.WAITING.statusId) {
             return "waiting";
-        } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
+        } else if (vStatus == ContentVisibilityStatus.EXPIRED.statusId) {
             return "expired";
-        } else if (vStatus == ContentVisibilityStatus.ARCHIVED) {
+        } else if (vStatus == ContentVisibilityStatus.ARCHIVED.statusId) {
             return "expired";
         } else {
             if (type == ContentType.SHORTCUT) {
@@ -76,11 +76,11 @@ public class NavigatorUtil {
      */
     //TODO: Use locale labels
     public static String getIconText(ContentType type, int vStatus, ContentStatus status) {
-        if (vStatus == ContentVisibilityStatus.WAITING) {
+        if (vStatus == ContentVisibilityStatus.WAITING.statusId) {
             return "Utsatt publisering";
-        } else if (vStatus == ContentVisibilityStatus.EXPIRED) {
+        } else if (vStatus == ContentVisibilityStatus.EXPIRED.statusId) {
             return "Utgått på dato - skjult";
-        } else if (vStatus == ContentVisibilityStatus.ARCHIVED) {
+        } else if (vStatus == ContentVisibilityStatus.ARCHIVED.statusId) {
             return "Utgått på dato - arkivert";
         } else {
             if (type == ContentType.SHORTCUT) {

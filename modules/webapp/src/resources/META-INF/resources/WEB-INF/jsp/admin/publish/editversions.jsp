@@ -74,7 +74,7 @@
                     }
                     String statusKey = "aksess.versions.status." + c.getStatus().getTypeAsInt();
                     if (c.getStatus() == ContentStatus.PUBLISHED) {
-                        statusKey += "_" + c.getVisibilityStatus();
+                        statusKey += "_" + c.getVisibilityStatus().statusId;
                     }
             %>
             <tr class="tableRow<%=(i%2)%>">

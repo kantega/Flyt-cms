@@ -833,7 +833,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         contentSt.setTimestamp(p++, content.getExpireDate() == null ? null : new Timestamp(content.getExpireDate().getTime()));
         contentSt.setTimestamp(p++, content.getRevisionDate() == null ? null : new Timestamp(content.getRevisionDate().getTime()));
         contentSt.setString(p++, content.getExpireAction().name());
-        contentSt.setInt(p++, content.getVisibilityStatus());
+        contentSt.setInt(p++, content.getVisibilityStatus().statusId);
         contentSt.setLong(p++, content.getForumId());
         contentSt.setInt(p++, content.isOpenInNewWindow() ? 1:0);
         contentSt.setInt(p++, content.getDocumentTypeIdForChildren());
@@ -1014,7 +1014,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE ExpireDate < ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(new Date().getTime()));
-            p.setInt(2, ContentVisibilityStatus.ACTIVE);
+            p.setInt(2, ContentVisibilityStatus.ACTIVE.statusId);
             p.setInt(3, after);
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
@@ -1033,7 +1033,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT ContentId FROM content WHERE PublishDate > ? AND VisibilityStatus = ? AND ContentId > ? ORDER BY ContentId");
             p.setTimestamp(1, new Timestamp(new Date().getTime()));
-            p.setInt(2, ContentVisibilityStatus.ACTIVE);
+            p.setInt(2, ContentVisibilityStatus.ACTIVE.statusId);
             p.setInt(3, after);
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
@@ -1060,9 +1060,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                     "AND content.ContentId > ? " +
                     "ORDER BY content.ContentId");
             p.setTimestamp(1, new Timestamp(now));
-            p.setInt(2, ContentVisibilityStatus.WAITING);
-            p.setInt(3, ContentVisibilityStatus.ARCHIVED);
-            p.setInt(4, ContentVisibilityStatus.EXPIRED);
+            p.setInt(2, ContentVisibilityStatus.WAITING.statusId);
+            p.setInt(3, ContentVisibilityStatus.ARCHIVED.statusId);
+            p.setInt(4, ContentVisibilityStatus.EXPIRED.statusId);
             p.setTimestamp(5, new Timestamp(now));
             p.setInt(6, ContentStatus.PUBLISHED_WAITING.getTypeAsInt());
             p.setTimestamp(7, new Timestamp(now));
@@ -1140,7 +1140,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     public int getContentCount() throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
-            p.setInt(1, ContentVisibilityStatus.ACTIVE);
+            p.setInt(1, ContentVisibilityStatus.ACTIVE.statusId);
             p.setInt(2, ContentType.PAGE.getTypeAsInt());
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
@@ -1157,7 +1157,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     public int getLinkCount() throws SystemException {
         try(Connection c = dbConnectionFactory.getConnection()){
             PreparedStatement p = c.prepareStatement("SELECT COUNT(*) AS count FROM content WHERE VisibilityStatus = ? AND ContentType = ?");
-            p.setInt(1, ContentVisibilityStatus.ACTIVE);
+            p.setInt(1, ContentVisibilityStatus.ACTIVE.statusId);
             p.setInt(2, ContentType.LINK.getTypeAsInt());
             ResultSet rs = p.executeQuery();
             if(!rs.next()) {
