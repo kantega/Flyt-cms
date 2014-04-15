@@ -269,11 +269,11 @@ public class ContentQuery {
         // Fetch archived pages if specified
         query.append(" and content.VisibilityStatus in (:VisibilityStatus)");
         if (showExpired) {
-            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE, ContentVisibilityStatus.ARCHIVED, ContentVisibilityStatus.EXPIRED));
+            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE.statusId, ContentVisibilityStatus.ARCHIVED.statusId, ContentVisibilityStatus.EXPIRED.statusId));
         } else if (showArchived) {
-            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE, ContentVisibilityStatus.ARCHIVED));
+            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE.statusId, ContentVisibilityStatus.ARCHIVED.statusId));
         } else {
-            parameters.put("VisibilityStatus", ContentVisibilityStatus.ACTIVE);
+            parameters.put("VisibilityStatus", ContentVisibilityStatus.ACTIVE.statusId);
         }
 
         if (owner != null) {
@@ -792,5 +792,9 @@ public class ContentQuery {
             contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
         }
         contentIdHelper.assureAssociationIdSet(cid);
+    }
+
+    public int getMaxRecords() {
+        return maxRecords;
     }
 }
