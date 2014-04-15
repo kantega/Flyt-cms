@@ -167,8 +167,8 @@ public abstract class ContentRequestHandler implements ServletContextAware {
     }
 
     private boolean isExpiredOrNotPublished(Content content) {
-        int visibilityStatus = content.getVisibilityStatus().statusId;
-        return (visibilityStatus != ContentVisibilityStatus.ACTIVE.statusId && visibilityStatus != ContentVisibilityStatus.ARCHIVED.statusId);
+        ContentVisibilityStatus visibilityStatus = content.getVisibilityStatus();
+        return (visibilityStatus != ContentVisibilityStatus.ACTIVE && visibilityStatus != ContentVisibilityStatus.ARCHIVED);
     }
 
     protected abstract SecuritySession getSecuritySession();
