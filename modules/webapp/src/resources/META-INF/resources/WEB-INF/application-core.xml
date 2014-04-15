@@ -27,7 +27,9 @@
         <property name="securityRealm" ref="${security.realm}"/>
     </bean>
 
-    <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl" scope="session"/>
+    <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl">
+        <lookup-method name="getSecuritySession" bean="securitySession"/>
+    </bean>
 
     <bean id="aliasValidator" class="no.kantega.publishing.admin.content.util.ContentAliasValidator" />
 
