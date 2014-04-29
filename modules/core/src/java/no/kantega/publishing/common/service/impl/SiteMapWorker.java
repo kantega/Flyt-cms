@@ -79,16 +79,12 @@ public class SiteMapWorker {
         }
         query.append(" order by associations.ParentAssociationId ");
 
-        switch (sort) {
-            case ContentProperty.TITLE:
-                query.append(", contentversion.Title");
-                break;
-            case ContentProperty.LAST_MODIFIED:
-                query.append(", contentversion.LastModified desc");
-                break;
-            default:
-                query.append(", associations.Category, associations.Priority");
-                break;
+        if (ContentProperty.TITLE.equals(sort)) {
+            query.append(", contentversion.Title");
+        } else if (ContentProperty.LAST_MODIFIED.equals(sort)) {
+            query.append(", contentversion.LastModified desc");
+        } else {
+            query.append(", associations.Category, associations.Priority");
         }
 
         SiteMapEntry sitemap = null;
