@@ -18,6 +18,7 @@
                  no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.common.data.Multimedia" %>
 <%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
+<%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 <%
     Multimedia mm = (Multimedia)request.getAttribute("media");
@@ -39,7 +40,7 @@
 <html>
 <head>
     <title>...</title>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/tiny_mce/tiny_mce_popup.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>
 </head>
 <script language="Javascript">
     function insertMMObject() {

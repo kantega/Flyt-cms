@@ -22,7 +22,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -46,7 +45,6 @@ public class ExpiresResourceUrlTag extends TagSupport {
     public int doStartTag() throws JspException {
 
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
-        HttpServletResponse response = (HttpServletResponse) pageContext.getResponse();
 
         initIfNecessary(pageContext);
         String resolvedUrl = urlPlaceholderResolver.replaceMacros(url, pageContext);
@@ -54,7 +52,7 @@ public class ExpiresResourceUrlTag extends TagSupport {
             StringBuilder expireUrl = new StringBuilder();
             addContextPathIfSpecified(request, expireUrl);
             expireUrl.append("/expires/");
-            expireUrl.append(provider.getUniqueKey(request, response, resolvedUrl));
+            expireUrl.append(provider.getUniqueKey(request, resolvedUrl));
             expireUrl.append(resolvedUrl);
 
             pageContext.getOut().write(expireUrl.toString());
@@ -94,7 +92,7 @@ public class ExpiresResourceUrlTag extends TagSupport {
      */
     class DefaultExpiresResourceKeyProvider implements ResourceKeyProvider {
 
-        public String getUniqueKey(HttpServletRequest request, HttpServletResponse response, String url) {
+        public String getUniqueKey(HttpServletRequest request, String url) {
             return Long.toString(ManagementFactory.getRuntimeMXBean().getStartTime());
         }
     }

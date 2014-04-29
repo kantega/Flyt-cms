@@ -17,11 +17,10 @@
 package no.kantega.commons.taglib.expires;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  *
  */
 public interface ResourceKeyProvider {
-    String getUniqueKey(HttpServletRequest request, HttpServletResponse response, String url);
+    String getUniqueKey(HttpServletRequest request, String url);
 }

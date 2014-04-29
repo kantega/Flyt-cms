@@ -17,8 +17,12 @@
 package no.kantega.publishing.api.taglibs.mini;
 
 import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.commons.taglib.expires.ResourceKeyProvider;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.common.Aksess;
+import org.springframework.beans.BeansException;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -29,16 +33,20 @@ import java.io.IOException;
 
 public class HeaderDependenciesTag extends SimpleTagSupport {
 
+    private ResourceKeyProvider provider;
+
     @Override
     public void doTag() throws JspException, IOException {
         PageContext pageContext = (PageContext) getJspContext();
+        initIfNecessary(pageContext);
+
         HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
         JspWriter out = pageContext.getOut();
 
         String scrollTo = (String)request.getAttribute("scrollTo");
         ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
 
-        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\""+request.getContextPath()+"/wro-oa/miniaksess.css\">\n");
+        out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getExpireUrl(request, "/wro-oa/miniaksess.css") + "\">\n");
         out.write("<script type=\"text/javascript\">\n" +
                 "        var properties = {\n" +
                 "            contextPath : '"+((HttpServletRequest) pageContext.getRequest()).getContextPath()+"',\n" +
@@ -66,13 +74,28 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                     "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
                     "    });\n");
         }
-        out.write("" +
+        out.write(
                 "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +
                 "        $.datepicker.setDefaults($.datepicker.regional['" + Aksess.getDefaultAdminLocale().getCountry() + "']);\n" +
                 "        $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});" +
                 "    </script>");
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/aksess/js/aksess-i18n.jjs\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+request.getContextPath()+"/wro-oa/miniaksess.js\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+ request.getContextPath()+"/aksess/tiny_mce/tiny_mce_gzip.js\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/js/aksess-i18n.jjs") + "\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/miniaksess.js") + "\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/tiny_mce/tiny_mce_gzip.js") + "\"></script>\n");
+    }
+
+    private String getExpireUrl(HttpServletRequest request, String url) {
+        return request.getContextPath() + "/expires/" + provider.getUniqueKey(request, url) + url ;
+    }
+
+    private void initIfNecessary(PageContext pageContext) throws JspException {
+        if (provider == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            try {
+                provider = context.getBean(ResourceKeyProvider.class);
+            } catch (BeansException e) {
+                throw new JspException("Could not find ResourceKeyProvider", e);
+            }
+        }
     }
 }

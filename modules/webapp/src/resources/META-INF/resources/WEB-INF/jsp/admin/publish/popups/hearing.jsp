@@ -26,9 +26,8 @@
 <kantega:section id="title"><kantega:label key="aksess.hearing.title"/></kantega:section>
 
 <kantega:section id="head">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksess-i18n.jjs"></script>
-    <script language="Javascript" type="text/javascript"
-            src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
     <script type="text/javascript">
         function buttonOkPressed() {
             // Prevent popup from closing

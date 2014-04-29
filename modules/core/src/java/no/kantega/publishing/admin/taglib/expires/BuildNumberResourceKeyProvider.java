@@ -25,7 +25,6 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -41,7 +40,7 @@ public class BuildNumberResourceKeyProvider implements ResourceKeyProvider, Init
     private String key;
     private ServletContext servletContext;
 
-    public String getUniqueKey(HttpServletRequest request, HttpServletResponse response, String url) {
+    public String getUniqueKey(HttpServletRequest request, String url) {
         if (runtimeMode == RuntimeMode.DEVELOPMENT) {
             try {
                 // Try as servlet context resource first

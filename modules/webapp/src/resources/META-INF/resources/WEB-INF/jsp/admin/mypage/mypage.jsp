@@ -32,7 +32,7 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksess-i18n.jjs"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>
     <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-mypage.js"/>'></script>
     <script type="text/javascript">
         $(document).ready(function(){
