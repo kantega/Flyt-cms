@@ -68,31 +68,32 @@ public class SiteMapWorker {
 
 
     public static SiteMapEntry getSiteMapBySQL(StringBuilder where, int rootId, boolean getAll, String sort) throws SystemException {
-        List tmpentries = new ArrayList();
+        List<SiteMapEntry> tmpentries = new ArrayList<>();
 
         StringBuilder query = new StringBuilder();
         query.append("select content.ContentId, content.ContentType, content.Alias, content.VisibilityStatus, content.NumberOfNotes, content.Location, content.OpenInNewWindow, content.Owner, content.OwnerPerson, content.IsSearchable, content.ContentTemplateId, content.DisplayTemplateId, contentversion.Status, contentversion.Title, contentversion.AltTitle, contentversion.LastModified, associations.UniqueId, associations.AssociationId, associations.ParentAssociationId, associations.Type, associations.Category, associations.SecurityId, content.GroupId from content, contentversion, associations where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and content.ContentId = associations.ContentId and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0)");
         query.append(where);
         if (!getAll) {
             query.append(" and contentversion.Status = ").append(ContentStatus.PUBLISHED.getTypeAsInt());
-            query.append(" and (content.VisibilityStatus = " + ContentVisibilityStatus.ACTIVE + ")");
+            query.append(" and (content.VisibilityStatus = ").append(ContentVisibilityStatus.ACTIVE.statusId).append(")");
         }
         query.append(" order by associations.ParentAssociationId ");
 
-        if (ContentProperty.TITLE.equals(sort)) {
-            query.append(", contentversion.Title");
-        } else if (ContentProperty.LAST_MODIFIED.equals(sort)) {
-            query.append(", contentversion.LastModified desc");
-        } else {
-            query.append(", associations.Category, associations.Priority");
+        switch (sort) {
+            case ContentProperty.TITLE:
+                query.append(", contentversion.Title");
+                break;
+            case ContentProperty.LAST_MODIFIED:
+                query.append(", contentversion.LastModified desc");
+                break;
+            default:
+                query.append(", associations.Category, associations.Priority");
+                break;
         }
 
         SiteMapEntry sitemap = null;
 
-        Connection c = null;
-
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()) {
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
             while(rs.next()) {
                 int p = 1;
@@ -184,14 +185,6 @@ public class SiteMapWorker {
             rs.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
 
         if (sitemap != null) {
