@@ -251,7 +251,7 @@ public class SiteMapWorker {
 
         // Hide the expired pages
         if (!showExpired) {
-            query.append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.ARCHIVED).append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.EXPIRED);
+            query.append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.ARCHIVED.statusId).append(" and content.VisibilityStatus != ").append(ContentVisibilityStatus.EXPIRED.statusId);
         }
 
         // Determine if element has children
