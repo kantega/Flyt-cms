@@ -41,9 +41,9 @@ import java.util.List;
 
 public class SiteMapWorker {
 
-    private static SiteMapEntry getFirst(int parentId, List entries) {
+    private static SiteMapEntry getFirst(int parentId, List<SiteMapEntry> entries) {
         for (int i = 0; i < entries.size(); i++) {
-            SiteMapEntry e = (SiteMapEntry)entries.get(i);
+            SiteMapEntry e = entries.get(i);
             // Snarveier kan aldri være parents
             if (e.parentId == parentId) {
                 entries.remove(e);
@@ -53,7 +53,7 @@ public class SiteMapWorker {
         return null;
     }
 
-    private static void addToSiteMap(SiteMapEntry parent, List entries) {
+    private static void addToSiteMap(SiteMapEntry parent, List<SiteMapEntry> entries) {
         if (parent.getType() == ContentType.PAGE) {
             int parentId = parent.currentId;
             SiteMapEntry entry = getFirst(parentId, entries);
@@ -259,7 +259,7 @@ public class SiteMapWorker {
 
         if (sitemap != null) {
             // Site map can be null if no pages are created yet
-            List<SiteMapEntry> leafNodes = new ArrayList<SiteMapEntry>();
+            List<SiteMapEntry> leafNodes = new ArrayList<>();
             getLeafNodes(leafNodes, sitemap);
 
             updateStatusForLeafNodes(leafNodes, associationCategories);
@@ -269,11 +269,8 @@ public class SiteMapWorker {
     }
 
     private static void updateStatusForLeafNodes(List<SiteMapEntry> leafNodes, int[] associationCategories) {
-        Connection c = null;
+        StringBuilder query = new StringBuilder("select ParentAssociationId from associations where associations.ParentAssociationId in (");
 
-        StringBuilder query = new StringBuilder();
-
-        query.append("select ParentAssociationId from associations where associations.ParentAssociationId in (");
         for (int i = 0; i < leafNodes.size(); i++) {
             SiteMapEntry leafNode = leafNodes.get(i);
             if (i > 0) {
@@ -291,8 +288,7 @@ public class SiteMapWorker {
             query.append(")");
         }
 
-        try {
-            c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             ResultSet rs = SQLHelper.getResultSet(c, query.toString());
             while(rs.next()) {
                 int id = rs.getInt("ParentAssociationId");
@@ -304,14 +300,6 @@ public class SiteMapWorker {
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-
-            }
         }
     }
 
