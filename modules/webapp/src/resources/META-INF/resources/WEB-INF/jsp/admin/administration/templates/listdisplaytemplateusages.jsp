@@ -35,7 +35,7 @@
                 <tr class="tableRow${status.index mod 2}">
                     <td><aksess:link collection="pages" target="_blank"><aksess:getattribute name="title" collection="pages"/></aksess:link></td>
                     <td><aksess:getattribute name="lastmodified" collection="pages"/></td>
-                    <td class="showinadmin"><a href="<aksess:geturl url="/admin/?thisId=" /><aksess:getattribute name="id" collection="pages"/>"><kantega:label key="aksess.displaytemplates.usages.openinadmin"/></a></td>
+                    <td class="showinadmin"><a href="<aksess:geturl />/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" collection="pages"/>"><kantega:label key="aksess.displaytemplates.usages.openinadmin"/></a></td>
                 </tr>
             </aksess:getcollection>
         </table>

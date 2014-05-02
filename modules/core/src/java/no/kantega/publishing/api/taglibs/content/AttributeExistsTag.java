@@ -16,7 +16,8 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 /**
  * Determines whether an attribute exists and has value.
@@ -26,6 +27,6 @@ public class AttributeExistsTag extends AbstractAttributeConditionTag {
 
     @Override
     protected boolean evaluateCondition(String value) {
-        return isNotBlank(value);
+        return isNotEmpty(value);
     }
 }
