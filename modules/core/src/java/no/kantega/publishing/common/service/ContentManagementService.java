@@ -242,7 +242,7 @@ public class ContentManagementService {
     }
 
     private Content getContentFromCache(ContentIdentifier id, boolean adminMode) {
-        if(cachingEnabled && id.getVersion() == -1 && id.getStatus() == null) {
+        if(shouldUseCache(id, adminMode)) {
             contentIdHelper.assureAssociationIdSet(id);
             final Object key = id.getAssociationId();
             final Element element = contentCache.get(key);
@@ -257,6 +257,10 @@ public class ContentManagementService {
         } else {
             return contentAO.getContent(id, adminMode);
         }
+    }
+
+    private boolean shouldUseCache(ContentIdentifier id, boolean adminMode) {
+        return cachingEnabled && !adminMode && id.getVersion() == -1 && id.getStatus() == null;
     }
 
     /**
