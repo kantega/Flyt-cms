@@ -14,7 +14,7 @@
     <name>OpenAksess search - Solr</name>
 
     <properties>
-        <solr.version>4.7.1</solr.version>
+        <solr.version>4.8.0</solr.version>
     </properties>
 
     <dependencies>
@@ -62,10 +62,10 @@
                     <artifactId>hadoop-auth</artifactId>
                 </exclusion>
                 <!-- Not in Maven Central, and not in use in OA -->
-                <exclusion>
+<!--                <exclusion>
                     <groupId>org.restlet.jee</groupId>
                     <artifactId>org.restlet</artifactId>
-                </exclusion>
+                </exclusion>-->
                 <exclusion>
                     <groupId>org.restlet.jee</groupId>
                     <artifactId>org.restlet.ext.servlet</artifactId>
@@ -132,10 +132,10 @@
             <version>${solr.version}</version>
             <exclusions>
                 <!-- Not in Maven Central, and not in use in OA -->
-                <exclusion>
+<!--                <exclusion>
                     <groupId>org.restlet.jee</groupId>
                     <artifactId>org.restlet</artifactId>
-                </exclusion>
+                </exclusion>-->
                 <exclusion>
                     <groupId>org.restlet.jee</groupId>
                     <artifactId>org.restlet.ext.servlet</artifactId>
