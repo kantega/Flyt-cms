@@ -30,14 +30,20 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         EnumSet<DispatcherType> dispatchRequests = EnumSet.allOf(DispatcherType.class);
 
         FilterRegistration.Dynamic responseHeaderFilter = ctx.addFilter("ResponseHeaderFilter", ResponseHeaderFilter.class);
-        responseHeaderFilter.setInitParameters(getAdminResponseHeaderFilterParams());
-        responseHeaderFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
+        if (responseHeaderFilter != null) {
+            responseHeaderFilter.setInitParameters(getAdminResponseHeaderFilterParams());
+            responseHeaderFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
+        } else {
+            log.warn("ResponseHeaderFilter defined in web.xml, please remove it!");
+        }
 
         FilterRegistration.Dynamic paramEncodingFilter = ctx.addFilter("ParamEncodingFilter", ParamEncodingFilter.class);
         if (paramEncodingFilter != null) {
             paramEncodingFilter.setInitParameter("encoding", "utf-8");
             paramEncodingFilter
                     .addMappingForUrlPatterns(dispatchRequests, false, "/*");
+        } else {
+            log.warn("ParamEncodingFilter defined in web.xml, please remove it!");
         }
 
         ctx.addFilter("StalePluginClassLoaderFilter", StalePluginClassLoaderFilter.class)
@@ -46,8 +52,12 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         ctx.addFilter("NoSpringContextCapableMultipartFilter", NoSpringContextCapableMultipartFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/*");
 
-        ctx.addFilter("AdminFilter", AdminFilter.class)
-                .addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
+        FilterRegistration.Dynamic adminFilter = ctx.addFilter("AdminFilter", AdminFilter.class);
+        if (adminFilter != null) {
+            adminFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
+        } else {
+            log.warn("AdminFilter defined in web.xml, please remove it or rename!");
+        }
 
         ctx.addFilter("AdminRoleFilter", RoleFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/admin/tools/*");
