@@ -536,8 +536,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             public void processRow(ResultSet rs) throws SQLException {
                 int contentId = rs.getInt("ContentId");
                 if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + contentQuery.getOffset())){
-                    Content content = contentRowMapper.mapRow(rs, count++);
-                    handler.handleContent(content);
+                    if (count >= contentQuery.getOffset()) {
+                        Content content = contentRowMapper.mapRow(rs, count++);
+                        handler.handleContent(content);
+                    }else {
+                        count++;
+                    }
                 }
             }
         });

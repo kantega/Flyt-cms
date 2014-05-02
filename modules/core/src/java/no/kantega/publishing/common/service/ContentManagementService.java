@@ -718,6 +718,12 @@ public class ContentManagementService {
 
     private List<Content> getContentListFromCache(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
         if(cachingEnabled) {
+            query.setMaxRecords(maxElements);
+
+            if (sort != null){
+                query.setSortOrder(sort);
+            }
+
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
             String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);

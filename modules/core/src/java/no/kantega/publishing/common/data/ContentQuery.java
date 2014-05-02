@@ -114,7 +114,7 @@ public class ContentQuery {
             joinTables.add("ct2topic");
         }
 
-        if (maxRecords != -1 && useSqlSort && driver.contains("jtds") && joinTables.size() == 0) {
+        if (maxRecords != -1 && useSqlSort && driver.contains("jtds")) {
             // Only limit if not using join
             query.append("select top ").append(maxRecords + offset);
         } else {
@@ -434,7 +434,7 @@ public class ContentQuery {
             query.append(" order by ContentVersionId ");
         }
 
-        if (maxRecords != -1 && useSqlSort && driver.contains("mysql") && joinTables.size() == 0) {
+        if (maxRecords != -1 && useSqlSort && driver.contains("mysql")) {
             // Only limit if not using join
             query.append(" limit ").append(maxRecords + offset);
         }
