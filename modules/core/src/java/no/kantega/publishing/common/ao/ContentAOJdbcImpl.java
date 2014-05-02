@@ -1084,12 +1084,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
     @Override
-    public void setContentVisibilityStatus(int contentId, int newStatus) throws SystemException {
+    public void setContentVisibilityStatus(int contentId, ContentVisibilityStatus newStatus) throws SystemException {
 
         try(Connection c = dbConnectionFactory.getConnection()){
 
             PreparedStatement tmp = c.prepareStatement("update content set VisibilityStatus = ? where ContentId = ?");
-            tmp.setInt(1, newStatus);
+            tmp.setInt(1, newStatus.statusId);
             tmp.setInt(2, contentId);
             tmp.execute();
             tmp.close();

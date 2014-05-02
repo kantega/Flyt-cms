@@ -46,9 +46,9 @@ public class ContentStateUpdater {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = contentAO.getContent(cid, false);
                 if (content != null) {
-                    int newVisibilityStatus = ContentVisibilityStatus.EXPIRED.statusId;
+                    ContentVisibilityStatus newVisibilityStatus = ContentVisibilityStatus.EXPIRED;
                     if (content.getExpireAction() == ExpireAction.ARCHIVE) {
-                        newVisibilityStatus = ContentVisibilityStatus.ARCHIVED.statusId;
+                        newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
                     }
                     log.info("VisibilityStatus of " + content.getTitle() + " was set to " + newVisibilityStatus);
                     cms.setContentVisibilityStatus(content, newVisibilityStatus);
@@ -62,7 +62,7 @@ public class ContentStateUpdater {
                 Content content = contentAO.getContent(cid, false);
                 if (content != null) {
                     log.info("VisibilityStatus of " + content.getTitle() + " was set to WAITING");
-                    cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING.statusId);
+                    cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING);
                 }
             }
         } catch (SystemException e) {
@@ -82,7 +82,7 @@ public class ContentStateUpdater {
                 if (content != null) {
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
                         log.info(content.getTitle() + " page was made visible due to publish date");
-                        cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE.statusId);
+                        cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE);
                     } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
                         log.info(content.getTitle() + " new version was activated due to change from date");
                         cms.setContentStatus(cid, ContentStatus.PUBLISHED, "");

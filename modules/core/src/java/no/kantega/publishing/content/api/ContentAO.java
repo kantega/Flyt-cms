@@ -5,6 +5,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
@@ -173,7 +174,7 @@ public interface ContentAO {
      * @param newStatus to set. One of the constants in ContentVisibilityStatus: WAITING, ACTIVE, ARCHIVED, EXPIRED.
      * @throws SystemException
      */
-    void setContentVisibilityStatus(int contentId, int newStatus) throws SystemException;
+    void setContentVisibilityStatus(int contentId, ContentVisibilityStatus newStatus) throws SystemException;
 
     /**
      * @param contentId identifying content

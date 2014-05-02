@@ -546,19 +546,19 @@ public class ContentManagementService {
      * @param content to set visibility status for
      * @param newVisibilityStatus the new status
      */
-    public void setContentVisibilityStatus(Content content, int newVisibilityStatus) {
+    public void setContentVisibilityStatus(Content content, ContentVisibilityStatus newVisibilityStatus) {
         contentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
         ContentEvent event = new ContentEvent().setContent(content);
-        if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED.statusId || newVisibilityStatus == ContentVisibilityStatus.EXPIRED.statusId) {
+        if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
             contentNotifier.contentExpired(event);
-        } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE.statusId) {
+        } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
             contentNotifier.contentActivated(event);
             if (content.getStatus() == ContentStatus.PUBLISHED) {
                 contentNotifier.newContentPublished(event);
             }
         }
-        eventLog.log(securitySession, request, "CV-STATUS-" + ContentVisibilityStatus.fromId(newVisibilityStatus), content.getTitle(), content);
+        eventLog.log(securitySession, request, "CV-STATUS-" + newVisibilityStatus, content.getTitle(), content);
     }
 
     /**

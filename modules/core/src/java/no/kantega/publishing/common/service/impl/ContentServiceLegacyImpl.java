@@ -84,7 +84,7 @@ public abstract class ContentServiceLegacyImpl implements ContentManagementServi
 
     @Override
     public void setContentVisibilityStatus(Content content, ContentVisibilityStatus newVisibilityStatus) {
-        getCMS().setContentVisibilityStatus(content, newVisibilityStatus.statusId);
+        getCMS().setContentVisibilityStatus(content, newVisibilityStatus);
     }
 
     @Override
