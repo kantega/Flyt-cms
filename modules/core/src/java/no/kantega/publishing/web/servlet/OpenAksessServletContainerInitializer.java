@@ -28,6 +28,10 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         log.info("Registering OpenAksess filters");
 
         EnumSet<DispatcherType> dispatchRequests = EnumSet.allOf(DispatcherType.class);
+        /*
+         * Removing Include because all of the filters defined here will be run in FORWARD or REQUEST scope anyway.
+         * Having Include scope also breaks Miniaksess' InputScreenRenderer when the user does not have author roles.
+         */
         dispatchRequests.remove(DispatcherType.INCLUDE);
 
         FilterRegistration.Dynamic responseHeaderFilter = ctx.addFilter("ResponseHeaderFilter", ResponseHeaderFilter.class);
@@ -57,7 +61,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         if (adminFilter != null) {
             adminFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
         } else {
-            log.warn("AdminFilter defined in web.xml, please remove it or rename!");
+            log.warn("AdminFilter defined in web.xml, please rename or remove it!");
         }
 
         ctx.addFilter("AdminRoleFilter", RoleFilter.class)
