@@ -23,7 +23,6 @@ import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
@@ -32,7 +31,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class LockManager {
     private static final Logger log = LoggerFactory.getLogger(LockManager.class);
-    private final static String SOURCE = "aksess.LockManager";
 
     private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<>();
     private static int lockTimeToLive = Aksess.getLockTimeToLive()* 1000;
@@ -105,13 +103,13 @@ public class LockManager {
         Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
         Collection<Map.Entry<Integer, ContentLock>> contentLocksWithOwner = Collections2.filter(lockEntries, new Predicate<Map.Entry<Integer, ContentLock>>() {
             @Override
-            public boolean apply(@Nullable Map.Entry<Integer, ContentLock> lockEntry) {
+            public boolean apply(Map.Entry<Integer, ContentLock> lockEntry) {
                 return lockEntry.getValue().getOwner().equals(owner);
             }
         });
         Collection<Integer> lockIdsForOwner = Collections2.transform(contentLocksWithOwner, new Function<Map.Entry<Integer, ContentLock>, Integer>() {
             @Override
-            public Integer apply(@Nullable Map.Entry<Integer, ContentLock> lockEntry) {
+            public Integer apply(Map.Entry<Integer, ContentLock> lockEntry) {
                 return lockEntry.getKey();
             }
         });

@@ -90,7 +90,9 @@ public class CacheExpirator extends ContentEventListenerAdapter {
     }
 
     private void removeContentFromCache(ContentEvent event) {
-        evictForAssociation(event.getContent().getAssociation());
+        for(Association association : event.getContent().getAssociations()){
+            evictForAssociation(association);
+        }
         aliasCache.clear();
         contentIdentifierCache.clear();
         contentListCache.clear();
