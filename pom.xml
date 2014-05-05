@@ -236,7 +236,7 @@
     </build>
 
     <properties>
-        <aksess-maven-plugin.version>2.4</aksess-maven-plugin.version>
+        <aksess-maven-plugin.version>2.5-SNAPSHOT</aksess-maven-plugin.version>
 
         <codec.version>1.7</codec.version>
         <commons-pool.version>1.5.4</commons-pool.version>
