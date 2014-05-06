@@ -47,6 +47,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -81,10 +82,11 @@ public class SecuritySession {
      */
     public static SecuritySession getInstance(HttpServletRequest request) throws SystemException {
 
-        SecuritySession session = (SecuritySession) request.getSession(true).getAttribute("aksess.securitySession");
+        HttpSession httpSession = request.getSession(true);
+        SecuritySession session = (SecuritySession) httpSession.getAttribute("aksess.securitySession");
         if (session == null) {
             session = createNewInstance();
-            request.getSession(true).setAttribute("aksess.securitySession", session);
+            httpSession.setAttribute("aksess.securitySession", session);
         }
 
         session.setRememberMeHandlerIfNull();
@@ -119,13 +121,13 @@ public class SecuritySession {
                 if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
                     request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
                 }
-                request.getSession(true).setAttribute("aksess.securitySession", session);
+                httpSession.setAttribute("aksess.securitySession", session);
 
             } else if (identity == null && currentIdentity != null) {
                 // Bruker er utlogget via ekstern tjeneste - lag blank sesjon
                 session = createNewInstance();
-                request.getSession(true).setAttribute("aksess.securitySession", session);
-                request.getSession(true).removeAttribute("adminMode");
+                httpSession.setAttribute("aksess.securitySession", session);
+                httpSession.removeAttribute("adminMode");
         }
 
         return session;
