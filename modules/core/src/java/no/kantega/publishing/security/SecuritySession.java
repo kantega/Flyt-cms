@@ -382,6 +382,7 @@ public class SecuritySession {
         }
 
         if (prevObject != null && prevObject.isSameAs(object) && privilege == prevPrivilege) {
+            log.debug("Match on prevObject.isSameAs(object) && privilege == prevPrivilege");
             return prevResult;
         }
 

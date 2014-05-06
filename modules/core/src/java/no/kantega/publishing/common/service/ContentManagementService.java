@@ -61,6 +61,7 @@ import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
@@ -180,10 +181,11 @@ public class ContentManagementService {
         Content content = EditContentHelper.createContent(securitySession, parameters);
 
         Map<String, String> defaultValues = parameters.getDefaultValues();
-        defaultValues.put(AttributeDefaultValues.USER_ID, securitySession.getUser().getId());
-        defaultValues.put(AttributeDefaultValues.USER_NAME, securitySession.getUser().getName());
-        defaultValues.put(AttributeDefaultValues.USER_DEPARTMENT, securitySession.getUser().getDepartment());
-        defaultValues.put(AttributeDefaultValues.USER_EMAIL, securitySession.getUser().getEmail());
+        User user = securitySession.getUser();
+        defaultValues.put(AttributeDefaultValues.USER_ID, user.getId());
+        defaultValues.put(AttributeDefaultValues.USER_NAME, user.getName());
+        defaultValues.put(AttributeDefaultValues.USER_DEPARTMENT, user.getDepartment());
+        defaultValues.put(AttributeDefaultValues.USER_EMAIL, user.getEmail());
 
         Calendar cal = new GregorianCalendar(Aksess.getDefaultLocale());
         defaultValues.put(AttributeDefaultValues.YEAR, "" + cal.get(Calendar.YEAR));

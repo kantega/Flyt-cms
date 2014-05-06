@@ -252,7 +252,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             if (!foundCurrentAssociation && associations.size() > 0) {
                 Association a = associations.get(0);
                 a.setCurrent(true);
-                log.debug( "Fant ingen defaultknytning:" + contentId);
+                log.debug( "Fant ingen defaultknytning: {}", contentId);
             }
         }
 
