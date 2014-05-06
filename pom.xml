@@ -237,6 +237,8 @@
 
     <properties>
         <aksess-maven-plugin.version>2.5-SNAPSHOT</aksess-maven-plugin.version>
+        <securityapi.version>2.7</securityapi.version>
+        <securityapi.openimpl.version>2.12</securityapi.openimpl.version>
 
         <codec.version>1.7</codec.version>
         <commons-pool.version>1.5.4</commons-pool.version>
@@ -246,8 +248,7 @@
         <fileupload.version>1.2.1</fileupload.version>
         <nekohtml.version>1.9.19</nekohtml.version>
         <springframework.version>3.2.6.RELEASE</springframework.version>
-        <securityapi.version>2.6</securityapi.version>
-        <securityapi.openimpl.version>2.10</securityapi.openimpl.version>
+
         <xalan.version>2.7.1</xalan.version>
         <xml-apis.version>1.4.01</xml-apis.version>
         <jexmec.version>2.0.0rc8</jexmec.version>
