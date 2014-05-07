@@ -22,6 +22,9 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 public class StringHelper {
+
+    private static Pattern STRIP_HTML_PATTERN = Pattern.compile("<(.|\\n)+?>");
+
     /**
      *
      * @param source - text to replace text in
@@ -56,8 +59,7 @@ public class StringHelper {
     }
 
     private static StringBuffer makeLinks(StringBuffer text, String toFind, boolean isMail){
-        int urlPos  = text.indexOf(toFind);
-        int foundPos  = urlPos;
+        int foundPos  = text.indexOf(toFind);
         while (foundPos != -1) {
             int textLen = text.length();
             int startPos = foundPos;
@@ -107,7 +109,7 @@ public class StringHelper {
                     generatedLink = "<a href=\"mailto:" + address + "\">" + address + "</a>";
                 }
                 else {
-                    if( address.indexOf("://") == -1){
+                    if(!address.contains("://")){
                         generatedLink = "<a href=\"http://" + address + "\">" + address + "</a>";
                     }
                     else {
@@ -201,7 +203,7 @@ public class StringHelper {
      * @return The text with tags replaced by an empty string.
      */
     public static String stripHtml(String source) {
-        return source.replaceAll("<(.|\\n)+?>", "");
+        return STRIP_HTML_PATTERN.matcher(source).replaceAll("");
     }
 
     /**

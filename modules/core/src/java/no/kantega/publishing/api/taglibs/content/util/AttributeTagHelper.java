@@ -301,9 +301,6 @@ public final class AttributeTagHelper {
                     }
                 } else {
                     result = attr.getProperty(cmd.getProperty());
-
-
-
                 }
 
                 if (attr instanceof TextAttribute) {

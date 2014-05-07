@@ -107,7 +107,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             }
 
         } else {
-            log.info("Get from user");
+            log.debug("Get from user");
             return goBackToEditPage(request, aksessService, content, model);
         }
     }

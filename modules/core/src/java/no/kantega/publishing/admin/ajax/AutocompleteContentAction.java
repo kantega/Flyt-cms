@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class AutocompleteContentAction implements Controller {
 
     private SiteCache siteCache;
@@ -41,7 +43,7 @@ public class AutocompleteContentAction implements Controller {
         Map<String, Object> model = new HashMap<>();
         String title = request.getParameter("term");
 
-        if (title != null && title.trim().length() > 0) {
+        if (isNotBlank(title)) {
             ContentQuery query = new ContentQuery();
             query.setKeyword(title + '%');
             ContentManagementService cms = new ContentManagementService(request);
