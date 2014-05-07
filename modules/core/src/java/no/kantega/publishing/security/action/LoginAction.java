@@ -32,6 +32,7 @@ import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.role.RoleManager;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -140,8 +141,8 @@ public class LoginAction extends AbstractLoginAction {
             }
         }
 
-        model.put("redirect", redirect);
-        model.put("username", username);
+        model.put("redirect", StringEscapeUtils.escapeHtml(redirect));
+        model.put("username", StringEscapeUtils.escapeHtml(username));
         model.put("loginLayout", getLoginLayout());
 
         return new ModelAndView(loginView, model);
