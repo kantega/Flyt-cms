@@ -130,8 +130,8 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
     @SuppressWarnings("unchecked")
     public List<String> getFieldNamesForForm(int formId) {
-        List<String> uniqueNames = new ArrayList<String>();
-        Map<String, String> mapNames = new HashMap<String, String>();
+        List<String> uniqueNames = new ArrayList<>();
+        Map<String, String> mapNames = new HashMap<>();
 
         // Get distinct names in correct order, cant do this only with SQL it seems
         List<String> allNames = jdbcTemplate.queryForList("SELECT FieldName FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[] {formId}, String.class);
@@ -200,7 +200,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     }
 
     private class FormSubmissionValuesCallbackHandler implements RowCallbackHandler {
-        private Map<Integer, DefaultFormSubmission> formSubmissions = new HashMap<Integer, DefaultFormSubmission>();
+        private Map<Integer, DefaultFormSubmission> formSubmissions = new HashMap<>();
 
         public void setFormSubmission(List<DefaultFormSubmission> submissions) {
             for (DefaultFormSubmission s : submissions) {
@@ -214,7 +214,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
             if (submission != null) {
                 List<FormValue> formValues = submission.getValues();
                 if (formValues == null) {
-                    formValues = new ArrayList<FormValue>();
+                    formValues = new ArrayList<>();
                     submission.setValues(formValues);
                 }
 
@@ -233,7 +233,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
                 // Add existing values if any
                 String[] values = formValue.getValues();
-                List<String> list = new ArrayList<String>();
+                List<String> list = new ArrayList<>();
                 if (values != null) {
                     list.addAll(Arrays.asList(values));
                 }

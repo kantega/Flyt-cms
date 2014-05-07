@@ -29,7 +29,7 @@ public class DefaultFormValue implements FormValue {
     }
 
     public String getValuesAsString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (values != null) {
             for (String v : values) {
                 if (sb.length() > 0) {

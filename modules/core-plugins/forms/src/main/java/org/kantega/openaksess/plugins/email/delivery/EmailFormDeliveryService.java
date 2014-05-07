@@ -17,6 +17,7 @@
 package org.kantega.openaksess.plugins.email.delivery;
 
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
+import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
@@ -54,7 +55,8 @@ public class EmailFormDeliveryService implements FormDeliveryService {
     }
 
     public void deliverForm(FormSubmission formSubmission) {
-        if (formSubmission.getForm().getEmail() == null || formSubmission.getForm().getEmail().length() == 0) {
+        Form form = formSubmission.getForm();
+        if (form.getEmail() == null || form.getEmail().length() == 0) {
             log.debug( "Email was blank, form not sent via email");
             return;
         }
@@ -65,15 +67,16 @@ public class EmailFormDeliveryService implements FormDeliveryService {
                 // Use default sender
                 from = Aksess.getConfiguration().getString("mail.from");
             }
-            String to = formSubmission.getForm().getEmail();
+            String to = form.getEmail();
 
-            Map<String, Object> param = new HashMap<String, Object>();
+            Map<String, Object> param = new HashMap<>();
             param.put("form", formSubmission);
 
             sendEmail(formSubmission, from, to, param);
+            log.info("Sent formsubmission {} on email", formSubmission.getFormSubmissionId());
         } catch (Exception e) {
-            eventLog.log("System", null, Event.FAILED_FORM_SUBMISSION, "Form Id: " + formSubmission.getForm().getId(), null);
-            log.error("Delivering form by email failed. Form Id: " + formSubmission.getForm().getId(), e);
+            eventLog.log("System", null, Event.FAILED_FORM_SUBMISSION, "Form Id: " + form.getId(), null);
+            log.error("Delivering form by email failed. Form Id: " + form.getId(), e);
         }
 
     }
@@ -82,7 +85,7 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         String xml = xmlFormsubmissionConverter.createXMLFromFormSubmission(formSubmission);
         byte[] pdf = pdfGenerator.createPDF(xml, xslFoDocumentPath);
 
-        List<MimeBodyPart> bodyparts = new ArrayList<MimeBodyPart>();
+        List<MimeBodyPart> bodyparts = new ArrayList<>();
 
         String body = MailSender.createStringFromVelocityTemplate(mailTemplate, param);
         MimeBodyPart messagePart = MailSender.createMimeBodyPartFromStringMessage(body);
