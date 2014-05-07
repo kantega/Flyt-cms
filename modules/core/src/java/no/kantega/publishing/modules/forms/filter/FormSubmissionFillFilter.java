@@ -8,7 +8,10 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates a FormSubmission filled with values based on a form and values sent from user
@@ -31,7 +34,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         this.params = params;
         this.formSubmission = new DefaultFormSubmission();
         formSubmission.setForm(form);
-        this.errors = new ArrayList<FormError>();
+        this.errors = new ArrayList<>();
         currentFieldIndex = 0;
         this.shouldAddParametersNotInForm = shouldAddParametersNotInForm;
     }
@@ -43,9 +46,9 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if (name.equalsIgnoreCase("div")) {
-            checkIfDivTagIsNewFormElement(name, attributes);
+            checkIfDivTagIsNewFormElement(attributes);
         } else if (name.equalsIgnoreCase("span")) {
-            checkIfSpanTagContainsRegexpOrDateFormat(name, attributes);
+            checkIfSpanTagContainsRegexpOrDateFormat(attributes);
         } else if (name.equalsIgnoreCase("input")
                 || name.equalsIgnoreCase("radio")
                 || name.equalsIgnoreCase("checkbox")
@@ -78,7 +81,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         return formSubmission;
     }
 
-    private void checkIfDivTagIsNewFormElement(String name, Attributes attributes) {
+    private void checkIfDivTagIsNewFormElement(Attributes attributes) {
         if (attributes != null && attributes.getValue("class") != null && attributes.getValue("class").contains("formElement")) {
             // New form element, check if it is mandatory
             mandatory = attributes.getValue("class").contains("mandatory");
@@ -86,7 +89,7 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
         }
     }
 
-    private void checkIfSpanTagContainsRegexpOrDateFormat(String name, Attributes attributes) {
+    private void checkIfSpanTagContainsRegexpOrDateFormat(Attributes attributes) {
         capture = attributes != null
                 && attributes.getValue("class") != null
                 && (attributes.getValue("class").contains("regex") || attributes.getValue("class").contains("dateformat"));
@@ -128,7 +131,6 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
             isEmpty = false;
         }
 
-
         String inputClass = attributes.getValue("class");
         if (!isEmpty && inputType != null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
             validateMaxlength(attributes, inputName, formValueAsString);
@@ -166,15 +168,14 @@ public class FormSubmissionFillFilter extends XMLFilterImpl {
     }
 
     private void addCustomParametersNotInForm() {
-        Map tmpParameters = new LinkedHashMap<String, String[]>(params);
+        Map<String, String[]> tmpParameters = new LinkedHashMap<>(params);
         for (FormValue value : formSubmission.getValues()) {
             tmpParameters.remove(value.getName());
         }
-        Iterator keys = tmpParameters.keySet().iterator();
-        while (keys.hasNext()) {
-            String name = (String)keys.next();
+        for (Map.Entry<String, String[]> entry : tmpParameters.entrySet()) {
+            String name = entry.getKey();
             if (!isExcludedParameter(name)) {
-                String[] value = (String[])tmpParameters.get(name);
+                String[] value = entry.getValue();
                 DefaultFormValue formValue = new DefaultFormValue();
                 formValue.setName(name);
                 formValue.setValues(value);
