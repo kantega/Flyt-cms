@@ -176,26 +176,6 @@ public class StringHelper {
         }
         return asList;
     }
-    /**
-     * Return string with first letter in uppercase
-     * @param source - source text
-     * @return - replaced text
-     */
-    public static String capitalize(String source) {
-        String newstr = "";
-
-        char ch = '.';
-        for (int i = 0; i < source.length(); i++) {
-            ch = source.charAt(i);
-            if(i == 0 && Character.isLetter(ch) && Character.isLowerCase(ch)) {
-                newstr += Character.toUpperCase(ch);
-            } else {
-                newstr += ch;
-            }
-        }
-
-        return newstr;
-    }
 
     /**
      * Strips off all html-tags
