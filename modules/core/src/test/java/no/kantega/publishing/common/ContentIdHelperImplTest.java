@@ -25,8 +25,8 @@ import java.lang.reflect.Method;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -246,5 +246,18 @@ public class ContentIdHelperImplTest {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         assertEquals(1, cid.getAssociationId());
         assertEquals(1, cid.getContentId());
+    }
+
+    @Test
+    public void shouldNotCutUrlWhenPartialMatchOnSite() throws ContentNotFoundException {
+        Site site = new Site();
+        site.setAlias("/se");
+        site.setId(1);
+        when(siteCache.getSites()).thenReturn(singletonList(site));
+
+        ContentIdentifier contentIdentifier = contentIdHelper.fromUrl("/seko");
+        assertThat(contentIdentifier.getAssociationId(), is(3));
+        assertThat(contentIdentifier.getContentId(), is(3));
+        assertThat(contentIdentifier.getSiteId(), is(1));
     }
 }

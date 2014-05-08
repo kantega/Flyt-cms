@@ -242,15 +242,6 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                     siteId = 1;
                     url = siteCache.getSiteById(1).getAlias();
                 }
-            } else  {
-                List<Site> sites = siteCache.getSites();
-                for (Site site : sites){
-                    String siteAliasWithoutTrailingSlash = removeEnd(site.getAlias(), "/");
-                    if(url.startsWith(siteAliasWithoutTrailingSlash)){
-                        url = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
-                        siteId = site.getId();
-                    }
-                }
             }
 
             return getContentIdentifier(siteId, url);
