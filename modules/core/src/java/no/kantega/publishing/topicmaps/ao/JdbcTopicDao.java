@@ -37,7 +37,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
     private static TopicRowMapper topicRowMapper = new TopicRowMapper();
@@ -214,37 +213,33 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
     }
 
     public List<Role> getRolesForTopic(Topic topic) {
-        List<Role> roles = new ArrayList<>();
-
-        List<Map<String, Object>> rows = getJdbcTemplate().queryForList("SELECT Role FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? ORDER BY Role",
+        return getJdbcTemplate().query("SELECT Role FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? ORDER BY Role", new RowMapper<Role>() {
+                    @Override
+                    public Role mapRow(ResultSet rs, int rowNum) throws SQLException {
+                        Role role = new Role();
+                        String roleName = rs.getString("Role");
+                        role.setId(roleName);
+                        role.setName(roleName);
+                        return role;
+                    }
+                },
                 topic.getTopicMapId(), topic.getId(), new Role().getType());
-
-        for (Map<String, Object> row : rows) {
-            Role role = new Role();
-            role.setId((String)row.get("Role"));
-            role.setName(role.getId());
-            roles.add(role);
-        }
-
-        return roles;
     }
 
 
     public List<Topic> getTopicsByContentId(int contentId) {
-        String sql = "";
-        sql += " INNER JOIN ct2topic ON (tmtopic.TopicId = ct2topic.TopicId) AND (tmtopic.TopicMapId = ct2topic.TopicMapId)";
+        String sql = " INNER JOIN ct2topic ON (tmtopic.TopicId = ct2topic.TopicId) AND (tmtopic.TopicMapId = ct2topic.TopicMapId)"
 
         //TODO: basename.scope could contain a value when executing a query by contentid.
-        sql += "   WHERE ct2topic.ContentId = " + contentId + " AND tmbasename.Scope IS NULL";
-        sql += "   ORDER BY tmbasename.Basename";
+        + "   WHERE ct2topic.ContentId = ? AND tmbasename.Scope IS NULL"
+        + "   ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, new Object[]{contentId});
     }
 
     public List<Topic> getAllTopics() {
-        String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL";
-        sql += "   ORDER BY tmbasename.Basename";
+        String sql = " WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL"
+                + " ORDER BY tmbasename.Basename";
 
         return getTopicsBySQLStatement(sql);
     }
@@ -257,45 +252,44 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
         } catch (Exception e) {
             //No config found. Do nothing as there will be no scope added to sqlquery
         }
-        String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL AND tmtopic.TopicMapId = " + topicMapId;
+        String sql = " WHERE tmtopic.IsTopicType = 0 AND tmtopic.IsAssociation = 0 AND tmtopic.InstanceOf IS NOT NULL AND tmtopic.TopicMapId = ?" ;
+        Object[] params;
         if(defaultScope != null){
             //There may be added multiple basenames to a topic where the scope sets a language.
-            sql += " AND (tmbasename.Scope like '%" + defaultScope + "%' OR tmbasename.Scope IS NULL)";
+            sql += " AND (tmbasename.Scope like ? OR tmbasename.Scope IS NULL)";
+            params = new Object[]{topicMapId, '%' + defaultScope + '%'};
+        } else {
+            params = new Object[]{topicMapId};
         }
-        sql += "   ORDER BY tmbasename.Basename";
+        sql += " ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, params);
     }
 
     public List<Topic> getTopicTypesForTopicMapId(int topicMapId) {
-        String sql = "";
-        sql += "   WHERE tmtopic.IsTopicType = 1 AND tmtopic.TopicMapId = " + topicMapId;
-        sql += "   ORDER BY tmbasename.Basename";
+        String sql = " WHERE tmtopic.IsTopicType = 1 AND tmtopic.TopicMapId = ?"
+                   + " ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, new Object[]{topicMapId});
     }
 
     public List<Topic> getTopicsByTopicInstance(Topic instance) {
-        String sql = "";
-        sql += "   WHERE tmtopic.InstanceOf = '" + instance.getId() + "' ";
-        sql += "   AND tmtopic.TopicMapId = " + instance.getTopicMapId();
-        sql += "   ORDER BY tmbasename.Basename";
+        String sql = " WHERE tmtopic.InstanceOf = ?"
+                   + " AND tmtopic.TopicMapId = ?"
+                   + " ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, new Object[]{instance.getId(), instance.getTopicMapId()});
     }
 
     public List<Topic> getTopicsForSecurityIdentifier(SecurityIdentifier sid) {
-        String sql = "";
-        sql += " INNER JOIN role2topic ON (tmtopic.TopicId = role2topic.TopicId) AND (tmtopic.TopicMapId = role2topic.TopicMapId)";
-        sql += "   WHERE role2topic.Role = '" + sid.getId() + "' AND role2topic.RoleType = '" + sid.getType() + "' AND tmbasename.Scope IS NULL";
-        sql += "   ORDER BY tmbasename.Basename";
+        String sql = " INNER JOIN role2topic ON (tmtopic.TopicId = role2topic.TopicId) AND (tmtopic.TopicMapId = role2topic.TopicMapId)"
+                   + " WHERE role2topic.Role = ? AND role2topic.RoleType = ? AND tmbasename.Scope IS NULL"
+                   + " ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, new Object[]{sid.getId(), sid.getType()});
     }
 
     public List<Topic> getTopicsByNameAndTopicMapId(String topicName, int topicMapId) {
-        String sql = "";
         if (topicName == null) {
             return new ArrayList<>();
         }
@@ -304,48 +298,53 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
         topicName = StringHelper.replace(topicName, "'", "");
         topicName = StringHelper.replace(topicName, "\\", "");
 
-        sql += " WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
-
+        String sql = " WHERE tmbasename.Basename LIKE ?";
+        Object[] params;
         if (topicMapId != -1) {
-            sql += "   AND tmtopic.TopicMapId = " + topicMapId;
+            sql += " AND tmtopic.TopicMapId = ?";
+            params = new Object[]{topicName + '%', topicMapId};
+        } else {
+            params = new Object[]{topicName + '%'};
         }
 
         sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, params);
     }
 
     public List<Topic> getTopicsByNameAndTopicInstance(String topicName, Topic instance) {
-        List results = new ArrayList();
-        String sql = "";
         if (topicName == null) {
-            return results;
+            return new ArrayList<>();
         }
 
         topicName = topicName.trim();
         topicName = StringHelper.replace(topicName, "'", "");
         topicName = StringHelper.replace(topicName, "\\", "");
 
-        sql += "   WHERE tmbasename.Basename LIKE '" + topicName + "%' ";
-
+        String sql = " WHERE tmbasename.Basename LIKE ?";
+        Object[] params;
         if (instance != null) {
-            sql += "   AND tmtopic.InstanceOf = '" + instance.getId() + "' ";
-            sql += "   AND tmtopic.TopicMapId = " + instance.getTopicMapId();
+            sql += " AND tmtopic.InstanceOf = ?"
+                +  " AND tmtopic.TopicMapId = ?";
+            params = new Object[]{topicName + '%', instance.getId(), instance.getTopicMapId()};
+        } else {
+            params = new Object[]{topicName + '%'};
         }
 
         sql += " AND tmtopic.InstanceOf IS NOT NULL ORDER BY tmbasename.Basename";
 
-        return getTopicsBySQLStatement(sql);
+        return getTopicsBySQLStatement(sql, params);
     }
 
-
     private List<Topic> getTopicsBySQLStatement(String whereClause) {
-        String sql = "";
-        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation, tmtopic.Imported";
-        sql += "   FROM tmtopic";
-        sql += " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
+        return getTopicsBySQLStatement(whereClause, new Object[]{});
+    }
+    private List<Topic> getTopicsBySQLStatement(String whereClause, Object[] params) {
+        String sql = "SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmtopic.IsSelectable, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation, tmtopic.Imported"
+                  + " FROM tmtopic"
+                  + " INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
 
-        List<Topic> topics = getJdbcTemplate().query(sql + whereClause, topicRowMapper);
+        List<Topic> topics = getJdbcTemplate().query(sql + whereClause, params, topicRowMapper);
 
         // Update with usage count
         topicUsageCounter.updateTopicUsageCount(topics);

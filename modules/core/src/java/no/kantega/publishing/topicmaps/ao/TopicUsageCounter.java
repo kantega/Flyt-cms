@@ -30,11 +30,9 @@ public class TopicUsageCounter extends JdbcDaoSupport {
             return;
         }
 
-        List<Object> params = new ArrayList<Object>();
+        List<Object> params = new ArrayList<>();
 
-        StringBuilder sql = new StringBuilder();
-
-        sql.append("select count(distinct ContentId) as Cnt, TopicId from ct2topic where TopicMapId = ?");
+        StringBuilder sql = new StringBuilder("select count(distinct ContentId) as Cnt, TopicId from ct2topic where TopicMapId = ?");
         params.add(topics.get(0).getTopicMapId());
 
         sql.append(" and TopicId in (");
