@@ -16,31 +16,36 @@
 
 package no.kantega.publishing.security.login;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.data.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
-public class PostLoginHandlerFactory {
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+
+public class PostLoginHandlerFactory implements ApplicationContextAware {
     private static final Logger log = LoggerFactory.getLogger(PostLoginHandlerFactory.class);
+    private Collection<PostLoginHandler> postLoginHandlers;
 
 
-    public static PostLoginHandler newInstance () throws SystemException, ConfigurationException {
-        Configuration c = Aksess.getConfiguration();
-
-        String postloginhandler = c.getString("security.postloginhandler");
-        if (postloginhandler == null || postloginhandler.length() == 0) {
-            return null;
-        }
-
-        try {
-            return (PostLoginHandler)Class.forName(postloginhandler).newInstance();
-        } catch (Exception e) {
-            log.error("", e);
-            return null;
-        }
+    public PostLoginHandler newInstance() throws SystemException, ConfigurationException {
+        return new PostLoginHandler() {
+            @Override
+            public void handlePostLogin(User user, HttpServletRequest request) throws SystemException {
+                for (PostLoginHandler postLoginHandler : postLoginHandlers) {
+                    postLoginHandler.handlePostLogin(user, request);
+                }
+            }
+        };
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.postLoginHandlers = applicationContext.getBeansOfType(PostLoginHandler.class).values();
+    }
 }

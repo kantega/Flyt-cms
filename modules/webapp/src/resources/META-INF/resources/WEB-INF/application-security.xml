@@ -32,4 +32,5 @@
 
     <bean id="aksessIdentityResolver" class="no.kantega.publishing.security.realm.AksessIdentityResolverFactoryBean"/>
     <bean id="aksessProfileManager" class="no.kantega.publishing.security.realm.AksessProfileManagerFactoryBean"/>
+    <bean class="no.kantega.publishing.security.login.PostLoginHandlerFactory"/>
 </beans>

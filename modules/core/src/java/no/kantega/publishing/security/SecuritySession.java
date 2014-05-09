@@ -28,7 +28,6 @@ import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.data.CachedBaseObject;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.login.PostLoginHandler;
 import no.kantega.publishing.security.login.PostLoginHandlerFactory;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
@@ -276,10 +275,8 @@ public class SecuritySession {
             user.setOrgUnits(orgunits);
         }
 
-        PostLoginHandler plh = PostLoginHandlerFactory.newInstance();
-        if (plh != null) {
-            plh.handlePostLogin(user, request);
-        }
+        PostLoginHandlerFactory plh = RootContext.getInstance().getBean(PostLoginHandlerFactory.class);
+        plh.newInstance().handlePostLogin(user, request);
     }
 
     public boolean isLoggedIn() {
