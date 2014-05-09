@@ -181,8 +181,9 @@ public class ContentIdHelperImplTest {
         request.setServerName(serverName);
         Site site = new Site();
         site.setId(1);
+        site.setAlias("/alias");
         when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
+        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/alias"));
     }
 
     @Test
@@ -195,9 +196,10 @@ public class ContentIdHelperImplTest {
         request.setServerName(serverName);
         Site site = new Site();
         site.setId(1);
-        site.setAlias("/" + serverName);
+        String alias = "/" + serverName;
+        site.setAlias(alias);
         when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
-        assertEquals(new Pair<>(1, "/" + serverName), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
+        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, alias));
     }
 
     @Test
@@ -207,7 +209,6 @@ public class ContentIdHelperImplTest {
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
         String serverName = "ahostname";
-        request.setServerName(serverName);
         Site site = new Site();
         site.setId(1);
         site.setAlias("/" + serverName);
@@ -215,6 +216,21 @@ public class ContentIdHelperImplTest {
         assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
     }
 
+    @Test
+    public void getSiteIdFromRequestShouldReturnSiteIdAndAdjustedUrlFromAliasAndAdjustedUrlWhenMatchinServerName() throws InvocationTargetException, IllegalAccessException {
+        Method getSiteIdFromRequest = ReflectionUtils.findMethod(ContentIdHelperImpl.class, "getSiteIdFromRequest", HttpServletRequest.class, String.class);
+        getSiteIdFromRequest.setAccessible(true);
+
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        String serverName = "ahostname";
+        request.setServerName(serverName);
+        Site site = new Site();
+        site.setId(1);
+        site.setAlias("/" + serverName);
+
+        when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
+        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
+    }
 
     @Test
     public void getSiteIdFromRequestShouldReturnSiteIdAndAdjustedUrlFromDefaultSite() throws InvocationTargetException, IllegalAccessException {

@@ -55,7 +55,6 @@ import java.util.regex.Pattern;
 
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
-import static org.apache.commons.lang3.StringUtils.removeEnd;
 
 public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelper, ServletContextAware {
     private static final Logger log = LoggerFactory.getLogger(ContentIdHelperImpl.class);
@@ -240,21 +239,48 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                     url = defaultSite.getAlias();
                 } else {
                     siteId = 1;
-                    url = siteCache.getSiteById(1).getAlias();
+                    url = siteCache.getSiteById(siteId).getAlias();
                 }
             } else {
-                List<Site> sites = siteCache.getSites();
-                for (Site site : sites) {
-                    String siteAliasWithoutTrailingSlash = removeEnd(site.getAlias(), "/");
-                    if (url.startsWith(siteAliasWithoutTrailingSlash)) {
-                        url = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
-                        siteId = site.getId();
-                    }
-                }
+                Pair<Integer, String> urlAdjustedBySiteAlias = getUrlAdjustedBySiteAlias(null, url);
+                siteId = urlAdjustedBySiteAlias.first;
+                url = urlAdjustedBySiteAlias.second;
             }
 
             return getContentIdentifier(siteId, url);
         }
+    }
+
+    /**
+     * Check url for whether it starts with a site alias. If it does, remove site alias.
+     * Eg site with alias /sitealias and url /sitealias results in url /, url /sitealias/alias gived /alias
+     * @param site to check url against. May be null, then all sites are tested.
+     * @param url Url to test
+     * @return pair with siteId and adjusted url. If site given is null and no site alias match, the resulting siteId
+     * is -1 and the same url as given is returned.
+     */
+    private Pair<Integer, String> getUrlAdjustedBySiteAlias(Site site, String url){
+        String ajustedUrl = url.endsWith("/") ? url : url + "/";
+        int siteId = -1;
+        if(site == null){
+            List<Site> sites = siteCache.getSites();
+            for (Site s : sites) {
+                String siteAliasWithTrailingSlash = s.getAlias().endsWith("/") ? s.getAlias() : s.getAlias() + "/";
+                if (ajustedUrl.startsWith(siteAliasWithTrailingSlash)) {
+                    url = "/" + StringUtils.remove(ajustedUrl, siteAliasWithTrailingSlash);
+                    siteId = s.getId();
+                    break;
+                }
+            }
+        } else {
+            String siteAliasWithTrailingSlash = site.getAlias().endsWith("/") ? site.getAlias() : site.getAlias() + "/";
+            if (ajustedUrl.startsWith(siteAliasWithTrailingSlash)) {
+                url = "/" + StringUtils.remove(ajustedUrl, siteAliasWithTrailingSlash);
+                siteId = site.getId();
+            }
+        }
+
+        return new Pair<>(siteId, url);
     }
 
     private ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
@@ -367,16 +393,10 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 siteId = site.getId();
             }
             if(url != null) {
-                List<Site> sites = siteCache.getSites();
-                for (Site s : sites){
-                    String siteAliasWithoutTrailingSlash = removeEnd(s.getAlias(), "/");
-                    if(url.startsWith(siteAliasWithoutTrailingSlash)){
-                        adjustedUrl = StringUtils.remove(url, siteAliasWithoutTrailingSlash);
-                        if(adjustedUrl.isEmpty()) adjustedUrl = "/";
-                        siteId = s.getId();
-                        break;
-                    }
-                }
+                Pair<Integer, String> urlAdjustedBySiteAlias = getUrlAdjustedBySiteAlias(site, url);
+                siteId = urlAdjustedBySiteAlias.first;
+                adjustedUrl = urlAdjustedBySiteAlias.second;
+
             }
         }
         if(siteId == -1){
