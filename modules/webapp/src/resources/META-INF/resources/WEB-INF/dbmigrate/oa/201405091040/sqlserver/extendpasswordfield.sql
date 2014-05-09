@@ -1,0 +1,1 @@
+ALTER TABLE dbuserpassword ALTER COLUMN Password VARCHAR(4096);
