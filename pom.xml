@@ -236,7 +236,7 @@
     </build>
 
     <properties>
-        <aksess-maven-plugin.version>2.5-SNAPSHOT</aksess-maven-plugin.version>
+        <aksess-maven-plugin.version>2.5</aksess-maven-plugin.version>
         <securityapi.version>2.8</securityapi.version>
         <securityapi.openimpl.version>2.13</securityapi.openimpl.version>
 
