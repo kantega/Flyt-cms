@@ -267,7 +267,7 @@ public class ContentIdHelperImplTest {
     @Test
     public void shouldNotCutUrlWhenPartialMatchOnSite() throws ContentNotFoundException {
         Site site = new Site();
-        site.setAlias("/se");
+        site.setAlias("/se/");
         site.setId(1);
         when(siteCache.getSites()).thenReturn(singletonList(site));
 
