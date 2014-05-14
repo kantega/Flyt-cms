@@ -75,35 +75,47 @@ public class Site implements PublicIdObject{
         return isDefault;
     }
 
-    public void setDisabled(boolean disabled) {
+    public Site setDisabled(boolean disabled) {
         this.disabled = disabled;
+        return this;
     }
 
-    public void setScheme(String scheme) {
+    public Site setScheme(String scheme) {
         this.scheme = scheme;
+        return this;
     }
 
     public void setPublicId(String publicId) {
         this.publicId = publicId;
     }
 
-    public void setDisplayTemplateId(String displayTemplateId) {
+    public Site setDisplayTemplateId(String displayTemplateId) {
         this.displayTemplateId = displayTemplateId;
+        return this;
     }
 
-    public void setDefault(boolean isDefault) {
+    public Site setDefault(boolean isDefault) {
         this.isDefault = isDefault;
+        return this;
     }
 
-    public void setHostnames(List<String> hostnames) {
+    public Site setHostnames(List<String> hostnames) {
         this.hostnames = hostnames;
+        return this;
     }
 
-    public void setName(String name) {
+    public Site setName(String name) {
         this.name = name;
+        return this;
     }
 
-    public void setAlias(String alias) {
+    public Site setAlias(String alias) {
         this.alias = alias;
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "Site: " + name + "(" + id + ") Alias: " + alias;
     }
 }

@@ -276,4 +276,22 @@ public class ContentIdHelperImplTest {
         assertThat(contentIdentifier.getContentId(), is(3));
         assertThat(contentIdentifier.getSiteId(), is(1));
     }
+
+    /**
+     * Test that verifies that correct site is returned when getUrlAdjustedBySiteAlias is called with
+     * non null site parameter and ajustedUrl.startsWith(siteAliasWithTrailingSlash) == false.
+     */
+    @Test
+    public void shouldNotForgetToSetSiteId() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        request.setServerName("servername");
+        Site site = new Site();
+        site.setId(2);
+        when(siteCache.getSiteByHostname("servername")).thenReturn(site.setAlias("/snn/"));
+        when(siteCache.getSiteById(site.getId())).thenReturn(site);
+
+        ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, "/");
+        assertThat(contentIdentifier.getAssociationId(), is(4));
+        assertThat(contentIdentifier.getSiteId(), is(site.getId()));
+    }
 }

@@ -276,8 +276,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             String siteAliasWithTrailingSlash = site.getAlias().endsWith("/") ? site.getAlias() : site.getAlias() + "/";
             if (ajustedUrl.startsWith(siteAliasWithTrailingSlash)) {
                 url = "/" + StringUtils.remove(ajustedUrl, siteAliasWithTrailingSlash);
-                siteId = site.getId();
             }
+            siteId = site.getId();
         }
 
         return new Pair<>(siteId, url);
