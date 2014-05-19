@@ -162,7 +162,7 @@
     <table name="dbuserpassword">
         <column name="Domain" required="true" type="VARCHAR" size="64"/>
         <column name="UserId" required="true" type="VARCHAR" size="64"/>
-        <column name="Password" required="true" type="VARCHAR" size="255"/>
+        <column name="Password" required="true" type="VARCHAR" size="4096"/>
         <column name="HashMech" type="VARCHAR" size="64"/>
     </table>
     <table name="dbuserprofile">
