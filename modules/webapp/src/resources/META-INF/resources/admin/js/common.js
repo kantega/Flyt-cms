@@ -209,14 +209,18 @@ openaksess.common = {
              * Closes the current modal.
              */
             close : function(){
-                $content.dialog('close');
+                if ($content != '') { // It happens that IE runs the ready-function after a iframe is closed.
+                    $content.dialog('close');
+                }
             },
 
             /**
              * Sets the modal window's title (top bar)
              */
             setTitle: function(title) {
-                $content.dialog( "option", "title", title );
+                if ($content != '') { // It happens that IE runs the ready-function after a iframe is closed.
+                    $content.dialog( "option", "title", title );
+                }
             }
         };
 
