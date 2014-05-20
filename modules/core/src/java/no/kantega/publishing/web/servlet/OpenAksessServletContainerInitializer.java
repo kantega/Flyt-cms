@@ -84,6 +84,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
                 .addMappingForUrlPatterns(dispatchRequests, false, "/expires/*");
 
         ctx.getServletRegistration("jsp").addMapping("*.jjs");
+        ctx.getServletRegistration("jsp").addMapping("*.jcss");
     }
 
     private Map<String, String> getAdminResponseHeaderFilterParams() {
