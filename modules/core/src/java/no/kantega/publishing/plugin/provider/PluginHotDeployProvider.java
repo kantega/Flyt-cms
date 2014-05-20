@@ -35,7 +35,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
 
     private ClassLoaderProvider.Registry registry;
     private File pluginWorkDirectory;
-    private Map<String, DeployedPlugin> loaders = new HashMap<String, DeployedPlugin>();
+    private Map<String, DeployedPlugin> loaders = new HashMap<>();
     private Logger logger = LoggerFactory.getLogger(getClass());
     private ClassLoader parentClassLoader;
     private File installedPluginsDirectory;
@@ -84,7 +84,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
     }
 
     private ClassLoader getParentClassLoader(PluginInfo pluginInfo) {
-        Set<ClassLoader> delegates = new HashSet<ClassLoader>();
+        Set<ClassLoader> delegates = new HashSet<>();
 
         for (String dep : pluginInfo.getDependencies()) {
             if (loaders.containsKey(dep)) {
@@ -119,7 +119,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
         if(classLoader instanceof URLClassLoader) {
             URL[] urls = ((URLClassLoader) classLoader).getURLs();
 
-            Set<JarFile> closables = new LinkedHashSet<JarFile>();
+            Set<JarFile> closables = new LinkedHashSet<>();
 
             for(URL url : urls) {
                 if(url.getFile().endsWith(".jar")) {
@@ -151,7 +151,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
     }
 
     public SortedMap<String, PluginInfo> getDeployedPluginKeys() {
-        TreeMap<String, PluginInfo> map = new TreeMap<String, PluginInfo>();
+        TreeMap<String, PluginInfo> map = new TreeMap<>();
         for (Map.Entry<String, DeployedPlugin> entry : this.loaders.entrySet()) {
             map.put(entry.getKey(), entry.getValue().getPluginInfo());
         }
@@ -161,25 +161,27 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
     private void deployInstalledPlugins() {
         List<PluginInfo> plugins = sortByDependencies(findInstalledPlugins());
 
-        logger.info("About to deploy " + plugins.size() + " plugins in the following order:");
-        for (int i = 0; i < plugins.size(); i++) {
-            PluginInfo pluginInfo = plugins.get(i);
-            logger.info(i +": " + pluginInfo.getKey() + " '" + pluginInfo.getName() +"'");
-        }
+        if (plugins.size() > 0) {
+            logger.info("About to deploy " + plugins.size() + " plugins in the following order:");
+            for (int i = 0; i < plugins.size(); i++) {
+                PluginInfo pluginInfo = plugins.get(i);
+                logger.info(i +": " + pluginInfo.getKey() + " '" + pluginInfo.getName() +"'");
+            }
 
-        for (PluginInfo info : plugins) {
-            try {
-                deploy(info);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            for (PluginInfo info : plugins) {
+                try {
+                    deploy(info);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
 
     private List<PluginInfo> sortByDependencies(Map<String, PluginInfo> plugins) {
 
-        Map<String, Boolean> colors = new HashMap<String, Boolean>();
-        List<PluginInfo> sorted = new LinkedList<PluginInfo>();
+        Map<String, Boolean> colors = new HashMap<>();
+        List<PluginInfo> sorted = new LinkedList<>();
 
         for (PluginInfo info : plugins.values()) {
             if (!colors.containsKey(info.getKey()))
@@ -228,7 +230,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
     }
 
     private Map<String, PluginInfo> findInstalledPlugins() {
-        Map<String, PluginInfo> pluginFiles = new HashMap<String, PluginInfo>();
+        Map<String, PluginInfo> pluginFiles = new HashMap<>();
 
         if (installedPluginsDirectory.exists()) {
             File[] jars = installedPluginsDirectory.listFiles(new FileFilter() {
@@ -253,7 +255,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
 
             String name = null;
             String description = null;
-            Set<String> dependencies = new HashSet<String>();
+            Set<String> dependencies = new HashSet<>();
 
             JarFile jarFile = new JarFile(jar);
             try {
@@ -406,8 +408,6 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
             if (local.exists()) {
                 try {
                     return local.toURI().toURL().openStream();
-                } catch (MalformedURLException e) {
-                    throw new RuntimeException(e);
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -485,7 +485,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
                 Enumeration<URL> resources = delegate.getResources(name);
                 if(resources != null ) {
                     if(delegateResources == null) {
-                        delegateResources = new LinkedList<URL>();
+                        delegateResources = new LinkedList<>();
                     }
                     delegateResources.addAll(Collections.list(resources));
                 }
@@ -494,7 +494,7 @@ public class PluginHotDeployProvider implements ClassLoaderProvider {
             if(delegateResources == null) {
                 return parentResources;
             } else {
-                LinkedList<URL> urls = new LinkedList<URL>();
+                LinkedList<URL> urls = new LinkedList<>();
                 if(parentResources != null) {
                     urls.addAll(Collections.list(parentResources));
                 }
