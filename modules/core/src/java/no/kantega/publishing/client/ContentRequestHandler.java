@@ -149,11 +149,13 @@ public abstract class ContentRequestHandler implements ServletContextAware {
             // Check if user is logged in
             SecuritySession secSession = getSecuritySession();
             if (secSession.isLoggedIn()) {
+                log.debug("{} logged in but not authorized: {}", secSession.getIdentity().getUserId(), e.getMessage());
                 RequestHelper.setRequestAttributes(request, null);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 request.getRequestDispatcher("/403.jsp").forward(request, response);
             } else {
                 // Start login process (redirect)
+                log.debug("User not logged in, initiateLogin: ", e.getMessage());
                 secSession.initiateLogin(request, response);
             }
         } catch (ContentNotFoundException e) {

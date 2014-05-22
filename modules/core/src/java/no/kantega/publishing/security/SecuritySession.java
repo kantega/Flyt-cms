@@ -101,6 +101,7 @@ public class SecuritySession {
 
                 } else {
                     identity = resolver.getIdentity(request);
+                    log.debug("Got identity {} from resolver {}", identity, resolver.getClass());
                 }
             } catch (IdentificationFailedException e) {
                 throw new SystemException("IdentificationFailedException", e);
@@ -123,7 +124,7 @@ public class SecuritySession {
                 httpSession.setAttribute("aksess.securitySession", session);
 
             } else if (identity == null && currentIdentity != null) {
-                // Bruker er utlogget via ekstern tjeneste - lag blank sesjon
+                log.debug("User logged out by external service - create blank session");
                 session = createNewInstance();
                 httpSession.setAttribute("aksess.securitySession", session);
                 httpSession.removeAttribute("adminMode");
@@ -162,16 +163,18 @@ public class SecuritySession {
             throw new SystemException("Feil ved henting av profil", e);
         }
 
+        String userId = identity.getDomain() + ":" + identity.getUserId();
         User user = new User();
         if (p != null) {
             user = SecurityHelper.createAksessUser(p);
         } else {
-            user.setId(identity.getDomain() + ":" + identity.getUserId());
+            user.setId(userId);
             user.setGivenName(identity.getUserId());
         }
 
         session.user = user;
         session.identity = identity;
+        log.debug("Created new UserInstance for identity {}", userId);
         return session;
     }
 
@@ -208,6 +211,7 @@ public class SecuritySession {
         admin.addRole(role);
 
         session.user = admin;
+        log.info("Creating new Admin instance of SecuritySession");
 
         return session;
     }
@@ -238,6 +242,8 @@ public class SecuritySession {
     private static SecuritySession createNewInstance() throws SystemException {
         SecuritySession session = new SecuritySession();
         session.realm = SecurityRealmFactory.getInstance();
+        log.debug("Creating new SecuritySession");
+
         return session;
     }
 
@@ -248,7 +254,7 @@ public class SecuritySession {
      * @throws ConfigurationException
      */
     public void handlePostLogin(HttpServletRequest request) throws SystemException, ConfigurationException {
-
+        log.debug("handlePostLogin for user {}", user.getId());
         List<Role> roles = realm.lookupRolesForUser(user.getId());
         for (Role role : roles) {
             user.addRole(role);
