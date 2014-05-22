@@ -31,7 +31,7 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/linkcheck.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/linkcheck.js"/>"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             openaksess.common.debug("linkcheck.$(document).ready()");

@@ -47,7 +47,7 @@
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editmultimedia.js"/>"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/aksessmultimedia.jjs"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksessmultimedia.jjs"/>"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             bindToolButtons();

@@ -34,8 +34,9 @@
 
             openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.viewtopic.title" escapeJavascript="true"/>', iframe:true, href: "EditTopic.action?topicMapId=" + topicMapId, width: 600, height:550, close: function(){
                     // Reload content with ajax
-                    var selected = $("#TopicTabs").tabs('option', 'selected');
-                    $("#TopicTabs").tabs('load', selected);
+                var $TopicTabs = $("#TopicTabs");
+                var selected = $TopicTabs.tabs('option', 'selected');
+                    $TopicTabs.tabs('load', selected);
                 }
             });
         }
@@ -49,8 +50,9 @@
                 event.preventDefault();
                 openaksess.common.modalWindow.open({title:'<kantega:label key="aksess.viewtopic.title" escapeJavascript="true"/>', iframe:true, href: this.href, width: 600, height:600, close: function(){
                         // Reload content with ajax
-                        var selected = $("#TopicTabs").tabs('option', 'selected');                    
-                        $("#TopicTabs").tabs('load', selected);
+                    var $TopicTabs = $("#TopicTabs");
+                    var selected = $TopicTabs.tabs('option', 'selected');
+                        $TopicTabs.tabs('load', selected);
                     }
                 });
             });

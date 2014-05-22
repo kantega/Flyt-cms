@@ -1,6 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -24,9 +23,9 @@
 </kantega:section>
 
 <kantega:section id="head">
-    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/admin/css/navigate.css">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/navigate.js"></script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
+    <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/admin/css/navigate.css"/>">
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/navigate.js"/>"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
     <script type="text/javascript">
         var currentItemIdentifier = "/content/${currentId}/dummytitle";
         var expand = true;

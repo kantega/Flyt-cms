@@ -22,7 +22,7 @@
     <title><kantega:getsection id="title"/></title>
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-searchlayout.css"/>">
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-searchlayout.js"/>"></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>
+    <script type="text/javascript" src='<kantega:expireurl url="/admin/js/jquery-ui-i18n.min.js"/>'></script>
 
     <kantega:getsection id="head"/>
 </head>

@@ -31,7 +31,7 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/statistics.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/statistics.js"/>"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             openaksess.common.debug("organizesubpages.$(document).ready()");

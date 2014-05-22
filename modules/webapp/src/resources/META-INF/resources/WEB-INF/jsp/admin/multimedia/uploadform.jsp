@@ -19,8 +19,8 @@
   --%>
 
 <kantega:section id="head">
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/editcontext.js"></script>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/admin/css/multimedia.css">
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
+    <link rel="stylesheet" href="<kantega:expireurl url="/admin/css/multimedia.css"/>">
 </kantega:section>
 
 <kantega:section id="body">

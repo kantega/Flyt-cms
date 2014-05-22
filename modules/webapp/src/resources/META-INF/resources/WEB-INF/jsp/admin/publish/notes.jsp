@@ -32,7 +32,7 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="${pageContext.request.contextPath}/admin/js/notes.js"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/admin/js/notes.js"/>"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             openaksess.notes.currentUrl = "${currentNavigateContent.url}";
@@ -40,9 +40,10 @@
             openaksess.notes.listNotes();
             $("#NoteSubmit").live('click', function(event) {
                 event.preventDefault();
-                openaksess.notes.addNote($("#NoteText").val());
+                var noteText = $("#NoteText");
+                openaksess.notes.addNote(noteText.val());
                 // Clear input form
-                $("#NoteText").val("");
+                noteText.val("");
             });
             $("#Notes .delete").live('click', function(event) {
                 event.preventDefault();

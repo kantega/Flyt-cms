@@ -45,7 +45,7 @@
             feiltidsformatTimerstorre : "<kantega:label key="aksess.js.advarsel.dato.feiltidsformat.timerstorre"/>"
         };
     </script>
-    <script type="text/javascript" language="Javascript" src="../js/date.js"></script>
+    <script type="text/javascript" src="../js/date.js"></script>
     <script type="text/javascript">
         var hasSubmitted = false;
         function buttonOkPressed() {
@@ -83,21 +83,25 @@
         });
 
         function validatePublishProperties() {
-            if (openaksess.dateutils.isDateNotEmpty($("#from_date").val()) && openaksess.dateutils.checkDate($("#from_date").val()) == -1) {
-                $("#from_date").focus();
+            var $fromDate = $("#from_date");
+            if (openaksess.dateutils.isDateNotEmpty($fromDate.val()) && openaksess.dateutils.checkDate($fromDate.val()) == -1) {
+                $fromDate.focus();
                 return false;
             }
-            if (openaksess.dateutils.isTimeNotEmpty($("#from_time").val()) && openaksess.dateutils.checkTime($("#from_time").val()) == -1) {
-                $("#from_time").focus();
+            var $fromTime = $("#from_time");
+            if (openaksess.dateutils.isTimeNotEmpty($fromTime.val()) && openaksess.dateutils.checkTime($fromTime.val()) == -1) {
+                $fromTime.focus();
                 return false;
             }
 
-            if (openaksess.dateutils.isDateNotEmpty($("#end_date").val()) && openaksess.dateutils.checkDate($("#end_date").val()) == -1) {
-                $("#end_date").focus();
+            var $endDate = $("#end_date");
+            if (openaksess.dateutils.isDateNotEmpty($endDate.val()) && openaksess.dateutils.checkDate($endDate.val()) == -1) {
+                $endDate.focus();
                 return false;
             }
-            if (openaksess.dateutils.isTimeNotEmpty($("#end_time").val()) && openaksess.dateutils.checkTime($("#end_time").val()) == -1) {
-                $("#end_time").focus();
+            var $endTime = $("#end_time");
+            if (openaksess.dateutils.isTimeNotEmpty($endTime.val()) && openaksess.dateutils.checkTime($endTime.val()) == -1) {
+                $endTime.focus();
                 return false;
             }
             return true;
