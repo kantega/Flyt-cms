@@ -23,37 +23,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<kantega:section id="title">
-
-</kantega:section>
-
-<kantega:section id="head">
-    <script type="text/javascript" language="Javascript">
-        var hasSubmitted = false;
-
-        function buttonOkPressed() {
-            // Prevent user from clicking several times
-            if (!hasSubmitted) {
-                hasSubmitted = true;
-                document.myform.submit();
-            }
-
-            return false;
-        }
-
-        function selectAll(btn) {
-            var f = document.myform.associationId;
-            if (f.length) {
-                for (var i = 0; i < f.length; i++) {
-                    f[i].checked = btn.checked;
-                }
-            } else {
-                f.checked = btn.checked;
-            }
-        }
-    </script>
-
-</kantega:section>
 
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteAssociation.action">
@@ -68,8 +37,8 @@
                     </thead>
                     <tbody>
                     <tr class="tableRow1">
-                        <td><input type="checkbox" name="dummy" value="-1" onclick="selectAll(this)"></td>
-                        <td><kantega:label key="aksess.confirmdelete.xpall"/></td>
+                        <td><input id="selectAll" type="checkbox" name="dummy" value="-1" ></td>
+                        <td><label for="selectAll"><kantega:label key="aksess.confirmdelete.xpall"/></label></td>
                     </tr>
                     <%
                         Content content = (Content)request.getAttribute("content");
@@ -77,18 +46,20 @@
                         ContentManagementService aksessService = new ContentManagementService(request);
                         List associations = content.getAssociations();
                         if (associations != null) {
-                            List path = null;
                             for (int i = 0; i < associations.size(); i++) {
                                 Association association = (Association)associations.get(i);
-                                path = aksessService.getPathByAssociation(association);
+                                List<PathEntry> path = aksessService.getPathByAssociation(association);
                                 out.write("<tr class=\"tableRow" + (i%2) + "\">");
                                 String sel = "";
                                 if (associationId == association.getId()) sel = " checked";
-                                out.write("<td><input type=\"checkbox\" name=\"id\" value=\"" + association.getId() + "\"" + sel + "></td>");
-                                out.write("<td>");
+                                out.write("<td><input id=\"");
+                                out.write(String.valueOf(association.getId()));
+                                out.write("\" type=\"checkbox\" name=\"id\" class=\"crossassociation\" value=\"" + association.getId() + "\"" + sel + "></td>");
+                                out.write("<td><label for=\"");
+                                out.write(String.valueOf(association.getId()));
+                                out.write("\">");
                                 for (int j = 0; j < path.size(); j++) {
-                                    PathEntry entry = (PathEntry)path.get(j);
-                                    String title = entry.getTitle();
+                                    String title = path.get(j).getTitle();
                                     if (j > 0) {
                                         out.write("&nbsp;&gt;&nbsp;");
                                     }
@@ -99,7 +70,7 @@
                     (<kantega:label key="aksess.confirmdelete.shortcut"/>)
                     <%
                                 }
-                                out.write("</td></tr>");
+                                out.write("</label></td></tr>");
                             }
                         }
                     %>
@@ -123,5 +94,14 @@
             <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
         </div>
     </form>
+
+    <script type="text/javascript">
+        $('#selectAll').click(function(){
+            var isChecked = this.checked;
+            $('.crossassociation').each(function(){
+                this.checked = isChecked;
+            })
+        });
+    </script>
 </kantega:section>
 <%@ include file="../../layout/popupLayout.jsp" %>
