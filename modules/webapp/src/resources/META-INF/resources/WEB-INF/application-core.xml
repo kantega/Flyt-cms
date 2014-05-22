@@ -23,9 +23,7 @@
 
     <context:annotation-config/>
 
-    <bean class="no.kantega.publishing.admin.config.SecuritySessionConfiguration">
-        <property name="securityRealm" ref="${security.realm}"/>
-    </bean>
+    <bean class="no.kantega.publishing.admin.config.SecuritySessionConfiguration"/>
 
     <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl">
         <lookup-method name="getSecuritySession" bean="securitySession"/>

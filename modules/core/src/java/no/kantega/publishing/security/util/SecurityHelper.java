@@ -16,20 +16,15 @@
 
 package no.kantega.publishing.security.util;
 
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.profile.DefaultProfile;
 import no.kantega.security.api.profile.Profile;
-import no.kantega.security.api.identity.Identity;
-import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.role.DefaultRole;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jan 19, 2007
- * Time: 12:39:42 PM
- */
 public class SecurityHelper {
     public static User createAksessUser(Profile userProfile) {
         if (userProfile == null) {
