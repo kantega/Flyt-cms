@@ -341,7 +341,7 @@ public class Multimedia extends BaseObject {
 
     public List<ExifMetadata> getExifMetadata() {
         if (exifMetadata == null) {
-            exifMetadata = new ArrayList<ExifMetadata>();
+            exifMetadata = new ArrayList<>();
         }
         return exifMetadata;
     }

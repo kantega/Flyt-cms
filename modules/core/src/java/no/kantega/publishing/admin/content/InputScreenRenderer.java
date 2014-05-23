@@ -18,7 +18,6 @@ package no.kantega.publishing.admin.content;
 
 import no.kantega.commons.client.util.ValidationError;
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
@@ -31,7 +30,6 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +55,7 @@ public class InputScreenRenderer {
     private int attributeType = -1;
     private boolean hiddenAttributes = false;
 
-    public InputScreenRenderer(PageContext pageContext, Content content, int attributeType) throws SystemException, InvalidFileException, InvalidTemplateException {
+    public InputScreenRenderer(PageContext pageContext, Content content, int attributeType) {
         this.pageContext = pageContext;
         this.content  = content;
         this.attributeType = attributeType;

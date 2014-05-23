@@ -29,7 +29,7 @@ public class LocaleLabels {
     private static final Logger log = LoggerFactory.getLogger(LocaleLabels.class);
     static public String DEFAULT_BUNDLE = "TextLabels";
 
-    private static Map<String, PropertyResourceBundle> bundles = new HashMap<String, PropertyResourceBundle>();
+    private static Map<String, PropertyResourceBundle> bundles = new HashMap<>();
 
     private static PropertyResourceBundle getBundle(String bundleName, String locale) {
         PropertyResourceBundle bundle;

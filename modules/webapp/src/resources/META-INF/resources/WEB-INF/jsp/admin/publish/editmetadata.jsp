@@ -112,8 +112,7 @@
                 <select name="language" class="fullWidth" tabindex="60">
                     <%
                         int[] languages = Language.getLanguages();
-                        for (int i = 0; i < languages.length; i++) {
-                            int id = languages[i];
+                        for (int id : languages) {
                             String code = Language.getLanguageAsISOCode(id);
                             String label = LocaleLabels.getLabel("aksess.contentproperty.language." + code, Aksess.getDefaultAdminLocale());
                             if (current.getLanguage() == id) {

@@ -44,7 +44,13 @@ public abstract class BaseObject {
 
     public abstract String getName();
 
+    /**
+     * @return the organizational unit that owns this object.
+     */
     public abstract String getOwner();
 
+    /**
+     * @return the person that owns this object.
+     */
     public abstract String getOwnerPerson();
 }

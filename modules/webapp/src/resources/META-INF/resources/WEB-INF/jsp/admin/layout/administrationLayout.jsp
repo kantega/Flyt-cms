@@ -25,7 +25,7 @@
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-administrationlayout.css"/>">
     <script type="text/javascript">
         $(document).ready(function() {
-            var title = document.title
+            var title = document.title;
             $("#Navigator span.title a").each(function() {
                 var linkTitle = $(this).html();
                 if (title.indexOf(linkTitle) != -1) {
@@ -178,7 +178,7 @@
             if(parent == null) {
                 parent = menu.addChildMenuItem(source.getMessage(item.getLabel(), null, locale));
             }
-            for(MenuItem child : new ArrayList<MenuItem>(item.getChildMenuItems())) {
+            for(MenuItem child : new ArrayList<>(item.getChildMenuItems())) {
                 addPluginMenuItem(parent, child, source, locale, root);
             }
 
