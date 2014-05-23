@@ -24,10 +24,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.AssociationCategory;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.exception.MissingTemplateException;
@@ -99,8 +96,9 @@ public class CreateRootAction  extends AbstractController {
             DisplayTemplate displayTemplate = null;
 
             // If a site has specified a display template id, try to look this template
+            TemplateConfiguration templateConfiguration = TemplateConfigurationCache.getInstance().getTemplateConfiguration();
             if (site.getPublicId() != null && site.getPublicId().length() > 0) {
-                for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
+                for(DisplayTemplate template : templateConfiguration.getDisplayTemplates()) {
                     if(template.getPublicId().equalsIgnoreCase(site.getDisplayTemplateId())) {
                         displayTemplate = template;
                         break;
@@ -109,7 +107,7 @@ public class CreateRootAction  extends AbstractController {
             }
             // No template specified or found, try to look a template in the folder specified by the alias
             if (displayTemplate == null) {
-                for(DisplayTemplate template : TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates()) {
+                for(DisplayTemplate template : templateConfiguration.getDisplayTemplates()) {
                     if(frontpageUrl.equals(template.getView())) {
                         displayTemplate = template;
                         break;

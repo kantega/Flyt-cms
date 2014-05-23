@@ -178,7 +178,7 @@
             if(parent == null) {
                 parent = menu.addChildMenuItem(source.getMessage(item.getLabel(), null, locale));
             }
-            for(MenuItem child : new ArrayList<>(item.getChildMenuItems())) {
+            for(MenuItem child : new ArrayList<MenuItem>(item.getChildMenuItems())) {
                 addPluginMenuItem(parent, child, source, locale, root);
             }
 
