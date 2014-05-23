@@ -39,7 +39,7 @@ public interface RatingService {
     public List<Rating> getRatingsForObjects(List<String> objectIds, String context);
 
     /**
-     * Deletes all ratins for a given object in a context.
+     * Deletes all ratings for a given object in a context.
      *
      * @param objectId - E.g. a contentId or forumPostId.
      * @param context - Object context identifier
