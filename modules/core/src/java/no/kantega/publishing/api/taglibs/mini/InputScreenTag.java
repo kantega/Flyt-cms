@@ -16,12 +16,10 @@
 
 package no.kantega.publishing.api.taglibs.mini;
 
-import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.InputScreenRenderer;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,7 +48,7 @@ public class InputScreenTag extends SimpleTagSupport {
             if (screenRenderer.hasHiddenAttributes()) {
                 pageContext.include("/WEB-INF/jsp/admin/layout/fragments/addattributebutton.jsp");
             }
-        } catch (InvalidFileException | ServletException | InvalidTemplateException e) {
+        } catch (ServletException e) {
             log.error("", e);
         }
     }
