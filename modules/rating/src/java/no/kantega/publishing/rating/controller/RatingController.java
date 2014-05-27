@@ -40,6 +40,8 @@ public class RatingController {
             HttpServletRequest request,
             HttpServletResponse response) {
 
+        boolean isDeletionRequest = delete != null && delete;
+
         Rating rating = new Rating();
         rating.setDate(new Date());
         rating.setObjectId(objectId);
@@ -47,7 +49,7 @@ public class RatingController {
         rating.setRating(ratingValue);
         rating.setUserid(RatingUtil.getUserId(request));
 
-        if(delete != null && delete) {
+        if(isDeletionRequest) {
             if (hasRated(request, objectId, context)) {
                 ratingService.deleteRatingsForUser(rating.getUserid(), rating.getObjectId(), rating.getContext());
                 deleteRatingCookie(response, objectId, context);
@@ -60,7 +62,9 @@ public class RatingController {
         }
 
         if(isBlank(redirect)) {
-            model.put("rating", ratingValue);
+            if(!isDeletionRequest) {
+                model.put("rating", ratingValue);
+            }
             List<Rating> allRatings = ratingService.getRatingsForObject(objectId, context);
             if (allRatings != null) {
                 model.put("totalRatings", allRatings.size());
