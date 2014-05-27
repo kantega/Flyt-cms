@@ -22,5 +22,5 @@ public interface RatingNotificationListener {
      * 
      * @param notification
      */
-    public void newRatingNotification(RatingNotification notification);
+    void newRatingNotification(RatingNotification notification);
 }
