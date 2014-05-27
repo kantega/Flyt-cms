@@ -10,8 +10,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Date;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertSame;
+import static junit.framework.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath*:testContext.xml")
@@ -59,5 +58,24 @@ public class JdbcRatingDaoTest {
         List<Rating> ratings = dao.getRatingsForUser("andska");
 
         assertEquals(ratings.size(), 2);
+    }
+
+    @Test
+    public void testGetSpecificRatingForUser() {
+        List<Rating> ratings = dao.getRatingsForUser("andska", "2", "content");
+
+        assertEquals(1, ratings.size());
+    }
+
+    @Test
+    public void testDeleteSpecificRatingForUser() {
+        List<Rating> ratings = dao.getRatingsForUser("andska", "2", "content");
+        assertEquals(1, ratings.size());
+
+        dao.deleteRatingsForUser("andska", "2", "content");
+
+        ratings = dao.getRatingsForUser("andska", "2", "content");
+        assertEquals(0, ratings.size());
+
     }
 }

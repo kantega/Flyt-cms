@@ -19,7 +19,7 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     private RatingRowMapper ratingRowMapper = new RatingRowMapper();
 
     @SuppressWarnings("unchecked")
-
+    @Override
     public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
         if (objectIds.size() == 0) {
             return new ArrayList<Rating>();
@@ -36,16 +36,17 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
         return getJdbcTemplate().query("select * from ratings where Context = ? AND ObjectId IN(" + objectIdList.toString() + ") order by RatingDate desc",new Object[] {context}, ratingRowMapper);
     }
 
+    @Override
     public List<Rating> getRatingsForObject(String objectId, String context) {
         return getJdbcTemplate().query("select * from ratings where ObjectId = ? and Context = ? order by RatingDate desc", new Object[] {objectId, context}, ratingRowMapper);
     }
 
-
+    @Override
     public void deleteRatingsForObject(String objectId, String context) {
         getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ?", new Object[] {objectId, context});
     }
 
-
+    @Override
     public void saveOrUpdateRating(final Rating r) {
         getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ? and UserId = ?", new Object[] {r.getObjectId(), r.getContext(), r.getUserid()});
 
@@ -64,8 +65,19 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public List<Rating> getRatingsForUser(String userId) {        
-        return getJdbcTemplate().query("select * from ratings where UserId = ? order by RatingDate desc", new Object[] {userId}, ratingRowMapper);
+        return getJdbcTemplate().query("select * from ratings where UserId = ? order by RatingDate desc", ratingRowMapper, userId);
+    }
+
+    @Override
+    public List<Rating> getRatingsForUser(String userId, String objectId, String context) {
+        return getJdbcTemplate().query("select * from ratings where ObjectId = ? and Context = ? and UserId = ? order by RatingDate desc", ratingRowMapper, objectId, context, userId);
+    }
+
+    @Override
+    public void deleteRatingsForUser(String userId, String objectId, String context) {
+        getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ? and UserId = ?", objectId, context, userId);
     }
 
     private class RatingRowMapper implements RowMapper {

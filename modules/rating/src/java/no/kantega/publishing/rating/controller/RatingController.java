@@ -30,11 +30,12 @@ public class RatingController {
     private View jsonView;
 
     @RequestMapping(method = RequestMethod.POST)
-    public View addRating(
+    public View addOrDeleteRating(
             @RequestParam(value = "rating", required = true) Integer ratingValue,
             @RequestParam(value = "objectId", required = true) String objectId,
             @RequestParam(value = "context", required = true) String context,
             @RequestParam(value = "redirect", required = false) String redirect,
+            @RequestParam(value = "delete", required = false) Boolean delete,
             ModelMap model,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -46,9 +47,16 @@ public class RatingController {
         rating.setRating(ratingValue);
         rating.setUserid(RatingUtil.getUserId(request));
 
-        if (!hasRated(request, objectId, context)) {
-            ratingService.saveOrUpdateRating(rating);
-            setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
+        if(delete != null && delete) {
+            if (hasRated(request, objectId, context)) {
+                ratingService.deleteRatingsForUser(rating.getUserid(), rating.getObjectId(), rating.getContext());
+                deleteRatingCookie(response, objectId, context);
+            }
+        } else {
+            if (!hasRated(request, objectId, context)) {
+                ratingService.saveOrUpdateRating(rating);
+                setRatingCookie(response, objectId, context, String.valueOf(ratingValue));
+            }
         }
 
         if(isBlank(redirect)) {
@@ -96,6 +104,12 @@ public class RatingController {
             }
         }
         return false;
+    }
+
+    private void deleteRatingCookie(HttpServletResponse response, String objectId, String context) {
+        Cookie cookie = new Cookie(getCookieNameForObject(objectId, context), "0");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
     }
 
     private void setRatingCookie(HttpServletResponse response, String objectId, String context, String value) {

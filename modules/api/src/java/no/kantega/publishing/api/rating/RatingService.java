@@ -62,6 +62,16 @@ public interface RatingService {
     public List<Rating> getRatingsForUser(String userId);
 
     /**
+     * Delete all ratings given by a user on an object.
+     *
+     * @param userId
+     * @param objectId E.g. a contentId or forumPostId.
+     * @param context Object context identifier
+     * @return
+     */
+    void deleteRatingsForUser(String userId, String objectId, String context);
+
+    /**
      * Returns the relative score for all ratings an object has recieved.
      *
      * @param objectId - E.g. a contentId or forumPostId.

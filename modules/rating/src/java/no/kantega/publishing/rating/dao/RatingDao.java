@@ -13,4 +13,6 @@ public interface RatingDao {
     void deleteRatingsForObject(String objectId, String context);
     void saveOrUpdateRating(Rating rating);
     List<Rating> getRatingsForUser(String userId);
+    List<Rating> getRatingsForUser(String userId, String objectId, String context);
+    void deleteRatingsForUser(String userId, String objectId, String context);
 }

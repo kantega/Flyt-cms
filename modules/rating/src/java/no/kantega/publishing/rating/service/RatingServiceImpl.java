@@ -18,14 +18,12 @@ package no.kantega.publishing.rating.service;
 
 import no.kantega.publishing.api.rating.*;
 import no.kantega.publishing.rating.dao.RatingDao;
-import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public class RatingServiceImpl implements RatingService, ApplicationContextAware {
 
@@ -46,7 +44,7 @@ public class RatingServiceImpl implements RatingService, ApplicationContextAware
     }
 
     /**
-     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObjects(List<String>, String)
+     * @see no.kantega.publishing.api.rating.RatingService#getRatingsForObjects(java.util.List, String)
      */
     public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
         return ratingDao.getRatingsForObjects(objectIds, context);
@@ -89,6 +87,14 @@ public class RatingServiceImpl implements RatingService, ApplicationContextAware
      */
     public List<Rating> getRatingsForUser(String userId) {
         return ratingDao.getRatingsForUser(userId);
+    }
+
+    /**
+     * @see no.kantega.publishing.api.rating.RatingService#deleteRatingsForUser(String, String, String)
+     */
+    @Override
+    public void deleteRatingsForUser(String userId, String objectId, String context) {
+        ratingDao.deleteRatingsForUser(userId, objectId, context);
     }
 
 
