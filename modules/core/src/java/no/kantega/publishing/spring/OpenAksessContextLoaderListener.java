@@ -29,7 +29,6 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
-import org.springframework.web.context.ContextLoader;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.ServletContextResourceLoader;
 
@@ -49,8 +48,6 @@ import java.util.Properties;
 public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     public static final String APPLICATION_DIRECTORY = OpenAksessContextLoaderListener.class.getName() +"_APPLICATION_DIRECTORY";
-    public static final String LISTENER_ATTR = OpenAksessContextLoader.class.getName() +".this";
-    private ServletContext servletContext;
     private Properties properties;
     private File dataDirectory;
 
@@ -63,7 +60,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
         this.event = event;
 
-        this.servletContext = event.getServletContext();
+        ServletContext servletContext = event.getServletContext();
 
         log.info("Starting OpenAksess " + getOpenAksessVersion());
 
@@ -76,8 +73,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         log.info("Loading configuration");
 
         properties = configurationLoader.loadConfiguration();
-
-        servletContext.setAttribute(LISTENER_ATTR, this);
 
         initContext();
 
@@ -142,13 +137,6 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         return dataDirectory;
     }
 
-
-    @Override
-    protected ContextLoader createContextLoader() {
-        return new OpenAksessContextLoader();
-
-    }
-
     public String getOpenAksessVersion() {
         URL versionResource = getClass().getClassLoader().getResource("no/kantega/publishing/common/aksessVersion.properties");
         if(versionResource == null) {
@@ -168,53 +156,44 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
     }
 
+    @Override
+    protected void customizeContext(ServletContext servletContext, ConfigurableWebApplicationContext wac) {
+        Configuration.setApplicationDirectory(dataDirectory);
 
-    class OpenAksessContextLoader extends ContextLoader {
+        // Make dataDir available as Servlet Context attribute
+        servletContext.setAttribute(APPLICATION_DIRECTORY, dataDirectory);
 
-        @Override
-        protected void customizeContext(ServletContext servletContext, ConfigurableWebApplicationContext wac) {
+        // Set up @Autowired support
+        ApplicationContextUtils.addAutowiredSupport(wac);
 
-
-            Configuration.setApplicationDirectory(dataDirectory);
-
-            // Make dataDir available as Servlet Context attribute
-            servletContext.setAttribute(APPLICATION_DIRECTORY, dataDirectory);
-
-            // Set up @Autowired support
-            ApplicationContextUtils.addAutowiredSupport(wac);
-
-            final Configuration configuration = new Configuration(properties);
+        final Configuration configuration = new Configuration(properties);
 
 
-            if(configuration.getBoolean("caching.enabled", true)){
-                wac.getEnvironment().setActiveProfiles("useCaching");
-            }
-
-            Aksess.setContextPath(servletContext.getContextPath());
-            // Set and load configuration on these classes since they are not DI-based (hackish..)
-            Aksess.setConfiguration(configuration);
-            Aksess.loadConfiguration();
-
-            // Add ${appDir} property for the Spring Context
-            ApplicationContextUtils.addAppDirPropertySupport(wac);
-
-            dbConnectionFactory.setServletContext(servletContext);
-            dbConnectionFactory.setConfiguration(configuration);
-            dbConnectionFactory.loadConfiguration();
-
-            // Add the Configuration and the ConfigurationLoader as Spring beans
-            addConfigurationAndLoaderAsSingletonsInContext(wac, configuration, configurationLoader);
-
-            // Replace ${} properties in Spring with config properties
-            addConfigurationPropertyReplacer(wac, properties);
-
-            RootContext.setInstance(wac);
-
+        if(configuration.getBoolean("caching.enabled", true)){
+            wac.getEnvironment().setActiveProfiles("useCaching");
         }
 
+        Aksess.setContextPath(servletContext.getContextPath());
+        // Set and load configuration on these classes since they are not DI-based (hackish..)
+        Aksess.setConfiguration(configuration);
+        Aksess.loadConfiguration();
+
+        // Add ${appDir} property for the Spring Context
+        ApplicationContextUtils.addAppDirPropertySupport(wac);
+
+        dbConnectionFactory.setServletContext(servletContext);
+        dbConnectionFactory.setConfiguration(configuration);
+        dbConnectionFactory.loadConfiguration();
+
+        // Add the Configuration and the ConfigurationLoader as Spring beans
+        addConfigurationAndLoaderAsSingletonsInContext(wac, configuration, configurationLoader);
+
+        // Replace ${} properties in Spring with config properties
+        addConfigurationPropertyReplacer(wac, properties);
+
+        RootContext.setInstance(wac);
+
     }
-
-
 
     private void addConfigurationPropertyReplacer(ConfigurableWebApplicationContext wac, final Properties properties) {
         wac.addBeanFactoryPostProcessor(new BeanFactoryPostProcessor() {
