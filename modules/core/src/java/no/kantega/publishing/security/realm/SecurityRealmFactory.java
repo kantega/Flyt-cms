@@ -32,7 +32,7 @@ public class SecurityRealmFactory {
 
     public static SecurityRealm getInstance(String realmName) throws SystemException {
         ApplicationContext context = RootContext.getInstance();
-        SecurityRealm realm = (SecurityRealm) context.getBean(realmName);
+        SecurityRealm realm = context.getBean(realmName, SecurityRealm.class);
         if (realm == null) {
             log.error("Realm with name" + realmName + " not found");
             throw new SystemException("Realm with name" + realmName + " not found", null);

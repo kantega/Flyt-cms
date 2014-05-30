@@ -47,7 +47,7 @@ public class SecurityRealm {
     public List<User> searchUsers(String name) throws SystemException {
         List<User> results = new ArrayList<>();
         try {
-            SearchResult<Profile> result = profileManager.searchProfiles(name);
+            SearchResult<Profile> result = getProfileManager().searchProfiles(name);
             if (result != null) {
                 Iterator<Profile> it = result.getAllResults();
                 while (it.hasNext()) {
@@ -78,7 +78,7 @@ public class SecurityRealm {
         results.add(owner);
 
         try {
-            Iterator<no.kantega.security.api.role.Role> it = roleManager.getAllRoles();
+            Iterator<no.kantega.security.api.role.Role> it = getRoleManager().getAllRoles();
             if (it != null) {
                 while (it.hasNext()) {
                     no.kantega.security.api.role.Role role =  it.next();
@@ -104,7 +104,7 @@ public class SecurityRealm {
     public User lookupUser(String userid) throws SystemException, IllegalArgumentException {
         if(isBlank(userid)) throw new IllegalArgumentException("Userid was null or empty String");
         try {
-            Profile profile = profileManager.getProfileForUser(SecurityHelper.createApiIdentity(userid));
+            Profile profile = getProfileManager().getProfileForUser(SecurityHelper.createApiIdentity(userid));
             return SecurityHelper.createAksessUser(profile);
         } catch (no.kantega.security.api.common.SystemException e) {
             throw new SystemException("Exception when retrieving profile for user " + userid, e);
@@ -128,7 +128,7 @@ public class SecurityRealm {
     public List<Role> lookupRolesForUser(String userid) throws SystemException {
         List<Role> roles = new ArrayList<>();
         try {
-            Iterator<no.kantega.security.api.role.Role> it = roleManager.getRolesForUser(SecurityHelper.createApiIdentity(userid));
+            Iterator<no.kantega.security.api.role.Role> it = getRoleManager().getRolesForUser(SecurityHelper.createApiIdentity(userid));
             if (it != null) {
                 while (it.hasNext()) {
                     roles.add(SecurityHelper.createAksessRole(it.next()));
@@ -149,7 +149,7 @@ public class SecurityRealm {
     public List<String> lookupUsersWithRole(String roleId) throws SystemException {
         List<String> userIds = new ArrayList<>();
         try {
-            Iterator<Identity> it = roleManager.getUsersWithRole(SecurityHelper.createApiRole(roleId));
+            Iterator<Identity> it = getRoleManager().getUsersWithRole(SecurityHelper.createApiRole(roleId));
             if (it != null) {
                 while (it.hasNext()) {
                     Identity role =  it.next();
@@ -178,7 +178,7 @@ public class SecurityRealm {
                 role.setId(roleid);
                 return role;
             } else {
-                no.kantega.security.api.role.Role role = roleManager.getRoleById(SecurityHelper.createApiRole(roleid));
+                no.kantega.security.api.role.Role role = getRoleManager().getRoleById(SecurityHelper.createApiRole(roleid));
                 return SecurityHelper.createAksessRole(role);
             }
         } catch (no.kantega.security.api.common.SystemException e) {
