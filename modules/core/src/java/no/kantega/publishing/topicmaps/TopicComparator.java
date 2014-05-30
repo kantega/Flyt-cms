@@ -17,19 +17,12 @@
 package no.kantega.publishing.topicmaps;
 
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.DateAttribute;
-import no.kantega.publishing.common.data.attributes.NumberAttribute;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.topicmaps.data.Topic;
 
-import java.util.Comparator;
-import java.util.Date;
 import java.text.Collator;
+import java.util.Comparator;
 
-public class TopicComparator  implements Comparator {
+public class TopicComparator implements Comparator<Topic> {
     Collator collator = null;
 
     public TopicComparator() {
@@ -38,16 +31,10 @@ public class TopicComparator  implements Comparator {
     }
 
 
-    public int compare(Object v1, Object v2) {
-        if (v1 instanceof Topic && v2 instanceof Topic) {
-            Topic t1 = (Topic)v1;
-            Topic t2 = (Topic)v2;
-            if (t1 != null && t2 != null) {
-                if (t1.getBaseName() != null && t2.getBaseName() != null) {                
-                    return collator.compare(t1.getBaseName(), t2.getBaseName());
-                }
-            }
-
+    public int compare(Topic t1, Topic t2) {
+        if (t1 != null && t2 != null &&
+                t1.getBaseName() != null && t2.getBaseName() != null) {
+            return collator.compare(t1.getBaseName(), t2.getBaseName());
         }
         return 0;
     }
