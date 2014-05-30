@@ -24,6 +24,7 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.data.CachedBaseObject;
 import no.kantega.publishing.security.data.Role;
@@ -43,6 +44,7 @@ import no.kantega.security.api.profile.ProfileManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -274,14 +276,15 @@ public class SecuritySession {
             }
         }
 
-        Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
+        WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
+        Map<String, OrganizationManager> orgManagers = ctx.getBeansOfType(OrganizationManager.class);
         if(orgManagers.size() > 0) {
-            OrganizationManager manager = (OrganizationManager) orgManagers.values().iterator().next();
-            List orgunits = manager.getOrgUnitsAboveUser(user.getId());
+            OrganizationManager<OrgUnit> manager = (OrganizationManager<OrgUnit>) orgManagers.values().iterator().next();
+            List<OrgUnit> orgunits = manager.getOrgUnitsAboveUser(user.getId());
             user.setOrgUnits(orgunits);
         }
 
-        PostLoginHandlerFactory plh = RootContext.getInstance().getBean(PostLoginHandlerFactory.class);
+        PostLoginHandlerFactory plh = ctx.getBean(PostLoginHandlerFactory.class);
         plh.newInstance().handlePostLogin(user, request);
     }
 
