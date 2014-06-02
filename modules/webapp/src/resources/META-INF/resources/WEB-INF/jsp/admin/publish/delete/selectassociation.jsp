@@ -24,6 +24,23 @@
   ~ limitations under the License.
   --%>
 
+<kantega:section id="head">
+    <script type="text/javascript">
+        var hasSubmitted = false;
+
+        function buttonOkPressed() {
+            // Prevent user from clicking several times
+            if (!hasSubmitted) {
+                hasSubmitted = true;
+                document.myform.submit();
+            }
+
+            return false;
+        }
+    </script>
+
+</kantega:section>
+
 <kantega:section id="body">
     <form name="myform" method="post" action="DeleteAssociation.action">
         <c:choose>
