@@ -45,7 +45,7 @@ public class EditRoleController extends AbstractUserAdminController {
 
         ValidationErrors errors = new ValidationErrors();
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         model.put("domain", domain);
         model.put("errors", errors);
         model.put("configurations", getRoleConfiguration());
@@ -67,6 +67,7 @@ public class EditRoleController extends AbstractUserAdminController {
                 model.put("isNew", Boolean.TRUE);
                 model.put("canEdit", Boolean.TRUE);
                 model.put("role", role);
+                model.put("domain", role.getDomain());
                 errors.add(null, "useradmin.role.rolenamemissing");
                 return new ModelAndView("role/edit", model);
             } else if (updateManager != null) {
@@ -80,6 +81,7 @@ public class EditRoleController extends AbstractUserAdminController {
                 role.setDomain(domain);
                 role.setId(id);
                 model.put("role", manager.getRoleById(role));
+                model.put("domain", role.getDomain());
             } else {
                 // New role
                 if (updateManager != null) {

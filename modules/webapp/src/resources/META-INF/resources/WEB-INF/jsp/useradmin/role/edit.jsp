@@ -41,12 +41,12 @@
                                 <select name="domain" class="textInput">
                             </c:when>
                             <c:otherwise>
-                                <input type="hidden" name="domain" value="${role.domain}">
+                                <input type="hidden" name="domain" value="${domain}">
                                 <select name="domainDummy" disabled class="textInput">
                             </c:otherwise>
                         </c:choose>
                         <c:forEach items="${configurations}" var="config">
-                            <option value="${config.domain}" <c:if test="${role.domain eq config.domain}">selected</c:if> <c:if test="${config.roleUpdateManager == null}">disabled</c:if>>${config.description}</option>
+                            <option value="${config.domain}" <c:if test="${domain eq config.domain}">selected</c:if> <c:if test="${config.roleUpdateManager == null}">disabled</c:if>>${config.description}</option>
                         </c:forEach>
                         </select>
                     </p>
