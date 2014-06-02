@@ -30,7 +30,7 @@ import static org.apache.commons.lang.StringUtils.isNotBlank;
 @Configuration
 public class SolrConfiguration {
 
-    private final Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(SolrConfiguration.class);
 
     @Value("${appDir}/solr")
     private File solrHome;
