@@ -180,14 +180,12 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                     int statusParam = param.getInt("status");
                     ContentStatus status = getContentStatus(statusParam);
 
-                    boolean isNew = content.isNew();
-
                     content = cms.checkInContent(content, status);
                     session.removeAttribute("currentContent");
 
                     session.removeAttribute("adminMode");
 
-                    return postSaveContent(request, response, content, isNew);
+                    return postSaveContent(request, response, content, content.isNew());
                 } else {
                     request.setAttribute("errors", errors);
                     return showEditForm(request, content);

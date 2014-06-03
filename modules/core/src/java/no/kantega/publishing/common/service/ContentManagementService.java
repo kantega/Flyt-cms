@@ -319,17 +319,19 @@ public class ContentManagementService {
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException, NotAuthorizedException {
         LockManager.releaseLock(content.getId());
         boolean hasBeenPublished = contentAO.hasBeenPublished(content.getId());
+        boolean isNewContent = content.isNew();
 
         if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
             throw new NotAuthorizedException("checkInContent");
         }
 
         content.setModifiedBy(securitySession.getUser().getId());
-        content.setLastModified(new Date());
+        Date currentTime = new Date();
+        content.setLastModified(currentTime);
 
-        if (content.isNew() || !content.isMinorChange()) {
+        if (isNewContent || !content.isMinorChange()) {
             content.setLastMajorChangeBy(securitySession.getUser().getId());
-            content.setLastMajorChange(new Date());
+            content.setLastMajorChange(currentTime);
         }
 
         // Check if user is authorized to publish directly
@@ -343,7 +345,7 @@ public class ContentManagementService {
 
         // Check if change should be active now
         if (content.getChangeFromDate() != null) {
-            if (content.getChangeFromDate().getTime() > new Date().getTime()) {
+            if (content.getChangeFromDate().after(currentTime)) {
                 // Change should not be active yet
                 if (newStatus == ContentStatus.PUBLISHED) {
                     newStatus = ContentStatus.PUBLISHED_WAITING;
@@ -357,28 +359,27 @@ public class ContentManagementService {
         if (newStatus == ContentStatus.PUBLISHED) {
             if (content.getPublishDate() == null) {
                 // If page is published, publish date must be set
-                content.setPublishDate(new Date());
+                content.setPublishDate(currentTime);
             }
-            if ((!content.isNew()) && (!contentAO.hasBeenPublished(content.getId()))) {
+            if ((!isNewContent) && (!hasBeenPublished)) {
                 // If the content has not been published before (e.g only saved as draft) and publish date has been set to be some time earlier than the publishing
                 // is performed, set the publish date to the exact time when the content is published.
                 // This is necessary because MailSubscriptionAgent checks for content with publish date after last job execution.
-                Date currentTime = new Date();
                 if (content.getPublishDate().before(currentTime)) {
                     content.setPublishDate(currentTime);
                 }
             }
         } else {
-            if ((!content.isNew()) && (contentAO.hasBeenPublished(content.getId())) && content.getPublishDate() == null) {
+            if ((!isNewContent) && hasBeenPublished && content.getPublishDate() == null) {
                 // If page has been published before, publish date must be set
-                content.setPublishDate(new Date());
+                content.setPublishDate(currentTime);
             }
         }
 
-        if (content.getPublishDate() != null && content.getPublishDate().getTime() > new Date().getTime()) {
+        if (content.getPublishDate() != null && content.getPublishDate().after(currentTime)) {
             // Content is waiting to become active
             content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
-        } else if (content.getExpireDate() != null && content.getExpireDate().getTime() < new Date().getTime()) {
+        } else if (content.getExpireDate() != null && content.getExpireDate().after(currentTime)) {
             // Content is expired
             if (content.getExpireAction () == ExpireAction.ARCHIVE) {
                 content.setVisibilityStatus(ContentVisibilityStatus.ARCHIVED);
@@ -389,15 +390,13 @@ public class ContentManagementService {
             content.setVisibilityStatus(ContentVisibilityStatus.ACTIVE);
         }
 
-        boolean isNewContent = content.isNew();
-        if (!isNewContent &&content.getDisplayTemplateId() > 0) {
+        if (!isNewContent && content.getDisplayTemplateId() > 0) {
             DisplayTemplate displayTemplate = getDisplayTemplate(content.getDisplayTemplateId());
             if (displayTemplate.isNewGroup()) {
                 content.setGroupId(content.getId());
             }
         }
 
-        ContentEventListener contentNotifier = this.contentNotifier;
         contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
 
         Content c = contentAO.checkInContent(content, newStatus);
@@ -452,7 +451,7 @@ public class ContentManagementService {
      */
     public Content copyContent(Content sourceContent, Association target, AssociationCategory category, boolean copyChildren) throws SystemException, NotAuthorizedException {
         ContentIdentifier parentCid =  ContentIdentifier.fromAssociationId(target.getAssociationId());
-        log.info( String.format("Copying Content %s to target %s in category %s.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId()));
+        log.info( "Copying Content {} to target {} in category {}.", sourceContent.getAssociation().getId(), target.getAssociationId(), category.getId());
 
         Content destParent = contentAO.getContent(parentCid, true);
         ContentIdentifier origialContentIdentifier = sourceContent.getContentIdentifier();
