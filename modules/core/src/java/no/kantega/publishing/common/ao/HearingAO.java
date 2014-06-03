@@ -45,10 +45,10 @@ public class HearingAO {
 
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        return (Hearing) template.queryForObject("select * from hearing where HearingId = ?",
+        return template.queryForObject("select * from hearing where HearingId = ?",
                 new Integer[] {id},
-                new RowMapper() {
-                    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+                new RowMapper<Hearing>() {
+                    public Hearing mapRow(ResultSet resultSet, int i) throws SQLException {
                         return getHearingFromRS(resultSet);
                     }
                 });
@@ -59,10 +59,10 @@ public class HearingAO {
 
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        List list = template.query("select * from hearing where ContentVersionId = ?",
+        List<Hearing> list = template.query("select * from hearing where ContentVersionId = ?",
                 new Integer[] {contentVersionId},
-                new RowMapper() {
-                    public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+                new RowMapper<Hearing>() {
+                    public Hearing mapRow(ResultSet resultSet, int i) throws SQLException {
                         return getHearingFromRS(resultSet);
                     }
                 });
@@ -70,17 +70,17 @@ public class HearingAO {
         if (list == null || list.size() == 0) {
             return null;
         } else  {
-            return (Hearing)list.get(0);
+            return list.get(0);
         }
     }
 
-    public static List getCommentsForHearing(int hearingId) {
+    public static List<HearingComment> getCommentsForHearing(int hearingId) {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
         return template.query("select HearingCommentId, HearingId, UserRef, CommentDate, CommentContent from hearingcomment WHERE HearingId=? order by CommentDate",
         new Object[] {hearingId},
-            new RowMapper() {
-                public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+            new RowMapper<HearingComment>() {
+                public HearingComment mapRow(ResultSet resultSet, int i) throws SQLException {
                     return getHearingCommentFromResultSet(resultSet);
                 }
 
@@ -203,30 +203,28 @@ public class HearingAO {
         }
     }
 
-    public static List getPersonInviteesForHearing(int hearingId) {
+    public static List<HearingInvitee> getPersonInviteesForHearing(int hearingId) {
         return getInviteesForHearingByType(hearingId, HearingInvitee.TYPE_PERSON);
     }
 
-    public static List getOrgUnitInviteesForHearing(int hearingId) {
+    public static List<HearingInvitee> getOrgUnitInviteesForHearing(int hearingId) {
         return getInviteesForHearingByType(hearingId, HearingInvitee.TYPE_ORGUNIT);
     }
 
-    private static List getInviteesForHearingByType(int hearingId, int type) {
+    private static List<HearingInvitee> getInviteesForHearingByType(int hearingId, int type) {
             JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
             return template.query("select HearingInviteeId, HearingId, InviteeType, InviteeRef from hearinginvitee where hearingId=? AND InviteeType = ?",
                     new Integer[] {hearingId, type},
-                    new RowMapper() {
-                        public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+                    new RowMapper<HearingInvitee>() {
+                        public HearingInvitee mapRow(ResultSet resultSet, int i) throws SQLException {
                             return getHearingInviteeFromRS(resultSet);
                         }
-
-
                     });
         }
 
 
-    private static Object getHearingInviteeFromRS(ResultSet resultSet) throws SQLException {
+    private static HearingInvitee getHearingInviteeFromRS(ResultSet resultSet) throws SQLException {
         HearingInvitee invitee = new HearingInvitee();
         invitee.setId(resultSet.getInt("HearingInviteeId"));
         invitee.setHearingId(resultSet.getInt("HearingId"));
@@ -237,10 +235,7 @@ public class HearingAO {
 
     public static int getHearingContentVersion(int contentId) {
 
-        Connection c = null;
-
-        try {
-             c = dbConnectionFactory.getConnection();
+        try (Connection c = dbConnectionFactory.getConnection()){
             int activeversion = SQLHelper.getInt(c, "select Version from contentversion where ContentId = " + contentId +" and contentversion.IsActive = 1 order by Version desc" , "Version");
             if (activeversion == -1) {
                 return -1;
@@ -249,14 +244,6 @@ public class HearingAO {
         } catch (Exception e) {
             log.error("Could not get contentversionid", e);
             return -1;
-        } finally {
-            if(c!= null) {
-                try {
-                    c.close();
-                } catch (SQLException e) {
-                    log.error("Sqlerror",  e);
-                }
-            }
         }
     }
 
@@ -267,11 +254,11 @@ public class HearingAO {
         if(count > 0) {
             return true;
         } else {
-            OrganizationManager manager = (OrganizationManager) RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
+            OrganizationManager manager = RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
             List above = manager.getOrgUnitsAboveUser(user);
             if(above.size() > 0) {
                 StringBuilder buffer = new StringBuilder();
-                buffer.append("select count(HearingInvitee.HearingInviteeId) FROM HearingInvitee, Hearing WHERE InviteeType=" + HearingInvitee.TYPE_ORGUNIT + " AND Hearing.HearingId=HearingInvitee.HearingId AND Hearing.ContentVersionId=" + contentVersionId+" AND InviteeRef IN (");
+                buffer.append("select count(HearingInvitee.HearingInviteeId) FROM HearingInvitee, Hearing WHERE InviteeType=" + HearingInvitee.TYPE_ORGUNIT + " AND Hearing.HearingId=HearingInvitee.HearingId AND Hearing.ContentVersionId=").append(contentVersionId).append(" AND InviteeRef IN (");
 
                 for (int i = 0; i < above.size(); i++) {
                     OrgUnit unit = (OrgUnit) above.get(i);

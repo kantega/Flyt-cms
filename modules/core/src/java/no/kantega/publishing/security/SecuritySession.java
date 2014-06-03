@@ -213,7 +213,7 @@ public class SecuritySession {
         admin.addRole(role);
 
         session.user = admin;
-        log.info("Creating new Admin instance of SecuritySession");
+        log.debug("Creating new Admin instance of SecuritySession");
 
         return session;
     }
