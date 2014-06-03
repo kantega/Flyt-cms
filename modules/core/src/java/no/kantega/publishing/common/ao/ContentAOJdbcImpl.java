@@ -145,6 +145,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 return;
             }
 
+            getJdbcTemplate().update("delete from contentversion where ContentVersionId = ?", contentVersionId);
             getJdbcTemplate().update("delete from contentattributes where ContentVersionId = ?", contentVersionId);
         } catch (EmptyResultDataAccessException e) {
             log.error("Could not find contentversion with contentid {} version {} and language {}", id, version, language);
@@ -580,13 +581,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             // Try to lock content in database
             addContentTransactionLock(content.getId(), c);
 
-            // Get old version if exists
-            Content oldContent = null;
             boolean isNew = content.isNew();
-            if (!isNew) {
-                ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
-                oldContent = getContent(oldCid, true);
-            }
 
             boolean newVersionIsActive = false;
 
@@ -658,6 +653,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 }
             }
 
+            // Get old version if exists
+            Content oldContent = null;
+            if (!isNew) {
+                ContentIdentifier oldCid =  ContentIdentifier.fromAssociationId(content.getAssociation().getAssociationId());
+                oldContent = getContent(oldCid, true);
+            }
+
             // Update subpages if these fields are changed
             if(oldContent != null ) {
                 if (!oldContent.getOwner().equals(content.getOwner())) {
@@ -687,7 +689,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         } catch (TransactionLockException tle) {
             if (c != null) {
                 try {
-                    if (dbConnectionFactory.useTransactions() && c != null) {
+                    if (dbConnectionFactory.useTransactions()) {
                         c.rollback();
                     }
                 } catch (SQLException e1) {
@@ -698,7 +700,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         } catch (Exception e) {
             if (c != null) {
                 try {
-                    if (dbConnectionFactory.useTransactions() && c != null) {
+                    if (dbConnectionFactory.useTransactions()) {
                         c.rollback();
                     }
                 } catch (SQLException e1) {
