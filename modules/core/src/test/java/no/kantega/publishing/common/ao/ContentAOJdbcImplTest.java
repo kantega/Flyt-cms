@@ -99,12 +99,12 @@ public class ContentAOJdbcImplTest {
 
     @Test
     public void shouldDeleteActiveVersionWhenToldSo(){
-        ContentIdentifier cid = ContentIdentifier.fromContentId(1);
+        ContentIdentifier cid = ContentIdentifier.fromContentId(5);
         cid.setLanguage(Language.NORWEGIAN_BO);
         cid.setVersion(2);
         assertNotNull(contentAO.getContent(cid, false));
         contentAO.deleteContentVersion(cid, true);
-        assertNotNull(contentAO.getContent(cid, true));
+        assertNull(contentAO.getContent(cid, true));
     }
 
     @Test

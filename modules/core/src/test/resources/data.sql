@@ -28,8 +28,20 @@ INSERT INTO associations (UniqueId, AssociationId, ContentId, ParentAssociationI
 INSERT INTO content (ContentId, ContentType, ContentTemplateId, MetaDataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, Location, Alias, PublishDate, ExpireDate, ExpireAction, VisibilityStatus, NumberOfNotes, OwnerPerson, RevisionDate, ForumId, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) VALUES (4, 0, 2, -1, 2, -1, 1, '', null, '/snn/', '2012-01-04 13:21:35', null, 'HIDE', 10, 0, '', null, -1, 0, -1, 0, 0, 0, 1, 0);
 INSERT INTO associations (UniqueId, AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) VALUES (4, 4, 4, 0, 0, 2, 1, 1, 1225741972, '/', 0, 0, 0, 298);
 
+INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,3,1,'Role','innholdsprodusent',1);
+INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,1,3,'User','ZFG',1);
+
+INSERT INTO content (ContentId, ContentType, ContentTemplateId, MetaDataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, Location, Alias, PublishDate, ExpireDate, ExpireAction, VisibilityStatus, NumberOfNotes, OwnerPerson, RevisionDate, ForumId, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) VALUES (5, 0, 2, -1, 2, -1, 1, '', null, '/deletecontentversion/', '2012-01-04 13:21:35', null, 'HIDE', 10, 0, '', null, -1, 0, -1, 0, 0, 0, 1, 0);
+INSERT INTO associations (UniqueId, AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) VALUES (5, 5, 5, 0, 0, 1, 1, 1, 1225741972, '/', 0, 0, -1, 298);
+INSERT INTO contentversion (ContentVersionId, ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) VALUES (4, 5, 1, 30, 1, 0, 'Bip', '', 'consectetuer adipiscing elit.', '', '', 'Espen Høe', '2008-11-10 11:11:08', '', null, 'esphoe', null, 0, '2008-11-10 11:11:08', 'esphoe');
+INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (80, 4, 'text', 0, 'tittel', 'Nyh');
+INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (81, 4, 'text', 0, 'ingress', 'Lorem ');
+
+INSERT INTO contentversion (ContentVersionId, ContentId, Version, Status, IsActive, Language, Title, AltTitle, Description, Image, Keywords, Publisher, LastModified, LastModifiedBy, ChangeDescription, ApprovedBy, ChangeFrom, IsMinorChange, LastMajorChange, LastMajorChangeBy) VALUES (5, 5, 2, 25, 0, 0, 'Bip v2', '', 'Lorem ipsum', '', '', 'Espen Høe', '2008-11-10 11:11:08', '', null, 'esphoe', null, 0, '2008-11-10 11:11:08', 'esphoe');
+INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (82, 5, 'text', 0, 'tittel', 'Nyaaah');
+INSERT INTO contentattributes (AttributeId, ContentVersionId, AttributeType, DataType, Name, Value) VALUES (83, 5, 'text', 0, 'ingress', 'Loremz ');
+
+
 ALTER TABLE Content ALTER ContentId restart with 11;
 ALTER TABLE ContentVersion ALTER ContentVersionId restart with 11;
 ALTER TABLE Associations ALTER UniqueId restart with 11;
-INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,3,1,'Role','innholdsprodusent',1);
-INSERT INTO objectpermissions (ObjectSecurityId, ObjectType, Privilege, RoleType, Role, NotificationPriority) VALUES (123,1,3,'User','ZFG',1);
