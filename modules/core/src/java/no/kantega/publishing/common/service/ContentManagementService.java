@@ -379,7 +379,7 @@ public class ContentManagementService {
         if (content.getPublishDate() != null && content.getPublishDate().after(currentTime)) {
             // Content is waiting to become active
             content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
-        } else if (content.getExpireDate() != null && content.getExpireDate().after(currentTime)) {
+        } else if (content.getExpireDate() != null && content.getExpireDate().before(currentTime)) {
             // Content is expired
             if (content.getExpireAction () == ExpireAction.ARCHIVE) {
                 content.setVisibilityStatus(ContentVisibilityStatus.ARCHIVED);
