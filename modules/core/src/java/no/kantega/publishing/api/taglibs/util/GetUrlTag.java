@@ -87,9 +87,6 @@ public class GetUrlTag extends TagSupport {
 
                 String buildUrl = urlPlaceholderResolver.replaceMacros(urlBuilder.toString(), pageContext);
 
-
-
-
                 if (!escapeurl) {
                     out.write(buildUrl.replaceAll("&amp;", "&"));
                 } else {
