@@ -64,7 +64,7 @@ public class GetUrlTag extends TagSupport {
                     if(addcontextpath && !absoluteUrl){
                         urlBuilder.append(request.getContextPath());
                     }
-                    if (url.charAt(0) == '/') {
+                    if (url.charAt(0) == '/'  || url.charAt(0) == '$') {
                         urlBuilder.append(url);
                     } else {
                         urlBuilder.append('/');
@@ -86,6 +86,10 @@ public class GetUrlTag extends TagSupport {
                 }
 
                 String buildUrl = urlPlaceholderResolver.replaceMacros(urlBuilder.toString(), pageContext);
+
+
+
+
                 if (!escapeurl) {
                     out.write(buildUrl.replaceAll("&amp;", "&"));
                 } else {
