@@ -26,7 +26,6 @@ import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
-import no.kantega.publishing.common.factory.AttributeFactory;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -42,6 +41,7 @@ import java.util.List;
  */
 public class ContentAOHelper {
     private static final Logger log = LoggerFactory.getLogger(ContentAOHelper.class);
+    private static final ClassNameAttributeFactory attributeFactory = new ClassNameAttributeFactory();
 
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
         Content content = new Content();
@@ -137,20 +137,18 @@ public class ContentAOHelper {
 
                 parentAttribute = repeater;
 
-                addCorrectNumberOfRows(parentAttribute, row, repeater);
-
+                addCorrectNumberOfRows(row, repeater);
 
                 // Get correct row
                 attributes = repeater.getRow(row);
             } else {
                 // Normal attribute
-                AttributeFactory factory = new ClassNameAttributeFactory();
                 Attribute attribute = null;
                 try {
-                    attribute = factory.newAttribute(attributeType);
+                    attribute = attributeFactory.newAttribute(attributeType);
                 } catch (Exception e) {
                     log.error("Error instantiating attribute " + attributeType, e);
-                    throw new SystemException("Feil ved oppretting av klasse for attributt" + attributeType, e);
+                    throw new SystemException("Feil ved oppretting av klasse for attributt " + attributeType, e);
                 }
                 attribute.setParent(parentAttribute);
 
@@ -168,12 +166,11 @@ public class ContentAOHelper {
 
     }
 
-    private static void addCorrectNumberOfRows(Attribute parentAttribute, int row, RepeaterAttribute repeater) {
+    private static void addCorrectNumberOfRows(int row, RepeaterAttribute repeater) {
         List<Attribute> attributes;// Add number of necessary rows
         while (repeater.getNumberOfRows() < row + 1) {
             attributes = new ArrayList<>();
             repeater.addRow(attributes);
-            //repeater.setParent(parentAttribute);
         }
     }
 
