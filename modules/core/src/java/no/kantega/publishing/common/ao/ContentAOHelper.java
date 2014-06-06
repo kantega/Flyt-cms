@@ -35,6 +35,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -42,6 +43,8 @@ import java.util.List;
 public class ContentAOHelper {
     private static final Logger log = LoggerFactory.getLogger(ContentAOHelper.class);
     private static final ClassNameAttributeFactory attributeFactory = new ClassNameAttributeFactory();
+    private static final Pattern REPEATER_PATTERN = Pattern.compile("\\].");
+
 
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
         Content content = new Content();
@@ -123,7 +126,7 @@ public class ContentAOHelper {
         List<Attribute> attributes = content.getAttributes(attributeDataType);
         Attribute parentAttribute = null;
 
-        String path[] = attributeNameIncludingPath.split("\\].");
+        String path[] = REPEATER_PATTERN.split(attributeNameIncludingPath);
         for (String pathElement : path) {
             if (pathElement.contains("[")) {
                 // Repeater attribute
