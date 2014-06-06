@@ -6,6 +6,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
+import no.kantega.search.api.search.context.SearchContextCreator;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 @Component
-public class AksessSearchContextCreator implements ApplicationContextAware {
+public class AksessSearchContextCreator implements SearchContextCreator, ApplicationContextAware {
 
     @Autowired
     private SiteCache siteCache;
