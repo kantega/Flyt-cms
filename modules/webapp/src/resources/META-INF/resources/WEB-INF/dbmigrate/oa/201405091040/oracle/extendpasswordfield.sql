@@ -1,1 +1,1 @@
-ALTER TABLE dbuserpassword MODIFY (Password VARCHAR(4096));
+ALTER TABLE dbuserpassword MODIFY (Password VARCHAR(4000));
