@@ -39,9 +39,9 @@ import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.PageContext;
@@ -50,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
@@ -64,6 +65,9 @@ public final class AttributeTagHelper {
     private static SiteCache siteCache;
     private static ContentIdHelper contentIdHelper;
 
+    private static final Pattern CONTEXT_ID_PATTERN = Pattern.compile("\\$contextId\\$");
+
+
     public static Content getContent(PageContext pageContext, String collection, String contentId) throws SystemException, NotAuthorizedException {
         return getContent(pageContext, collection, contentId, null);
     }
@@ -72,7 +76,7 @@ public final class AttributeTagHelper {
 
         Content content = null;
         if(contentIdHelper == null){
-            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
+            contentIdHelper = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(ContentIdHelper.class);
         }
         try {
             if (contentId == null) {
@@ -428,7 +432,7 @@ public final class AttributeTagHelper {
             }
 
             if (result != null && result.contains("$")) {
-                result = result.replaceAll("\\$contextId\\$", "" + content.getAssociation().getAssociationId());
+                result = CONTEXT_ID_PATTERN.matcher(result).replaceAll(String.valueOf(content.getAssociation().getAssociationId()));
             }
         }
 
@@ -473,7 +477,7 @@ public final class AttributeTagHelper {
     }
 
     public static String replaceMacros(String url, PageContext pageContext) throws SystemException, NotAuthorizedException {
-        setSiteCacheIfNull();
+        setSiteCacheIfNull(pageContext);
         if (url != null && pageContext != null) {
             if (TemplateMacroHelper.containsMacro(url)) {
                 HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
@@ -526,9 +530,9 @@ public final class AttributeTagHelper {
         return name;
     }
 
-    private static void setSiteCacheIfNull() {
+    private static void setSiteCacheIfNull(PageContext pageContext) {
         if(siteCache == null){
-            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
         }
     }
 }
