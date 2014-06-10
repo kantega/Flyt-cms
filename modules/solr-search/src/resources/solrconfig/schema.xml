@@ -151,6 +151,20 @@
     <dynamicField name="*_str" type="string" indexed="true" multiValued="true" stored="true" termVectors="true"/>
     <dynamicField name="*_tlf" type="tlf"    indexed="true" multiValued="true"  stored="true" termVectors="true"/>
     <dynamicField name="*_name" type="name"    indexed="true" multiValued="true" stored="false" termVectors="true"/>
+
+    <dynamicField name="*_i_s"  type="int"    indexed="true"  stored="true" multiValued="false"/>
+    <dynamicField name="*_l_s"  type="long"   indexed="true"  stored="true" multiValued="false"/>
+    <dynamicField name="*_txt_s" type="text_general"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_en_s"  type="text_en"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_no_s"  type="text_no"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_b_s"  type="boolean" indexed="true" multiValued="false" stored="true"/>
+    <dynamicField name="*_f_s"  type="float"  indexed="true" multiValued="false" stored="true"/>
+    <dynamicField name="*_d_s"  type="double" indexed="true" multiValued="false" stored="true"/>
+    <dynamicField name="*_dt_s" type="date"    indexed="true" multiValued="false" stored="true"/>
+    <dynamicField name="*_str_s" type="string" indexed="true" multiValued="false" stored="true" termVectors="true"/>
+    <dynamicField name="*_tlf_s" type="tlf"    indexed="true" multiValued="false"  stored="true" termVectors="true"/>
+    <dynamicField name="*_name_s" type="name"    indexed="true" multiValued="false" stored="false" termVectors="true"/>
+
     <dynamicField name="*_path" type="text_path"    indexed="true" multiValued="true" stored="false" termVectors="true"/>
     <!-- Type used to index the lat and lon components for the "location" FieldType -->
     <dynamicField name="*_coordinate"  type="tdouble" indexed="true"  stored="true"/>
