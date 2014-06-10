@@ -11,6 +11,8 @@ import java.util.List;
 public class SearchQuery {
     public static final int DEFAULT_RESULTS_PER_PAGE= 50;
 
+    public enum SORT_ORDER {desc, asc};
+
     private final SearchContext searchContext;
     private final String originalQuery;
     private List<String> filterQueries;
@@ -32,6 +34,8 @@ public class SearchQuery {
     private List<String> boostFunctions = Collections.emptyList();
     private List<String> boostQueries = Collections.emptyList();
     private List<String> resultFields = Collections.emptyList();
+    private String sortField = null;
+    private SORT_ORDER sortOrder = SORT_ORDER.asc;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -403,4 +407,23 @@ public class SearchQuery {
         this.resultFields = resultFields;
     }
 
+    /**
+     * Specify field for sorting
+     * @param sortField
+     */
+    public void setSortField(String sortField){this.sortField = sortField;}
+
+    /**
+     * Specify order for sorting.
+     * @param order
+     */
+    public void setSortOrder(SORT_ORDER order){this.sortOrder = order;}
+
+    public String getSortField() {
+        return sortField;
+    }
+
+    public SORT_ORDER getSortOrder() {
+        return sortOrder;
+    }
 }

@@ -128,6 +128,8 @@ public class SolrSearcher implements Searcher {
 
         addResultGrouping(query, solrQuery);
 
+        addSorting(query, solrQuery);
+
         // Define what fields the search result hits will contain
         List<String> resultFields = new ArrayList<>();
         resultFields.add("uid");
@@ -171,6 +173,9 @@ public class SolrSearcher implements Searcher {
 
         return solrQuery;
     }
+
+
+
 
     private String[] getBoostFunctions(SearchQuery query) {
         List<String> boostFunctions = new ArrayList<>(query.getBoostFunctions());
@@ -232,6 +237,13 @@ public class SolrSearcher implements Searcher {
             return  getSpellSuggestions(queryResponse.getSpellCheckResponse());
         } catch (SolrServerException e) {
             throw new IllegalStateException("Error when searching", e);
+        }
+    }
+
+    private void addSorting(SearchQuery query, SolrQuery solrQuery){
+        if (query.getSortField() != null && query.getSortField().length() > 0){
+            SolrQuery.ORDER solrSortOrder = query.getSortOrder() == SearchQuery.SORT_ORDER.asc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc;
+            solrQuery.setSort(query.getSortField(), solrSortOrder);
         }
     }
 
