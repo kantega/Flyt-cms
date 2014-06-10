@@ -35,7 +35,7 @@
                 <span class="name">${page.title}</span>
                 <c:choose>
                     <c:when test="${page.status == 'PUBLISHED'}">
-                        <c:set var="statusId" value="${page.status.typeAsInt}_${page.visibilityStatus}"/>
+                        <c:set var="statusId" value="${page.status.typeAsInt}_${page.visibilityStatus.statusId}"/>
                     </c:when>
                     <c:otherwise>
                         <c:set var="statusId" value="${page.status.typeAsInt}"/>

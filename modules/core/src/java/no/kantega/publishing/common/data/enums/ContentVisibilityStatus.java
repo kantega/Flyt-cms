@@ -42,4 +42,8 @@ public enum ContentVisibilityStatus {
             throw new IllegalArgumentException("statusId should be one of 0, 10, 15, 20");
         }
     }
+
+    public int getStatusId() {
+        return statusId;
+    }
 }
