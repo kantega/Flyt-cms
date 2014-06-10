@@ -33,7 +33,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.templates.AssociationCategoryHelper;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
-import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +41,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -55,6 +56,9 @@ public class AddContentAction extends AbstractController {
 
     @Autowired
     private ContentIdHelper contentIdHelper;
+
+    @Resource(name = "contentListenerNotifier")
+    private ContentEventListener contentEventListener;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
@@ -142,7 +146,7 @@ public class AddContentAction extends AbstractController {
         model.put("displayAddAssociation", config.getBoolean("admin.addassociation.display", displayAddAssociation));
 
         // Run plugins
-        ContentListenerUtil.getContentNotifier().beforeSelectTemplate(new ContentEvent().setModel(model));
+        contentEventListener.beforeSelectTemplate(new ContentEvent().setModel(model));
 
         // Show page where user selects template etc
         return new ModelAndView(view, model);
