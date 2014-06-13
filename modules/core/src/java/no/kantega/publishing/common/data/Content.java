@@ -352,27 +352,51 @@ public class Content extends BaseObject {
         return location;
     }
 
-    public String getUrl() {
-        return Aksess.getContextPath() + PrettyURLEncoder.createContentUrl(getAssociation().getAssociationId(), title, alias);
+    public String getPath() {
+        return PrettyURLEncoder.createContentUrl(getAssociation().getAssociationId(), title, alias);
     }
 
-    public String getUrl(boolean isAdminMode) {
+    public String getPath(boolean isAdminMode) {
         Association a = getAssociation();
 
         if (alias != null && alias.startsWith("/") && a.getAssociationtype() == AssociationType.DEFAULT_POSTING_FOR_SITE) {
             // Alias brukes når angitt og man har en hovedknytning og man ikke er i adminmodus
             if (isAdminMode) {
-                return getUrl();
+                return getPath();
             } else {
-                return Aksess.getContextPath() + alias;
+                return alias;
             }
         }
-        return getUrl();
+        return getPath();
     }
 
-    public String getUrl(HttpServletRequest request) {
+    public String getPath(HttpServletRequest request) {
         boolean isAdminMode = HttpHelper.isAdminMode(request);
-        return getUrl(isAdminMode);
+        return getPath(isAdminMode);
+    }
+
+    /**
+     * @deprecated Use "Aksess.getContextPath() + getPath()"
+     */
+    @Deprecated
+    public String getUrl() {
+        return Aksess.getContextPath() + getPath();
+    }
+
+    /**
+     * @deprecated Use "Aksess.getContextPath() + getPath(boolean isAdminMode)"
+     */
+    @Deprecated
+    public String getUrl(boolean isAdminMode) {
+        return Aksess.getContextPath() + getPath(isAdminMode);
+    }
+
+    /**
+     * @deprecated Use "Aksess.getContextPath() + getPath(HttpServletRequest request)"
+     */
+    @Deprecated
+    public String getUrl(HttpServletRequest request) {
+        return Aksess.getContextPath() + getPath(request);
     }
 
     /**
