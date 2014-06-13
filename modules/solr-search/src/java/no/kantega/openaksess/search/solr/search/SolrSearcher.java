@@ -243,7 +243,10 @@ public class SolrSearcher implements Searcher {
     private void addSorting(SearchQuery query, SolrQuery solrQuery){
         if (query.getSortField() != null && query.getSortField().length() > 0){
             SolrQuery.ORDER solrSortOrder = query.getSortOrder() == SearchQuery.SORT_ORDER.asc ? SolrQuery.ORDER.asc : SolrQuery.ORDER.desc;
-            solrQuery.setSort(query.getSortField(), solrSortOrder);
+            //solrQuery.setSort(query.getSortField(), solrSortOrder);
+            SolrQuery.SortClause clause = new SolrQuery.SortClause(query.getSortField(), solrSortOrder);
+            solrQuery.setSort(clause);
+
         }
     }
 
