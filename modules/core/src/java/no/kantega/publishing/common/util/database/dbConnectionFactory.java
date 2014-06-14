@@ -23,8 +23,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.io.IOUtils;
-import org.kantega.openaksess.dbmigrate.DbMigrate;
-import org.kantega.openaksess.dbmigrate.ServletContextScriptSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -98,11 +96,11 @@ public class dbConnectionFactory {
             if (dbEnablePooling) {
                 // Enable DBCP pooling
                 BasicDataSource bds = new BasicDataSource();
-                bds.setMaxActive(dbMaxConnections);
+                bds.setMaxTotal(dbMaxConnections);
                 bds.setMaxIdle(dbMaxIdleConnections);
                 bds.setMinIdle(dbMinIdleConnections);
                 if (dbMaxWait != -1) {
-                    bds.setMaxWait(1000*dbMaxWait);
+                    bds.setMaxWaitMillis(1000 * dbMaxWait);
                 }
 
                 bds.setDriverClassName(dbDriver);
@@ -123,7 +121,6 @@ public class dbConnectionFactory {
                     bds.setMinEvictableIdleTimeMillis(1000*60*5);
                     bds.setNumTestsPerEvictionRun(dbMaxConnections);
                     if (dbRemoveAbandonedTimeout > 0) {
-                        bds.setRemoveAbandoned(true);
                         bds.setRemoveAbandonedTimeout(dbRemoveAbandonedTimeout);
                         bds.setLogAbandoned(true);
                     }
