@@ -23,6 +23,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.io.IOUtils;
+import org.kantega.openaksess.dbmigrate.DbMigrate;
+import org.kantega.openaksess.dbmigrate.ServletContextScriptSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
