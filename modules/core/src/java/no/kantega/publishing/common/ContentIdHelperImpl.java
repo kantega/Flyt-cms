@@ -24,6 +24,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -65,6 +66,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     private final int defaultContextId = -1;
     private final int defaultVersion = -1;
     private final Pattern siteIdPattern = Pattern.compile(".*siteId=(?<siteId>\\d+).*");
+    private final Pattern thisIdPattern = Pattern.compile(".*thisId=(?<thisId>\\d+).*");
 
     @Autowired
     private SiteCache siteCache;
@@ -384,6 +386,14 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             Matcher siteIdMatcher = siteIdPattern.matcher(url);
             if(siteIdMatcher.matches()){
                 siteId = Integer.parseInt(siteIdMatcher.group("siteId"));
+            }
+        }
+
+        if (siteId == -1 && url != null) {
+            Matcher thisIdMatcher = thisIdPattern.matcher(url);
+            if (thisIdMatcher.matches()) {
+                int thisId = Integer.parseInt(thisIdMatcher.group("thisId"));
+                siteId = AssociationAO.getAssociationById(thisId).getSiteId();
             }
         }
 
