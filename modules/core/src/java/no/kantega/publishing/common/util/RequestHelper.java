@@ -24,7 +24,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.DisplayTemplateControllerId;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.spring.RootContext;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
@@ -39,7 +38,7 @@ public class RequestHelper {
     private static BeanFactory beanFactory;
 
     public static void setRequestAttributes(HttpServletRequest request, Content content) throws SystemException {
-        setSiteCacheIfNull();
+        setSiteCacheIfNull(request);
         if (content == null) {
             Site site = siteCache.getSiteByHostname(request.getServerName());
             if (site != null){
@@ -60,7 +59,7 @@ public class RequestHelper {
 
     public static void runTemplateControllers(DisplayTemplate dt, HttpServletRequest request, HttpServletResponse response, ServletContext servletContext) throws Exception {
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         setBeanFactoryIfNull(servletContext);
 
@@ -85,9 +84,9 @@ public class RequestHelper {
         }
     }
 
-    private static void setSiteCacheIfNull() {
+    private static void setSiteCacheIfNull(HttpServletRequest request) {
         if(siteCache == null){
-            siteCache = RootContext.getInstance().getBean(SiteCache.class);
+            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext()).getBean(SiteCache.class);
         }
     }
 }

@@ -19,8 +19,8 @@ package no.kantega.publishing.api.taglibs.security;
 import no.kantega.commons.util.HttpHelper;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
 
 public class IsAdminModeTag extends ConditionalTagSupport {
@@ -28,10 +28,11 @@ public class IsAdminModeTag extends ConditionalTagSupport {
 
     protected boolean condition() throws JspTagException {
         boolean ret;
+        boolean adminMode = HttpHelper.isAdminMode((HttpServletRequest) pageContext.getRequest());
         if (negate) {
-            ret = (!HttpHelper.isAdminMode((HttpServletRequest)pageContext.getRequest()));
+            ret = (!adminMode);
         } else {
-            ret = HttpHelper.isAdminMode((HttpServletRequest)pageContext.getRequest());
+            ret = adminMode;
         }
         negate = false;
         return ret;
