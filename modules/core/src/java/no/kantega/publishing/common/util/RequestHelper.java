@@ -72,9 +72,8 @@ public class RequestHelper {
         }
 
         // Put the model on the request as request attributes
-        for (Object o : model.keySet()) {
-            String name = o.toString();
-            request.setAttribute(name, model.get(name));
+        for (Map.Entry<String, Object> o : model.entrySet()) {
+            request.setAttribute(o.getKey(), o.getValue());
         }
     }
 
