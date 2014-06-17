@@ -158,9 +158,9 @@
 
     <dynamicField name="*_i_s"  type="int"    indexed="true"  stored="true" multiValued="false"/>
     <dynamicField name="*_l_s"  type="long"   indexed="true"  stored="true" multiValued="false"/>
-    <dynamicField name="*_txt_s" type="stringvalue"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
-    <dynamicField name="*_en_s"  type="stringvalue"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
-    <dynamicField name="*_no_s"  type="stringvalue"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_txt_s" type="text_general"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_en_s"  type="text_en"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
+    <dynamicField name="*_no_s"  type="text_no"    indexed="true"  stored="true" multiValued="false" termVectors="true"/>
     <dynamicField name="*_b_s"  type="boolean" indexed="true" multiValued="false" stored="true"/>
     <dynamicField name="*_f_s"  type="float"  indexed="true" multiValued="false" stored="true"/>
     <dynamicField name="*_d_s"  type="double" indexed="true" multiValued="false" stored="true"/>
