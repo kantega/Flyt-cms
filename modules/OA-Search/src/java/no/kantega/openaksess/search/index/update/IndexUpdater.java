@@ -52,7 +52,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             } else {
                 contentDeleted(event);
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error indexing saved content", e);
         }
     }
@@ -75,7 +75,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
             documentIndexer.deleteByUid(uids);
             documentIndexer.commit();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error deleting content from index", e);
         }
     }
@@ -129,7 +129,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
             documentIndexer.deleteByUid(uids);
             documentIndexer.commit();
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error indexing deleted association", e);
         }
     }
@@ -145,7 +145,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             if (attachment.getContentId() != -1) {
                 documentIndexer.indexDocumentAndCommit(attachmentTransformer.transform(attachment));
             }
-        } catch (Exception e) {
+        } catch (Throwable e) {
             log.error("Error indexing updated attachment", e);
         }
     }
