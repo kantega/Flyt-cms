@@ -45,6 +45,8 @@ public class ContentSearchController implements AksessController {
     private boolean showOnlyPublishedContent = true;
     private List<String> facetFields = emptyList();
     private List<String> facetQueries = emptyList();
+    private List<String> configuredFilterQueries = emptyList();
+    private String searchResponseModelKey = "searchResponse";
 
     /**
      * q - The query string. e.g. «cheese sale».
@@ -64,13 +66,13 @@ public class ContentSearchController implements AksessController {
         String query = getQuery(request);
         if (isNotEmpty(query)) {
             SearchResponse searchResponse = performSearch(request, query);
-            model.put("searchResponse", searchResponse);
+            model.put(searchResponseModelKey, searchResponse);
 
             if(includeLinks(request)){
                 addLinks(model, searchResponse);
             }
         } else {
-            model.put("searchResponse", emptyResponse(request));
+            model.put(searchResponseModelKey, emptyResponse(request));
         }
 
         return model;
@@ -208,6 +210,7 @@ public class ContentSearchController implements AksessController {
 
         addPublishedFilter(filterQueries);
 
+        filterQueries.addAll(configuredFilterQueries);
         return filterQueries;
     }
 
@@ -303,5 +306,13 @@ public class ContentSearchController implements AksessController {
 
     private SearchResponse emptyResponse(HttpServletRequest request) {
         return new SearchResponse(new SearchQuery(aksessSearchContextCreator.getSearchContext(request), ""), 0L, 0, Collections.<SearchResult>emptyList());
+    }
+
+    public void setSearchResponseModelKey(String searchResponseModelKey) {
+        this.searchResponseModelKey = searchResponseModelKey;
+    }
+
+    public void setConfiguredFilterQueries(List<String> configuredFilterQueries) {
+        this.configuredFilterQueries = configuredFilterQueries;
     }
 }
