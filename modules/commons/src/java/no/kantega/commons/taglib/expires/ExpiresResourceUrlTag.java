@@ -90,7 +90,7 @@ public class ExpiresResourceUrlTag extends TagSupport {
     /**
      * Simple key provider that just returns the time of last restart.
      */
-    class DefaultExpiresResourceKeyProvider implements ResourceKeyProvider {
+    private static class DefaultExpiresResourceKeyProvider implements ResourceKeyProvider {
 
         public String getUniqueKey(HttpServletRequest request, String url) {
             return Long.toString(ManagementFactory.getRuntimeMXBean().getStartTime());
