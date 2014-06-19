@@ -81,6 +81,7 @@ public class ContentQuery {
     private boolean showArchived = false;
     private boolean showExpired = false;
     private String onHearingFor = null;
+    private boolean ignoreHearingDeadline = false;
     private SortOrder sortOrder = null;
     private boolean includeDrafts = false;
     private boolean includeWaitingForApproval = false;
@@ -366,9 +367,11 @@ public class ContentQuery {
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
-                    " and hearinginvitee.HearingId = hearing.Hearingid " +
-                    " and hearing.DeadLine > :hearingdeadline");
-            parameters.put("hearingdeadline", new Date());
+                    " and hearinginvitee.HearingId = hearing.Hearingid");
+            if(!ignoreHearingDeadline) {
+                query.append(" and hearing.DeadLine > :hearingdeadline");
+                parameters.put("hearingdeadline", new Date());
+            }
 
             if (!onHearingFor.equals("everyone")) {
                 query.append(" and ((hearinginvitee.InviteeType = "+ HearingInvitee.TYPE_PERSON + " and hearinginvitee.InviteeRef = :InviteeRef)");
@@ -697,6 +700,14 @@ public class ContentQuery {
 
     public void setOnHearingFor(String onHearingFor) {
         this.onHearingFor = onHearingFor;
+    }
+
+    public boolean getIgnoreHearingDeadline() {
+        return ignoreHearingDeadline;
+    }
+
+    public void setIgnoreHearingDeadline(boolean ignoreHearingDeadline) {
+        this.ignoreHearingDeadline = ignoreHearingDeadline;
     }
 
     public List<ContentIdentifier> getExcludedPathElementIds() {
