@@ -28,6 +28,7 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Element;
 
@@ -47,6 +48,9 @@ public class MediaAttribute extends Attribute {
     private Multimedia cachedMultimediaObj = null; // Cacher bildet
 
     protected String filter = null;
+
+    @Autowired
+    private MultimediaAO multimediaAO;
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException {
@@ -158,7 +162,7 @@ public class MediaAttribute extends Attribute {
                 log.error("Error parsing " + value, e);
                 return null;
             }
-            cachedMultimediaObj = MultimediaAO.getMultimedia(id);
+            cachedMultimediaObj = multimediaAO.getMultimedia(id);
         }
         return cachedMultimediaObj;
     }

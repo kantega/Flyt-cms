@@ -83,6 +83,9 @@ public class LinkCheckerJob implements InitializingBean {
     @Autowired
     private ContentIdHelper contentIdHelper;
 
+    @Autowired
+    private MultimediaAO multimediaAO;
+
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
@@ -216,7 +219,7 @@ public class LinkCheckerJob implements InitializingBean {
         try {
             int i = Integer.parseInt(idPart);
             try {
-                Multimedia attachment = MultimediaAO.getMultimedia(i);
+                Multimedia attachment = multimediaAO.getMultimedia(i);
 
                 if(attachment != null) {
                     occurrence.setStatus(CheckStatus.OK);

@@ -37,6 +37,9 @@ public class ContentStatisticsAction implements Controller {
     @Autowired
     private ContentAO contentAO;
 
+    @Autowired
+    private MultimediaAO multimediaAO;
+
     /**
      *
      * @param request
@@ -48,7 +51,7 @@ public class ContentStatisticsAction implements Controller {
         Map<String, Object> model = new HashMap<>();
         model.put("contentCount", contentAO.getContentCount());
         model.put("linkCount", contentAO.getLinkCount());
-        model.put("multimediaCount", MultimediaAO.getMultimediaCount());
+        model.put("multimediaCount", multimediaAO.getMultimediaCount());
         model.put("contentProducerCount", contentAO.getContentProducerCount());
         return new ModelAndView(view, model);
     }

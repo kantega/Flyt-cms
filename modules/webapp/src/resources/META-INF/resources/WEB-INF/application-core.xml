@@ -280,6 +280,8 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean id="multimediaAO" class="no.kantega.publishing.common.ao.MultimediaAOImpl"/>
+
     <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

@@ -25,6 +25,7 @@ import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
@@ -33,6 +34,10 @@ import java.util.List;
 
 public class ImgHeightAndWidthFilter extends XMLFilterImpl {
     private static final Logger log = LoggerFactory.getLogger(ImgHeightAndWidthFilter.class);
+
+    @Autowired
+    private MultimediaAO multimediaAO;
+
     @Override
     public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
         if(localName.equalsIgnoreCase("img")) {
@@ -50,7 +55,7 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
                         List<Integer> ids = MultimediaHelper.getMultimediaIdsFromText(url);
                         if (ids.size() == 1) {
                             int multimediaId = ids.get(0);
-                            Multimedia image = MultimediaAO.getMultimedia(multimediaId);
+                            Multimedia image = multimediaAO.getMultimedia(multimediaId);
                             if (imageWidth != image.getWidth() || imageHeight != image.getHeight() ) {
                                 ImageEditor imageEditor = (ImageEditor) RootContext.getInstance().getBean("aksessImageEditor");
 

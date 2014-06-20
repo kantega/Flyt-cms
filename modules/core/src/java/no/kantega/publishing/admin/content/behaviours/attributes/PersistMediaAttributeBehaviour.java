@@ -31,6 +31,7 @@ import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -43,6 +44,9 @@ import java.util.List;
  */
 public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
     private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
+
+    @Autowired
+    private MultimediaAO multimediaAO;
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (attribute instanceof MediaAttribute) {
@@ -57,7 +61,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                             // When a file is uploaded and published directly, the old image if overwritten
                             // This cannot be done for drafts or pages awaiting to be published
                             int oldId = Integer.parseInt(mediaAttr.getValue());
-                            multimedia = MultimediaAO.getMultimedia(oldId);
+                            multimedia = multimediaAO.getMultimedia(oldId);
                         }
                     } catch (NumberFormatException e) {
 
@@ -73,7 +77,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                         if (mediaFolder != null) {
                             try {
                                 mediaFolderId = Integer.parseInt(mediaFolder);
-                                if (MultimediaAO.getMultimedia(mediaFolderId) == null) {
+                                if (multimediaAO.getMultimedia(mediaFolderId) == null) {
                                     mediaFolderId = -1;
                                 }
                             } catch (Exception e) {
@@ -92,7 +96,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
 
                     multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
 
-                    int id = MultimediaAO.setMultimedia(multimedia);
+                    int id = multimediaAO.setMultimedia(multimedia);
                     mediaAttr.setValue("" + id);
                     mediaAttr.setImportFile(null);
                 }
@@ -113,7 +117,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
             mediaFolder = defaultFolderName;
         }
         // Find folder with this name
-        List<Multimedia> folders = MultimediaAO.getMultimediaList(0);
+        List<Multimedia> folders = multimediaAO.getMultimediaList(0);
         for (Multimedia m : folders) {
             if (m.getType() == MultimediaType.FOLDER && m.getName().equalsIgnoreCase(mediaFolder)) {
                 mediaFolderId = m.getId();
@@ -125,7 +129,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
             Multimedia folder = new Multimedia();
             folder.setName(mediaFolder);
             folder.setType(MultimediaType.FOLDER);
-            mediaFolderId = MultimediaAO.setMultimedia(folder);
+            mediaFolderId = multimediaAO.setMultimedia(folder);
         }
         return mediaFolderId;
     }

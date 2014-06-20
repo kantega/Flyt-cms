@@ -40,6 +40,7 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,6 +51,9 @@ public class MultimediaService {
 
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
+
+    @Autowired
+    private MultimediaAO multimediaAO;
 
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
@@ -134,7 +138,7 @@ public class MultimediaService {
             multimedia.setModifiedBy(securitySession.getUser().getId());
         }
 
-        int id = MultimediaAO.setMultimedia(multimedia);
+        int id = multimediaAO.setMultimedia(multimedia);
         multimedia.setId(id);
         if (Aksess.isEventLogEnabled()) {
             if (multimedia.getType() == MultimediaType.FOLDER) {
@@ -292,7 +296,7 @@ public class MultimediaService {
         if (profileImage != null) {
             mm.setId(profileImage.getId());
         }
-        MultimediaAO.setMultimedia(mm);
+        multimediaAO.setMultimedia(mm);
     }
 
 }
