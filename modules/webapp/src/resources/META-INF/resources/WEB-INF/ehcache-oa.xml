@@ -118,6 +118,17 @@
            statistics="true" >
         <cacheDecoratorFactory properties="metric-registry-name=ImageCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
+
+    <cache name="MultimediaCache"
+           maxElementsInMemory="100"
+           eternal="true"
+           overflowToDisk="true"
+           memoryStoreEvictionPolicy="LFU"
+           diskPersistent="true"
+           statistics="true" >
+        <cacheDecoratorFactory properties="metric-registry-name=ImageCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
+    </cache>
+
     <cache name="permissionCache"
            maxElementsInMemory="100"
            eternal="false"

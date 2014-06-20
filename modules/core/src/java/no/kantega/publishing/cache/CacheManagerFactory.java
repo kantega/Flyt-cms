@@ -33,7 +33,8 @@ public class CacheManagerFactory implements ServletContextAware, FactoryBean<Cac
 
     private CacheManager cacheManager;
 
-    public enum CacheNames {AliasCache, ContentCache, ContentListCache, SiteMapCache, XmlCache, FacetLabelCache, ContentUrlCache, ContentIdentifierCache, ImageCache, UserCache}
+    public enum CacheNames {AliasCache, ContentCache, ContentIdentifierCache, ContentListCache, ContentUrlCache,
+        FacetLabelCache, ImageCache, MultimediaCache, SiteMapCache, UserCache, XmlCache}
 
     private static final String OA_XML_CONFIG_FILE = "/WEB-INF/ehcache-oa.xml";
     private static final String PROJECT_XML_CONFIG_FILE = "/WEB-INF/ehcache-project.xml";

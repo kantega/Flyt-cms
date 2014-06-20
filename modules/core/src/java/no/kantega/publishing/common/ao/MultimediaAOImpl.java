@@ -45,6 +45,7 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @throws no.kantega.commons.exception.SystemException
      */
     @Deprecated
+    @Cacheable("MultimediaCache")
     public Multimedia getMultimedia(int id) throws SystemException {
         setPermissionAOIfNotSet();
         return multimediaDao.getMultimedia(id);
