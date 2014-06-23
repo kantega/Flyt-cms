@@ -19,7 +19,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean class="no.kantega.publishing.common.ao.JdbcMultimediaDao">
+    <bean name="multimediaDao" class="no.kantega.publishing.common.ao.JdbcMultimediaDao">
         <property name="dataSource" ref="dataSource"/>
         <property name="sqlDialect">
             <bean class="no.kantega.commons.sqlsearch.dialect.DerbySQLDialect"/>
@@ -111,11 +111,16 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.common.ao.MultimediaAOImpl">
+        <property name="permissionAO" ref="permissionAO"/>
+        <property name="multimediaDao" ref="multimediaDao"/>
+    </bean>
+
     <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
+    <bean name="permissionAO" class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 </beans>

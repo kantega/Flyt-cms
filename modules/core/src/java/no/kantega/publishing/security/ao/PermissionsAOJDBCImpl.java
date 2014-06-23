@@ -28,9 +28,9 @@ import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
+import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.RowMapper;
@@ -46,12 +46,15 @@ import java.util.List;
 public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implements PermissionAO {
     private static final Logger log = LoggerFactory.getLogger(PermissionsAOJDBCImpl.class);
 
-    @Autowired
-    private MultimediaAO multimediaAO;
+    private static MultimediaAO multimediaAO;
 
     @Override
     @CacheEvict(value = "permissionCache", key = "#object.securityId")
     public void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
+        if (multimediaAO == null) {
+            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        }
+
         int securityId = object.getSecurityId();
 
         try (Connection c = dbConnectionFactory.getConnection()){

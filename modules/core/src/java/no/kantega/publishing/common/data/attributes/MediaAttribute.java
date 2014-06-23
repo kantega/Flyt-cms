@@ -26,9 +26,9 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.util.MultimediaTagCreator;
+import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import org.w3c.dom.Element;
 
@@ -49,8 +49,7 @@ public class MediaAttribute extends Attribute {
 
     protected String filter = null;
 
-    @Autowired
-    private MultimediaAO multimediaAO;
+    private static MultimediaAO multimediaAO;
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException {
@@ -154,6 +153,9 @@ public class MediaAttribute extends Attribute {
     }
 
     public Multimedia getMultimedia() {
+        if (multimediaAO == null) {
+            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        }
         int id;
         if (cachedMultimediaObj == null && isNotBlank(value)) {
             try {

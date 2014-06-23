@@ -31,7 +31,6 @@ import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -45,12 +44,15 @@ import java.util.List;
 public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
     private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
 
-    @Autowired
-    private MultimediaAO multimediaAO;
+    private static MultimediaAO multimediaAO;
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
+        if (multimediaAO == null) {
+            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        }
+
         if (attribute instanceof MediaAttribute) {
-            MediaAttribute mediaAttr = (MediaAttribute)attribute;
+            MediaAttribute mediaAttr = (MediaAttribute) attribute;
             MultipartFile importFile = mediaAttr.getImportFile();
             try {
                 if (importFile != null) {
@@ -92,7 +94,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                         multimedia.setParentId(mediaFolderId);
                     }
 
-                    MultimediaUploadHandler multimediaUploadHandler = (MultimediaUploadHandler)RootContext.getInstance().getBean("aksessMultimediaUploadHandler");
+                    MultimediaUploadHandler multimediaUploadHandler = (MultimediaUploadHandler) RootContext.getInstance().getBean("aksessMultimediaUploadHandler");
 
                     multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
 
@@ -101,7 +103,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     mediaAttr.setImportFile(null);
                 }
             } catch (IllegalStateException e) {
-                log.info( "Uploaded file was discarded, has been deleted");
+                log.info("Uploaded file was discarded, has been deleted");
             } catch (IOException | InvalidImageFormatException e) {
                 throw new SystemException("Feil ved filvedlegg", e);
             }

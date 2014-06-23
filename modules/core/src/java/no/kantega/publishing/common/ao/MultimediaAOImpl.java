@@ -23,7 +23,6 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.SQLHelper;
-import no.kantega.publishing.spring.RootContext;
 import org.springframework.cache.annotation.Cacheable;
 
 import java.sql.Connection;
@@ -34,8 +33,8 @@ import java.util.List;
 
 public class MultimediaAOImpl implements MultimediaAO {
 
-    private static PermissionAO permissionAO;
-    public static MultimediaDao multimediaDao;
+    private PermissionAO permissionAO;
+    private MultimediaDao multimediaDao;
 
     /**
      * Henter multimedia objekt fra basen (unntatt data)
@@ -47,7 +46,6 @@ public class MultimediaAOImpl implements MultimediaAO {
     @Deprecated
     @Cacheable("MultimediaCache")
     public Multimedia getMultimedia(int id) throws SystemException {
-        setPermissionAOIfNotSet();
         return multimediaDao.getMultimedia(id);
     }
 
@@ -61,7 +59,6 @@ public class MultimediaAOImpl implements MultimediaAO {
      */
     @Deprecated
     public Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException {
-        setPermissionAOIfNotSet();
         return multimediaDao.getMultimediaByParentIdAndName(parentId, name);
     }
 
@@ -73,7 +70,6 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @throws no.kantega.commons.exception.SystemException
      */
     public void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException {
-        setPermissionAOIfNotSet();
         multimediaDao.streamMultimediaData(id, ish);
     }
 
@@ -86,7 +82,6 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @throws no.kantega.commons.exception.SystemException
      */
     public List<Multimedia> getMultimediaList(int parentId) throws SystemException {
-        setPermissionAOIfNotSet();
         return multimediaDao.getMultimediaList(parentId);
     }
 
@@ -97,7 +92,6 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @throws no.kantega.commons.exception.SystemException
      */
     public int getMultimediaCount() throws SystemException {
-        setPermissionAOIfNotSet();
         return multimediaDao.getMultimediaCount();
     }
 
@@ -121,11 +115,9 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @throws no.kantega.commons.exception.SystemException
      */
     public int setMultimedia(Multimedia mm) throws SystemException {
-        setPermissionAOIfNotSet();
         multimediaDao.setMultimedia(mm);
 
         if (mm.getParentId() == 0 && mm.getSecurityId() == -1) {
-            setPermissionAOIfNotSet();
             permissionAO.setPermissions(mm, null);
             mm.setSecurityId(mm.getId());
         }
@@ -175,10 +167,11 @@ public class MultimediaAOImpl implements MultimediaAO {
         setSecurityIdForChildren(c, object.getId(), object.getSecurityId(), securityId);
     }
 
-    private static void setPermissionAOIfNotSet() {
-        if (permissionAO == null) {
-            permissionAO = RootContext.getInstance().getBean(PermissionAO.class);
-            multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
-        }
+    public void setPermissionAO(PermissionAO permissionAO) {
+        this.permissionAO = permissionAO;
+    }
+
+    public void setMultimediaDao(MultimediaDao multimediaDao) {
+        this.multimediaDao = multimediaDao;
     }
 }

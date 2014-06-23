@@ -40,7 +40,6 @@ import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.spring.RootContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,8 +51,7 @@ public class MultimediaService {
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
 
-    @Autowired
-    private MultimediaAO multimediaAO;
+    private static MultimediaAO multimediaAO;
 
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
@@ -85,13 +83,13 @@ public class MultimediaService {
         Multimedia multimedia = multimediaDao.getMultimedia(id);
 
         if (multimedia != null && multimedia.getContentId() > 0) {
-            ContentIdentifier cid =  ContentIdentifier.fromContentId(multimedia.getContentId());
+            ContentIdentifier cid = ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = contentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
                 throw new NotAuthorizedException("Not authorized for id:" + id);
             }
         } else if (multimedia != null && !securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
-             throw new NotAuthorizedException("Not authorized for id:" + id);
+            throw new NotAuthorizedException("Not authorized for id:" + id);
         }
 
         return multimedia;
@@ -132,6 +130,9 @@ public class MultimediaService {
      * @throws SystemException
      */
     public int setMultimedia(Multimedia multimedia) throws SystemException {
+        if (multimediaAO == null) {
+            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        }
         multimediaListenerNotifier.beforeSetMultimedia(new MultimediaEvent(multimedia));
         if (multimedia.getType() == MultimediaType.FOLDER || multimedia.getData() != null) {
             // For images / media files is updated is only set if a new file is uploaded
@@ -176,7 +177,7 @@ public class MultimediaService {
      * Delete a multimedia folder with contents.
      *
      * @param id - id of object to be deleted
-     * @throws SystemException - Thrown if there is an error during logging to the eventlog.
+     * @throws SystemException        - Thrown if there is an error during logging to the eventlog.
      * @throws NotAuthorizedException - Thrown if the user is not authorized to delete folder and contained objects.
      */
     public void deleteMultimediaFolder(int id) throws SystemException, NotAuthorizedException {
@@ -201,7 +202,7 @@ public class MultimediaService {
             deleteMultimedia(id);
             multimediaListenerNotifier.afterDeleteMultimedia(event);
         } catch (ObjectInUseException e) {
-            throw new SystemException("Error deleting multimediafolder with id "+id+".", e);
+            throw new SystemException("Error deleting multimediafolder with id " + id + ".", e);
         }
     }
 
@@ -214,7 +215,7 @@ public class MultimediaService {
                 title = t.getName();
             }
             if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to delete multimedia object with id "+id+".");
+                throw new NotAuthorizedException("Not authorized to delete multimedia object with id " + id + ".");
             }
         }
         Multimedia multimedia = getMultimedia(id);
@@ -262,7 +263,7 @@ public class MultimediaService {
 
         List<Integer> contentIds = multimediaUsageDao.getUsagesForMultimediaId(multimediaId);
         for (Integer contentId : contentIds) {
-            ContentIdentifier cid =  ContentIdentifier.fromContentId(contentId);
+            ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
             Content content = contentAO.getContent(cid, true);
             if (content != null) {
                 pages.add(content);
@@ -288,6 +289,9 @@ public class MultimediaService {
      * @param mm
      */
     public void setProfileImageForUser(Multimedia mm) {
+        if (multimediaAO == null) {
+            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        }
         if (mm == null || mm.getProfileImageUserId() == null || mm.getProfileImageUserId().trim().equals("")) {
             return;
         }
