@@ -126,7 +126,7 @@
            memoryStoreEvictionPolicy="LFU"
            diskPersistent="true"
            statistics="true" >
-        <cacheDecoratorFactory properties="metric-registry-name=ImageCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
+        <cacheDecoratorFactory properties="metric-registry-name=MultimediaCache" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="permissionCache"

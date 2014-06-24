@@ -45,10 +45,13 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
     private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
 
     private static MultimediaAO multimediaAO;
+    private static MultimediaUploadHandler multimediaUploadHandler;
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (multimediaAO == null) {
             multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+            multimediaUploadHandler = RootContext.getInstance().getBean("aksessMultimediaUploadHandler", MultimediaUploadHandler.class);
+
         }
 
         if (attribute instanceof MediaAttribute) {
@@ -94,7 +97,6 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                         multimedia.setParentId(mediaFolderId);
                     }
 
-                    MultimediaUploadHandler multimediaUploadHandler = (MultimediaUploadHandler) RootContext.getInstance().getBean("aksessMultimediaUploadHandler");
 
                     multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
 
