@@ -46,12 +46,14 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class MultimediaService {
 
     private MultimediaUsageDao multimediaUsageDao;
     private MultimediaDao multimediaDao;
 
-    private static MultimediaAO multimediaAO;
+    private MultimediaAO multimediaAO;
 
     private HttpServletRequest request = null;
     private SecuritySession securitySession = null;
@@ -66,6 +68,8 @@ public class MultimediaService {
         eventLog = ctx.getBean(EventLog.class);
         contentAO = ctx.getBean(ContentAO.class);
         multimediaListenerNotifier = ctx.getBean("multimediaListenerNotifier", MultimediaEventListener.class);
+        multimediaAO = ctx.getBean(MultimediaAO.class);
+
     }
 
     public MultimediaService(HttpServletRequest request) throws SystemException {
@@ -130,9 +134,6 @@ public class MultimediaService {
      * @throws SystemException
      */
     public int setMultimedia(Multimedia multimedia) throws SystemException {
-        if (multimediaAO == null) {
-            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
-        }
         multimediaListenerNotifier.beforeSetMultimedia(new MultimediaEvent(multimedia));
         if (multimedia.getType() == MultimediaType.FOLDER || multimedia.getData() != null) {
             // For images / media files is updated is only set if a new file is uploaded
@@ -289,10 +290,7 @@ public class MultimediaService {
      * @param mm
      */
     public void setProfileImageForUser(Multimedia mm) {
-        if (multimediaAO == null) {
-            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
-        }
-        if (mm == null || mm.getProfileImageUserId() == null || mm.getProfileImageUserId().trim().equals("")) {
+        if (mm == null || isBlank(mm.getProfileImageUserId())) {
             return;
         }
         //Check if the user already has an image.
