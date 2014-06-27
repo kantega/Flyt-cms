@@ -838,6 +838,52 @@
     </tag>
 
     <tag>
+        <description>Prints a byline</description>
+        <name>byline</name>
+        <tag-class>no.kantega.publishing.api.taglibs.util.BylineTag</tag-class>
+        <body-content>JSP</body-content>
+        <attribute>
+            <description>CSS class to use for link</description>
+            <name>cssclass</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>CSS inline style for link</description>
+            <name>style</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>key</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>bundle</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>locale</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <example>
+            <![CDATA[
+                Use formatter parameters in body to include publisher and last updated.
+                $1 = publisher
+                $2 = last updated
+
+                <aksess:byline>Written by %1$s, last updated %2$td.%2$tm.%2$tY</aksess:byline>
+
+                Optionally, put the label in a resource bundle and specify key, bundle and locale
+                <aksess:byline key="byline" bundle="site"/>
+            ]]>
+        </example>
+    </tag>
+
+    <tag>
         <description>Abbreviate text in body to the specified number of characers. Adds ... after text</description>
         <name>abbreviate</name>
         <tag-class>no.kantega.publishing.api.taglibs.util.AbbreviateTag</tag-class>
