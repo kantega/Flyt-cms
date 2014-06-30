@@ -3,6 +3,7 @@ package org.kantega.openaksess.metrics;
 import com.codahale.metrics.Gauge;
 import com.codahale.metrics.JvmAttributeGaugeSet;
 import com.codahale.metrics.MetricRegistry;
+import com.codahale.metrics.SharedMetricRegistries;
 import com.codahale.metrics.jvm.FileDescriptorRatioGauge;
 import com.codahale.metrics.jvm.GarbageCollectorMetricSet;
 import com.codahale.metrics.jvm.MemoryUsageGaugeSet;
@@ -10,7 +11,7 @@ import com.codahale.metrics.jvm.ThreadStatesGaugeSet;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 public class OpenAksessMetrics {
-    public static final MetricRegistry METRIC_REGISTRY = new MetricRegistry();
+    public static final MetricRegistry METRIC_REGISTRY = SharedMetricRegistries.getOrCreate("oa-metric-registry");
 
     static {
         addMetricsGauges();
@@ -51,5 +52,7 @@ public class OpenAksessMetrics {
                 });
     }
 
-
+    public MetricRegistry getMetricRegistry() {
+        return METRIC_REGISTRY;
+    }
 }
