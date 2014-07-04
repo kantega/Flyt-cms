@@ -161,10 +161,6 @@
                     <artifactId>hadoop-auth</artifactId>
                 </exclusion>
                 <exclusion>
-                    <groupId>org.apache.poi</groupId>
-                    <artifactId>poi-ooxml-schemas</artifactId>
-                </exclusion>
-                <exclusion>
                     <groupId>org.apache.lucene</groupId>
                     <artifactId>lucene-analyzers-kuromoji</artifactId>
                 </exclusion>
