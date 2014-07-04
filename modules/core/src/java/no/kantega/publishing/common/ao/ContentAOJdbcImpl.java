@@ -625,8 +625,10 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             List<Attachment> attachments = content.getAttachments();
             if (attachments != null) {
                 for (Attachment a : attachments) {
-                    a.setContentId(content.getId());
-                    AttachmentAO.setAttachment(a);
+                    if (a.getContentId() == -1) {
+                        a.setContentId(content.getId());
+                        AttachmentAO.setAttachment(a);
+                    }
                 }
             }
 

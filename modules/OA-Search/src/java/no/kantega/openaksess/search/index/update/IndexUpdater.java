@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Arrays.asList;
+
 @Component
 public class IndexUpdater extends ContentEventListenerAdapter {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -151,6 +153,16 @@ public class IndexUpdater extends ContentEventListenerAdapter {
             }
         } catch (Throwable e) {
             log.error("Error indexing updated attachment", e);
+        }
+    }
+
+    @Override
+    public void attachmentDeleted(ContentEvent event) {
+        try {
+            documentIndexer.deleteByUid(asList(attachmentTransformer.generateUniqueID(event.getAttachment())));
+            documentIndexer.commit();
+        } catch (Throwable e) {
+            log.error("Error removing attachment from index", e);
         }
     }
 

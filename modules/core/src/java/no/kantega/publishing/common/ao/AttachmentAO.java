@@ -22,6 +22,8 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.spring.RootContext;
 
 import java.io.ByteArrayInputStream;
@@ -36,8 +38,13 @@ public class AttachmentAO {
 
     private static final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
     private static ContentIdHelper contentIdHelper;
+    private static ContentEventListener contentNotifier;
+
 
     public static int setAttachment(Attachment attachment) throws SystemException {
+        if(contentNotifier == null){
+            contentNotifier = RootContext.getInstance().getBean("contentListenerNotifier", ContentEventListener.class);
+        }
         try (Connection c = dbConnectionFactory.getConnection()){
             byte[] data = attachment.getData();
 
@@ -86,11 +93,20 @@ public class AttachmentAO {
                     st.close();
                 }
             }
+
+            indexAttachmentIfContentIdSetOrIsNew(attachment, data, attachmentExists);
+
             return attachment.getId();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }
 
+    }
+
+    private static void indexAttachmentIfContentIdSetOrIsNew(Attachment attachment, byte[] data, boolean attachmentExists) {
+        if(attachmentExists && data == null || !attachmentExists){
+            contentNotifier.attachmentUpdated(new ContentEvent().setAttachment(attachment));
+        }
     }
 
     private static boolean doesAttachmentAlreadyExist(Attachment attachment, Connection c) throws SQLException {
@@ -107,12 +123,13 @@ public class AttachmentAO {
     }
 
     public static void deleteAttachment(int id) throws SystemException {
+        Attachment attachment = getAttachment(id);
         try (Connection c = dbConnectionFactory.getConnection()) {
             PreparedStatement st = c.prepareStatement("delete from attachments where Id = ?");
             st.setInt(1, id);
             st.execute();
             st.close();
-
+            contentNotifier.attachmentDeleted(new ContentEvent().setAttachment(attachment));
         } catch (SQLException e) {
             throw new SystemException("SQL feil ved sletting av vedlegg", e);
         }
