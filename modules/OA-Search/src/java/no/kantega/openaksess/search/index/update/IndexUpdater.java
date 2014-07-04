@@ -12,6 +12,7 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
+import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,7 +144,10 @@ public class IndexUpdater extends ContentEventListenerAdapter {
         try {
             Attachment attachment = event.getAttachment();
             if (attachment.getContentId() != -1) {
-                documentIndexer.indexDocumentAndCommit(attachmentTransformer.transform(attachment));
+                IndexableDocument indexableDocument = attachmentTransformer.transform(attachment);
+                if (indexableDocument.shouldIndex()) {
+                    documentIndexer.indexDocumentAndCommit(indexableDocument);
+                }
             }
         } catch (Throwable e) {
             log.error("Error indexing updated attachment", e);
@@ -167,7 +171,10 @@ public class IndexUpdater extends ContentEventListenerAdapter {
         ContentIdentifier cid = ContentIdentifier.fromAssociationId(association.getAssociationId());
         Content content = contentAO.getContent(cid, true);
         if (content != null) {
-            documentIndexer.indexDocumentAndCommit(contentTransformer.transform(content));
+            IndexableDocument indexableDocument = contentTransformer.transform(content);
+            if (indexableDocument.shouldIndex()) {
+                documentIndexer.indexDocumentAndCommit(indexableDocument);
+            }
         }
     }
 }
