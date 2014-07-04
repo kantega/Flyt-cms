@@ -87,7 +87,7 @@
                 </c:when>
                 <c:otherwise>
                     id = openaksess.common.getQueryParam("thisId", href);
-                    url = "/content/" + id + "/" + title;
+                    url = "/content/" + id + "/" + encodeURIComponent(title);
                 </c:otherwise>
             </c:choose>
             updateParentWindowWithContentAttributes(id, title,url);
