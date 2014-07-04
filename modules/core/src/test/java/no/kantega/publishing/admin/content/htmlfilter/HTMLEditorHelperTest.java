@@ -16,11 +16,24 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
+import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.spring.RootContext;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class HTMLEditorHelperTest {
+
+    @BeforeClass
+    public static void setup(){
+        ApplicationContext applicationContext = mock(ApplicationContext.class);
+        RootContext.setInstance(applicationContext);
+        when(applicationContext.getBean(MultimediaAO.class)).thenReturn(mock(MultimediaAO.class));
+    }
 
     @Test
     public void shouldRemoveEmptySpanTag() {
