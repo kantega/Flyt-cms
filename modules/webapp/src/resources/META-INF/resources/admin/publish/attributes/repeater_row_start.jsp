@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
-<div class="roundCorners"><div class="top"><div class="corner"></div></div><div class="body"><div class="left"><div class="right">
+<div class="roundCorners repeaterHandle"><div class="top"><div class="corner"></div></div><div class="body"><div class="left"><div class="right">
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -18,7 +18,7 @@
   ~ limitations under the License.
   --%>
 
-<div class="repeaterButtons repeaterHandle">
+<div class="repeaterButtons">
     <c:if test="${repeater.numberOfRows > repeater.minOccurs}">
         <a href="#" onclick="openaksess.editcontext.deleteRepeaterRow('${repeater.nameIncludingPath}', this)"><span class="delete"><kantega:label key="aksess.button.delete"/></span></a>
     </c:if>
