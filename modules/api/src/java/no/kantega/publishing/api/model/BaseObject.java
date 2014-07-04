@@ -16,7 +16,9 @@
 
 package no.kantega.publishing.api.model;
 
-public abstract class BaseObject {
+import java.io.Serializable;
+
+public abstract class BaseObject implements Serializable {
     protected int id = -1;
     private int securityId = -1; // Rettigheter
 

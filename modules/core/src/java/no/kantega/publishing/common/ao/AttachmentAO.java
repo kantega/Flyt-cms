@@ -38,8 +38,7 @@ public class AttachmentAO {
     private static ContentIdHelper contentIdHelper;
 
     public static int setAttachment(Attachment attachment) throws SystemException {
-        try (Connection c = dbConnectionFactory.getConnection())
-        {
+        try (Connection c = dbConnectionFactory.getConnection()){
             byte[] data = attachment.getData();
 
             attachment.setLastModified(new Date());

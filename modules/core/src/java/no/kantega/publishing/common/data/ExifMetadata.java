@@ -1,10 +1,11 @@
 package no.kantega.publishing.common.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ExifMetadata {
+public class ExifMetadata implements Serializable {
     public static final String EXIF_DIRECTORY = "Exif IFD0";
     public static final String EXIF_SUBDIRECTORY = "Exif SubIFD";
     public static final String IPTC_DIRECTORY = "Iptc";
