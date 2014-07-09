@@ -123,4 +123,6 @@
     <bean name="permissionAO" class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+
+    <bean id="contentListenerNotifier" class="no.kantega.publishing.event.ContentEventListenerAdapter"/>
 </beans>
