@@ -17,15 +17,19 @@
 package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.TrafficLogDao;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -59,18 +63,9 @@ public class PageStatisticsAction extends SimpleAdminController {
         model.put("totalStatsEnabled", totalStatsEnabled);
 
         // Extracting currently selected content from it's url
-        ContentIdentifier cid = null;
         if (!"".equals(url)) {
             try {
-                cid = contentIdHelper.fromRequestAndUrl(request, url);
-
-                int intHits = -1;
-                int extHits = -1;
-                int sumHits = -1;
-
-                int intSessions = -1;
-                int extSessions = -1;
-                int sumSessions = -1;
+                ContentIdentifier cid = getContentIdentifier(request, url);
 
                 TrafficLogQuery query = new TrafficLogQuery();
                 query.setCid(cid);
@@ -78,18 +73,18 @@ public class PageStatisticsAction extends SimpleAdminController {
                 if (Aksess.getInternalIpSegment() != null) {
                     // Distinguish between internal and external hits
                     query.setTrafficOrigin(TrafficOrigin.INTERNAL);
-                    intHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
+                    int intHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
 
                     query.setTrafficOrigin(TrafficOrigin.EXTERNAL);
-                    extHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
-                    sumHits = intHits + extHits;
+                    int extHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
+                    int sumHits = intHits + extHits;
 
                     query.setTrafficOrigin(TrafficOrigin.INTERNAL);
-                    intSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
+                    int intSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
 
                     query.setTrafficOrigin(TrafficOrigin.EXTERNAL);
-                    extSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
-                    sumSessions = intSessions + extSessions;
+                    int extSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
+                    int sumSessions = intSessions + extSessions;
 
                     model.put("intHits", intHits);
                     model.put("intSessions", intSessions);
@@ -103,8 +98,8 @@ public class PageStatisticsAction extends SimpleAdminController {
                     model.put("showInternalAndExternal", Boolean.TRUE);
                 } else {
                     query.setTrafficOrigin(TrafficOrigin.ALL_USERS);
-                    sumHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
-                    sumSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
+                    int sumHits = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, false);
+                    int sumSessions = trafficLogDao.getNumberOfHitsOrSessionsInPeriod(query, true);
                     model.put("sumHits", sumHits);
                     model.put("sumSessions", sumSessions);
                 }
@@ -126,6 +121,21 @@ public class PageStatisticsAction extends SimpleAdminController {
         }
 
         return new ModelAndView(getView(), model);
+    }
+
+    /*
+     * When getting identifier with
+     * ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
+     * The siteId may be wrong if the domain the user is curretly at is mapped to a site.
+     * Get content based on cid, then get content, then cid.
+     */
+    private ContentIdentifier getContentIdentifier(HttpServletRequest request, String url) throws ContentNotFoundException, NotAuthorizedException {
+        ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
+
+        ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
+        Content content = cms.getContent(ContentIdentifier.fromAssociationId(cid.getAssociationId()), false);
+        cid = content.getContentIdentifier();
+        return cid;
     }
 
     public void setTotalStatsEnabled(boolean totalStatsEnabled) {
