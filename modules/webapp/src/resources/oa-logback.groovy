@@ -26,15 +26,11 @@ import static ch.qos.logback.classic.Level.WARN
 import static ch.qos.logback.core.spi.FilterReply.ACCEPT
 import static ch.qos.logback.core.spi.FilterReply.DENY
 
-// http://jira.qos.ch/browse/LOGBACK-269
-def oarequest
-def oa
 
 def loggingDirectory = context.getProperty('logdir')
 
 scan("600 seconds")
 appender("oarequest", RollingFileAppender) {
-    oarequest = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -53,7 +49,6 @@ appender("oarequest", RollingFileAppender) {
     }
 }
 appender("oa", RollingFileAppender) {
-    oa = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -73,10 +68,10 @@ appender("oa", RollingFileAppender) {
 }
 
 appender("oarequest-async", AsyncAppender) {
-    component.addAppender(oarequest)
+    appenderRef('oarequest')
 }
 appender("oa-async", AsyncAppender) {
-    component.addAppender(oa)
+    appenderRef('oa')
 }
 
 root(INFO, ["oarequest-async", "oa-async"])

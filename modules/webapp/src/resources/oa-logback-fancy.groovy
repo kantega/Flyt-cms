@@ -26,17 +26,10 @@ import static ch.qos.logback.classic.Level.WARN
 import static ch.qos.logback.core.spi.FilterReply.ACCEPT
 import static ch.qos.logback.core.spi.FilterReply.DENY
 
-// http://jira.qos.ch/browse/LOGBACK-269
-def oarequest
-def oainfo
-def oaerror
-def other
-
 def loggingDirectory = context.getProperty('logdir')
 
 scan("600 seconds")
 appender("oarequest", RollingFileAppender) {
-    oarequest = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -55,7 +48,6 @@ appender("oarequest", RollingFileAppender) {
     }
 }
 appender("oainfo", RollingFileAppender) {
-    oainfo = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -74,7 +66,6 @@ appender("oainfo", RollingFileAppender) {
     }
 }
 appender("oaerror", RollingFileAppender) {
-    oaerror = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -93,7 +84,6 @@ appender("oaerror", RollingFileAppender) {
     }
 }
 appender("other", RollingFileAppender) {
-    other = component
     encoder(PatternLayoutEncoder) {
         pattern = "%d{HH:mm:ss dd-MM-yyyy} %-5level %logger{36} - %msg%n"
     }
@@ -113,16 +103,16 @@ appender("other", RollingFileAppender) {
 }
 
 appender("oarequest-async", AsyncAppender) {
-    component.addAppender(oarequest)
+    appenderRef('oarequest')
 }
 appender("oainfo-async", AsyncAppender) {
-    component.addAppender(oainfo)
+    appenderRef('oainfo')
 }
 appender("oaerror-async", AsyncAppender) {
-    component.addAppender(oaerror)
+    appenderRef('oaerror')
 }
 appender("other-async", AsyncAppender) {
-    component.addAppender(other)
+    appenderRef('other')
 }
 root(INFO, ["oarequest-async", "oainfo-async", "oaerror-async", "other-async"])
 
