@@ -21,11 +21,12 @@ import no.kantega.commons.media.MimeTypes;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.Aksess;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import static no.kantega.publishing.common.util.PrettyURLEncoder.encode;
 
-public class Attachment {
+public class Attachment implements Serializable {
 
     private int id = -1;
     private int contentId = -1;

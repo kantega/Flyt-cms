@@ -38,6 +38,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +48,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 /**
  * Representing a single attribute in a Content object.
  */
-public abstract class Attribute {
+public abstract class Attribute implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(Attribute.class);
 
     private final String FILE_TOKEN = "file:";

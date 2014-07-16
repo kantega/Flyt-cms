@@ -16,11 +16,13 @@
 
 package no.kantega.publishing.api.model;
 
+import java.io.Serializable;
+
 /**
  * Base class for templates, documenttypes and associationcategories which are defined in templateconfiguration
  * 
  */
-public interface PublicIdObject {
+public interface PublicIdObject extends Serializable {
     public int getId();
 
     public void setId(int id);
