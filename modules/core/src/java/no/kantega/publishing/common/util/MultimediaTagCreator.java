@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class MultimediaTagCreator {
@@ -66,11 +66,7 @@ public class MultimediaTagCreator {
         StringBuilder tag = new StringBuilder();
 
         String url = mm.getUrl();
-        String altname = mm.getAltname();
-
-        if (isNotBlank(altname)) {
-            altname = mm.getName();
-        }
+        String altname = defaultIfBlank(mm.getAltname(), mm.getName());
 
         String mimeType = mm.getMimeType().getType();
 
@@ -78,13 +74,10 @@ public class MultimediaTagCreator {
             // Bilde
             tag.append("<img ");
 
-            String author = mm.getAuthor();
-            if (isBlank(author)) {
-                author = Aksess.getMultimediaDefaultCopyright();
-            }
+            String author = defaultIfBlank(mm.getAuthor(), Aksess.getMultimediaDefaultCopyright());
 
             String copyright = "";
-            if (isNotBlank(altname)) {
+            if (isNotBlank(altname) && isNotBlank(author)) {
                 copyright = " - &copy; " + author;
             }
 

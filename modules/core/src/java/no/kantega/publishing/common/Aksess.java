@@ -239,7 +239,7 @@ public class Aksess {
         multimediaAltFormat = c.getString("multimedia.alt.format", "$ALT");
         multimediaTitleFormat = c.getString("multimedia.title.format", "$TITLE$COPYRIGHT");
 
-        multimediaDefaultCopyright = c.getString("multimedia.copyright.default");
+        multimediaDefaultCopyright = c.getString("multimedia.copyright.default", "");
 
         csrfCheckEnabled = c.getBoolean("csrfcheck.enabled", true);
 
