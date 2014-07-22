@@ -224,13 +224,15 @@ public class MultimediaTagCreator {
         int height = mm.getHeight();
         if ((resizeWidth != -1 && resizeWidth < width) || (resizeHeight != -1 && resizeHeight < height)) {
             StringBuilder urlBuilder = new StringBuilder(url);
+            boolean containsq = url.contains("?");
 
             if (resizeWidth != -1) {
-                urlBuilder.append(!url.contains("?") ? "?" : "&amp;");
+                urlBuilder.append(!containsq ? "?" : "&amp;");
                 urlBuilder.append("width=").append(resizeWidth);
+                containsq = true;
             }
             if (resizeHeight != -1) {
-                urlBuilder.append(!url.contains("?") ? "?" : "&amp;");
+                urlBuilder.append(!containsq ? "?" : "&amp;");
                 urlBuilder.append("height=").append(resizeHeight);
             }
 
