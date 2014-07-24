@@ -42,7 +42,13 @@ public class PutSectionTag  extends BodyTagSupport {
             if(body != null && body.length() > 1000000) {
                 log.warn("Warning: body content in tag is larger than 2MB (" +body.length() +"), URL is: " + ((HttpServletRequest)pageContext.getRequest()).getRequestURI().toString());
             }
-            pageContext.setAttribute("kantega_template_" + id, body, PageContext.REQUEST_SCOPE);
+            String template_id = "kantega_template_" + id;
+            String existingContent = (String) pageContext.getAttribute(template_id, PageContext.REQUEST_SCOPE);
+            if(existingContent != null) {
+                body = existingContent + body;
+            }
+
+            pageContext.setAttribute(template_id, body, PageContext.REQUEST_SCOPE);
             bodyContent.clearBody();
         }
         return SKIP_BODY;
