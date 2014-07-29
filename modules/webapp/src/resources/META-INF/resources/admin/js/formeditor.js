@@ -169,6 +169,9 @@ function formEditText(element) {
     });
 
     text = $("p", element).html();
+
+    text = text.replace(/<br>/g, "");
+
     $("#form_Text").val(text);
 }
 
