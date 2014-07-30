@@ -524,7 +524,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         }
 
         // Query will be faster if we don't get all records
-        contentQuery.setMaxRecords(maxElements);
+        if(maxElements != -1) {
+            contentQuery.setMaxRecords(maxElements);
+        }
 
         ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
 
