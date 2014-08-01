@@ -279,7 +279,7 @@ openaksess.content = {
             openaksess.common.debug("openaksess.content.publish.pasteAsShortcut(): url: " + url);
             $(".contextMenu").disableContextMenuItems("#paste,#pasteAsShortcut");
             openaksess.content.contentstatus.disableButtons(['PasteButton']);
-            openaksess.common.modalWindow.open({title:properties.content.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&amp;newParentUrl=" + url,width: 390, height:250});
+            openaksess.common.modalWindow.open({title:properties.content.labels.copyPaste, iframe:true, href: properties.contextPath + "/admin/publish/ConfirmCopyPaste.action?pasteShortcut=true&newParentUrl=" + url,width: 390, height:250});
         },
 
         displayPeriod: function(url) {
