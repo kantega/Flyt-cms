@@ -325,12 +325,13 @@ public class ContentManagementService {
             throw new NotAuthorizedException("checkInContent");
         }
 
-        content.setModifiedBy(securitySession.getUser().getId());
+        String userId = securitySession.getUser().getId();
+        content.setModifiedBy(userId);
         Date currentTime = new Date();
         content.setLastModified(currentTime);
 
         if (isNewContent || !content.isMinorChange()) {
-            content.setLastMajorChangeBy(securitySession.getUser().getId());
+            content.setLastMajorChangeBy(userId);
             content.setLastMajorChange(currentTime);
         }
 
@@ -340,7 +341,7 @@ public class ContentManagementService {
             newStatus = ContentStatus.WAITING_FOR_APPROVAL;
             content.setApprovedBy("");
         } else {
-            content.setApprovedBy(securitySession.getUser().getId());
+            content.setApprovedBy(userId);
         }
 
         // Check if change should be active now
