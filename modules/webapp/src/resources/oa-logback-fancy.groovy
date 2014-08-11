@@ -20,13 +20,16 @@ import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.filter.EvaluatorFilter
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+import ch.qos.logback.core.status.OnConsoleStatusListener
 
 import static ch.qos.logback.classic.Level.INFO
 import static ch.qos.logback.classic.Level.WARN
 import static ch.qos.logback.core.spi.FilterReply.ACCEPT
 import static ch.qos.logback.core.spi.FilterReply.DENY
 
-def loggingDirectory = context.getProperty('logdir')
+statusListener(OnConsoleStatusListener)
+
+def loggingDirectory = System.getProperty('logdir')
 
 scan("600 seconds")
 appender("oarequest", RollingFileAppender) {

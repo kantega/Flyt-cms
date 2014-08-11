@@ -59,6 +59,7 @@ public class LogInitListener implements ServletContextListener {
 
                     loggerContext.reset();
                     loggerContext.putProperty("logdir", logsDirectory.getAbsolutePath());
+                    System.setProperty("logdir", logsDirectory.getAbsolutePath());
 
                     ContextInitializer contextInitializer = new ContextInitializer(loggerContext);
                     contextInitializer.configureByResource(configFile.toURI().toURL());
