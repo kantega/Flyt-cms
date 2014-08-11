@@ -38,8 +38,8 @@ public class ServletResourceLoader extends DefaultResourceLoader implements Reso
     private String getWithPrefix(String name) {
         String normalized = name.replace('\\', '/'); // name contains \ on windows.
         if (normalized.contains(prefix)){
-            int removeBefore = name.indexOf(prefix);
-            return normalized.substring(removeBefore, name.length());
+            int removeBefore = normalized.indexOf(prefix);
+            return normalized.substring(removeBefore, normalized.length());
         }else {
             return prefix + name;
         }
