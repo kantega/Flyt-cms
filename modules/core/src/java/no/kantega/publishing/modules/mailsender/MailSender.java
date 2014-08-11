@@ -42,6 +42,8 @@ import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.File;
 import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -88,6 +90,14 @@ public class MailSender {
      */
     public static void send(String from, String to, String subject, String contentFile, Map parameters) throws SystemException, ConfigurationException {
         String content = createStringFromVelocityTemplate(contentFile, parameters);
+        log.debug("Email content: " + content);
+        log.debug("Email content, encoded with default charset and then base64 encoded: " + Base64.getEncoder().encodeToString(content.getBytes()));
+        try {
+            log.debug("Email content, encoded with iso-8859-1 and then base64 encoded: " + Base64.getEncoder().encodeToString(content.getBytes("iso-8859-1")));
+        } catch (UnsupportedEncodingException e) {
+            log.error("Unable to encode email content as iso-8859-1");
+        }
+
         send(from, to, subject, content);
     }
 
@@ -246,8 +256,10 @@ public class MailSender {
         try {
             MimeBodyPart bp = new MimeBodyPart();
             if (content.toLowerCase().contains("<html>")) {
+                log.debug("Set content as text/html");
                 bp.setContent(content, "text/html; charset=iso-8859-1");
             } else {
+                log.debug("Set content as text/plain");
                 bp.setText(content, "ISO-8859-1");
                 bp.setHeader("Content-Transfer-Encoding", "quoted-printable");
             }
