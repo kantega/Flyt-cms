@@ -23,6 +23,7 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -30,23 +31,21 @@ import java.io.IOException;
  *  Supports includes from sub directories by the use of «$ROOT/» in the entity declaration.
  */
 public class ResourceLoaderEntityResolver implements EntityResolver {
-    private final String ROOT_PLACEHOLDER = "$ROOT/";
     private ResourceLoader resourceLoader;
+    private File referenceDir;
 
-    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader) {
+    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader, File referenceDir) {
         this.resourceLoader = resourceLoader;
+        this.referenceDir = referenceDir;
     }
 
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         if (systemId != null) {
             String filename = systemId;
-            if(filename.contains(ROOT_PLACEHOLDER)){
-                int beginIndex = filename.lastIndexOf(ROOT_PLACEHOLDER) + ROOT_PLACEHOLDER.length();
-                filename = filename.substring(beginIndex, systemId.length());
-            } else if (filename.contains("/")) {
+            if (filename.contains("/")) {
                 filename = filename.substring(systemId.lastIndexOf("/") + 1, systemId.length());
             }
-            Resource resource = resourceLoader.getResource(filename);
+            Resource resource = resourceLoader.getResource(referenceDir.getAbsolutePath() + "/" + filename);
             if (resource != null) {
                 InputSource inputSource = new InputSource(resource.getInputStream());
                 inputSource.setSystemId(systemId);

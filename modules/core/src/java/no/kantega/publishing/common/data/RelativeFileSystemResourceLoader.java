@@ -22,7 +22,7 @@ import org.springframework.core.io.Resource;
 import java.io.File;
 
 /**
- *
+ * FileSystemResourceLoader that use configured directory as base.
  */
 public class RelativeFileSystemResourceLoader extends FileSystemResourceLoader {
     private File directory;
@@ -33,6 +33,17 @@ public class RelativeFileSystemResourceLoader extends FileSystemResourceLoader {
 
     @Override
     protected Resource getResourceByPath(String path) {
-        return super.getResource("file:" +new File(directory, path).getAbsolutePath());
+        path = removeDirectoryIfPresent(directory, path);
+        return super.getResource("file:" + new File(directory, path).getAbsolutePath());
+    }
+
+    private String removeDirectoryIfPresent(File directory, String path) {
+        String prefix = directory.getAbsolutePath();
+        if (path.contains(prefix)){
+            int removeBefore = path.indexOf(prefix);
+            return path.substring(removeBefore, path.length());
+        }else {
+            return path;
+        }
     }
 }

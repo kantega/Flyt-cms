@@ -16,14 +16,14 @@
 
 package no.kantega.publishing.common.data;
 
-import org.springframework.web.context.support.ServletContextResourceLoader;
+import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.context.ResourceLoaderAware;
 
 
 /**
+ * ResourceLoader that use prefix when loading.
  */
 public class ServletResourceLoader extends DefaultResourceLoader implements ResourceLoaderAware {
     private String prefix;
@@ -31,8 +31,17 @@ public class ServletResourceLoader extends DefaultResourceLoader implements Reso
 
     @Override
     protected Resource getResourceByPath(String name) {
-        String lookupName = prefix == null ? name : prefix + name;
+        String lookupName = prefix == null ? name : getWithPrefix(name);
         return resourceLoader.getResource(lookupName);
+    }
+
+    private String getWithPrefix(String name) {
+        if (name.contains(prefix)){
+            int removeBefore = name.indexOf(prefix);
+            return name.substring(removeBefore, name.length());
+        }else {
+            return prefix + name;
+        }
     }
 
     public void setPrefix(String prefix) {
