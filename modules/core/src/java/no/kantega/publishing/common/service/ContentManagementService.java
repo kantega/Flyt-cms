@@ -336,7 +336,8 @@ public class ContentManagementService {
         }
 
         // Check if user is authorized to publish directly
-        if (newStatus == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
+        if (newStatus == ContentStatus.WAITING_FOR_APPROVAL ||
+                newStatus == ContentStatus.PUBLISHED && !securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
             // User is not authorized, set waiting status
             newStatus = ContentStatus.WAITING_FOR_APPROVAL;
             content.setApprovedBy("");
@@ -377,7 +378,7 @@ public class ContentManagementService {
             }
         }
 
-        if (content.getPublishDate() != null && content.getPublishDate().after(currentTime)) {
+        if (content.getPublishDate() != null && content.getPublishDate().after(currentTime) || newStatus == ContentStatus.WAITING_FOR_APPROVAL) {
             // Content is waiting to become active
             content.setVisibilityStatus(ContentVisibilityStatus.WAITING);
         } else if (content.getExpireDate() != null && content.getExpireDate().before(currentTime)) {
