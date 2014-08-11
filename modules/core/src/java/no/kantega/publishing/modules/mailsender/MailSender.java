@@ -43,7 +43,6 @@ import javax.mail.util.ByteArrayDataSource;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.Properties;
@@ -91,9 +90,9 @@ public class MailSender {
     public static void send(String from, String to, String subject, String contentFile, Map parameters) throws SystemException, ConfigurationException {
         String content = createStringFromVelocityTemplate(contentFile, parameters);
         log.debug("Email content: " + content);
-        log.debug("Email content, encoded with default charset and then base64 encoded: " + Base64.getEncoder().encodeToString(content.getBytes()));
+        log.debug("Email content, encoded with default charset and then base64 encoded: " + org.apache.commons.codec.binary.Base64.encodeBase64String(content.getBytes()));
         try {
-            log.debug("Email content, encoded with iso-8859-1 and then base64 encoded: " + Base64.getEncoder().encodeToString(content.getBytes("iso-8859-1")));
+            log.debug("Email content, encoded with iso-8859-1 and then base64 encoded: " + org.apache.commons.codec.binary.Base64.encodeBase64String(content.getBytes("iso-8859-1")));
         } catch (UnsupportedEncodingException e) {
             log.error("Unable to encode email content as iso-8859-1");
         }
