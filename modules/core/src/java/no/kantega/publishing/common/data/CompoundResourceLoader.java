@@ -16,25 +16,19 @@
 
 package no.kantega.publishing.common.data;
 
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 28, 2009
- * Time: 12:31:00 PM
- */
 public class CompoundResourceLoader extends DefaultResourceLoader {
     private final List<ResourceLoader> sources;
     
     public CompoundResourceLoader(ResourceLoader... sources) {
-        this.sources = new ArrayList<ResourceLoader>(Arrays.asList(sources));
+        this.sources = new ArrayList<>(Arrays.asList(sources));
     }
 
 

@@ -17,20 +17,20 @@
 
 package no.kantega.publishing.admin.content.util;
 
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.core.io.Resource;
 
 import java.io.IOException;
 
 /**
  *  Resolves !ENTITY system references in XML files loaded using ResourceLoader.
- *  Only references in "current" directory are supported,
- *  e.g SYSTEM "include.xml", not SYSTEM "directory/include.xml"
+ *  Supports includes from sub directories by the use of «$ROOT/» in the entity declaration.
  */
 public class ResourceLoaderEntityResolver implements EntityResolver {
+    private final String ROOT_PLACEHOLDER = "$ROOT/";
     private ResourceLoader resourceLoader;
 
     public ResourceLoaderEntityResolver(ResourceLoader resourceLoader) {
@@ -40,7 +40,10 @@ public class ResourceLoaderEntityResolver implements EntityResolver {
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         if (systemId != null) {
             String filename = systemId;
-            if (filename.indexOf("/") != -1) {
+            if(filename.contains(ROOT_PLACEHOLDER)){
+                int beginIndex = filename.lastIndexOf(ROOT_PLACEHOLDER) + ROOT_PLACEHOLDER.length();
+                filename = filename.substring(beginIndex, systemId.length());
+            } else if (filename.contains("/")) {
                 filename = filename.substring(systemId.lastIndexOf("/") + 1, systemId.length());
             }
             Resource resource = resourceLoader.getResource(filename);
