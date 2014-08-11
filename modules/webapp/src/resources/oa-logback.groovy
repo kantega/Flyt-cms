@@ -29,7 +29,7 @@ import static ch.qos.logback.core.spi.FilterReply.DENY
 
 statusListener(OnConsoleStatusListener)
 
-def loggingDirectory = System.getProperty('logdir')
+def loggingDirectory = System.getProperty('logdir', context.getProperty('logdir'))
 
 scan("600 seconds")
 appender("oarequest", RollingFileAppender) {
