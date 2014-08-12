@@ -23,17 +23,18 @@ import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.context.support.ServletContextResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,8 @@ public class ContentTemplateReader {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
                 return errors;
             }
-            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader, resource.getFile().getParentFile());
+            String referenceDir = StringUtils.remove(((ServletContextResource) resource).getPath(), "/" + resource.getFilename());
+            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader, referenceDir);
 
             Document def = XMLHelper.openDocument(resource, entityResolver);
 
@@ -84,7 +86,7 @@ public class ContentTemplateReader {
             String helptext = XPathHelper.getString(def.getDocumentElement(), "helptext");
             contentTemplate.setHelptext(helptext);
 
-        } catch (SystemException | InvalidFileException | IOException e) {
+        } catch (SystemException | InvalidFileException e) {
             errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
             log.error("Error loading: " + contentTemplate.getTemplateFile(), e);
         } catch (TransformerException e) {

@@ -25,15 +25,16 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xpath.XPathAPI;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.web.context.support.ServletContextResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.transform.TransformerException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,7 +58,8 @@ public class ContentTemplateValidator {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
                 return errors;
             }
-            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader, resource.getFile().getParentFile());
+            String referenceDir = StringUtils.remove(((ServletContextResource) resource).getPath(), "/" + resource.getFilename());
+            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader, referenceDir);
 
             Document def = XMLHelper.openDocument(resource, entityResolver);
 
@@ -120,7 +122,7 @@ public class ContentTemplateValidator {
                     errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingformattribute", null));
                 }
             }
-        } catch (InvalidFileException | IOException e) {
+        } catch (InvalidFileException e) {
             errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
         }
         return errors;

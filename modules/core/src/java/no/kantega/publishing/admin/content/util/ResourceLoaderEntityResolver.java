@@ -32,9 +32,9 @@ import java.io.IOException;
  */
 public class ResourceLoaderEntityResolver implements EntityResolver {
     private ResourceLoader resourceLoader;
-    private File referenceDir;
+    private String referenceDir;
 
-    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader, File referenceDir) {
+    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader, String referenceDir) {
         this.resourceLoader = resourceLoader;
         this.referenceDir = referenceDir;
     }
@@ -45,7 +45,7 @@ public class ResourceLoaderEntityResolver implements EntityResolver {
             if (filename.contains("/")) {
                 filename = filename.substring(systemId.lastIndexOf("/") + 1, systemId.length());
             }
-            Resource resource = resourceLoader.getResource(referenceDir.getAbsolutePath() + File.separator + filename);
+            Resource resource = resourceLoader.getResource(referenceDir + File.separator + filename);
             if (resource != null) {
                 InputSource inputSource = new InputSource(resource.getInputStream());
                 inputSource.setSystemId(systemId);
