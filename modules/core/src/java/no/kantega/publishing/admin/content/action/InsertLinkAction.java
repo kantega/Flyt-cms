@@ -18,6 +18,7 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.Aksess;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
@@ -92,6 +93,8 @@ public class InsertLinkAction extends AbstractController {
         model.put("allowMediaArchive", !miniAdminMode || config.getBoolean("miniaksess.mediaarchive", false));
         model.put("allowAttachments", !miniAdminMode || config.getBoolean("miniaksess.attachments", false));
         model.put("allowInternalLinks", !miniAdminMode || config.getBoolean("miniaksess.internallinks", false));
+
+        HttpHelper.addCacheControlHeaders(response, 0);
 
         return new ModelAndView(view, model);
     }
