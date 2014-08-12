@@ -399,18 +399,16 @@ public class ContentManagementService {
             }
         }
 
+        if (content.getStatus() == ContentStatus.HEARING) {
+            expireHearing(content);
+        }
+
         contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
 
         Content c = contentAO.checkInContent(content, newStatus);
 
         if (c.getStatus() == ContentStatus.HEARING) {
-            Hearing hearing = content.getHearing();
-            hearing.setContentVersionId(content.getVersionId());
-            int hearingId = HearingAO.saveOrUpdate(hearing);
-            for (HearingInvitee invitee : hearing.getInvitees()) {
-                invitee.setHearingId(hearingId);
-                HearingAO.saveOrUpdate(invitee);
-            }
+            saveHearing(content);
         }
 
         ContentEvent event = new ContentEvent().setContent(c);
@@ -438,6 +436,27 @@ public class ContentManagementService {
         eventLog.log(securitySession, request, eventName, c.getTitle(), c);
 
         return c;
+    }
+
+    private void saveHearing(Content content) {
+        Hearing hearing = content.getHearing();
+        hearing.setContentVersionId(content.getVersionId());
+        int hearingId = HearingAO.saveOrUpdate(hearing);
+        for (HearingInvitee invitee : hearing.getInvitees()) {
+            invitee.setHearingId(hearingId);
+            HearingAO.saveOrUpdate(invitee);
+        }
+    }
+
+    private void expireHearing(Content content) {
+        Hearing hearing = HearingAO.getHearingByContentVersion(content.getVersionId());
+        if (hearing != null) {
+            Date now = new Date();
+            if (hearing.getDeadLine().getTime() > now.getTime()) {
+                hearing.setDeadLine(now);
+                HearingAO.saveOrUpdate(hearing);
+            }
+        }
     }
 
 

@@ -774,7 +774,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     private void deleteTempContentVersion(Content content) {
         // If this is a draft, rejected page etc delete previous version
-        if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED) {
+        if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED || content.getStatus() == ContentStatus.HEARING) {
             // Delete this (previous) version
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
             cid.setVersion(content.getVersion());
