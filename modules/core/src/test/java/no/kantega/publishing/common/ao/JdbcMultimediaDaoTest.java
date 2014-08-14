@@ -163,6 +163,15 @@ public class JdbcMultimediaDaoTest {
         assertTrue("multimedia3.getSize() > 0", multimedia3.getSize() > 0);
     }
 
+    @Test
+    public void shouldGetOwnerPerson() throws Exception {
+        Multimedia multimediaBeforeSave = new Multimedia();
+        multimediaBeforeSave.setOwnerPerson("terros");
+        int id = dao.setMultimedia(multimediaBeforeSave);
+        Multimedia multimediaAfterSave = dao.getMultimedia(id);
+        assertEquals("multimediaBeforeSave.getOwnerPerson == multimediaAfterSave.getOwnerPerson", multimediaBeforeSave.getOwnerPerson(), multimediaAfterSave.getOwnerPerson());
+    }
+
     private Multimedia createMultimedia() {
         Multimedia multimedia = new Multimedia();
         multimedia.setName("My file");

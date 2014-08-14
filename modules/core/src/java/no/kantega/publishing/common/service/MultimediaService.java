@@ -139,6 +139,7 @@ public class MultimediaService {
             // For images / media files is updated is only set if a new file is uploaded
             multimedia.setModifiedBy(securitySession.getUser().getId());
         }
+        multimedia.setOwnerPerson(securitySession.getUser().getId());
 
         int id = multimediaAO.setMultimedia(multimedia);
         multimedia.setId(id);
@@ -298,6 +299,7 @@ public class MultimediaService {
         if (profileImage != null) {
             mm.setId(profileImage.getId());
         }
+        mm.setOwnerPerson(securitySession.getUser().getId());
         multimediaAO.setMultimedia(mm);
     }
 

@@ -99,7 +99,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
 
 
                     multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
-
+                    multimedia.setOwnerPerson(content.getOwnerPerson());
                     int id = multimediaAO.setMultimedia(multimedia);
                     mediaAttr.setValue("" + id);
                     mediaAttr.setImportFile(null);

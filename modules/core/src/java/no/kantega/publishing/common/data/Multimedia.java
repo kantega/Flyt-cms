@@ -72,6 +72,8 @@ public class Multimedia extends BaseObject {
 
     private List<ExifMetadata> exifMetadata;
 
+    private String ownerPerson = "";
+
     public Multimedia() {
 
     }
@@ -230,7 +232,11 @@ public class Multimedia extends BaseObject {
     }
 
     public String getOwnerPerson() {
-        return null;
+        return ownerPerson;
+    }
+
+    public void setOwnerPerson(String ownerPerson) {
+        this.ownerPerson = ownerPerson;
     }
 
     public String getProfileImageUserId() {
