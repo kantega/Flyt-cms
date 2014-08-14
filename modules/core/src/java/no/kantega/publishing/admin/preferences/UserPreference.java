@@ -17,7 +17,9 @@
 package no.kantega.publishing.admin.preferences;
 
 
-public class UserPreference {
+import java.io.Serializable;
+
+public class UserPreference implements Serializable {
 
     public static final String FILTER_HIDE_EXPIRED = "filterHideExpired";
     public static final String FILTER_SORT = "filterSort";
