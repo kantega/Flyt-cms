@@ -71,12 +71,12 @@ public class JdbcRatingDaoTest {
 
     @Test
     public void testDeleteSpecificRatingForUser() {
-        List<Rating> ratings = dao.getRatingsForUser("andska", "2", "content");
+        List<Rating> ratings = dao.getRatingsForUser("andska", "1", "content");
         assertEquals(1, ratings.size());
 
-        dao.deleteRatingsForUser("andska", "2", "content");
+        dao.deleteRatingsForUser("andska", "1", "content");
 
-        ratings = dao.getRatingsForUser("andska", "2", "content");
+        ratings = dao.getRatingsForUser("andska", "1", "content");
         assertEquals(0, ratings.size());
 
     }
