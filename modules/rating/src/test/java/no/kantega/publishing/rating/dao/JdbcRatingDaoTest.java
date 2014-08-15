@@ -10,7 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.Date;
 import java.util.List;
 
-import static junit.framework.Assert.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertSame;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath*:testContext.xml")
@@ -55,7 +56,8 @@ public class JdbcRatingDaoTest {
 
     @Test
     public void testGetRatingsForUser() {
-        List<Rating> ratings = dao.getRatingsForUser("andska");
+        // If we base the test on dao.getRatingsForUser("andska"), the test will fail if testDeleteSpecificRatingForUser is run before this test
+        List<Rating> ratings = dao.getRatingsForUser("krisel");
 
         assertEquals(ratings.size(), 2);
     }
