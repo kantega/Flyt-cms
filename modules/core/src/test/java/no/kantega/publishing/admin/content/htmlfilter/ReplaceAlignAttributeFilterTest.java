@@ -16,26 +16,20 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.junit.Test;
-import org.junit.Ignore;
-import static org.junit.Assert.assertEquals;
-import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.xmlfilter.FilterPipeline;
+import org.junit.Test;
 
-import java.io.StringWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 
-import junit.framework.JUnit4TestAdapter;
+import static org.junit.Assert.assertEquals;
 
-/**
- * @jogri
- */
-//@Ignore
 public class ReplaceAlignAttributeFilterTest {
 
     @Test
     public void testStartElement() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        FilterPipeline pipeline = new FilterPipeline();
         ReplaceAlignAttributeFilter filter = new ReplaceAlignAttributeFilter();
         pipeline.addFilter(filter);
 
@@ -100,10 +94,4 @@ public class ReplaceAlignAttributeFilterTest {
         assertEquals(expectedOutput, sw.toString());
     }
 
-    /**
-     * Necessary for running JUnit 4.x tests in Maven 1.
-     */
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(ReplaceAlignAttributeFilterTest.class);
-    }
 }

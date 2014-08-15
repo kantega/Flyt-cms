@@ -16,24 +16,20 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import junit.framework.TestCase;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
+import org.junit.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
-/**
- * Date: Apr 14, 2010
- * Time: 12:23:21 PM
- */
-public class CleanupFormHtmlFilterTest extends TestCase {
+import static org.junit.Assert.assertEquals;
 
-    private FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+public class CleanupFormHtmlFilterTest {
 
-
+    @Test
     public void testAddTextTypeOnInputElementsWithoutType() throws SystemException {
-        pipeline.removeFilters();
+        FilterPipeline pipeline = new FilterPipeline();
         pipeline.addFilter(new CleanupFormHtmlFilter());
 
         String input="<input name=\"inputName\">";
@@ -44,8 +40,10 @@ public class CleanupFormHtmlFilterTest extends TestCase {
         assertEquals(output, sw.toString());
     }
 
+    @Test
     public void testNoModificationOfTextTypeInputElements() {
-        pipeline.removeFilters();
+        FilterPipeline pipeline = new FilterPipeline();
+
         pipeline.addFilter(new CleanupFormHtmlFilter());
 
         String input="<input name=\"inputName\" type=\"text\">";
@@ -56,8 +54,10 @@ public class CleanupFormHtmlFilterTest extends TestCase {
         assertEquals(output, sw.toString());
     }
 
+    @Test
     public void testNoModificationOfRadioTypeInputElements() {
-        pipeline.removeFilters();
+        FilterPipeline pipeline = new FilterPipeline();
+
         pipeline.addFilter(new CleanupFormHtmlFilter());
 
         String input="<input type=\"radio\" name=\"inputName\">";

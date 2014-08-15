@@ -1,25 +1,24 @@
 package no.kantega.publishing.modules.forms.filter;
 
-import no.kantega.publishing.admin.content.htmlfilter.SharedPipeline;
-import no.kantega.publishing.modules.forms.filter.FormFillFilter;
-import no.kantega.publishing.modules.forms.validate.FormError;
-import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.xmlfilter.FilterPipeline;
+import no.kantega.publishing.modules.forms.validate.FormError;
+import org.junit.Test;
 
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
-public class FormFillFilterTest extends TestCase {
+public class FormFillFilterTest  {
 
+    @Test
     public void testInputText() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
@@ -34,11 +33,11 @@ public class FormFillFilterTest extends TestCase {
         String output ="<input type=\"text\" name=\"name\" value=\"Lorum ipsum\"><input type=\"text\" name=\"email\">";
         StringWriter  sw = new StringWriter();
         pipeline.filter(new StringReader(input), sw);
-        assertEquals(output, sw.toString());        
+        assertEquals(output, sw.toString());
     }
 
-
-   public void testInputTextArea() throws SystemException {
+    @Test
+    public void testInputTextArea() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
         Map<String, String[]> params = new HashMap<String, String[]>();
@@ -55,8 +54,8 @@ public class FormFillFilterTest extends TestCase {
 
         assertEquals(output, sw.toString());
     }
-    
 
+    @Test
     public void testInputRadio() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
@@ -74,7 +73,7 @@ public class FormFillFilterTest extends TestCase {
         assertEquals(output, sw.toString());
 
     }
-
+    @Test
     public void testInputSelect() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 

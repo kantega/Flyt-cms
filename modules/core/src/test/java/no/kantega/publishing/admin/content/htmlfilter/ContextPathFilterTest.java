@@ -16,33 +16,27 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.junit.BeforeClass;
+import no.kantega.commons.xmlfilter.FilterPipeline;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import no.kantega.commons.xmlfilter.FilterPipeline;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
 public class ContextPathFilterTest {
-    private static ContextPathFilter contextPathFilter;
-    private static FilterPipeline pipeline;
-
-    @BeforeClass
-    public static void init() {
-        contextPathFilter = new ContextPathFilter();
-        contextPathFilter.setContextPath("/test");
-        contextPathFilter.setRootUrlToken("<@WEB@>");
-        pipeline = SharedPipeline.getFilterPipeline();
-        pipeline.addFilter(contextPathFilter);
-    }
 
     @Test
     public void testStartElement() {
+        ContextPathFilter contextPathFilter = new ContextPathFilter();
+        contextPathFilter.setContextPath("/test");
+        contextPathFilter.setRootUrlToken("<@WEB@>");
+        FilterPipeline pipeline = new FilterPipeline();
+        pipeline.addFilter(contextPathFilter);
+
         String input = "<a href=\"/test/content.ap?thisId=3\">link text</a>";
         String expectedOutput = "<a href=\"<@WEB@>/content.ap?thisId=3\">link text</a>";
         StringWriter sw = new StringWriter();

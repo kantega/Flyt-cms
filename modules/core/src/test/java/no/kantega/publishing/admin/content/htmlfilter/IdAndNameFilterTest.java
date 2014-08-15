@@ -18,25 +18,18 @@ package no.kantega.publishing.admin.content.htmlfilter;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
-
 import org.junit.Test;
-import org.junit.Ignore;
-import static org.junit.Assert.assertEquals;
-import junit.framework.JUnit4TestAdapter;
 
-import java.io.StringWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: May 7, 2009
- * Time: 12:25:01 PM
- */
+import static org.junit.Assert.assertEquals;
+
 public class IdAndNameFilterTest  {
 
     @Test
     public void testStartElement() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+        FilterPipeline pipeline = new FilterPipeline();
         IdAndNameFilter filter = new IdAndNameFilter();
         pipeline.addFilter(filter);
 
@@ -77,11 +70,5 @@ public class IdAndNameFilterTest  {
         assertEquals(expectedOutput, sw.toString());
     }
 
-    /**
-     * Necessary for running JUnit 4.x tests in Maven 1.
-     */
-    public static junit.framework.Test suite() {
-        return new JUnit4TestAdapter(IdAndNameFilterTest.class);
-    }
 }
 
