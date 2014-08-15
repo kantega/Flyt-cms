@@ -19,6 +19,8 @@ package no.kantega.publishing.security.action;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.LockManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -29,6 +31,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 public class LogoutAction extends HttpServlet {
+    private static final Logger log = LoggerFactory.getLogger(LogoutAction.class);
 
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
@@ -49,7 +52,7 @@ public class LogoutAction extends HttpServlet {
                     cms.getSecuritySession().logout(request, response);
                 }
             } catch (SystemException e) {
-                e.printStackTrace();
+                log.error("Error logging out");
             }
             session.invalidate();
         }

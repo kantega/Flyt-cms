@@ -49,7 +49,6 @@ public class DeleteNoteAction  extends SimpleAdminController {
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters params = new RequestParameters(request);
 
-        SecuritySession securitySession = SecuritySession.getInstance(request);
 
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
 
@@ -62,6 +61,7 @@ public class DeleteNoteAction  extends SimpleAdminController {
                 ContentManagementService cms = new ContentManagementService(request);
 
                 Content content = cms.getContent(cid);
+                SecuritySession securitySession = cms.getSecuritySession();
                 if (securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                     if (noteId != -1) {
                         notesDao.removeNote(noteId);

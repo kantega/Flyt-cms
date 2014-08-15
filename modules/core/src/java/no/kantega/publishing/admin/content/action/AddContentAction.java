@@ -66,7 +66,7 @@ public class AddContentAction extends AbstractController {
         RequestParameters param = new RequestParameters(request);
 
         ContentManagementService aksessService = new ContentManagementService(request);
-        SecuritySession securitySession = SecuritySession.getInstance(request);
+        SecuritySession securitySession = aksessService.getSecuritySession();
 
         String url = request.getParameter("url");
         ContentIdentifier cidParent = contentIdHelper.fromRequestAndUrl(request, url);

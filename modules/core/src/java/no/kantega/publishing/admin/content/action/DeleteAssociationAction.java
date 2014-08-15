@@ -50,7 +50,8 @@ public class DeleteAssociationAction implements Controller {
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse httpServletResponse) throws Exception {
         ContentManagementService aksessService = new ContentManagementService(request);
-        SecuritySession securitySession = SecuritySession.getInstance(request);
+        SecuritySession securitySession = aksessService.getSecuritySession();
+
         RequestParameters param = new RequestParameters(request, "utf-8");
         HttpSession session = request.getSession();
 

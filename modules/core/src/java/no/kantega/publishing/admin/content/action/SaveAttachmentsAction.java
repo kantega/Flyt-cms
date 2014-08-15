@@ -22,8 +22,7 @@ public class SaveAttachmentsAction extends AbstractSaveContentAction {
     private String view;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException{
-        ValidationErrors errors  = new ValidationErrors();
-        return errors;
+        return new ValidationErrors();
 
     }
 

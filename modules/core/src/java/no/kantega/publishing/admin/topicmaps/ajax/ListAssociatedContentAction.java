@@ -59,7 +59,7 @@ public class ListAssociatedContentAction extends AbstractTopicInfoAction {
 
         model.put("content", cms.getContentSummaryList(query, -1, new SortOrder(ContentProperty.TITLE, false)));
 
-        SecuritySession session = SecuritySession.getInstance(request);
+        SecuritySession session = cms.getSecuritySession();
         if (session.isUserInRole(Aksess.getAdminRole())) {
             model.put("canAdd", Boolean.TRUE);
             model.put("canDelete", Boolean.TRUE);

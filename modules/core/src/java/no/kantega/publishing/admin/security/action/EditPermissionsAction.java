@@ -69,9 +69,6 @@ public class EditPermissionsAction extends AbstractController {
 
         Integer objSecurityId = objectId;
 
-        // Object user is editing
-        BaseObject object = null;
-
         // Object with permissions same as object if not content object
         BaseObject permissionObject = null;
         List<Permission> permissions = null;
@@ -79,11 +76,12 @@ public class EditPermissionsAction extends AbstractController {
         String title = "";
         String inheritedTitle = "";
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         HttpSession session = request.getSession(true);
 
-        object = (BaseObject)session.getAttribute(PERMISSIONS_OBJECT);
+        // Object user is editing
+        BaseObject object = (BaseObject)session.getAttribute(PERMISSIONS_OBJECT);
         if (object != null) {
             // Found objects in session
             if (object.getObjectType() == ObjectType.CONTENT) {
@@ -98,6 +96,7 @@ public class EditPermissionsAction extends AbstractController {
             objSecurityId = (Integer)session.getAttribute("tmpObjSecurityId");
         }
 
+        ContentManagementService aksessService = new ContentManagementService(request);
         if ((objectId != -1) && (permissionObject == null || permissionObject.getId() != objectId)) {
             // Object not in session or wrong object in session
             if (objectType == ObjectType.CONTENT) {
@@ -105,7 +104,6 @@ public class EditPermissionsAction extends AbstractController {
             }
 
             if (objectType == ObjectType.ASSOCIATION) {
-                ContentManagementService aksessService = new ContentManagementService(request);
                 ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
                 Content content = aksessService.getContent(cid);
                 title = content.getTitle();
@@ -166,7 +164,7 @@ public class EditPermissionsAction extends AbstractController {
         }
 
         if (permissions == null) {
-            permissions = new ArrayList<Permission>();
+            permissions = new ArrayList<>();
         }
 
         // Lookup name for users / roles
@@ -194,7 +192,7 @@ public class EditPermissionsAction extends AbstractController {
             }
         }
 
-        SecuritySession securitySession = SecuritySession.getInstance(request);
+        SecuritySession securitySession = aksessService.getSecuritySession();
         model.put("canModifyPermissions", securitySession.isAuthorized(object, Privilege.FULL_CONTROL));
         model.put("objSecurityId", objSecurityId);
         model.put("objectId", permissionObject.getId());
@@ -203,17 +201,17 @@ public class EditPermissionsAction extends AbstractController {
         model.put("inheritedTitle", inheritedTitle);
 
         // Privileges
-        List privileges = new ArrayList();
+        List<Integer> privileges = new ArrayList<>();
         privileges.add(Privilege.VIEW_CONTENT);
         privileges.add(Privilege.UPDATE_CONTENT);
-        if (object != null && object.getObjectType() == ObjectType.CONTENT) {
+        if (object.getObjectType() == ObjectType.CONTENT) {
             privileges.add(Privilege.APPROVE_CONTENT);
         }
         privileges.add(Privilege.FULL_CONTROL);
         model.put("privileges", privileges);
         
         // Notification
-        if (object != null && object.getObjectType() == ObjectType.CONTENT) {
+        if (object.getObjectType() == ObjectType.CONTENT) {
             model.put("priorities", NotificationPriority.values());
         }
 

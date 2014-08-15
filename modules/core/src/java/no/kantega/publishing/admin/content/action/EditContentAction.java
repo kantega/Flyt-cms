@@ -87,7 +87,7 @@ public class EditContentAction implements Controller {
             }
         }
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         if (infomessage.length() > 0) {
             model.put("infomessage", infomessage);
         }

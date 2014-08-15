@@ -76,7 +76,7 @@ public class ContentPropertiesAction {
         try {
             ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
             Content content = cms.getContent(cid, false);
-            SecuritySession securitySession = SecuritySession.getInstance(request);
+            SecuritySession securitySession = cms.getSecuritySession();
 
             List<String> enabledButtons = new ArrayList<>();
 
