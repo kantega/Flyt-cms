@@ -27,6 +27,6 @@ public class AttributeExistsTag extends AbstractAttributeConditionTag {
 
     @Override
     protected boolean evaluateCondition(String value) {
-        return isNotEmpty(value);
+        return value != null && isNotEmpty(value.trim());
     }
 }
