@@ -18,7 +18,7 @@ package no.kantega.publishing.admin.content.htmlfilter;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 
 import java.io.StringReader;
@@ -27,13 +27,17 @@ import java.io.StringWriter;
 import static org.junit.Assert.assertEquals;
 
 public class RemoveNestedSpanTagsFilterTest {
-    @Ignore
+
+    private FilterPipeline pipeline;
+
+    @Before
+    public void setup(){
+        pipeline = new FilterPipeline();
+        pipeline.addFilter(new RemoveNestedSpanTagsFilter());
+    }
+
     @Test
     public void shouldRemoveSimpleNestedTag() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<span><span>test</span></span>";
         String expectedHtmlAfter = "<span>test</span>";
 
@@ -45,10 +49,6 @@ public class RemoveNestedSpanTagsFilterTest {
 
     @Test
     public void shouldNotRemoveNestedTagsWithDifferentClass() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<span class=\"class1\"><span class=\"class2\">test</span></span>";
         String expectedHtmlAfter = htmlBefore;
 
@@ -60,10 +60,6 @@ public class RemoveNestedSpanTagsFilterTest {
 
     @Test
     public void shouldRemoveNestedTagWithoutRemovingInnerTags() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<span><span><p><span>test</span></p></span></span>";
         String expectedHtmlAfter = "<span><p><span>test</span></p></span>";
 
@@ -75,10 +71,6 @@ public class RemoveNestedSpanTagsFilterTest {
 
     @Test
     public void shouldRemoveNestedTagWithSameStyle() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<p><strong><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"><span style=\"text-decoration: underline;\"> </span></span></span></span></span></span></span></span></span></span></span></span></span></span></strong></p>";
         String expectedHtmlAfter = "<p><strong><span style=\"text-decoration: underline;\"> </span></strong></p>";
 
@@ -90,10 +82,6 @@ public class RemoveNestedSpanTagsFilterTest {
 
     @Test
     public void shouldRemoveNestedTagWithMultipelSimpleSpans() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<p><span style=\"font-size: 1em;\"><span><span>ff</span></span></span></p>";
         String expectedHtmlAfter = "<p><span style=\"font-size: 1em;\"><span>ff</span></span></p>";
 
@@ -105,14 +93,51 @@ public class RemoveNestedSpanTagsFilterTest {
 
     @Test
     public void shouldRemoveNestedTagLeavingOneTag() throws SystemException {
-        FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-        RemoveNestedSpanTagsFilter filter = new RemoveNestedSpanTagsFilter();
-        pipeline.addFilter(filter);
-
         String htmlBefore = "<p><span><span>gg<span>ff</span></span></span></p>";
         String expectedHtmlAfter = "<p><span>ggff</span></p>";
 
         StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+    }
+
+
+    /**
+     * The other tests used to use FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
+     * Thus each test added a new RemoveNestedSpanTagsFilter to the pipeline.
+     * This made shouldRemoveNestedTagWithoutRemovingInnerTags fail randomly.
+     * This test confirms that the result is «<p><span>test</span></p>» when RemoveNestedSpanTagsFilter is run three times.
+     */
+    @Test
+    public void confirmThatMultipleRemoveNestedSpanTagsFilterRemovesMuch(){
+        FilterPipeline pipeline = new FilterPipeline();
+        pipeline.addFilter(new RemoveNestedSpanTagsFilter());
+
+        String htmlBefore = "<p><span style=\"font-size: 1em;\"><span><span>ff</span></span></span></p>";
+        String expectedHtmlAfter = "<p><span style=\"font-size: 1em;\"><span>ff</span></span></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+
+        pipeline.addFilter(new RemoveNestedSpanTagsFilter());
+
+        htmlBefore = "<p><span><span>gg<span>ff</span></span></span></p>";
+        expectedHtmlAfter = "<p><span>ggff</span></p>";
+
+        sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+
+        pipeline.addFilter(new RemoveNestedSpanTagsFilter());
+
+        htmlBefore = "<span><span><p><span>test</span></p></span></span>";
+        expectedHtmlAfter = "<p><span>test</span></p>";
+
+        sw = new StringWriter();
         pipeline.filter(new StringReader(htmlBefore), sw);
 
         assertEquals(expectedHtmlAfter, sw.toString());
