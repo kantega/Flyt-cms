@@ -147,7 +147,6 @@ public class XMLHelper {
         Document doc = null;
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            docFactory.setExpandEntityReferences(false);
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             if (er != null) {
                 builder.setEntityResolver(er);
