@@ -25,11 +25,9 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.xpath.XPathAPI;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
-import org.springframework.web.context.support.ServletContextResource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -58,8 +56,7 @@ public class ContentTemplateValidator {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
                 return errors;
             }
-            String referenceDir = StringUtils.remove(((ServletContextResource) resource).getPath(), "/" + resource.getFilename());
-            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader, referenceDir);
+            ResourceLoaderEntityResolver entityResolver = new ResourceLoaderEntityResolver(contentTemplateResourceLoader);
 
             Document def = XMLHelper.openDocument(resource, entityResolver);
 

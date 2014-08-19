@@ -129,7 +129,7 @@ public class XMLHelper {
 
     public static Document openDocument(Resource resource, EntityResolver er) throws InvalidFileException {
         try {
-            return openDocument(resource.getInputStream(), er);
+            return openDocument(resource.getInputStream(), er, resource.getURI().getRawPath());
         } catch (IOException e) {
             throw new InvalidFileException("Error opening XML document from Resource", e);
         }
@@ -143,20 +143,29 @@ public class XMLHelper {
         }
     }
 
-    public static Document openDocument(InputStream is, EntityResolver er) throws SystemException {
+    public static Document openDocument(InputStream is, EntityResolver er, String systemId) throws SystemException {
         Document doc = null;
         try {
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+            docFactory.setExpandEntityReferences(false);
             DocumentBuilder builder = docFactory.newDocumentBuilder();
             if (er != null) {
                 builder.setEntityResolver(er);
             }
-            doc = builder.parse(is);
+            if (systemId != null) {
+                doc = builder.parse(is, systemId);
+            } else {
+                doc = builder.parse(is);
+            }
         } catch (Exception e) {
             throw new SystemException("Error opening XML document from InputStream", e);
         }
 
         return doc;
+    }
+
+    public static Document openDocument(InputStream is, EntityResolver er) throws SystemException {
+        return openDocument(is, er, null);
     }
 
 

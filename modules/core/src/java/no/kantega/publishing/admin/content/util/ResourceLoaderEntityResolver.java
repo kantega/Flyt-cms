@@ -23,29 +23,23 @@ import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import java.io.File;
 import java.io.IOException;
 
 /**
  *  Resolves !ENTITY system references in XML files loaded using ResourceLoader.
- *  Supports includes from sub directories by the use of «$ROOT/» in the entity declaration.
+ *  Supports includes from the same directory as the xml it is included in, as well as
+ *  resources relative to it.
  */
 public class ResourceLoaderEntityResolver implements EntityResolver {
     private ResourceLoader resourceLoader;
-    private String referenceDir;
 
-    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader, String referenceDir) {
+    public ResourceLoaderEntityResolver(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
-        this.referenceDir = referenceDir;
     }
 
     public InputSource resolveEntity(String publicId, String systemId) throws SAXException, IOException {
         if (systemId != null) {
-            String filename = systemId;
-            if (filename.contains("/")) {
-                filename = filename.substring(systemId.lastIndexOf("/") + 1, systemId.length());
-            }
-            Resource resource = resourceLoader.getResource(referenceDir + File.separator + filename);
+            Resource resource = resourceLoader.getResource(systemId);
             if (resource != null) {
                 InputSource inputSource = new InputSource(resource.getInputStream());
                 inputSource.setSystemId(systemId);
