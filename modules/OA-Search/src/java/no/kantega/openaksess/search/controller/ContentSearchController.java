@@ -47,6 +47,7 @@ public class ContentSearchController implements AksessController {
     private List<String> facetQueries = emptyList();
     private List<String> configuredFilterQueries = emptyList();
     private String searchResponseModelKey = "searchResponse";
+    private boolean includePaginationLinks = true;
 
     /**
      * q - The query string. e.g. «cheese sale».
@@ -68,7 +69,7 @@ public class ContentSearchController implements AksessController {
             SearchResponse searchResponse = performSearch(request, query);
             model.put(searchResponseModelKey, searchResponse);
 
-            if(includeLinks(request)){
+            if(includePaginationLinks){
                 addLinks(model, searchResponse);
             }
         } else {
@@ -244,10 +245,6 @@ public class ContentSearchController implements AksessController {
         return getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
     }
 
-    private boolean includeLinks(HttpServletRequest request) {
-        return !getBooleanParameter(request, "excludelinks", false);
-    }
-
     private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
         Map<String, Object> links = new HashMap<>();
         model.put("links", links);
@@ -314,5 +311,13 @@ public class ContentSearchController implements AksessController {
 
     public void setConfiguredFilterQueries(List<String> configuredFilterQueries) {
         this.configuredFilterQueries = configuredFilterQueries;
+    }
+
+    public boolean isIncludePaginationLinks() {
+        return includePaginationLinks;
+    }
+
+    public void setIncludePaginationLinks(boolean includePaginationLinks) {
+        this.includePaginationLinks = includePaginationLinks;
     }
 }
