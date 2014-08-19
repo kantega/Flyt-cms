@@ -21,6 +21,8 @@ import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,11 +32,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AssociationHelper {
+    private static final Logger log = LoggerFactory.getLogger(AssociationHelper.class);
 
     public static List<Association> createAssociationsFromParentIds(int[] parentIds) throws SystemException {
-        List<Association> associations = new ArrayList<Association>();
+        List<Association> associations = new ArrayList<>();
 
-        List<Integer> sites = new ArrayList<Integer>();
+        List<Integer> sites = new ArrayList<>();
 
         for (int parentId : parentIds) {
             Association parent = AssociationAO.getAssociationById(parentId);
@@ -98,40 +101,28 @@ public class AssociationHelper {
     }
 
     public static String getPathForId(int id) throws SystemException {
-        Connection c = null;
         String path = "";
 
-        try {
-            c = dbConnectionFactory.getConnection();
-
+        try (Connection c = dbConnectionFactory.getConnection()){
             path = getPathForId(c, path, id) + "/";
-        } finally {
-            try {
-                if (c != null) {
-                    c.close();
-                }
-            } catch (SQLException e) {
-                // Could not close connection, probably closed already
-            }
+        } catch (SQLException e) {
+            log.error("Error getting path for id " + id, e);
         }
-
         return path;
     }
 
     private static String getPathForId(Connection c, String path, int id) throws SystemException {
-        try {
-            PreparedStatement st = c.prepareStatement("select ParentAssociationId from associations where AssociationId = ?");
+        try (PreparedStatement st = c.prepareStatement("select ParentAssociationId from associations where AssociationId = ?")){
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                int cid = rs.getInt("ParentAssociationId");
-                path = getPathForId(c, path, cid);
-                path = path + "/" + id;
-            } else {
-                return path;
+            try(ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    int cid = rs.getInt("ParentAssociationId");
+                    path = getPathForId(c, path, cid);
+                    path = path + "/" + id;
+                } else {
+                    return path;
+                }
             }
-            st.close();
-            rs.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }

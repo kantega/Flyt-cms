@@ -45,14 +45,14 @@ public class SQLHelper {
 
     public static int getInt(Connection c, String query, String field, Object[] params) throws SQLException {
         int result = -1;
-        PreparedStatement s = c.prepareStatement(query);
-        setParams(s, params);
-        ResultSet rs = s.executeQuery();
-        if (rs.next()) {
-            result = rs.getInt(field);
+        try(PreparedStatement s = c.prepareStatement(query)) {
+            setParams(s, params);
+            try(ResultSet rs = s.executeQuery()) {
+                if (rs.next()) {
+                    result = rs.getInt(field);
+                }
+            }
         }
-        rs.close();
-        s.close();
         return result;
     }
 
@@ -65,14 +65,14 @@ public class SQLHelper {
     public static String getString(Connection c, String query, String field, Object[] params) throws SQLException {
         String result = null;
 
-        PreparedStatement s = c.prepareStatement(query);
-        setParams(s, params);
-        ResultSet rs = s.executeQuery();
-        if (rs.next()) {
-            result = rs.getString(field);
+        try(PreparedStatement s = c.prepareStatement(query)) {
+            setParams(s, params);
+            try(ResultSet rs = s.executeQuery()) {
+                if (rs.next()) {
+                    result = rs.getString(field);
+                }
+            }
         }
-        rs.close();
-        s.close();
         return result;
     }
 

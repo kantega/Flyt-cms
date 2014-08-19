@@ -65,12 +65,13 @@ public class AssociationAO  {
     public static Association getAssociationById(int id) throws SystemException {
         Association a = null;
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement st = c.prepareStatement("select * from associations where uniqueid = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("select * from associations where uniqueid = ?")){
             st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                a = getAssociationFromRS(rs);
+            try(ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    a = getAssociationFromRS(rs);
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
@@ -104,47 +105,48 @@ public class AssociationAO  {
 
         if (a.getAssociationtype() != AssociationType.SHORTCUT) {
             // Avgjør om dette er en krysspublisering eller ikke
-            ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where ContentId = ? and SiteId = ?", new Object[]{a.getContentId(), a.getSiteId()});
-            if (rs.next()) {
-                a.setAssociationtype(AssociationType.CROSS_POSTING);
-            } else {
-                a.setAssociationtype(AssociationType.DEFAULT_POSTING_FOR_SITE);
+            try(ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where ContentId = ? and SiteId = ?", new Object[]{a.getContentId(), a.getSiteId()})) {
+                if (rs.next()) {
+                    a.setAssociationtype(AssociationType.CROSS_POSTING);
+                } else {
+                    a.setAssociationtype(AssociationType.DEFAULT_POSTING_FOR_SITE);
+                }
             }
         }
 
-        PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"UNIQUEID"});
-        st.setInt(1, a.getAssociationId());
-        st.setInt(2, a.getContentId());
-        st.setInt(3, a.getParentAssociationId());
-        st.setInt(4, a.getCategory().getId());
-        st.setInt(5, a.getSiteId());
-        st.setInt(6, a.getSecurityId());
-        st.setInt(7, a.getAssociationtype());
-        st.setLong(8, a.getPriority());
-        st.setString(9, a.getPath());
-        st.setInt(10, a.getDepth());
-        st.setInt(11, 0);
-        st.setInt(12, 0);
-        st.setInt(13, 0);
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("insert into associations (AssociationId, ContentId, ParentAssociationId, Category, SiteId, SecurityId, Type, Priority, Path, Depth, IsDeleted, DeletedItemsId, NumberOfViews) values(?,?,?,?,?,?,?,?,?,?,?,?,?)", new String[] {"UNIQUEID"})) {
+            st.setInt(1, a.getAssociationId());
+            st.setInt(2, a.getContentId());
+            st.setInt(3, a.getParentAssociationId());
+            st.setInt(4, a.getCategory().getId());
+            st.setInt(5, a.getSiteId());
+            st.setInt(6, a.getSecurityId());
+            st.setInt(7, a.getAssociationtype());
+            st.setLong(8, a.getPriority());
+            st.setString(9, a.getPath());
+            st.setInt(10, a.getDepth());
+            st.setInt(11, 0);
+            st.setInt(12, 0);
+            st.setInt(13, 0);
+            st.execute();
 
-        ResultSet rs = st.getGeneratedKeys();
-        if (rs.next()) {
-            a.setId(rs.getInt(1));
-        } else {
-            log.error( "Feilet ved uthenting av nøkkel - id");
+            try(ResultSet rs = st.getGeneratedKeys()) {
+                if (rs.next()) {
+                    a.setId(rs.getInt(1));
+                } else {
+                    log.error("Feilet ved uthenting av nøkkel - id");
+                }
+            }
         }
-        rs.close();
-        st.close();
 
         // For alt annet enn snarveier er associationid == id
         if (a.getAssociationId() == -1) {
             a.setAssociationId(a.getId());
-            st = c.prepareStatement("update associations set AssociationId = ? where uniqueid = ?");
-            st.setInt(1, a.getId());
-            st.setInt(2, a.getId());
-            st.execute();
-            st.close();
+            try(PreparedStatement st = c.prepareStatement("update associations set AssociationId = ? where uniqueid = ?")) {
+                st.setInt(1, a.getId());
+                st.setInt(2, a.getId());
+                st.execute();
+            }
         }
 
         // Sett defaultrettigheter pø startside, alle kan gjøre alt
@@ -195,11 +197,12 @@ public class AssociationAO  {
 
         if (copyChildren) {
             // Finn barn til source legg dem inn
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ParentAssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new Object[]{source.getId()});
-            while (rs.next()) {
-                Association child = getAssociationFromRS(rs);
-                copyAssociations(c, child, newAssociation, null, copyChildren);
-            }
+           try(ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where ParentAssociationId = ? AND (IsDeleted IS NULL OR IsDeleted = 0)", new Object[]{source.getId()})) {
+               while (rs.next()) {
+                   Association child = getAssociationFromRS(rs);
+                   copyAssociations(c, child, newAssociation, null, copyChildren);
+               }
+           }
         }
 
         return newAssociation;
@@ -233,13 +236,13 @@ public class AssociationAO  {
     public static List<Association> getAssociationsByContentId(int contentId) throws SystemException {
         List<Association> associations = new ArrayList<>();
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-
-            PreparedStatement st = c.prepareStatement("select * from associations where contentid = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("select * from associations where contentid = ?")) {
             st.setInt(1, contentId);
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                associations.add(getAssociationFromRS(rs));
+            try (ResultSet rs = st.executeQuery()){
+                while (rs.next()) {
+                    associations.add(getAssociationFromRS(rs));
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
@@ -249,16 +252,16 @@ public class AssociationAO  {
 
 
     public static List<Association> getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
-        List<Association> associations = new ArrayList<Association>();
+        List<Association> associations = new ArrayList<>();
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-
-            PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like ?")){
             st.setInt(1, contentId);
             st.setString(2, "%/" + parentId + "/%");
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                associations.add(getAssociationFromRS(rs));
+            try(ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    associations.add(getAssociationFromRS(rs));
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
@@ -365,79 +368,80 @@ public class AssociationAO  {
             }
 
             // Oppdater hovedknytning
-            PreparedStatement pathst = c.prepareStatement("update associations set Category = ?, Path = ?, Depth = ?, SiteId = ?, ParentAssociationId = ? where UniqueId = ?");
-            pathst.setInt(1, newAssociation.getCategory().getId());
-            pathst.setString(2, path);
-            pathst.setInt(3, depth);
-            pathst.setInt(4, newAssociation.getSiteId());
-            pathst.setInt(5, newAssociation.getParentAssociationId());
-            pathst.setInt(6, newAssociation.getId());
-            pathst.execute();
-
+            try(PreparedStatement pathst = c.prepareStatement("update associations set Category = ?, Path = ?, Depth = ?, SiteId = ?, ParentAssociationId = ? where UniqueId = ?")) {
+                pathst.setInt(1, newAssociation.getCategory().getId());
+                pathst.setString(2, path);
+                pathst.setInt(3, depth);
+                pathst.setInt(4, newAssociation.getSiteId());
+                pathst.setInt(5, newAssociation.getParentAssociationId());
+                pathst.setInt(6, newAssociation.getId());
+                pathst.execute();
+            }
             // Oppdater gruppe for denne siden
-            PreparedStatement groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ?");
-            if (updateGroupId) {
-                groupst.setInt(1, parentGroupId);
-                groupst.setInt(2, oldAssocation.getContentId());
-                groupst.execute();
+            try(PreparedStatement groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ?")) {
+                if (updateGroupId) {
+                    groupst.setInt(1, parentGroupId);
+                    groupst.setInt(2, oldAssocation.getContentId());
+                    groupst.execute();
+                }
             }
 
             // Oppdater gruppe for denne siden
-            PreparedStatement securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ?");
-            if (updateSecurityId) {
-                securityst.setInt(1, parentSecurityId);
-                securityst.setInt(2, newAssociation.getId());
-                securityst.execute();
+            try(PreparedStatement securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ?")) {
+                if (updateSecurityId) {
+                    securityst.setInt(1, parentSecurityId);
+                    securityst.setInt(2, newAssociation.getId());
+                    securityst.execute();
+                }
             }
 
             // Finn alle som ligger under og oppdater path og groupid
-            ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where Path like ?", new Object[]{"%/" + oldAssocation.getId() +  "/%"});
-            pathst  = c.prepareStatement("update associations set Path = ?, Depth = ?, SiteId = ? where UniqueId = ?");
-            groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ? and GroupId = ?");
-            securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?");
-            while(rs.next()) {
-                int tmpCid = rs.getInt("ContentId");
-                int tmpId = rs.getInt("UniqueId");
-                int tmpType = rs.getInt("Type");
-                String tmpPath = rs.getString("Path");
+            try(ResultSet rs = SQLHelper.getResultSet(c, "select * from associations where Path like ?", new Object[]{"%/" + oldAssocation.getId() +  "/%"});
+                PreparedStatement pathst  = c.prepareStatement("update associations set Path = ?, Depth = ?, SiteId = ? where UniqueId = ?");
+                PreparedStatement groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ? and GroupId = ?");
+                PreparedStatement securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?")) {
+                while (rs.next()) {
+                    int tmpCid = rs.getInt("ContentId");
+                    int tmpId = rs.getInt("UniqueId");
+                    int tmpType = rs.getInt("Type");
+                    String tmpPath = rs.getString("Path");
 
-                // Lag ny path
-                String newPath = path.substring(0, path.length() -1) + tmpPath.substring(tmpPath.indexOf("/" + oldAssocation.getId() + "/"), tmpPath.length());
+                    // Lag ny path
+                    String newPath = path.substring(0, path.length() - 1) + tmpPath.substring(tmpPath.indexOf("/" + oldAssocation.getId() + "/"), tmpPath.length());
 
-                // Finn dybde
-                int newDepth = 0;
-                if (newPath.length() > 1) {
-                    for (int i = 1; i < newPath.length(); i++) {
-                        char tmpc = newPath.charAt(i);
-                        if (tmpc == '/') newDepth++;
+                    // Finn dybde
+                    int newDepth = 0;
+                    if (newPath.length() > 1) {
+                        for (int i = 1; i < newPath.length(); i++) {
+                            char tmpc = newPath.charAt(i);
+                            if (tmpc == '/') newDepth++;
+                        }
                     }
+
+                    // Oppdater path og dybde
+                    pathst.setString(1, newPath);
+                    pathst.setInt(2, newDepth);
+                    pathst.setInt(3, newAssociation.getSiteId());
+                    pathst.setInt(4, tmpId);
+                    pathst.execute();
+
+                    // Oppdater gruppeid for barn
+                    if (updateGroupId && tmpType == AssociationType.DEFAULT_POSTING_FOR_SITE) {
+                        groupst.setInt(1, parentGroupId);
+                        groupst.setInt(2, tmpCid);
+                        groupst.setInt(3, currentGroupId);
+                        groupst.execute();
+                    }
+
+                    if (updateSecurityId) {
+                        securityst.setInt(1, parentSecurityId);
+                        securityst.setInt(2, tmpId);
+                        securityst.setInt(3, oldAssocation.getSecurityId());
+                        securityst.execute();
+                    }
+
                 }
-
-                // Oppdater path og dybde
-                pathst.setString(1, newPath);
-                pathst.setInt(2, newDepth);
-                pathst.setInt(3, newAssociation.getSiteId());
-                pathst.setInt(4, tmpId);
-                pathst.execute();
-
-                // Oppdater gruppeid for barn
-                if (updateGroupId && tmpType == AssociationType.DEFAULT_POSTING_FOR_SITE) {
-                    groupst.setInt(1, parentGroupId);
-                    groupst.setInt(2, tmpCid);
-                    groupst.setInt(3, currentGroupId);
-                    groupst.execute();
-                }
-
-                if (updateSecurityId) {
-                    securityst.setInt(1, parentSecurityId);
-                    securityst.setInt(2, tmpId);
-                    securityst.setInt(3, oldAssocation.getSecurityId());
-                    securityst.execute();
-                }
-
             }
-            pathst.close();
-            groupst.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }
@@ -485,28 +489,28 @@ public class AssociationAO  {
             return deletedContent;
         }
 
-        try (Connection c = dbConnectionFactory.getConnection()){
+        try (Connection c = dbConnectionFactory.getConnection()) {
 
             /*
              * Sjekk om denne siden vil bli slettet
              */
             Content current = null;
 
-            PreparedStatement st = c.prepareStatement("select ContentId, Title FROM contentversion WHERE ContentId IN" +
-                    "(SELECT ContentId From associations WHERE UniqueId = ?) AND contentversion.IsActive = 1");
+            try (PreparedStatement st = c.prepareStatement("select ContentId, Title FROM contentversion WHERE ContentId IN" +
+                    "(SELECT ContentId From associations WHERE UniqueId = ?) AND contentversion.IsActive = 1")){
             st.setInt(1, associations.get(0).getId());
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                current = new Content();
-                current.setId(rs.getInt("ContentId"));
-                current.setTitle(rs.getString("Title"));
+            try(ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    current = new Content();
+                    current.setId(rs.getInt("ContentId"));
+                    current.setTitle(rs.getString("Title"));
+                }
             }
-
             if (current == null) {
                 return deletedContent;
             }
 
-            st.close();
+            }
 
             StringBuilder query = new StringBuilder();
 
@@ -558,36 +562,33 @@ public class AssociationAO  {
             // End query 2
             query.append(")");
 
-            st = c.prepareStatement(query.toString());
-            rs = st.executeQuery();
-
             int a = 0;
-            while(rs.next()) {
-                if (a > 0) {
-                    titleQuery.append(",");
-                }
-                titleQuery.append(rs.getInt("ContentId"));
-                a++;
-            }
+            try(PreparedStatement st = c.prepareStatement(query.toString());
+                ResultSet rs = st.executeQuery()) {
 
-            st.close();
+                while (rs.next()) {
+                    if (a > 0) {
+                        titleQuery.append(",");
+                    }
+                    titleQuery.append(rs.getInt("ContentId"));
+                    a++;
+                }
+
+            }
 
             titleQuery.append(") AND contentversion.IsActive = 1");
 
             // å hente ut tittel er splittet opp i to operasjoner, fordi det gør så sinnsykt tregt på MySQL enkelte ganger
             if (a > 0) {
-                PreparedStatement titleSt = c.prepareStatement(titleQuery.toString());
-                ResultSet titleRs = titleSt.executeQuery();
-                while (titleRs.next()) {
-                    Content tmp = new Content();
-                    tmp.setId(titleRs.getInt("ContentId"));
-                    tmp.setTitle(titleRs.getString("Title"));
-                    deletedContent.add(tmp);
+                try(PreparedStatement titleSt = c.prepareStatement(titleQuery.toString());
+                    ResultSet titleRs = titleSt.executeQuery()) {
+                    while (titleRs.next()) {
+                        Content tmp = new Content();
+                        tmp.setId(titleRs.getInt("ContentId"));
+                        tmp.setTitle(titleRs.getString("Title"));
+                        deletedContent.add(tmp);
+                    }
                 }
-
-                titleSt.close();
-
-                titleRs.close();
             }
 
             if (deleteMultiple || deletedContent.size() <= 1) {
@@ -605,18 +606,18 @@ public class AssociationAO  {
                 query.append("UPDATE associations SET IsDeleted = 1 , DeletedItemsId = ").append(deletedItemsId).append(" WHERE UniqueId IN ");
                 appendAssociationsSql(query, associations);
 
-                st = c.prepareStatement(query.toString());
-                st.executeUpdate();
-                st.close();
+                try(PreparedStatement st = c.prepareStatement(query.toString())) {
+                    st.executeUpdate();
+                }
 
                 // Marker undersider for sletting
                 query = new StringBuilder();
                 query.append("UPDATE associations SET IsDeleted = 1, DeletedItemsId = ").append(deletedItemsId).append(" WHERE ");
                 appendPathSql(query, associations, "OR", "");
 
-                st = c.prepareStatement(query.toString());
-                st.executeUpdate();
-                st.close();
+                try(PreparedStatement st = c.prepareStatement(query.toString())) {
+                    st.executeUpdate();
+                }
 
                 // Slett snarveier til ting som er slettet
                 AssociationAOHelper.deleteShortcuts();
@@ -634,8 +635,8 @@ public class AssociationAO  {
 
     public static void setAssociationsPriority(List<Association> associations) throws SystemException {
         if (associations != null && associations.size() > 0) {
-            try (Connection c = dbConnectionFactory.getConnection()){
-                PreparedStatement st = c.prepareStatement("update associations set Priority = ?, Category=? where UniqueId = ?");
+            try (Connection c = dbConnectionFactory.getConnection();
+                 PreparedStatement st = c.prepareStatement("update associations set Priority = ?, Category=? where UniqueId = ?")){
                 for (Association association : associations) {
 
                     st.setInt(1, association.getPriority());
@@ -644,7 +645,6 @@ public class AssociationAO  {
 
                     st.execute();
                 }
-                st.close();
             } catch (SQLException e) {
                 throw new SystemException("SQL Feil ved databasekall", e);
             }
@@ -665,27 +665,27 @@ public class AssociationAO  {
             }
         }
 
-
         // Finn alle undersider, sett nye rettigheter
-        ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where Path like ?", new Object[]{"%/" + object.getId() +  "/%"});
-        PreparedStatement st = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?");
+        try(ResultSet rs = SQLHelper.getResultSet(c, "select UniqueId from associations where Path like ?", new Object[]{"%/" + object.getId() +  "/%"});
+            PreparedStatement st = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ? and SecurityId = ?")) {
 
-        // Undersider
-        while(rs.next()) {
-            int aid = rs.getInt("UniqueId");
+            // Undersider
+            while (rs.next()) {
+                int aid = rs.getInt("UniqueId");
+                st.setInt(1, newSecurityId);
+                st.setInt(2, aid);
+                st.setInt(3, object.getSecurityId());
+
+                st.execute();
+            }
+
             st.setInt(1, newSecurityId);
-            st.setInt(2, aid);
+            st.setInt(2, object.getId());
             st.setInt(3, object.getSecurityId());
-
             st.execute();
+
+            object.setSecurityId(newSecurityId);
         }
-
-        st.setInt(1, newSecurityId);
-        st.setInt(2, object.getId());
-        st.setInt(3, object.getSecurityId());
-        st.execute();
-
-        object.setSecurityId(newSecurityId);
     }
 
     /**
@@ -698,45 +698,45 @@ public class AssociationAO  {
 
         int parentId = -1;
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-
-            PreparedStatement st = c.prepareStatement("SELECT * FROM associations WHERE IsDeleted = 1 AND DeletedItemsId = ? ORDER BY Depth");
-
-            PreparedStatement countSt = c.prepareStatement("SELECT Count(*) AS Cnt FROM associations WHERE IsDeleted = 0 AND ContentId = ? AND SiteId = ?");
-            PreparedStatement updateSt = c.prepareStatement("UPDATE associations SET IsDeleted = 0, DeletedItemsId = null, Type = ? WHERE UniqueId = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("SELECT * FROM associations WHERE IsDeleted = 1 AND DeletedItemsId = ? ORDER BY Depth");
+             PreparedStatement countSt = c.prepareStatement("SELECT Count(*) AS Cnt FROM associations WHERE IsDeleted = 0 AND ContentId = ? AND SiteId = ?");
+             PreparedStatement updateSt = c.prepareStatement("UPDATE associations SET IsDeleted = 0, DeletedItemsId = null, Type = ? WHERE UniqueId = ?")){
 
             st.setInt(1, deletedItemsId);
-            ResultSet rs = st.executeQuery();
-            while(rs.next()) {
-                Association a = getAssociationFromRS(rs);
+            try(ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    Association a = getAssociationFromRS(rs);
 
-                int type;
+                    int type;
 
-                if (parentId == -1) {
-                    parentId = a.getId();
-                }
-
-                if (a.getAssociationtype() != AssociationType.SHORTCUT) {
-
-                    type = AssociationType.DEFAULT_POSTING_FOR_SITE;
-
-                    countSt.setInt(1, a.getContentId());
-                    countSt.setInt(2, a.getSiteId());
-                    ResultSet cntRs = countSt.executeQuery();
-                    if (cntRs.next()) {
-                        int cnt = cntRs.getInt("Cnt");
-                        if (cnt > 0) {
-                            // Page is already published another place e.g cross posted
-                            type = AssociationType.CROSS_POSTING;
-                        }
+                    if (parentId == -1) {
+                        parentId = a.getId();
                     }
-                } else {
-                    type = AssociationType.SHORTCUT;
-                }
 
-                updateSt.setInt(1, type);
-                updateSt.setInt(2, a.getId());
-                updateSt.executeUpdate();
+                    if (a.getAssociationtype() != AssociationType.SHORTCUT) {
+
+                        type = AssociationType.DEFAULT_POSTING_FOR_SITE;
+
+                        countSt.setInt(1, a.getContentId());
+                        countSt.setInt(2, a.getSiteId());
+                        try(ResultSet cntRs = countSt.executeQuery()) {
+                            if (cntRs.next()) {
+                                int cnt = cntRs.getInt("Cnt");
+                                if (cnt > 0) {
+                                    // Page is already published another place e.g cross posted
+                                    type = AssociationType.CROSS_POSTING;
+                                }
+                            }
+                        }
+                    } else {
+                        type = AssociationType.SHORTCUT;
+                    }
+
+                    updateSt.setInt(1, type);
+                    updateSt.setInt(2, a.getId());
+                    updateSt.executeUpdate();
+                }
             }
             DeletedItemsAO.purgeDeletedItem(deletedItemsId);
         } catch (SQLException e) {
@@ -746,7 +746,7 @@ public class AssociationAO  {
     }
 
     public static List<String> findDuplicateAliases(Association parent) throws SystemException {
-        List<String> duplicates = new ArrayList<String>();
+        List<String> duplicates = new ArrayList<>();
 
         try (Connection c = dbConnectionFactory.getConnection()){
 
@@ -760,23 +760,26 @@ public class AssociationAO  {
             sql += " AND (associations.Path LIKE '%/" + parent.getId() + "/%' OR associations.ParentAssociationId = " + parent.getId() + ")";
             sql += " AND associations.IsDeleted = 0";
 
-            PreparedStatement listSt = c.prepareStatement(sql);
+            try(PreparedStatement listSt = c.prepareStatement(sql);
 
-            PreparedStatement aliasSt = c.prepareStatement("SELECT COUNT(DISTINCT(content.ContentId)) FROM content, associations WHERE content.Alias = ? and content.ContentId = associations.ContentId and associations.SiteId = ? and associations.IsDeleted = 0");
+            PreparedStatement aliasSt = c.prepareStatement("SELECT COUNT(DISTINCT(content.ContentId)) FROM content, associations WHERE content.Alias = ? and content.ContentId = associations.ContentId and associations.SiteId = ? and associations.IsDeleted = 0")) {
 
-            ResultSet listRS = listSt.executeQuery();
-            while(listRS.next()) {
-                String alias = listRS.getString("Alias");
+                try(ResultSet listRS = listSt.executeQuery()) {
+                    while (listRS.next()) {
+                        String alias = listRS.getString("Alias");
 
-                aliasSt.setString(1, alias);
-                aliasSt.setInt(2, parent.getSiteId());
+                        aliasSt.setString(1, alias);
+                        aliasSt.setInt(2, parent.getSiteId());
 
-                ResultSet aliasRS = aliasSt.executeQuery();
-                if (aliasRS.next()) {
-                    int antall = aliasRS.getInt(1);
-                    if (antall > 1) {
-                        // Duplikat alias
-                        duplicates.add(alias);
+                        try(ResultSet aliasRS = aliasSt.executeQuery()) {
+                            if (aliasRS.next()) {
+                                int antall = aliasRS.getInt(1);
+                                if (antall > 1) {
+                                    // Duplikat alias
+                                    duplicates.add(alias);
+                                }
+                            }
+                        }
                     }
                 }
             }
