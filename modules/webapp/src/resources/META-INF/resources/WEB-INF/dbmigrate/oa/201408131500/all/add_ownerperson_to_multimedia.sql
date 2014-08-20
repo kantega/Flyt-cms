@@ -1,0 +1,1 @@
+ALTER TABLE multimedia ADD OwnerPerson VARCHAR(128) NULL;
