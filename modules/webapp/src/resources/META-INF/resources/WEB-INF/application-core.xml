@@ -167,6 +167,12 @@
     <bean id="aksessMultimediaUploadHandler" class="no.kantega.publishing.multimedia.DefaultMultimediaUploadHandler">
         <property name="imageEditor" ref="aksessImageEditor"/>
         <property name="multimediaMetadataExtractors" ref="aksessMultimediaMetadataExtractors"/>
+        <property name="imageOrientationReset" ref="aksessImageOrientationReset"/>
+    </bean>
+
+    <bean id="aksessImageOrientationReset" class="no.kantega.publishing.multimedia.ImageOrientationReset">
+        <property name="imageEditor" ref="aksessImageEditor"/>
+        <property name="exifMetadataExtractor" ref="aksessExifMetadataExtractor"/>
     </bean>
 
     <bean class="no.kantega.publishing.admin.taglib.expires.BuildNumberResourceKeyProvider">

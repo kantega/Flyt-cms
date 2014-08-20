@@ -15,6 +15,7 @@ public class ExifMetadata implements Serializable {
     public static final String EXIF_MODEL = "Model";
     public static final String EXIF_ORIGINAL_DATE = "Date/Time Original";
     public static final String EXIF_COPYRIGHT = "Copyright";
+    public static final String EXIF_ORIENTATION = "Orientation";
     public static final String IPTC_COPYRIGHT = "Copyright Notice";
     public static final String GPS_LATITUDE_REF = "GPS Latitude Ref";
     public static final String GPS_LATITUDE = "GPS Latitude";

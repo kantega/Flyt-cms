@@ -29,6 +29,7 @@ import java.util.List;
 public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
     private ImageEditor imageEditor;
     private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
+    private ImageOrientationReset imageOrientationReset;
 
     public Multimedia updateMultimediaWithData(Multimedia multimedia, byte[] data, String filename, boolean preserveImageSize) throws InvalidImageFormatException {
         if (filename.length() > 255) {
@@ -38,6 +39,8 @@ public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
         multimedia.setData(data);
         multimedia.setFilename(filename);
         updateMediaNameIfEmpty(multimedia, filename);
+
+        multimedia = imageOrientationReset.resetOrientation(multimedia);
 
         for (MultimediaMetadataExtractor extractor : multimediaMetadataExtractors) {
             if (extractor.supportsMimeType(multimedia.getMimeType().getType())) {
@@ -90,5 +93,9 @@ public class DefaultMultimediaUploadHandler implements MultimediaUploadHandler {
 
     public void setMultimediaMetadataExtractors(List<MultimediaMetadataExtractor> multimediaMetadataExtractors) {
         this.multimediaMetadataExtractors = multimediaMetadataExtractors;
+    }
+
+    public void setImageOrientationReset(ImageOrientationReset imageOrientationReset) {
+        this.imageOrientationReset = imageOrientationReset;
     }
 }
