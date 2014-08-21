@@ -128,7 +128,7 @@ public class ContentQuery {
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
         query.append("and contentversion.Status IN (:status)");
-        List<Integer> statuses = new ArrayList<>(4);
+        List<Integer> statuses = new ArrayList<>(5);
         statuses.add(ContentStatus.PUBLISHED.getTypeAsInt());
         if(onHearingFor != null) {
             statuses.add(ContentStatus.HEARING.getTypeAsInt());
@@ -138,6 +138,10 @@ public class ContentQuery {
         }
         if(includeWaitingForApproval){
             statuses.add(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
+        }
+        if(showArchived){
+            statuses.add(ContentStatus.ARCHIVED.getTypeAsInt());
+
         }
         parameters.put("status", statuses);
         query.append(" and content.ContentId = associations.ContentId");
