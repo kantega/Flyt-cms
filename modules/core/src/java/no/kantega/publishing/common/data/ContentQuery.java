@@ -128,22 +128,7 @@ public class ContentQuery {
 
         query.append(" where content.ContentId = contentversion.ContentId and contentversion.IsActive = 1 and (associations.IsDeleted IS NULL OR associations.IsDeleted = 0) ");
         query.append("and contentversion.Status IN (:status)");
-        List<Integer> statuses = new ArrayList<>(5);
-        statuses.add(ContentStatus.PUBLISHED.getTypeAsInt());
-        if(onHearingFor != null) {
-            statuses.add(ContentStatus.HEARING.getTypeAsInt());
-        }
-        if (includeDrafts) {
-            statuses.add(ContentStatus.DRAFT.getTypeAsInt());
-        }
-        if(includeWaitingForApproval){
-            statuses.add(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
-        }
-        if(showArchived){
-            statuses.add(ContentStatus.ARCHIVED.getTypeAsInt());
-
-        }
-        parameters.put("status", statuses);
+        parameters.put("status", getContentStatuses());
         query.append(" and content.ContentId = associations.ContentId");
 
         if (associatedId != null) {
@@ -172,7 +157,7 @@ public class ContentQuery {
         } else if (pathElementIds != null) {
             for (int i = 0; i < pathElementIds.size(); i++) {
                 ContentIdentifier pathElementId = pathElementIds.get(i);
-                                String key = "pathelement".concat(String.valueOf(i));
+                String key = "pathelement".concat(String.valueOf(i));
                 if (i == 0) {
                     query.append(" and (associations.Path like :").append(key);
                 } else {
@@ -273,13 +258,7 @@ public class ContentQuery {
 
         // Fetch archived pages if specified
         query.append(" and content.VisibilityStatus in (:VisibilityStatus)");
-        if (showExpired) {
-            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE.statusId, ContentVisibilityStatus.ARCHIVED.statusId, ContentVisibilityStatus.EXPIRED.statusId));
-        } else if (showArchived) {
-            parameters.put("VisibilityStatus", asList(ContentVisibilityStatus.ACTIVE.statusId, ContentVisibilityStatus.ARCHIVED.statusId));
-        } else {
-            parameters.put("VisibilityStatus", ContentVisibilityStatus.ACTIVE.statusId);
-        }
+        parameters.put("VisibilityStatus", getVisibilityStatuses());
 
         if (owner != null) {
             query.append(" and content.Owner in (:ownerunit)");
@@ -447,6 +426,40 @@ public class ContentQuery {
         }
 
         return new QueryWithParameters(query.toString(), parameters);
+    }
+
+    private List<Integer> getContentStatuses() {
+        List<Integer> statuses = new ArrayList<>(5);
+        statuses.add(ContentStatus.PUBLISHED.getTypeAsInt());
+        if(onHearingFor != null) {
+            statuses.add(ContentStatus.HEARING.getTypeAsInt());
+        }
+        if (includeDrafts) {
+            statuses.add(ContentStatus.DRAFT.getTypeAsInt());
+        }
+        if(includeWaitingForApproval){
+            statuses.add(ContentStatus.WAITING_FOR_APPROVAL.getTypeAsInt());
+        }
+        if(showArchived){
+            statuses.add(ContentStatus.ARCHIVED.getTypeAsInt());
+
+        }
+        return statuses;
+    }
+
+    private List<Integer> getVisibilityStatuses() {
+        List<Integer> visibilityStatuses = new ArrayList<>(4);
+        visibilityStatuses.add(ContentVisibilityStatus.ACTIVE.statusId);
+        if (showExpired) {
+            visibilityStatuses.add(ContentVisibilityStatus.EXPIRED.statusId);
+        }
+        if (showArchived) {
+            visibilityStatuses.add(ContentVisibilityStatus.ARCHIVED.statusId);
+        }
+        if(includeWaitingForApproval){
+            visibilityStatuses.add(ContentVisibilityStatus.WAITING.statusId);
+        }
+        return visibilityStatuses;
     }
 
     //  Setter methods only
