@@ -15,6 +15,7 @@ public class SearchResponse {
     private Map<String, Collection<FacetResult>> facets;
     private final String ALL_DOCUMENTS_GROUPNAME = "all";
     private String debugInformation;
+    private List<AbstractMap.SimpleEntry> collatedSuggestions;
 
     public SearchResponse(SearchQuery query, long numberOfHits, int queryTime, List<SearchResult> searchResults) {
         this.query = query;
@@ -29,6 +30,14 @@ public class SearchResponse {
         this.numberOfHits = matches;
         this.queryTime = queryTime;
         this.groupResultResponses = groupResultResponses;
+    }
+
+    public List<AbstractMap.SimpleEntry> getCollatedSuggestions() {
+        return collatedSuggestions;
+    }
+
+    public void setCollatedSuggestions(List<AbstractMap.SimpleEntry> collatedSuggestions) {
+        this.collatedSuggestions = collatedSuggestions;
     }
 
     public Number getNumberOfHits() {

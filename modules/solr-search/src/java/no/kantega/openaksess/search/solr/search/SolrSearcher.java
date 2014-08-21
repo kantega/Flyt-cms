@@ -28,13 +28,14 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.regex.Pattern;
 
+import static java.util.AbstractMap.SimpleEntry;
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
 
 @Component
 public class SolrSearcher implements Searcher {
-    private final Logger log  = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${search.boostByPublishDateQuery:recip(ms(NOW/HOUR,publishDate),3.16e-11,1,1)}")
     private String boostByPublishDateQuery;
@@ -83,11 +84,33 @@ public class SolrSearcher implements Searcher {
 
         addFacetResults(searchResponse, queryResponse);
 
-        if(includeDebugInfo){
+        addCollatedSuggestions(searchResponse, queryResponse);
+
+
+        if (includeDebugInfo) {
             addDebugInfo(searchResponse, queryResponse);
         }
 
         return searchResponse;
+    }
+
+    private void addCollatedSuggestions(SearchResponse search, QueryResponse response) {
+
+        List<SpellCheckResponse.Collation> collations = response.getSpellCheckResponse().getCollatedResults();
+
+
+        List<SimpleEntry> collatedSuggestions = new ArrayList<>();
+
+        if (collations != null) {
+            for (SpellCheckResponse.Collation collation : collations) {
+                String term = collation.getCollationQueryString();
+                int hits = (int) collation.getNumberOfHits();
+                SimpleEntry entry = new SimpleEntry(term, hits);
+                collatedSuggestions.add(entry);
+            }
+        }
+
+        search.setCollatedSuggestions(collatedSuggestions);
     }
 
     private SearchResponse createGroupSearchResponse(SearchQuery query, QueryResponse queryResponse) {
@@ -121,6 +144,19 @@ public class SolrSearcher implements Searcher {
         solrQuery.setRows(resultsPerPage);
         solrQuery.setStart(query.getOffset() + query.getPageNumber() * resultsPerPage);
         solrQuery.set("spellcheck", "on");
+        solrQuery.set("spellcheck.alternativeTermCount", "5");
+        solrQuery.set("spellcheck.maxResultsForSuggest", "10");
+
+        if (query.isUseCollatedSuggestions()) {
+
+            solrQuery.set("spellcheck.alternativeTermCount", "10");
+            solrQuery.set("spellcheck.collate", "true");
+            solrQuery.set("spellcheck.maxCollations", "5");
+            solrQuery.set("spellcheck.maxCollationTries", "1000");
+            solrQuery.set("spellcheck.collateExtendedResults", "true");
+            solrQuery.set("spellcheck.maxResultsForSuggest", "10");
+        }
+
 
         setHighlighting(query, solrQuery);
 

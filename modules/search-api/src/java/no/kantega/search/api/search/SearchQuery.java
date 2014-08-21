@@ -36,6 +36,7 @@ public class SearchQuery {
     private List<String> resultFields = Collections.emptyList();
     private String sortField = null;
     private SORT_ORDER sortOrder = SORT_ORDER.asc;
+    private boolean useCollatedSuggestions = false;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -74,12 +75,29 @@ public class SearchQuery {
         this.originalQuery = originalQuery.trim();
     }
 
+
+    public boolean isUseCollatedSuggestions() {
+        return useCollatedSuggestions;
+    }
+
+    public void setUseCollatedSuggestions(boolean useCollatedSuggestions) {
+        this.useCollatedSuggestions = useCollatedSuggestions;
+    }
+
     /**
      * @return the filter queries to apply when executing the query.
      */
     public List<String> getFilterQueries() {
         if(filterQueries == null) return Collections.emptyList();
         return filterQueries;
+    }
+
+    /**
+     * Set filter queries
+     * @param filterQueries
+     */
+    public void setFilterQueries(List<String> filterQueries) {
+        this.filterQueries = filterQueries;
     }
 
     /**
