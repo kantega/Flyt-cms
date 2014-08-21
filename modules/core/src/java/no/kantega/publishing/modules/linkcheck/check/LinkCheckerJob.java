@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
@@ -85,6 +86,27 @@ public class LinkCheckerJob implements InitializingBean {
 
     @Autowired
     private MultimediaAO multimediaAO;
+    private HttpClientBuilder httpClientBuilder;
+
+    @PostConstruct
+    public void init() {
+        if(isNotBlank(proxyHost)) {
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+
+            httpClientBuilder = HttpClients.custom()
+                    .setProxy(proxy);
+
+            if(isNotBlank(proxyUser)) {
+                CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyUser, proxyPassword));
+                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+            }
+        } else {
+            httpClientBuilder = HttpClients.custom()
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
+        }
+    }
 
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
@@ -97,61 +119,49 @@ public class LinkCheckerJob implements InitializingBean {
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }
-        try (CloseableHttpClient client = getHttpClient()){
-            Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
-            SearchTerm term = new NotCheckedSinceTerm(week);
+        Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
+        SearchTerm term = new NotCheckedSinceTerm(week);
 
-            int noLinks = linkDao.getNumberOfLinks();
-            int maxLinksPerDay = 1000;
-            if (noLinks > 7*maxLinksPerDay) {
-                maxLinksPerDay = (noLinks/7) + 100;
-            }
+        int noLinks = linkDao.getNumberOfLinks();
+        int maxLinksPerDay = 1000;
+        if (noLinks > 7*maxLinksPerDay) {
+            maxLinksPerDay = (noLinks/7) + 100;
+        }
 
-            log.debug("Found {} total links in database", noLinks);
+        log.debug("Found {} total links in database", noLinks);
 
-            term.setMaxResults(maxLinksPerDay);
+        term.setMaxResults(maxLinksPerDay);
 
-            final Counter linkCounter = new Counter();
+        final Counter linkCounter = new Counter();
 
-            long start = System.currentTimeMillis();
-            linkDao.doForEachLink(term, new LinkHandler() {
+        long start = System.currentTimeMillis();
+        linkDao.doForEachLink(term, new LinkHandler() {
 
-                public void handleLink(int id, String link, LinkOccurrence occurrence) {
+            public void handleLink(int id, String link, LinkOccurrence occurrence) {
+                try (CloseableHttpClient client = getHttpClient()){
+
                     if(link.startsWith("http")) {
                         checkRemoteUrl(link, occurrence, client);
                     } else if(link.startsWith(Aksess.VAR_WEB)) {
                         checkInternalLink(link, occurrence, client);
                     }
-                    linkCounter.increment();
+                } catch (IOException e) {
+                    log.error("Error with HttpClient", e);
                 }
-            });
-            log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
-        } catch (IOException e) {
-            log.error("Error with HttpClient", e);
-        }
+                linkCounter.increment();
+
+            }
+        });
+        log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
+
     }
 
     private CloseableHttpClient getHttpClient() {
-        HttpClientBuilder httpClientBuilder = HttpClients.custom()
-                .setDefaultRequestConfig(RequestConfig.custom()
-                        .setConnectTimeout(CONNECTION_TIMEOUT).build())
-                ;
-        if(isNotBlank(proxyHost)) {
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-
-            httpClientBuilder = HttpClients.custom()
-                    .setProxy(proxy);
-
-            if(isNotBlank(proxyUser)) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyUser, proxyPassword));
-                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-            }
-        }
         return httpClientBuilder.build();
     }
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, HttpClient client) {
+        log.debug("Checking internal url {}", link);
         if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
             checkContent(link, occurrence, client);
 
@@ -292,6 +302,7 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkRemoteUrl(String link, LinkOccurrence occurrence, HttpClient client) {
+        log.debug("Checking remote url {}", link);
         HttpGet get;
         try {
             get = new HttpGet(link);
@@ -304,8 +315,10 @@ public class LinkCheckerJob implements InitializingBean {
         int status = CheckStatus.OK;
 
         try {
+            log.debug("Checking remote url {}, before client.execute(get)", link);
             HttpResponse response = client.execute(get);
             httpStatus = response.getStatusLine().getStatusCode();
+            log.debug("Checking remote url {}, after client.execute(get), status: {}", link, httpStatus);
 
             if (httpStatus != HttpStatus.SC_OK && httpStatus != HttpStatus.SC_UNAUTHORIZED && httpStatus != HttpStatus.SC_MULTIPLE_CHOICES && httpStatus != HttpStatus.SC_MOVED_TEMPORARILY && httpStatus != HttpStatus.SC_TEMPORARY_REDIRECT) {
                 status = CheckStatus.HTTP_NOT_200;

@@ -61,43 +61,44 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
 
-                final PreparedStatement checkLinkStatement = connection.prepareStatement("SELECT Id from link where url=?");
+                try (final PreparedStatement checkLinkStatement = connection.prepareStatement("SELECT Id from link where url=?");
 
-                final PreparedStatement checkOccurrenceStatementAttribute = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName=?");
+                     final PreparedStatement checkOccurrenceStatementAttribute = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName=?");
 
-                final PreparedStatement checkOccurrenceStatement = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName IS NULL");
+                     final PreparedStatement checkOccurrenceStatement = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName IS NULL");
 
-                final PreparedStatement insLinkStatement = connection.prepareStatement("INSERT INTO link (url, firstfound, timeschecked) VALUES (?,?,0)", new String[] {"Id"});
+                     final PreparedStatement insLinkStatement = connection.prepareStatement("INSERT INTO link (url, firstfound, timeschecked) VALUES (?,?,0)", new String[]{"Id"});
 
-                final PreparedStatement insOccurrenceStatement = connection.prepareStatement("INSERT into linkoccurrence (LinkId, ContentId, AttributeName) VALUES (?, ?, ?) ");
+                     final PreparedStatement insOccurrenceStatement = connection.prepareStatement("INSERT into linkoccurrence (LinkId, ContentId, AttributeName) VALUES (?, ?, ?) ")) {
 
 
-                emitter.emittLinks(new no.kantega.publishing.modules.linkcheck.crawl.LinkHandler() {
-                    public void contentLinkFound(Content content, String link) {
-                        log.debug("Contentlink found {}", link);
-                        try {
-                            int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
+                    emitter.emittLinks(new no.kantega.publishing.modules.linkcheck.crawl.LinkHandler() {
+                        public void contentLinkFound(Content content, String link) {
+                            log.debug("Contentlink found {}", link);
+                            try {
+                                int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
 
-                            checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatement, insOccurrenceStatement, null);
+                                checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatement, insOccurrenceStatement, null);
 
-                        } catch (SQLException e) {
-                            log.error("Error inserting link occurrence", e);
+                            } catch (SQLException e) {
+                                log.error("Error inserting link occurrence", e);
+                            }
                         }
-                    }
 
-                    public void attributeLinkFound(Content content, String link, String attributeName) {
-                        log.debug("Attributelink for {} found {}", attributeName, link);
-                        try {
-                            int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
-                            checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatementAttribute, insOccurrenceStatement, attributeName);
+                        public void attributeLinkFound(Content content, String link, String attributeName) {
+                            log.debug("Attributelink for {} found {}", attributeName, link);
+                            try {
+                                int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
+                                checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatementAttribute, insOccurrenceStatement, attributeName);
 
-                        } catch (SQLException e) {
-                            log.error("Error inserting link occurrence", e);
+                            } catch (SQLException e) {
+                                log.error("Error inserting link occurrence", e);
+                            }
                         }
-                    }
-                });
-                log.info("Done emitting links");
-                return null;
+                    });
+                    log.info("Done emitting links");
+                    return null;
+                }
             }
         });
     }
@@ -113,27 +114,26 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                PreparedStatement p = connection.prepareStatement(query);
-
+                try(PreparedStatement p = connection.prepareStatement(query);
                 PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?");
+                ResultSet rs = p.executeQuery()) {
 
-                ResultSet rs = p.executeQuery();
+                    while (rs.next()) {
+                        int id = rs.getInt("Id");
+                        String url = rs.getString("url");
+                        log.debug("Checking url {}", url);
+                        LinkOccurrence occurrence = new LinkOccurrence();
+                        handler.handleLink(id, url, occurrence);
 
-                while(rs.next()) {
-                    int id = rs.getInt("Id");
-                    String url = rs.getString("url");
-                    log.debug("Checking url {}", url);
-                    LinkOccurrence occurrence = new LinkOccurrence();
-                    handler.handleLink(id, url, occurrence);
+                        if (occurrence.getStatus() != -1) {
+                            updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+                            updateStatement.setInt(2, occurrence.getStatus());
+                            updateStatement.setInt(3, occurrence.getHttpStatus());
+                            updateStatement.setInt(4, id);
+                            updateStatement.executeUpdate();
+                        }
 
-                    if(occurrence.getStatus() != -1) {
-                        updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-                        updateStatement.setInt(2, occurrence.getStatus());
-                        updateStatement.setInt(3, occurrence.getHttpStatus());
-                        updateStatement.setInt(4, id);
-                        updateStatement.executeUpdate();
                     }
-
                 }
                 return null;
             }
@@ -145,9 +145,9 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      */
     public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sort) {
         contentIdHelper.assureContentIdAndAssociationIdSet(parent);
-        String query = brokenLinkBasisQuery;
-        query += " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)";
-        query += getDefaultOrderByClause();
+        String query = brokenLinkBasisQuery
+            + " AND linkoccurrence.ContentId IN (SELECT ContentId FROM associations WHERE Path LIKE ? OR UniqueId = ?)"
+            + getDefaultOrderByClause();
         int associationId = parent.getAssociationId();
         Object[] args = {"%/" + associationId + "/%", associationId};
         return findMatchingLinkOccurrences(query, args);
@@ -157,8 +157,8 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see LinkDao#getAllBrokenLinks(String)
      */
     public List<LinkOccurrence> getAllBrokenLinks(String sortBy) {
-        String query = brokenLinkBasisQuery;
-        query += getOrderByClause("");
+        String query = brokenLinkBasisQuery
+            + getOrderByClause("");
         Object[] args = {};
         return findMatchingLinkOccurrences(query, args);
     }
@@ -194,18 +194,18 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         log.debug("Inserting link {}", link);
         // Check if link is registred, if not add the link.
         checkLinkStatement.setString(1, link);
-        ResultSet rs = checkLinkStatement.executeQuery();
         int linkId;
-        if(!rs.next()) {
-            insLinkStatement.setString(1, link);
-            insLinkStatement.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
-            insLinkStatement.executeUpdate();
-            ResultSet keys = insLinkStatement.getGeneratedKeys();
-            keys.next();
-            linkId = keys.getInt(1);
-        } else {
-            linkId  = rs.getInt(1);
-        }
+        try(ResultSet rs = checkLinkStatement.executeQuery()){
+            if(!rs.next()) {
+                insLinkStatement.setString(1, link);
+                insLinkStatement.setTimestamp(2, new Timestamp(new java.util.Date().getTime()));
+                insLinkStatement.executeUpdate();
+                ResultSet keys = insLinkStatement.getGeneratedKeys();
+                keys.next();
+                linkId = keys.getInt(1);
+            } else {
+                linkId  = rs.getInt(1);
+            }}
         return linkId;
     }
 
@@ -218,13 +218,14 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
             checkOccurrenceStatement.setString(3, attributeName);
         }
 
-        ResultSet rs = checkOccurrenceStatement.executeQuery();
+        try(ResultSet rs = checkOccurrenceStatement.executeQuery()) {
 
-        if(!rs.next()) {
-            insOccurrenceStatement.setInt(1, linkId);
-            insOccurrenceStatement.setInt(2, content.getId());
-            insOccurrenceStatement.setString(3, attributeName);
-            insOccurrenceStatement.executeUpdate();
+            if (!rs.next()) {
+                insOccurrenceStatement.setInt(1, linkId);
+                insOccurrenceStatement.setInt(2, content.getId());
+                insOccurrenceStatement.setString(3, attributeName);
+                insOccurrenceStatement.executeUpdate();
+            }
         }
     }
 
