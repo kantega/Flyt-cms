@@ -201,7 +201,9 @@ public class ContentManagementService {
         EditContentHelper.updateAttributesFromTemplate(content, parameters.getDefaultValues());
 
         // Kjør plugins
-        contentNotifier.contentCreated(new ContentEvent().setContent(content));
+        contentNotifier.contentCreated(new ContentEvent()
+                .setContent(content)
+                .setUser(securitySession.getUser()));
 
         return content;
     }
@@ -403,7 +405,9 @@ public class ContentManagementService {
             expireHearing(content);
         }
 
-        contentNotifier.beforeContentSave(new ContentEvent().setContent(content));
+        contentNotifier.beforeContentSave(new ContentEvent()
+                .setContent(content)
+                .setUser(securitySession.getUser()));
 
         Content c = contentAO.checkInContent(content, newStatus);
 
@@ -411,7 +415,9 @@ public class ContentManagementService {
             saveHearing(content);
         }
 
-        ContentEvent event = new ContentEvent().setContent(c);
+        ContentEvent event = new ContentEvent()
+                .setContent(c)
+                .setUser(securitySession.getUser());
         contentNotifier.contentSaved(event);
 
         if (isNewContent) {
@@ -502,7 +508,9 @@ public class ContentManagementService {
 
         newContent.setAssociations(Collections.singletonList(association));
 
-        contentNotifier.contentCreated(new ContentEvent().setContent(newContent));
+        contentNotifier.contentCreated(new ContentEvent()
+                .setContent(newContent)
+                .setUser(securitySession.getUser()));
 
         Content content = checkInContent(newContent, sourceContent.getStatus());
         AttachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
@@ -571,7 +579,10 @@ public class ContentManagementService {
     public void setContentVisibilityStatus(Content content, ContentVisibilityStatus newVisibilityStatus) {
         contentAO.setContentVisibilityStatus(content.getId(), newVisibilityStatus);
 
-        ContentEvent event = new ContentEvent().setContent(content);
+        ContentEvent event = new ContentEvent()
+                .setContent(content)
+                .setUser(securitySession.getUser());
+
         if (newVisibilityStatus == ContentVisibilityStatus.ARCHIVED || newVisibilityStatus == ContentVisibilityStatus.EXPIRED) {
             contentNotifier.contentExpired(event);
         } else if (newVisibilityStatus == ContentVisibilityStatus.ACTIVE) {
@@ -639,7 +650,10 @@ public class ContentManagementService {
         eventLog.log(securitySession, request, event, c.getTitle(), c);
         Content content = contentAO.setContentStatus(cid, newStatus, newPublishDate, securitySession.getUser().getId());
 
-        ContentEvent contentEvent = new ContentEvent().setContent(content);
+        ContentEvent contentEvent = new ContentEvent()
+                .setContent(content)
+                .setUser(securitySession.getUser());
+
         if (newStatus == ContentStatus.PUBLISHED && content.getVisibilityStatus() == ContentVisibilityStatus.ACTIVE && ! hasBeenPublished) {
             contentNotifier.newContentPublished(contentEvent);
         }
@@ -674,14 +688,19 @@ public class ContentManagementService {
                     title = c.getTitle();
                 }
 
-                contentNotifier.beforeContentDelete(new ContentEvent().setContent(c).setCanDelete(true));
+                contentNotifier.beforeContentDelete(new ContentEvent()
+                        .setContent(c)
+                        .setCanDelete(true)
+                        .setUser(securitySession.getUser()));
 
                 contentAO.deleteContent(id);
                 if (title != null) {
                     eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
                 }
 
-                contentNotifier.contentDeleted(new ContentEvent().setContent(c));
+                contentNotifier.contentDeleted(new ContentEvent()
+                        .setContent(c)
+                        .setUser(securitySession.getUser()));
 
 
             }
@@ -1125,7 +1144,11 @@ public class ContentManagementService {
      */
     public void setAssociationsPriority(List<Association> associations) throws SystemException {
         AssociationAO.setAssociationsPriority(associations);
-        contentNotifier.setAssociationsPriority(new ContentEvent());
+        for (Association association : associations) {
+            contentNotifier.setAssociationsPriority(new ContentEvent()
+                    .setAssociation(association)
+                    .setUser(securitySession.getUser()));
+        }
     }
 
     /**
@@ -1150,7 +1173,9 @@ public class ContentManagementService {
      */
     public void copyAssociations(Association source, Association target, AssociationCategory category, boolean copyChildren) throws SystemException {
         AssociationAO.copyAssociations(source, target, category, copyChildren);
-        contentNotifier.associationCopied(new ContentEvent().setAssociation(source));
+        contentNotifier.associationCopied(new ContentEvent()
+                .setAssociation(source)
+                .setUser(securitySession.getUser()));
     }
 
 
@@ -1162,7 +1187,9 @@ public class ContentManagementService {
      */
     public void addAssociation(Association association) throws SystemException {
         AssociationAO.addAssociation(association);
-        contentNotifier.associationAdded(new ContentEvent().setAssociation(association));
+        contentNotifier.associationAdded(new ContentEvent()
+                .setAssociation(association)
+                .setUser(securitySession.getUser()));
     }
 
 
@@ -1216,11 +1243,15 @@ public class ContentManagementService {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (Content c : pagesToBeDeleted) {
                 eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
-                contentNotifier.contentDeleted(new ContentEvent().setContent(c));
+                contentNotifier.contentDeleted(new ContentEvent()
+                        .setContent(c)
+                        .setUser(securitySession.getUser()));
             }
 
             for (Association a : associations) {
-                contentNotifier.associationDeleted(new ContentEvent().setAssociation(a));
+                contentNotifier.associationDeleted(new ContentEvent()
+                        .setAssociation(a)
+                        .setUser(securitySession.getUser()));
             }
 
         }
@@ -1261,11 +1292,14 @@ public class ContentManagementService {
             }
         }
 
-        contentNotifier.beforeAssociationUpdate(new ContentEvent().setAssociation(association));
+        ContentEvent event = new ContentEvent()
+                .setAssociation(association)
+                .setUser(securitySession.getUser());
+        contentNotifier.beforeAssociationUpdate(event);
 
         AssociationAO.modifyAssociation(association, true, true);
 
-        contentNotifier.associationUpdated(new ContentEvent().setAssociation(association));
+        contentNotifier.associationUpdated(event);
     }
 
     /**
@@ -1365,7 +1399,9 @@ public class ContentManagementService {
         int id = AttachmentAO.setAttachment(attachment);
         attachment.setId(id);
 
-        contentNotifier.attachmentUpdated(new ContentEvent().setAttachment(attachment));
+        contentNotifier.attachmentUpdated(new ContentEvent()
+                .setAttachment(attachment)
+                .setUser(securitySession.getUser()));
 
         return attachment.getId();
     }

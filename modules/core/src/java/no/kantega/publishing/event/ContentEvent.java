@@ -3,6 +3,7 @@ package no.kantega.publishing.event;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.security.data.User;
 
 import java.util.Map;
 
@@ -17,6 +18,7 @@ public class ContentEvent {
     private Attachment attachment;
     private Map<String, Object> model;
     private boolean canDelete;
+    private User user;
 
     public Content getContent() {
         return content;
@@ -61,5 +63,14 @@ public class ContentEvent {
     public ContentEvent setCanDelete(boolean canDelete) {
         this.canDelete = canDelete;
         return this;
+    }
+
+    public ContentEvent setUser(User user) {
+        this.user = user;
+        return this;
+    }
+
+    public User getUser() {
+        return user;
     }
 }

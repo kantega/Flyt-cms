@@ -146,7 +146,9 @@ public class AddContentAction extends AbstractController {
         model.put("displayAddAssociation", config.getBoolean("admin.addassociation.display", displayAddAssociation));
 
         // Run plugins
-        contentEventListener.beforeSelectTemplate(new ContentEvent().setModel(model));
+        contentEventListener.beforeSelectTemplate(new ContentEvent()
+                .setModel(model)
+                .setUser(securitySession.getUser()));
 
         // Show page where user selects template etc
         return new ModelAndView(view, model);

@@ -160,7 +160,10 @@ public class ConfirmCopyPasteContentAction implements Controller {
             model.put("allowCrossPublish", true);
 
             // Run plugins
-            contentEventListener.beforeConfirmCopyPasteContent(new ContentEvent().setContent(selectedContent).setModel(model));
+            contentEventListener.beforeConfirmCopyPasteContent(new ContentEvent()
+                    .setContent(selectedContent)
+                    .setModel(model)
+                    .setUser(securitySession.getUser()));
 
             return new ModelAndView(view, model);
         }
