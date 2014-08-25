@@ -54,43 +54,43 @@ public class AttachmentAO {
 
             if (attachmentExists) {
                 if (data != null) {
-                    PreparedStatement st = c.prepareStatement("update attachments set ContentId = ?, Filename = ?, Data = ?, LastModified = ?, FileSize = ? where Id = ?");
-                    st.setInt(1, attachment.getContentId());
-                    st.setString(2, attachment.getFilename());
-                    st.setBinaryStream(3, new ByteArrayInputStream(data), (int)data.length);
-                    st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
-                    st.setInt(5, attachment.getSize());
-                    st.setInt(6, attachment.getId());
-                    st.execute();
-                    st.close();
+                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ?, Filename = ?, Data = ?, LastModified = ?, FileSize = ? where Id = ?")) {
+                        st.setInt(1, attachment.getContentId());
+                        st.setString(2, attachment.getFilename());
+                        st.setBinaryStream(3, new ByteArrayInputStream(data), (int) data.length);
+                        st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
+                        st.setInt(5, attachment.getSize());
+                        st.setInt(6, attachment.getId());
+                        st.execute();
+                    }
                 } else {
                     /*
                      * Content id of attachment can not be set before after content is saved in database.
                      * Update contentid now that content id has been set
                      */
-                    PreparedStatement st = c.prepareStatement("update attachments set ContentId = ? where Id = ?");
-                    st.setInt(1, attachment.getContentId());
-                    st.setInt(2, attachment.getId());
-                    st.execute();
-                    st.close();
+                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ? where Id = ?")) {
+                        st.setInt(1, attachment.getContentId());
+                        st.setInt(2, attachment.getId());
+                        st.execute();
+                    }
                 }
             } else {
                 if (data != null) {
-                    PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize) values(?,?,?,?,?,?)", new String[] {"ID"});
-                    st.setInt(1, attachment.getContentId());
-                    st.setInt(2, attachment.getLanguage());
-                    st.setString(3, attachment.getFilename());
-                    st.setBinaryStream(4, new ByteArrayInputStream(data), data.length);
-                    st.setTimestamp(5, new java.sql.Timestamp(new Date().getTime()));
-                    st.setInt(6, attachment.getSize());
-                    st.execute();
+                    try(PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize) values(?,?,?,?,?,?)", new String[] {"ID"})) {
+                        st.setInt(1, attachment.getContentId());
+                        st.setInt(2, attachment.getLanguage());
+                        st.setString(3, attachment.getFilename());
+                        st.setBinaryStream(4, new ByteArrayInputStream(data), data.length);
+                        st.setTimestamp(5, new java.sql.Timestamp(new Date().getTime()));
+                        st.setInt(6, attachment.getSize());
+                        st.execute();
 
-                    ResultSet rs = st.getGeneratedKeys();
-                    if (rs.next()) {
-                        attachment.setId(rs.getInt(1));
+                        try(ResultSet rs = st.getGeneratedKeys()) {
+                            if (rs.next()) {
+                                attachment.setId(rs.getInt(1));
+                            }
+                        }
                     }
-                    rs.close();
-                    st.close();
                 }
             }
 
@@ -112,11 +112,13 @@ public class AttachmentAO {
     private static boolean doesAttachmentAlreadyExist(Attachment attachment, Connection c) throws SQLException {
         boolean attachmentExists = false;
         if (attachment.getId() != -1) {
-            PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?");
-            st.setInt(1, attachment.getId());
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                attachmentExists = true;
+            try(PreparedStatement st = c.prepareStatement("select Id from attachments where Id = ?")){
+                st.setInt(1, attachment.getId());
+                try(ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        attachmentExists = true;
+                    }
+                }
             }
         }
         return attachmentExists;
@@ -124,11 +126,10 @@ public class AttachmentAO {
 
     public static void deleteAttachment(int id) throws SystemException {
         Attachment attachment = getAttachment(id);
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            PreparedStatement st = c.prepareStatement("delete from attachments where Id = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("delete from attachments where Id = ?")) {
             st.setInt(1, id);
             st.execute();
-            st.close();
             contentNotifier.attachmentDeleted(new ContentEvent().setAttachment(attachment));
         } catch (SQLException e) {
             throw new SystemException("SQL feil ved sletting av vedlegg", e);
@@ -140,16 +141,15 @@ public class AttachmentAO {
 
         String query = "select " + DB_COLS + " from attachments where Id = ?";
 
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            PreparedStatement ps = c.prepareStatement(query);
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement ps = c.prepareStatement(query)) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                return null;
+            try(ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return null;
+                }
+                return getAttachmentFromRS(rs);
             }
-            Attachment file = getAttachmentFromRS(rs);
-            rs.close();
-            return file;
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }
@@ -157,15 +157,16 @@ public class AttachmentAO {
 
     public static void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
         String query = "select Data from attachments where Id = ?";
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            PreparedStatement ps = c.prepareStatement(query);
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement ps = c.prepareStatement(query)) {
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
-            if (!rs.next()) {
-                return;
+            try(ResultSet rs = ps.executeQuery()) {
+                if (!rs.next()) {
+                    return;
+                }
+                Blob blob = rs.getBlob("Data");
+                ish.handleInputStream(blob.getBinaryStream());
             }
-            Blob blob = rs.getBlob("Data");
-            ish.handleInputStream(blob.getBinaryStream());
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         } catch (IOException e) {
@@ -176,19 +177,19 @@ public class AttachmentAO {
 
     public static List<Attachment> getAttachmentList(ContentIdentifier cid) throws SystemException {
         List<Attachment> list = new ArrayList<>();
-        try (Connection c = dbConnectionFactory.getConnection()) {
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement ps = c.prepareStatement("select " + DB_COLS + " from attachments where ContentId = ?")) {
             if(contentIdHelper == null){
                 contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
             }
             contentIdHelper.assureContentIdAndAssociationIdSet(cid);
-            PreparedStatement ps = c.prepareStatement("select " + DB_COLS + " from attachments where ContentId = ?");
             ps.setInt(1, cid.getContentId());
-            ResultSet rs = ps.executeQuery();
-            while(rs.next()) {
-                Attachment mm = getAttachmentFromRS(rs);
-                list.add(mm);
+            try(ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Attachment mm = getAttachmentFromRS(rs);
+                    list.add(mm);
+                }
             }
-            rs.close();
             return list;
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
