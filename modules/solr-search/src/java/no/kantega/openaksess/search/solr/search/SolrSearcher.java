@@ -95,22 +95,23 @@ public class SolrSearcher implements Searcher {
     }
 
     private void addCollatedSuggestions(SearchResponse search, QueryResponse response) {
+        SpellCheckResponse spellCheckResponse = response.getSpellCheckResponse();
+        if (spellCheckResponse != null) {
+            List<SpellCheckResponse.Collation> collations = spellCheckResponse.getCollatedResults();
 
-        List<SpellCheckResponse.Collation> collations = response.getSpellCheckResponse().getCollatedResults();
+            List<SimpleEntry<String, Integer>> collatedSuggestions = new ArrayList<>();
 
-
-        List<SimpleEntry> collatedSuggestions = new ArrayList<>();
-
-        if (collations != null) {
-            for (SpellCheckResponse.Collation collation : collations) {
-                String term = collation.getCollationQueryString();
-                int hits = (int) collation.getNumberOfHits();
-                SimpleEntry entry = new SimpleEntry(term, hits);
-                collatedSuggestions.add(entry);
+            if (collations != null) {
+                for (SpellCheckResponse.Collation collation : collations) {
+                    String term = collation.getCollationQueryString();
+                    int hits = (int) collation.getNumberOfHits();
+                    SimpleEntry<String, Integer> entry = new SimpleEntry<>(term, hits);
+                    collatedSuggestions.add(entry);
+                }
             }
-        }
 
-        search.setCollatedSuggestions(collatedSuggestions);
+            search.setCollatedSuggestions(collatedSuggestions);
+        }
     }
 
     private SearchResponse createGroupSearchResponse(SearchQuery query, QueryResponse queryResponse) {
