@@ -25,10 +25,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Map;
 
 public class ContentRewriteFilter implements Filter {
     private ServletContext servletContext;
+    private Collection<ContentRewriter> contentRewriters;
 
     public void init(FilterConfig filterConfig) throws ServletException {
         this.servletContext = filterConfig.getServletContext();
@@ -58,17 +60,17 @@ public class ContentRewriteFilter implements Filter {
 
     private String rewrite(HttpServletRequest request, String content) {
         String out = content;
-        final WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-        if(wac != null) {
 
+        if(contentRewriters == null){
+            final WebApplicationContext wac = WebApplicationContextUtils.getWebApplicationContext(servletContext);
             final Map<String, ContentRewriter> map = wac.getBeansOfType(ContentRewriter.class);
-
-            for(ContentRewriter rewriter : map.values()) {
-                out = rewriter.rewriteContent(request, out);
-            }
-
-
+            contentRewriters = map.values();
         }
+
+        for(ContentRewriter rewriter : contentRewriters) {
+            out = rewriter.rewriteContent(request, out);
+        }
+
         return out;
     }
 

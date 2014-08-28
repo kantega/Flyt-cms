@@ -9,7 +9,7 @@ import java.util.List;
  *
  */
 public class DefaultMenuItem implements MenuItem {
-    private List<MenuItem> menuItems = new ArrayList<MenuItem>();
+    private List<MenuItem> menuItems = new ArrayList<>();
     private String href;
     private String label;
 
