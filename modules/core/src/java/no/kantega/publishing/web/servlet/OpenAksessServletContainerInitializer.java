@@ -59,7 +59,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
 
         FilterRegistration.Dynamic adminFilter = ctx.addFilter("AdminFilter", AdminFilter.class);
         if (adminFilter != null) {
-            adminFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*");
+            adminFilter.addMappingForUrlPatterns(dispatchRequests, false, "/admin/*", "/oap/admin/*");
         } else {
             log.warn("AdminFilter defined in web.xml, please rename or remove it!");
         }
