@@ -51,7 +51,7 @@
     </select>
 </div>
 <div class="buttonGroup">
-    <a href="#" onclick="openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, <%=maxitems%>, <%=attribute.getStartId(content)%>, true)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, '<%=maxitems%>', '<%=attribute.getStartId(content)%>','true', '<%=attribute.getContentTemplate()%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="add"><kantega:label key="aksess.button.add"/></span></a>
     <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+2)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
     <a href="#" onclick="openaksess.editcontext.moveId(document.myform.<%=fieldName%>, -1)" class="button" tabindex="<%=attribute.getTabIndex()+3%>"><span class="moveUp"><kantega:label key="aksess.button.moveup"/></span></a>
     <a href="#" onclick="openaksess.editcontext.moveId(document.myform.<%=fieldName%>, 1)" class="button" tabindex="<%=(attribute.getTabIndex()+4)%>"><span class="moveDown"><kantega:label key="aksess.button.movedown"/></span></a>
