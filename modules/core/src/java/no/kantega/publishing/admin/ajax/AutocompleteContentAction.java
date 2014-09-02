@@ -42,10 +42,14 @@ public class AutocompleteContentAction implements Controller {
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
         String title = request.getParameter("term");
+        String contentTemplateFilter = request.getParameter("contentTemplate");
 
         if (isNotBlank(title)) {
             ContentQuery query = new ContentQuery();
             query.setKeyword(title + '%');
+             if (contentTemplateFilter != null && !contentTemplateFilter.isEmpty() && contentTemplateFilter != "-1"){
+                query.setContentTemplate(contentTemplateFilter);
+            }
             ContentManagementService cms = new ContentManagementService(request);
 
             List<Content> pages = cms.getContentList(query, 100, new SortOrder(ContentProperty.TITLE, false));

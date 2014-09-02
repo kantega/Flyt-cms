@@ -151,10 +151,27 @@
                             <input type="hidden" name="url_associationId" id="url_associationId" value="">
                             <input type="text" name="url_associationIdtext" id="url_associationIdtext" onfocus="this.select()" value="<kantega:label key="aksess.selectcontent.search.hint"/>" class="fullWidth" maxlength="128">
                             <script type="text/javascript">
-                                $(document).ready(function() {
+
+                                function addParam(param, params){
+                                    if (params.length > 0){
+                                        params += "&"
+                                    } else params = "?";
+                                    params += param;
+                                    return params;
+                                }
+
+                               $(document).ready(function() {
+
+                                    var params = "";
+                                    var useContentId = "${selectContentId}";
+                                    var contentTemplate = "${contentTemplate}";
+
+                                    if (useContentId == "true") params = addParam("useContentId=true", params);
+                                    if (contentTemplate.length > 0) params = addParam("contentTemplate="+contentTemplate, params);
+
                                     $("#url_associationIdtext").oaAutocomplete({
                                         defaultValue: '<kantega:label key="aksess.selectcontent.search.hint"/>',
-                                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action<c:if test="${selectContentId}">?useContentId=true</c:if>",
+                                        source: "${pageContext.request.contextPath}/ajax/AutocompleteContent.action"+params,
                                         select: autocompleteCallback
                                     });
                                 });

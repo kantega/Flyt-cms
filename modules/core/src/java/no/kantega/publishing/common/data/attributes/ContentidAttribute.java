@@ -42,6 +42,7 @@ public class ContentidAttribute extends Attribute {
     protected boolean multiple = false;
     protected int maxitems = Integer.MAX_VALUE;
     protected String startId = "";
+    protected String contentTemplate = "-1";
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
@@ -59,6 +60,10 @@ public class ContentidAttribute extends Attribute {
             String startIdS = config.getAttribute("startid");
             if(startIdS != null && startIdS.trim().length() > 0) {
                 this.startId = startIdS;
+            }
+            String contentTemplateS = config.getAttribute("contenttemplate");
+            if(contentTemplateS != null && contentTemplateS.trim().length() > 0) {
+                this.contentTemplate = contentTemplateS;
             }
         }
     }
@@ -96,6 +101,11 @@ public class ContentidAttribute extends Attribute {
         }
         return start;
     }
+
+     public String getContentTemplate(){
+        return contentTemplate;
+    }
+
 
     public List<ContentIdentifier> getValueAsContentIdentifiers() {
         List<ContentIdentifier> cids = new ArrayList<>();

@@ -63,6 +63,6 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="#" onclick="openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, <%=attribute.getStartId(content)%>)" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+       <a href="#" onclick="openaksess.editcontext.selectContent(document.myform.<%=fieldName%>, 1, '<%=attribute.getStartId(content)%>', 'false', '<%=attribute.getContentTemplate()%>')" class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
     <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button" tabindex="<%=(attribute.getTabIndex()+1)%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

@@ -261,7 +261,7 @@ openaksess.editcontext = function()  {
         /*
          *  Popup vindu for selecting a page id
          */
-        selectContent : function (formElement, maxItems, startId, multiple) {
+        selectContent : function (formElement, maxItems, startId, multiple, contentTemplate) {
             var items = 0;
 
             if (arguments.length < 2) {
@@ -283,6 +283,9 @@ openaksess.editcontext = function()  {
                 var selectContentUrl = properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh() + "&startId=" + startId;
                 if(typeof multiple != "undefined" && multiple){
                     selectContentUrl += "&multiple="+multiple;
+                }
+                if(typeof contentTemplate != "undefined" && contentTemplate){
+                    selectContentUrl += "&contentTemplate="+contentTemplate;
                 }
                 openaksess.editcontext.focusField = formElement;
                 openaksess.editcontext.doInsertTag = false;
