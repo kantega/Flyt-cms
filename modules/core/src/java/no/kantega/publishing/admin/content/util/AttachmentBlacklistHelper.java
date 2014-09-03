@@ -56,7 +56,7 @@ public class AttachmentBlacklistHelper {
         if (blacklistedFileTypes != null) {
             for (String blacklistedFileType : blacklistedFileTypes) {
                 if (multipartFile.getOriginalFilename().endsWith("." + blacklistedFileType)) {
-                    log.debug( "The file type (" + multipartFile.getOriginalFilename() + ") is blacklisted.");
+                    log.debug( "The file type ({}) is blacklisted.", multipartFile.getOriginalFilename());
                     isBlacklisted = true;
                 }
             }
@@ -82,9 +82,7 @@ public class AttachmentBlacklistHelper {
      * @return String array of black-listed file suffixes.
      */
     public static String[] getBlacklistedFileTypes() {
-        String[] blacklistedFileTypes = Aksess.getConfiguration().getStrings("attachment.filetypes.blacklisted");
-
-        return blacklistedFileTypes;
+        return Aksess.getConfiguration().getStrings("attachment.filetypes.blacklisted");
     }
 
     /**
