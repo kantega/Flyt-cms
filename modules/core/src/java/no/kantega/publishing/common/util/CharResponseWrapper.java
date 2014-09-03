@@ -16,21 +16,15 @@
 
 package no.kantega.publishing.common.util;
 
-import no.kantega.commons.util.HttpHelper;
-import no.kantega.publishing.common.Aksess;
-
-import javax.servlet.http.HttpServletResponseWrapper;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.CharArrayWriter;
-import java.io.PrintWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Oct 28, 2008
- * Time: 3:50:47 PM
+ * HttpServletResponseWrapper for gathering responsebody and rewriting it in ContentRewriteFilter.
  */
 public class CharResponseWrapper extends HttpServletResponseWrapper {
     private CharArrayWriter output;
@@ -68,11 +62,8 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public boolean isWrapped() {
-        if (shouldWrap && contentType != null && (contentType.startsWith("text/html") || contentType.startsWith("text/xml"))) {
-            return true;
-        } else {
-            return false;
-        }
+        return shouldWrap && contentType != null
+                && (contentType.startsWith("text/html") || contentType.startsWith("text/xml"));
     }
 
     public String getContentType() {
