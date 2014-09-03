@@ -78,18 +78,20 @@ public class DatabaseCleanupJob {
         Calendar cal = new GregorianCalendar();
 
         cal.add(Calendar.DATE, -1);
-        PreparedStatement st = c.prepareStatement("delete from attachments where ContentId = -1 AND LastModified < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from attachments where ContentId = -1 AND LastModified < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void deleteOrphantMultimedia(Connection c) throws SQLException {
         Calendar cal = new GregorianCalendar();
         cal.add(Calendar.DATE, -1);
 
-        PreparedStatement st = c.prepareStatement("delete from multimedia where ContentId = -1 AND ParentId = -1 AND LastModified < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from multimedia where ContentId = -1 AND ParentId = -1 AND LastModified < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void deleteOldTrafficLogEntries(Connection c) throws SQLException {
@@ -98,9 +100,10 @@ public class DatabaseCleanupJob {
 
         log.info( "Deleting trafficlog older than " + Aksess.getTrafficLogMaxAge() + " months");
 
-        PreparedStatement st = c.prepareStatement("delete from trafficlog where Time < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from trafficlog where Time < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void deleteOldTransactionLocks(Connection c) throws SQLException {
@@ -108,16 +111,18 @@ public class DatabaseCleanupJob {
         cal.add(Calendar.DATE, -7);
         log.info( "Deleting transactionlocks older than 7 days");
 
-        PreparedStatement st = c.prepareStatement("delete from transactionlocks where TransactionTime < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from transactionlocks where TransactionTime < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void updateNumberOfViews(Connection c) throws SQLException {
         log.info( "Updating number of views based on trafficlog");
 
-        PreparedStatement st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId and trafficlog.IsSpider=0)");
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("update associations set NumberOfViews = (select count(*) from trafficlog where trafficlog.ContentId = associations.ContentId and trafficlog.SiteId = associations.SiteId and trafficlog.IsSpider=0)")) {
+            st.execute();
+        }
     }
 
     private void deleteOldEventLogEntries(Connection c) throws SQLException {
@@ -126,9 +131,10 @@ public class DatabaseCleanupJob {
 
         log.info( "Deleting event log entries older than " + Aksess.getEventLogMaxAge() + " months");
 
-        PreparedStatement st = c.prepareStatement("delete from eventlog where Time < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from eventlog where Time < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void deleteOldSearhlogEntries(Connection c) throws SQLException {
@@ -137,9 +143,10 @@ public class DatabaseCleanupJob {
 
         log.info( "Deleting search log entries older than 1 month");
 
-        PreparedStatement st = c.prepareStatement("delete from searchlog where Time < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from searchlog where Time < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void deleteOldItems(Connection c) throws SQLException {
@@ -148,38 +155,44 @@ public class DatabaseCleanupJob {
 
         log.info( "Deleting deleted items older than " + Aksess.getDeletedItemsMaxAge() + " months");
 
-        PreparedStatement st = c.prepareStatement("delete from deleteditems where DeletedDate < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from deleteditems where DeletedDate < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
     }
 
     private void removeDeletedAssociations(Connection c) throws SQLException {
-        PreparedStatement st = c.prepareStatement("delete from associations where IsDeleted = 1 and DeletedItemsId not in (select Id from deleteditems)");
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from associations where IsDeleted = 1 and DeletedItemsId not in (select Id from deleteditems)")) {
+            st.execute();
+        }
     }
 
     private void deletePagesWithNoAssociations(Connection c) throws SQLException {
-        PreparedStatement st = c.prepareStatement("select ContentId from content where ContentId not in (select ContentId from associations)");
-        ResultSet rs = st.executeQuery();
-        while (rs.next()) {
-            ContentIdentifier cid =  ContentIdentifier.fromContentId(rs.getInt("ContentId"));
-            String title = SQLHelper.getString(c, "select title from contentversion where contentId = ? and IsActive = 1", "title", new Object[]{cid.getContentId()});
-            log.info("Deleting page " + title + " because it has been in the trash can for over 1 month");
-            eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
+        try(PreparedStatement st = c.prepareStatement("select ContentId from content where ContentId not in (select ContentId from associations)")){
+            try(ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    ContentIdentifier cid = ContentIdentifier.fromContentId(rs.getInt("ContentId"));
+                    String title = SQLHelper.getString(c, "select title from contentversion where contentId = ? and IsActive = 1", "title", new Object[]{cid.getContentId()});
+                    log.info("Deleting page " + title + " because it has been in the trash can for over 1 month");
+                    eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
-            ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
-            contentAO.deleteContent(cid);
+                    ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
+                    contentAO.deleteContent(cid);
+                }
+            }
         }
     }
 
     private void deleteTopicContentMappingsForDeletedContent(Connection c) throws SQLException {
-        PreparedStatement st = c.prepareStatement("delete from ct2topic where ContentId not in (select ContentId from content)");
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from ct2topic where ContentId not in (select ContentId from content)")) {
+            st.execute();
+        }
     }
 
     private void removeLinksFromLinkChecker(Connection c) throws SQLException {
-        PreparedStatement st = c.prepareStatement("delete from link where Id not in (select distinct LinkId from linkoccurrence)");
-        st.executeUpdate();
+        try(PreparedStatement st = c.prepareStatement("delete from link where Id not in (select distinct LinkId from linkoccurrence)")) {
+            st.executeUpdate();
+        }
     }
 
     private void deleteOldXmlCacheEntries(Connection c) throws SQLException {
@@ -188,9 +201,10 @@ public class DatabaseCleanupJob {
 
         log.info( "Deleting Xmlcache entries older than " + Aksess.getXmlCacheMaxAge() + " months");
 
-        PreparedStatement st = c.prepareStatement("delete from xmlcache where LastUpdated < ?");
-        st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("delete from xmlcache where LastUpdated < ?")) {
+            st.setTimestamp(1, new java.sql.Timestamp(cal.getTime().getTime()));
+            st.execute();
+        }
 
     }
 
