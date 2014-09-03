@@ -1,12 +1,13 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
-<%@ page import="no.kantega.publishing.common.exception.ExceptionHandler,
-                 no.kantega.publishing.security.SecuritySession"%>
+<%@ page import="no.kantega.commons.util.URLHelper,
+                 no.kantega.publishing.common.exception.ExceptionHandler"%>
+<%@ page import="no.kantega.publishing.security.SecuritySession"%>
 <%@ page import="org.slf4j.Logger"%>
 <%@ page import="org.slf4j.LoggerFactory"%>
 <%@ page import="java.text.DateFormat"%>
 <%@ page import="java.text.SimpleDateFormat"%>
-<%@ page import="java.util.Date"%>
+<%@ page import="java.util.Date" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -34,6 +35,7 @@
     String details = handler.getDetails();
 
     DateFormat df = new SimpleDateFormat("yyyy.MM.dd.MM - HH:mm");
+    String timestamp = df.format(new Date());
 
     String ident = "";    String email = "";
     SecuritySession secSession = SecuritySession.getInstance(request);
@@ -41,7 +43,7 @@
         ident = secSession.getUser().getId();
         email = secSession.getUser().getEmail();
     }
-
+    String url = URLHelper.getRootURL(request) + URLHelper.getCurrentUrl(request);
 %>
 
 <kantega:section id="bodyclass">error</kantega:section>
@@ -55,26 +57,23 @@
             </h1>
             <div class="body">
                 <span class="label"><kantega:label key="aksess.error.label"/></span> <%=error%>
-                <% if (error.startsWith("System")) { %>
 
                 <form action="http://opensource.kantega.no/aksess/feedback/error" target="_new" method="post" name="errorreport">
                     <input type="hidden" name="product" value="Aksess">
-                    <input type="hidden" name="timestamp" value="<%=df.format(new Date())%>">
+                    <input type="hidden" name="timestamp" value="<%=timestamp%>">
                     <input type="hidden" name="error" value="<%=error%>">
                     <input type="hidden" name="details" value="<%=details%>">
                     <input type="hidden" name="ident" value="<%=ident%>">
                     <input type="hidden" name="email" value="<%=email%>">
-                    <input type="hidden" name="applicationUrl" value="<%=Aksess.getApplicationUrl()%>">
+                    <input type="hidden" name="applicationUrl" value="<%=url%>">
                     <input type="hidden" name="site" value="<%=request.getServerName()%>">
                     <input type="hidden" name="version" value="<%=Aksess.getVersion()%>">
                     <input type="hidden" name="release" value="<%= Aksess.getBuildRevision() %>">
                     <input type="submit" value="<kantega:label key="aksess.error.sendreport"/>">
                 </form>
-                <% } else { %>
                 <p class="goBack">
                     <a class="goBack" href="Javascript:history.back()"><kantega:label key="aksess.error.back"/></a>
                 </p>
-                <% } %>
             </div>
         </div>
         <div class="dialogBoxArrow"></div>

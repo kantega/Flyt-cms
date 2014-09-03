@@ -19,6 +19,9 @@ package no.kantega.publishing.common.exception;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.Aksess;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
 public class ExceptionHandler {
 
     private Throwable ex;
@@ -59,6 +62,8 @@ public class ExceptionHandler {
     }
 
     public String getDetails() {
-        return ex.toString();
+        StringWriter errors = new StringWriter();
+        ex.printStackTrace(new PrintWriter(errors));
+        return errors.toString();
     }
 }
