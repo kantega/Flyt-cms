@@ -44,7 +44,7 @@ public class ResourceLoaderEntityResolver implements EntityResolver {
         if (systemId != null) {
             Resource resource = resourceLoader.getResource(systemId);
             if (resource != null) {
-                log.debug("Got resource for {}: {}", systemId, resource);
+                log.debug("Got resource for {}: {}, with {}", systemId, resource, resourceLoader);
                 InputSource inputSource = new InputSource(resource.getInputStream());
                 inputSource.setSystemId(systemId);
                 return inputSource;
