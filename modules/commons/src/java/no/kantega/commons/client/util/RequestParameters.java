@@ -53,7 +53,7 @@ public class RequestParameters  {
     }
 
     public Map<String, String> getParametersAsMap() {
-        Map<String, String> param = new HashMap<String, String>();
+        Map<String, String> param = new HashMap<>();
 
         Enumeration parameterNames = request.getParameterNames();
         while(parameterNames.hasMoreElements()) {
@@ -203,10 +203,10 @@ public class RequestParameters  {
     }
 
     public List<MultipartFile> getFiles(String wantedname) {
-        List<MultipartFile> files = new ArrayList<MultipartFile>();
+        List<MultipartFile> files = new ArrayList<>();
 
         MultipartHttpServletRequest multipart = getMultipartHttpServletRequest();
-        if (request != null) {
+        if (request != null && multipart != null) {
             files = multipart.getFiles(wantedname);
         }
 
