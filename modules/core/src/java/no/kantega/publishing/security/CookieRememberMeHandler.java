@@ -32,6 +32,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
     private String contextPath;
     private final String invalidCookieValue = "invalid";
     private int TWO_WEEKS = 1209600;
+    private Pattern COOKIE_PATTERN = Pattern.compile("([^:]*):([^:]*):([^:]*)");
 
 
     public void afterPropertiesSet() {
@@ -67,8 +68,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
         }
 
         String s = new String(decodeBase64(rememberMeCookie.getValue().getBytes()));
-        Pattern pattern = Pattern.compile("([^:]*):([^:]*):([^:]*)");
-        Matcher matcher = pattern.matcher(s);
+        Matcher matcher = COOKIE_PATTERN.matcher(s);
         if (!matcher.matches()) {
             return null;
         }
