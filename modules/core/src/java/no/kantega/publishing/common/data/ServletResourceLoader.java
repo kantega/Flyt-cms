@@ -35,7 +35,7 @@ public class ServletResourceLoader extends DefaultResourceLoader implements Reso
     @Override
     protected Resource getResourceByPath(String name) {
         String lookupName = prefix == null ? name : getWithPrefix(name);
-        log.debug("Looking up {} by {}", name, lookupName);
+        log.debug("Looking up {} by {} with {}", name, lookupName, resourceLoader);
         return resourceLoader.getResource(lookupName);
     }
 
