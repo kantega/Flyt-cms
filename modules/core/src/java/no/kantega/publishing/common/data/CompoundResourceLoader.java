@@ -39,9 +39,9 @@ public class CompoundResourceLoader extends DefaultResourceLoader {
     protected Resource getResourceByPath(String name) {
         for (ResourceLoader source : sources) {
             Resource resource = source.getResource(name);
-            log.trace("Looking for {} in {}", name, source.getClass().getSimpleName());
+            log.debug("Looking for {} in {}", name, source);
             if (resource != null && resource.exists()) {
-                log.trace("Found {} in {}", name, source.getClass().getSimpleName());
+                log.debug("Found {} in {}", name, source);
                 return resource;
             }
         }
