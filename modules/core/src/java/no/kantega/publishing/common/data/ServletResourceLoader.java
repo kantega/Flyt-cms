@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.common.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
@@ -26,17 +28,19 @@ import org.springframework.core.io.ResourceLoader;
  * ResourceLoader that use prefix when loading.
  */
 public class ServletResourceLoader extends DefaultResourceLoader implements ResourceLoaderAware {
+    public static final Logger log = LoggerFactory.getLogger(ServletResourceLoader.class);
     private String prefix;
     private ResourceLoader resourceLoader;
 
     @Override
     protected Resource getResourceByPath(String name) {
         String lookupName = prefix == null ? name : getWithPrefix(name);
+        log.debug("Looking up {} by {}", name, lookupName);
         return resourceLoader.getResource(lookupName);
     }
 
     private String getWithPrefix(String name) {
-        String normalized = name.replace('\\', '/'); // name contains \ on windows.
+        String normalized = name.replace('\\', '/'); // name contains «\» on windows.
         if (normalized.contains(prefix)){
             int removeBefore = normalized.indexOf(prefix);
             return normalized.substring(removeBefore, normalized.length());

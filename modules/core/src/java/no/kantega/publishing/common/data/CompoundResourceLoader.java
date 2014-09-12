@@ -16,6 +16,8 @@
 
 package no.kantega.publishing.common.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -25,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CompoundResourceLoader extends DefaultResourceLoader {
+    public static final Logger log = LoggerFactory.getLogger(CompoundResourceLoader.class);
     private final List<ResourceLoader> sources;
     
     public CompoundResourceLoader(ResourceLoader... sources) {
@@ -36,7 +39,9 @@ public class CompoundResourceLoader extends DefaultResourceLoader {
     protected Resource getResourceByPath(String name) {
         for (ResourceLoader source : sources) {
             Resource resource = source.getResource(name);
+            log.trace("Looking for {} in {}", name, source.getClass().getSimpleName());
             if (resource != null && resource.exists()) {
+                log.trace("Found {} in {}", name, source.getClass().getSimpleName());
                 return resource;
             }
         }

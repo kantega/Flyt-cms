@@ -17,6 +17,8 @@
 
 package no.kantega.publishing.admin.content.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.xml.sax.EntityResolver;
@@ -31,6 +33,7 @@ import java.io.IOException;
  *  resources relative to it.
  */
 public class ResourceLoaderEntityResolver implements EntityResolver {
+    public static final Logger log = LoggerFactory.getLogger(ResourceLoaderEntityResolver.class);
     private ResourceLoader resourceLoader;
 
     public ResourceLoaderEntityResolver(ResourceLoader resourceLoader) {
@@ -41,6 +44,7 @@ public class ResourceLoaderEntityResolver implements EntityResolver {
         if (systemId != null) {
             Resource resource = resourceLoader.getResource(systemId);
             if (resource != null) {
+                log.debug("Got resource for {}: {}", systemId, resource);
                 InputSource inputSource = new InputSource(resource.getInputStream());
                 inputSource.setSystemId(systemId);
                 return inputSource;
