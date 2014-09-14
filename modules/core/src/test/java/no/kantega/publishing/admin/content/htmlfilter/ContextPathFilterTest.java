@@ -19,9 +19,6 @@ package no.kantega.publishing.admin.content.htmlfilter;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import org.junit.Test;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -39,27 +36,19 @@ public class ContextPathFilterTest {
 
         String input = "<a href=\"/test/content.ap?thisId=3\">link text</a>";
         String expectedOutput = "<a href=\"<@WEB@>/content.ap?thisId=3\">link text</a>";
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<img href=\"/test/content.ap?thisId=3\">";
         expectedOutput = "<img href=\"<@WEB@>/content.ap?thisId=3\">";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<a href=\"/test2/content.ap?thisId=3\">link text</a>";
         expectedOutput = input;
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<a href=\"../content.ap?thisId=3\">link text</a>";
         expectedOutput = "<a href=\"<@WEB@>/content.ap?thisId=3\">link text</a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
     }
 }

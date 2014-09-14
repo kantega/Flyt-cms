@@ -20,9 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import org.junit.Test;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import static org.junit.Assert.assertEquals;
 
 public class IdAndNameFilterTest  {
@@ -35,39 +32,33 @@ public class IdAndNameFilterTest  {
 
         String input = "<a id=\"bookmark with spaces\" name=\"bookmark with spaces\"></a>";
         String expectedOutput = "<a id=\"bookmark_with_spaces\" name=\"bookmark_with_spaces\"></a>";
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<a id=\" bookmark\" name=\"bookmark\"></a>";
         expectedOutput = "<a id=\"bookmark\" name=\"bookmark\"></a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
+
 
         input = "<a id=\"\u00E6\u00F8\u00E5\" name=\"\u00E6\u00F8\u00E5\"></a>";
         expectedOutput = "<a id=\"aoa\" name=\"aoa\"></a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
+
 
         input = "<a id=\"123\" name=\"123\"></a>";
         expectedOutput = "<a id=\"b_123\" name=\"b_123\"></a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
+
 
         input = "<a id=\"abc*\" name=\"abc*\"></a>";
         expectedOutput = "<a id=\"abc\" name=\"abc\"></a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
+
 
         input = "<a id=\"abc+\" name=\"abc+\"></a>";
         expectedOutput = "<a id=\"abc-\" name=\"abc-\"></a>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
+
     }
 
 }

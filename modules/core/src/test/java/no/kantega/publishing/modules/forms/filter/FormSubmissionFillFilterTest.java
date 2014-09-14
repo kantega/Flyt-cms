@@ -1,32 +1,28 @@
 package no.kantega.publishing.modules.forms.filter;
 
-import junit.framework.TestCase;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.List;
-
-import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.xmlfilter.FilterPipeline;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.forms.model.FormValue;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
+import org.junit.Test;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
-@ContextConfiguration(locations=("application-editableforms.xml"))
-public class FormSubmissionFillFilterTest extends TestCase {
+public class FormSubmissionFillFilterTest {
 
-    @Autowired
+    @Test
     public void testStartElement() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
         params.put("customfield", new String[] {"4"});
         params.put("field1", new String[] {"1"});
         params.put("field2", new String[] {"2"});
@@ -63,8 +59,7 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
         pipeline.addFilter(filter);
 
-        StringWriter  sw = new StringWriter();
-        pipeline.filter(new StringReader(form.getFormDefinition()), sw);
+        pipeline.filter(form.getFormDefinition());
 
         FormSubmission formSubmission = filter.getFormSubmission();
         List<FormValue> values = formSubmission.getValues();
@@ -84,10 +79,11 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
     }
 
+    @Test
     public void testShouldPickupValueForRecipientEmail() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
 
         String recipientEmail = "test@kantega.no";
         params.put("email", new String[] {recipientEmail});
@@ -124,8 +120,7 @@ public class FormSubmissionFillFilterTest extends TestCase {
 
         pipeline.addFilter(filter);
 
-        StringWriter  sw = new StringWriter();
-        pipeline.filter(new StringReader(form.getFormDefinition()), sw);
+        pipeline.filter(form.getFormDefinition());
 
         FormSubmission formSubmission = filter.getFormSubmission();
 

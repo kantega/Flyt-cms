@@ -26,9 +26,6 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     private static final Logger log = LoggerFactory.getLogger(UpdateEditableformAttributeFromRequestBehaviour.class);
 
@@ -61,9 +58,8 @@ public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAt
             // Filter expects complete document
             value = "<html><body>" + value + "</body></html>";
 
-            StringWriter sw = new StringWriter();
-            pipe.filter(new StringReader(value), sw);
-            value = sw.getBuffer().toString();
+
+            value = pipe.filter(value);
 
             int start = value.indexOf(BODY_START.toLowerCase());
             if (start == -1) {

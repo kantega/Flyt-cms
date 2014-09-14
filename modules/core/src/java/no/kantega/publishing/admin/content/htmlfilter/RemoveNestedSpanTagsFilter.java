@@ -23,41 +23,41 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import java.util.Stack;
 
 public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
-    private Stack<Boolean> spanTagsStack = new Stack<Boolean>();
+    private Stack<Boolean> spanTagsStack = new Stack<>();
 
     private String parentTag = null;
     private String parentStyle = null;
     private String parentClz = null;
 
     @Override
-    public void startElement(String string, String tagName, String name, Attributes attributes) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         boolean hasRemovedElement = false;
 
-        if (tagName.equalsIgnoreCase("span") && isSameAsParent(tagName, attributes)) {
+        if (qName.equalsIgnoreCase("span") && isSameAsParent(qName, attributes)) {
             hasRemovedElement = true;
         } else {
-            super.startElement(string, tagName, name, attributes);
+            super.startElement(uri, localName, qName, attributes);
         }
 
-        parentTag = tagName;
+        parentTag = qName;
         parentClz = attributes.getValue("class");
         parentStyle = attributes.getValue("style");
 
-        if (tagName.equalsIgnoreCase("span")) {
+        if (qName.equalsIgnoreCase("span")) {
             spanTagsStack.push(hasRemovedElement);
         }
     }
 
     @Override
-    public void endElement(String string, String tagName, String name) throws SAXException {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         boolean hasRemovedElement = false;
 
-        if (tagName.equalsIgnoreCase("span")) {
+        if (qName.equalsIgnoreCase("span")) {
             hasRemovedElement = spanTagsStack.pop();
         }
 
         if(!hasRemovedElement) {
-            super.endElement(string, tagName, name);
+            super.endElement(uri, localName, qName);
         }
     }
 

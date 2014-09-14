@@ -20,9 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import org.junit.Test;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import static org.junit.Assert.assertEquals;
 
 public class CleanupFormHtmlFilterTest {
@@ -35,9 +32,7 @@ public class CleanupFormHtmlFilterTest {
         String input="<input name=\"inputName\">";
         String output = "<input name=\"inputName\" type=\"text\">";
 
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(output, sw.toString());
+        assertEquals(output, pipeline.filter(input));
     }
 
     @Test
@@ -49,9 +44,7 @@ public class CleanupFormHtmlFilterTest {
         String input="<input name=\"inputName\" type=\"text\">";
         String output = "<input name=\"inputName\" type=\"text\">";
 
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(output, sw.toString());
+        assertEquals(output, pipeline.filter(input));
     }
 
     @Test
@@ -63,9 +56,7 @@ public class CleanupFormHtmlFilterTest {
         String input="<input type=\"radio\" name=\"inputName\">";
         String output = "<input type=\"radio\" name=\"inputName\">";
 
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(output, sw.toString());
+        assertEquals(output, pipeline.filter(input));
     }
 
 }

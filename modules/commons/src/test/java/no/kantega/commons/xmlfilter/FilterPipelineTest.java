@@ -16,36 +16,31 @@
 
 package no.kantega.commons.xmlfilter;
 
-import junit.framework.TestCase;
-import no.kantega.commons.exception.SystemException;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import static org.junit.Assert.assertEquals;
 
-public class FilterPipelineTest extends TestCase {
+public class FilterPipelineTest {
     private FilterPipeline filterPipeline;
 
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         filterPipeline = new FilterPipeline();
     }
 
+    @Test
     public void testEmptyPipeline() {
         filterPipeline.removeFilters();
         String pre = "<html><head>";
-        String meta = "<META http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"></head>";
-        String body = "<body>Dette er en test med æøå ÆØÅ</body></html>";
-        String input = pre + body;        
-        StringWriter sw = new StringWriter();
-        try {
-            filterPipeline.filter(new StringReader(input), sw);
-            assertEquals(pre + meta + "<body>Dette er en test med æøå ÆØÅ</body></html>", sw.toString());
-            //
-        } catch (SystemException e) {
-            fail(e.getMessage());
-        }
+        String meta = "</head>";
+        String body = "<body class=\"bodyclass\">Dette er en test med æøå ÆØÅ</body></html>";
+        String input = pre + body;
+        String filtered = filterPipeline.filter(input);
+        assertEquals(pre + meta + "<body class=\"bodyclass\">Dette er en test med æøå ÆØÅ</body></html>", filtered);
 
     }
 
-    
+
 
 }

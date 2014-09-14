@@ -12,17 +12,14 @@ import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.IndexableDocumentCustomizer;
 import no.kantega.search.api.provider.DocumentTransformerAdapter;
 import org.apache.commons.lang3.StringUtils;
-import org.cyberneko.html.parsers.SAXParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
-import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -259,24 +256,11 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
     }
 
     private String stripHtml(String html) {
-        final StringBuilder buffer = new StringBuilder();
-        SAXParser parser = new SAXParser();
-        parser.setContentHandler(new DefaultHandler() {
-            public void characters(char[] chars, int i, int i1) {
-                buffer.append(chars, i, i1);
-                buffer.append(" ");
-            }
-        });
-
-        if(html != null) {
-            try (StringReader stringReader = new StringReader(html)){
-                parser.parse(new InputSource(stringReader));
-            } catch (IOException | SAXException e) {
-                log.error("Error stripping html", e);
-            }
-        }
-
-        return buffer.toString();
+        Document document = Jsoup.parse(html);
+        Document.OutputSettings outputSettings = document.outputSettings();
+        outputSettings.prettyPrint(false);
+        outputSettings.escapeMode(Entities.EscapeMode.xhtml);
+        return document.text();
     }
 
     @Override

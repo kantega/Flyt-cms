@@ -11,8 +11,6 @@ import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.modules.forms.filter.GetFormFieldsFilter;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 
@@ -79,8 +77,7 @@ public class AksessContentForm extends DefaultForm {
 
         pipeline.addFilter(filter);
 
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(formDefinition), sw);
+        pipeline.filter(formDefinition);
 
         return filter.getFieldNames();
     }
