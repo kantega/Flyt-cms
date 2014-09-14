@@ -12,8 +12,6 @@ import no.kantega.publishing.modules.forms.validate.FormError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +22,7 @@ import java.util.Map;
 public class DefaultFilledFormBuilder implements FilledFormBuilder {
     private static final Logger log = LoggerFactory.getLogger(DefaultFilledFormBuilder.class);
     public Form buildFilledForm(final FormSubmission submission, List<FormError> errors) {
-        Map<String, String[]> values = new HashMap<String, String[]>();
+        Map<String, String[]> values = new HashMap<>();
         for (FormValue value : submission.getValues()) {
             values.put(value.getName(), value.getValues());
         }
@@ -35,19 +33,14 @@ public class DefaultFilledFormBuilder implements FilledFormBuilder {
 
         pipeline.addFilter(filter);
 
-        StringWriter sw = new StringWriter();
         try {
-            pipeline.filter(new StringReader(submission.getForm().getFormDefinition()), sw);
+            String fd = pipeline.filter(submission.getForm().getFormDefinition());
+            DefaultForm form = new AksessContentForm(submission.getForm());
+            form.setFormDefinition(fd);
+            return form;
         } catch (SystemException e) {
             log.error("", e);
             return null;
         }
-
-        final String fd = sw.toString();
-
-        DefaultForm form = new AksessContentForm(submission.getForm());
-        form.setFormDefinition(fd);
-
-        return form;
     }
 }

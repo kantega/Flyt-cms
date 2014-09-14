@@ -22,8 +22,6 @@ import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.regex.Pattern;
 
 public class HTMLEditorHelper {
@@ -91,9 +89,7 @@ public class HTMLEditorHelper {
             // Filter expects complete document
             value = "<html><body>" + value + "</body></html>";
 
-            StringWriter sw = new StringWriter();
-            pipe.filter(new StringReader(value), sw);
-            value = sw.getBuffer().toString();
+            value = pipe.filter(value);
 
             int start = value.indexOf(BODY_START.toLowerCase());
             if (start == -1) {
@@ -154,9 +150,8 @@ public class HTMLEditorHelper {
             // Filter expects complete document
             value = "<html><body>" + value + "</body></html>";
 
-            StringWriter sw = new StringWriter();
-            pipe.filter(new StringReader(value), sw);
-            value = sw.getBuffer().toString();
+
+            value = pipe.filter(value);
 
             int start = value.indexOf(BODY_START.toLowerCase());
             if (start == -1) {

@@ -22,13 +22,15 @@ import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttri
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -54,7 +56,8 @@ public class ListAttribute extends Attribute {
             options = new ArrayList<>();
 
             try {
-                NodeList nodes = XPathAPI.selectNodeList(config, "options/option");
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                NodeList nodes = (NodeList)xpath.evaluate("options/option", config, XPathConstants.NODESET);
                 for (int i = 0; i < nodes.getLength(); i++) {
                     Element elmOption  = (Element)nodes.item(i);
                     String optText = elmOption.getFirstChild().getNodeValue();
@@ -69,7 +72,7 @@ public class ListAttribute extends Attribute {
                     options.add(option);
                 }
 
-            } catch (TransformerException e) {
+            } catch (XPathExpressionException e) {
                 log.error("Error getting list options", e);
             }
         }

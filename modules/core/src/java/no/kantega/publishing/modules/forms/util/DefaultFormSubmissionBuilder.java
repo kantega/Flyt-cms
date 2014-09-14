@@ -8,8 +8,6 @@ import no.kantega.publishing.modules.forms.filter.FormSubmissionFillFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.Map;
 
 /**
@@ -28,9 +26,8 @@ public class DefaultFormSubmissionBuilder implements FormSubmissionBuilder {
 
         pipeline.addFilter(filter);
 
-        StringWriter sw = new StringWriter();
         try {
-            pipeline.filter(new StringReader(form.getFormDefinition()), sw);
+            pipeline.filter(form.getFormDefinition());
         } catch (SystemException e) {
             log.error("", e);
             return null;

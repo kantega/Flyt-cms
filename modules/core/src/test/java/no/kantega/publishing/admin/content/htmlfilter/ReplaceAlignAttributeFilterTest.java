@@ -20,9 +20,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.xmlfilter.FilterPipeline;
 import org.junit.Test;
 
-import java.io.StringReader;
-import java.io.StringWriter;
-
 import static org.junit.Assert.assertEquals;
 
 public class ReplaceAlignAttributeFilterTest {
@@ -35,63 +32,44 @@ public class ReplaceAlignAttributeFilterTest {
 
         String input = "<p>...</p>";
         String expectedOutput = "<p>...</p>";
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div>...</div>";
         expectedOutput = "<div>...</div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div>...</div>";
         expectedOutput = "<div>...</div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<p align=\"left\">...</p>";
         expectedOutput = "<p style=\"text-align: left;\">...</p>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<p align=\"center\">...</p>";
         expectedOutput = "<p style=\"text-align: center;\">...</p>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<p align=\"right\">...</p>";
         expectedOutput = "<p style=\"text-align: right;\">...</p>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div align=\"left\">...</div>";
         expectedOutput = "<div style=\"text-align: left;\">...</div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div align=\"center\">...</div>";
         expectedOutput = "<div style=\"text-align: center;\">...</div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div align=\"right\">...</div>";
         expectedOutput = "<div style=\"text-align: right;\">...</div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
 
         input = "<div align=\"right\"><p align=\"right\">...</p></div>";
         expectedOutput = "<div style=\"text-align: right;\"><p style=\"text-align: right;\">...</p></div>";
-        sw = new StringWriter();
-        pipeline.filter(new StringReader(input), sw);
-        assertEquals(expectedOutput, sw.toString());
+        assertEquals(expectedOutput, pipeline.filter(input));
     }
 
 }
