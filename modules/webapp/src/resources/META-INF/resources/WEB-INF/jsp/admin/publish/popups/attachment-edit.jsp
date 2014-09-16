@@ -36,9 +36,8 @@
                     blacklistedFileTypes[${status.index}] = ".${fileType}";
                 </c:forEach>
                 for (i = 0; i < blacklistedFileTypes.length; i++) {
-                    var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
-                    var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
-                    if ((indexOfMatch != -1) && (indexOfMatch == expectedIndexOfMatch)) {
+                    var indexOfMatch = fileName.search(blacklistedFileTypes[i]+"$");
+                    if ((indexOfMatch != -1) ) {
                         alert('<kantega:label key="${blacklistedErrorMessage}" escapeJavascript="true"/>');
                         return false;
                     }
