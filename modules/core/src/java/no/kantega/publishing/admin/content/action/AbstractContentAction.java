@@ -58,6 +58,11 @@ public abstract class AbstractContentAction extends AbstractController {
                     model.put("allowedTemplates", aksessService.getAllowedDisplayTemplates(current));
                 }
             }
+
+
+            model.put("canEditContentMetadata", securitySession.canEditContentMetadata());
+            model.put("canEditContentAlias", securitySession.canEditContentAlias());
+            model.put("canEditContentTopics", securitySession.canEditContentTopics());
         }
 
         model.put("topicMapsEnabled", Aksess.isTopicMapsEnabled());

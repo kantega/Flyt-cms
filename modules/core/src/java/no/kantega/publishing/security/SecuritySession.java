@@ -113,23 +113,23 @@ public class SecuritySession {
 
         // If your is now logged in or has changed identity, must create new session
         if (identity != null && (currentIdentity == null || !identity.getUserId().equals(currentIdentity.getUserId()) || !identity.getDomain().equals(currentIdentity.getDomain()))) {
-                session = createNewUserInstance(identity);
-                try {
-                    session.handlePostLogin(request);
-                } catch (ConfigurationException e) {
-                    throw new SystemException("Konfigurasjonsfeil", e);
-                }
-                // Innloggede brukere har lengre sesjonstimeout
-                if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
-                    request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
-                }
-                httpSession.setAttribute("aksess.securitySession", session);
+            session = createNewUserInstance(identity);
+            try {
+                session.handlePostLogin(request);
+            } catch (ConfigurationException e) {
+                throw new SystemException("Konfigurasjonsfeil", e);
+            }
+            // Innloggede brukere har lengre sesjonstimeout
+            if (request.getSession().getMaxInactiveInterval() < Aksess.getSecuritySessionTimeout()) {
+                request.getSession().setMaxInactiveInterval(Aksess.getSecuritySessionTimeout());
+            }
+            httpSession.setAttribute("aksess.securitySession", session);
 
-            } else if (identity == null && currentIdentity != null) {
-                log.debug("User logged out by external service - create blank session");
-                session = createNewInstance();
-                httpSession.setAttribute("aksess.securitySession", session);
-                httpSession.removeAttribute("adminMode");
+        } else if (identity == null && currentIdentity != null) {
+            log.debug("User logged out by external service - create blank session");
+            session = createNewInstance();
+            httpSession.setAttribute("aksess.securitySession", session);
+            httpSession.removeAttribute("adminMode");
         }
 
         return session;
@@ -439,4 +439,43 @@ public class SecuritySession {
             rememberMeHandler = RootContext.getInstance().getBean(RememberMeHandler.class);
         }
     }
+
+    /**
+     * Editing metadata can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    public boolean canEditContentMetadata(){
+        String[] restrictMetadataRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
+
+        if (isUserInRole(restrictMetadataRoles) || restrictMetadataRoles.length == 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Editing Alias can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    public boolean canEditContentAlias(){
+        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.alias");
+        if (isUserInRole(restrictRoles) || restrictRoles.length == 0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Editing Topics can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    public boolean canEditContentTopics(){
+        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.topics");
+        if (isUserInRole(restrictRoles) || restrictRoles.length == 0){
+            return true;
+        }
+        return false;
+    }
+
+
 }

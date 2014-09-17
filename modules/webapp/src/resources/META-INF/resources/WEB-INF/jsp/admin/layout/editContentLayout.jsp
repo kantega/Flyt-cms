@@ -40,17 +40,17 @@
         $(document).ready(function(){
             bindToolbarButtons();
             <c:choose>
-                <c:when test="${scrollTo != null}">
-                    // This fails if a delay is not added
-                    setTimeout(scrollTo, 500);
-                </c:when>
-                <c:when test="${errors != null && errors.length > 0}">
-                    // Error, do nothing
-                </c:when>
-                <c:otherwise>
-                    // Set focus to first attribute if it is a input field
-                    $("#EditContentForm").find(".contentAttribute:first input[type='text']").focus();
-                </c:otherwise>
+            <c:when test="${scrollTo != null}">
+            // This fails if a delay is not added
+            setTimeout(scrollTo, 500);
+            </c:when>
+            <c:when test="${errors != null && errors.length > 0}">
+            // Error, do nothing
+            </c:when>
+            <c:otherwise>
+            // Set focus to first attribute if it is a input field
+            $("#EditContentForm").find(".contentAttribute:first input[type='text']").focus();
+            </c:otherwise>
             </c:choose>
 
             openaksess.editcontext.init();
@@ -67,26 +67,26 @@
         }
 
         function bindToolbarButtons() {
-        <c:if test="${!contentActive}">
+            <c:if test="${!contentActive}">
             $("#TabToolsMenu .tab .content").click(function(){
                 gotoMode("SaveContent");
             });
-        </c:if>
-        <c:if test="${!metadataActive}">
+            </c:if>
+            <c:if test="${!metadataActive}">
             $("#TabToolsMenu .tab .metadata").click(function(){
                 gotoMode("SaveMetadata");
             });
-        </c:if>
-        <c:if test="${!versionsActive}">
+            </c:if>
+            <c:if test="${!versionsActive}">
             $("#TabToolsMenu .tab .versions").click(function(){
                 gotoMode("SaveVersion");
             });
-        </c:if>
-        <c:if test="${!attachmentsActive}">
+            </c:if>
+            <c:if test="${!attachmentsActive}">
             $("#TabToolsMenu .tab .attachments").click(function(){
                 gotoMode("SaveAttachments");
             });
-        </c:if>
+            </c:if>
         }
 
         function saveContent(status) {
@@ -135,7 +135,9 @@
 <kantega:section id="tabToolsMenu">
     <div class="tabGroup">
         <a href="#" class="tab<c:if test="${contentActive}"> active</c:if>"><span><span class="content"><kantega:label key="aksess.tools.content"/></span></span></a>
-        <a href="#" class="tab<c:if test="${metadataActive}"> active</c:if>"><span><span class="metadata"><kantega:label key="aksess.tools.metadata"/></span></span></a>
+        <c:if test="${canEditContentMetadata}">
+            <a href="#" class="tab<c:if test="${metadataActive}"> active</c:if>"><span><span class="metadata"><kantega:label key="aksess.tools.metadata"/></span></span></a>
+        </c:if>
         <a href="#" class="tab<c:if test="${attachmentsActive}"> active</c:if>"><span><span class="attachments"><kantega:label key="aksess.tools.attachments"/></span></span></a>
         <a href="#" class="tab<c:if test="${versionsActive}"> active</c:if>"><span><span class="versions"><kantega:label key="aksess.tools.versions"/></span></span></a>
     </div>

@@ -175,8 +175,17 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
-            <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked}">readonly</c:if>>
-            <div id="LockedHelp" class="ui-state-highlight" <c:if test="${!currentContent.locked}">style="display:none"</c:if>><kantega:label key="aksess.publishinfo.locked.help"/></div>
+            <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked || !canEditContentAlias}">readonly</c:if>>
+            <div id="LockedHelp" class="ui-state-highlight" <c:if test="${!currentContent.locked && canEditContentAlias}">style="display:none"</c:if>>
+                <ul>
+                    <c:if test="${currentContent.locked}">
+                        <li style="list-style: none"><kantega:label key="aksess.publishinfo.locked.help"/></li>
+                    </c:if>
+                    <c:if test="${!canEditContentAlias}">
+                        <li style="list-style: none"><kantega:label key="aksess.restricted.alias"/></li>
+                    </c:if>
+                </ul>
+            </div>
         </fieldset>
     </div>
 </c:if>
@@ -186,18 +195,28 @@
             <legend><kantega:label key="aksess.publishinfo.topics"/></legend>
             <div id="Topics">
                 <div id="TopicList">...</div>
-                <div id="SelectTopics">
-                    <div id="TopicInputContainer">
-                        <input type="text" id="TopicInput" size="20" maxlength="128" accesskey="E">
+                <c:if test="${canEditContentTopics}">
+                    <div id="SelectTopics">
+                        <div id="TopicInputContainer">
+                            <input type="text" id="TopicInput" size="20" maxlength="128" accesskey="E">
+                        </div>
+                        <div id="ChooseTopicButton">
+                            <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+                        </div>
                     </div>
-                    <div id="ChooseTopicButton">
-                        <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+                </c:if>
+                <c:if test="${!canEditContentTopics}">
+                    <div class="ui-state-highlight" >
+                        <ul>
+                            <li style="list-style: none"><kantega:label key="aksess.restricted.topics"/></li>
+
+                        </ul>
                     </div>
-                </div>
+                </c:if>
 
             </div>
 
-        </fieldset>
+    </fieldset>
     </div>
 </c:if>
 <c:if test="${canChangeTemplate}">
