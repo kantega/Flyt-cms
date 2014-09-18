@@ -440,42 +440,6 @@ public class SecuritySession {
         }
     }
 
-    /**
-     * Editing metadata can be restricted to certain roles
-     * @return true if editing is allowed
-     */
-    public boolean canEditContentMetadata(){
-        String[] restrictMetadataRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
-
-        if (isUserInRole(restrictMetadataRoles) || restrictMetadataRoles.length == 0){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Editing Alias can be restricted to certain roles
-     * @return true if editing is allowed
-     */
-    public boolean canEditContentAlias(){
-        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.alias");
-        if (isUserInRole(restrictRoles) || restrictRoles.length == 0){
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Editing Topics can be restricted to certain roles
-     * @return true if editing is allowed
-     */
-    public boolean canEditContentTopics(){
-        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.topics");
-        if (isUserInRole(restrictRoles) || restrictRoles.length == 0){
-            return true;
-        }
-        return false;
-    }
 
 
 }

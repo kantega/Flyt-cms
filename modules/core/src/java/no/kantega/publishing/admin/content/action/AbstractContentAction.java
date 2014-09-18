@@ -59,10 +59,9 @@ public abstract class AbstractContentAction extends AbstractController {
                 }
             }
 
-
-            model.put("canEditContentMetadata", securitySession.canEditContentMetadata());
-            model.put("canEditContentAlias", securitySession.canEditContentAlias());
-            model.put("canEditContentTopics", securitySession.canEditContentTopics());
+            model.put("canEditContentMetadata", canEditContentMetadata(securitySession));
+            model.put("canEditContentAlias", canEditContentAlias(securitySession));
+            model.put("canEditContentTopics", canEditContentTopics(securitySession));
         }
 
         model.put("topicMapsEnabled", Aksess.isTopicMapsEnabled());
@@ -73,4 +72,32 @@ public abstract class AbstractContentAction extends AbstractController {
 
         model.put("saveStatus", saveStatus);
     }
+
+    /**
+     * Editing Metadata can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    private boolean canEditContentMetadata(SecuritySession securitySession){
+        String[] restrictMetadataRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
+        return securitySession.isUserInRole(restrictMetadataRoles) || restrictMetadataRoles.length == 0;
+    }
+
+    /**
+     * Editing Alias can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    private boolean canEditContentAlias(SecuritySession securitySession){
+        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.alias");
+        return securitySession.isUserInRole(restrictRoles) || restrictRoles.length == 0;
+    }
+
+    /**
+     * Editing Topics can be restricted to certain roles
+     * @return true if editing is allowed
+     */
+    private boolean canEditContentTopics(SecuritySession securitySession){
+        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.topics");
+        return securitySession.isUserInRole(restrictRoles) || restrictRoles.length == 0;
+    }
+
 }
