@@ -350,7 +350,8 @@ public class ContentQuery {
         if (onHearingFor != null) {
             query.append(" and content.contentid in (select contentversion.contentId from hearing, contentversion, hearinginvitee " +
                     " where  hearing.ContentversionId = contentversion.Contentversionid " +
-                    " and hearinginvitee.HearingId = hearing.Hearingid");
+                    " and hearinginvitee.HearingId = hearing.Hearingid and contentversion.Status = :hearingStatus");
+            parameters.put("hearingStatus", ContentStatus.HEARING.getTypeAsInt());
             if(!ignoreHearingDeadline) {
                 query.append(" and hearing.DeadLine > :hearingdeadline");
                 parameters.put("hearingdeadline", new Date());
