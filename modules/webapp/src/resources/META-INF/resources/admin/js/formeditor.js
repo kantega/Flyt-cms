@@ -231,7 +231,8 @@ function formNewElement() {
     formAddOrSaveElement(fieldName, "text", "", -1);
     formBindSort();
 
-    // Edit this element
+    // Edit this element, re-get all elements.
+    form_FormElements = $("#form_FormElements .formElement");
     var elm = form_FormElements.last();
     formEditElement(elm);
 
@@ -650,7 +651,7 @@ function FormElementType(name, type) {
 
     this.getFieldHint = function() {
         return "";
-    }
+    };
 
     this.onActive = function(isSelected) {
     };
