@@ -79,7 +79,7 @@ public abstract class AbstractContentAction extends AbstractController {
      */
     private boolean canEditContentMetadata(SecuritySession securitySession){
         String[] restrictMetadataRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
-        return securitySession.isUserInRole(restrictMetadataRoles) || restrictMetadataRoles.length == 0;
+        return noRestriction(restrictMetadataRoles) || securitySession.isUserInRole(restrictMetadataRoles);
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractContentAction extends AbstractController {
      */
     private boolean canEditContentAlias(SecuritySession securitySession){
         String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.alias");
-        return securitySession.isUserInRole(restrictRoles) || restrictRoles.length == 0;
+        return noRestriction(restrictRoles) || securitySession.isUserInRole(restrictRoles);
     }
 
     /**
@@ -97,7 +97,10 @@ public abstract class AbstractContentAction extends AbstractController {
      */
     private boolean canEditContentTopics(SecuritySession securitySession){
         String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.topics");
-        return securitySession.isUserInRole(restrictRoles) || restrictRoles.length == 0;
+        return noRestriction(restrictRoles) || securitySession.isUserInRole(restrictRoles);
     }
 
+    private boolean noRestriction(String[] restrictMetadataRoles) {
+        return restrictMetadataRoles == null || restrictMetadataRoles.length == 0;
+    }
 }
