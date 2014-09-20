@@ -44,6 +44,11 @@ public class CompoundResourceLoader extends DefaultResourceLoader {
         return null;
     }
 
+    @Override
+    public Resource getResource(String location) {
+        return getResourceByPath(location);
+    }
+
     public void addResourceLoader(ResourceLoader a) {
         sources.add(a);
     }
