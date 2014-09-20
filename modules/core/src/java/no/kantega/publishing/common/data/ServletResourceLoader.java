@@ -45,6 +45,11 @@ public class ServletResourceLoader extends DefaultResourceLoader implements Reso
         }
     }
 
+    @Override
+    public Resource getResource(String location) {
+        return getResourceByPath(location);
+    }
+
     public void setPrefix(String prefix) {
         this.prefix = prefix;
     }
