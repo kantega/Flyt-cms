@@ -1,7 +1,5 @@
-package no.kantega.publishing.spring;
+package no.kantega.publishing.spring.scheduling;
 
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.modules.mailsender.MailSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ErrorHandler;

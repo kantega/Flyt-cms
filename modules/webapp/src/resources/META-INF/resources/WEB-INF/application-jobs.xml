@@ -16,22 +16,13 @@
   -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+    <task:annotation-driven executor="oaTaskScheduler" mode="proxy" scheduler="oaTaskScheduler" />
+    <bean id="oaTaskScheduler" class="no.kantega.publishing.spring.scheduling.OpenAksessTaskScheduler"/>
 
     <bean name="contentStateChangeJob" class="no.kantega.publishing.jobs.contentstate.ContentStateChangeJob"/>
-
-    <bean id="contentStateChangeJobDetail"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="contentStateChangeJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="contentStateChangeTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="contentStateChangeJobDetail"/>
-        <property name="cronExpression" value="0 0/5 * * * ?"/>
-    </bean>
 
     <bean name="expireContentAlertJob" class="no.kantega.publishing.jobs.alerts.ExpireContentAlertJob">
         <property name="listeners">
@@ -41,17 +32,6 @@
                 </bean>
             </list>
         </property>
-    </bean>
-
-    <bean id="expireContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="expireContentAlertJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="expireContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="expireContentAlertJobDetail"/>
-        <property name="cronExpression" value="${jobs.expirecontent.trigger}"/>
     </bean>
 
     <bean name="revisionContentAlertJob" class="no.kantega.publishing.jobs.alerts.RevisionContentAlertJob">
@@ -65,17 +45,6 @@
         </property>
     </bean>
 
-    <bean id="revisionContentAlertJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="revisionContentAlertJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="revisionContentAlertTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="revisionContentAlertJobDetail"/>
-        <property name="cronExpression" value="${jobs.revision.trigger}"/>
-    </bean>
-
     <!-- Mail subscription -->
     <bean id="aksessMailSubscriptionService" class="no.kantega.publishing.modules.mailsubscription.MailSubscriptionServiceJdbcImpl">
         <property name="dataSource" ref="aksessDataSource"/>
@@ -87,60 +56,8 @@
         <property name="mailSubscriptionDeliveryService" ref="aksessMailSubscriptionDeliveryService"/>
     </bean>
 
-    <bean id="aksessMailSubscriptionAgents" class="org.springframework.beans.factory.config.ListFactoryBean">
-        <property name="sourceList">
-            <list>
-                <ref bean="aksessContentMailSubscriptionAgent"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean name="mailSubscriptionJob" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="interval" value="immediate"/>
-                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
-                <entry key="siteCache" value-ref="aksessSiteCache"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="mailSubscriptionJobDaily" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="interval" value="daily"/>
-                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
-                <entry key="siteCache" value-ref="aksessSiteCache"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean name="mailSubscriptionJobWeekly" class="org.springframework.scheduling.quartz.JobDetailBean">
-        <property name="jobClass" value="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob"/>
-        <property name="jobDataAsMap">
-            <map>
-                <entry key="interval" value="weekly"/>
-                <entry key="mailSubscriptionAgents" value-ref="aksessMailSubscriptionAgents"/>
-                <entry key="siteCache" value-ref="aksessSiteCache"/>
-            </map>
-        </property>
-    </bean>
-
-    <bean id="mailSubscriptionTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="mailSubscriptionJob"/>
-        <property name="cronExpression" value="${mail.subscription.trigger.immediate}"/>
-    </bean>
-
-    <bean id="mailSubscriptionTriggerDaily" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="mailSubscriptionJobDaily"/>
-        <property name="cronExpression" value="${mail.subscription.trigger.daily}"/>
-    </bean>
-
-    <bean id="mailSubscriptionTriggerWeekly" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="mailSubscriptionJobWeekly"/>
-        <property name="cronExpression" value="${mail.subscription.trigger.weekly}"/>
+    <bean name="mailSubscriptionJob" class="no.kantega.publishing.jobs.mailsubscription.MailSubscriptionJob">
+        <property name="mailSubscriptionAgents" ref="aksessContentMailSubscriptionAgent"/>
     </bean>
 
     <bean name="systemStatusJob" class="no.kantega.publishing.jobs.systemstatus.SystemStatusJob" />
@@ -153,18 +70,6 @@
 
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
         <property name="checker" ref="linkCheckJob"/>
-    </bean>
-
-    <bean id="linkCrawlJobDetail"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="linkCrawlJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="linkCrawlTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="linkCrawlJobDetail"/>
-        <property name="cronExpression" value="${jobs.linkCrawl.trigger}"/>
     </bean>
 
     <bean id="brokenLinkEventListeners" class="org.springframework.beans.factory.config.ListFactoryBean">
@@ -180,47 +85,6 @@
         <property name="sortBy" value="url" />
     </bean>
 
-    <bean id="brokenLinkEventTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="brokenLinkJobDetail"/>
-        <property name="cronExpression" value="0 10 4 ? * MON"/>
-    </bean>
-
-    <bean id="brokenLinkJobDetail"
-          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="brokenLinkNotifierJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-
-
     <bean name="contentImportJob" class="no.kantega.publishing.jobs.contentimport.ContentImportJob"/>
-
-    <bean id="contentImportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="contentImportJob"/>
-        <property name="targetMethod" value="execute"/>
-        <property name="concurrent" value="false"/>
-    </bean>
-
-    <bean id="contentImportTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-        <property name="jobDetail" ref="contentImportJobDetail"/>
-        <property name="cronExpression" value="${jobs.contentimport.trigger}"/>
-    </bean>
-
-    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
-        <property name="triggers">
-            <list>
-                <ref local="contentStateChangeTrigger"/>
-                <ref local="expireContentAlertTrigger"/>
-                <ref local="revisionContentAlertTrigger"/>
-                <ref local="mailSubscriptionTrigger"/>
-                <ref local="mailSubscriptionTriggerDaily"/>
-                <ref local="mailSubscriptionTriggerWeekly"/>
-                <ref local="linkCrawlTrigger"/>
-                <ref local="contentImportTrigger"/>
-                <ref local="brokenLinkEventTrigger" />
-            </list>
-        </property>
-    </bean>
 
 </beans>

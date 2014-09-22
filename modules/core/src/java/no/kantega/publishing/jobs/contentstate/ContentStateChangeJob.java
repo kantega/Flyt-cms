@@ -22,6 +22,7 @@ import no.kantega.publishing.common.data.enums.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 public class ContentStateChangeJob  {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -29,6 +30,7 @@ public class ContentStateChangeJob  {
     @Autowired
     private ContentStateUpdater stateUpdater;
 
+    @Scheduled(cron = "${jobs.contentstatechange.trigger:0 0/5 * * * ?}")
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");

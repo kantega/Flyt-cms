@@ -32,6 +32,7 @@ import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.*;
 
@@ -45,6 +46,7 @@ public class RevisionContentAlertJob {
     @Autowired
     private ContentAO contentAO;
 
+    @Scheduled(cron = "${jobs.revision.trigger}")
     public void execute() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {

@@ -160,12 +160,6 @@
         </dependency>
 
         <dependency>
-            <groupId>quartz</groupId>
-            <artifactId>quartz</artifactId>
-            <version>1.5.2</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.codehaus.guessencoding</groupId>
             <artifactId>guessencoding</artifactId>
             <version>1.0</version>

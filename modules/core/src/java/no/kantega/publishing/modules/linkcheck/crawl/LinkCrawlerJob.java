@@ -23,6 +23,7 @@ import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 public class LinkCrawlerJob {
     private static final Logger log = LoggerFactory.getLogger(LinkCrawlerJob.class);
@@ -35,6 +36,7 @@ public class LinkCrawlerJob {
     @Autowired
     private LinkEmitter emitter;
 
+    @Scheduled(cron = "${jobs.linkCrawl.trigger}")
     public void execute() {
         log.info("Executing LinkCrawlerJob");
         if (Aksess.getServerType() == ServerType.SLAVE) {

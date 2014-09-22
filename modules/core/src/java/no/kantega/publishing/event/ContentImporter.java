@@ -21,11 +21,9 @@ import no.kantega.publishing.common.data.Content;
 import java.util.List;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: May 23, 2007
- * Time: 11:19:54 AM
+ * Interface for importing and updating content from other sources.
  */
 public interface ContentImporter {
-    List getContentList();
+    List<Content> getContentList();
     void updateContent(Content c);
 }

@@ -30,15 +30,15 @@ public class ScheduleLogAO {
     public static Date getLastRun(String service) throws SystemException {
         Date lastRun = null;
 
-        try (Connection c = dbConnectionFactory.getConnection()) {
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement("select * from schedulelog where Service = ?")) {
 
-            PreparedStatement st = c.prepareStatement("select * from schedulelog where Service = ?");
             st.setString(1, service);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                lastRun = rs.getTimestamp("LastRun");
+            try(ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    lastRun = rs.getTimestamp("LastRun");
+                }
             }
-            rs.close();
 
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
@@ -53,21 +53,20 @@ public class ScheduleLogAO {
         if (lastRun == null) lastRun = new Date();
 
         try (Connection c = dbConnectionFactory.getConnection()) {
-
-            PreparedStatement st;
-
             if (previous != null) {
                 // Oppdaterer basen med nåværende tidspunkt
-                st = c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
-                st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
-                st.setString(2, service);
-                st.execute();
+                try(PreparedStatement st = c.prepareStatement("update schedulelog set LastRun = ? where Service = ?")) {
+                    st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
+                    st.setString(2, service);
+                    st.execute();
+                }
             } else {
                 // Oppdaterer basen med nåværende tidspunkt
-                st = c.prepareStatement("insert into schedulelog values(?,?)");
-                st.setString(1, service);
-                st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));
-                st.execute();
+                try(PreparedStatement st = c.prepareStatement("insert into schedulelog values(?,?)")){
+                    st.setString(1, service);
+                    st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));
+                    st.execute();
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
