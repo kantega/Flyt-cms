@@ -21,25 +21,23 @@ import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import no.kantega.publishing.common.data.enums.ServerType;
-import org.quartz.StatefulJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Date;
 import java.util.List;
 
-public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
+/**
+ * Sends mailsubscriptions at different values of MailSubscriptionInterval.
+ */
+public class MailSubscriptionJob  {
     private static final Logger log = LoggerFactory.getLogger(MailSubscriptionJob.class);
     private static final String SOURCE = "aksess.jobs.MailSubscriptionJob";
 
-    // Denne jobben kjøres ved ulike intervall for å sende ut meldinger, trenger å vite hvilket intervall
-    // dette er for å sende ut til de rette personene som skal ha varsling f.eks daglig, ukentlig osv.
-    private MailSubscriptionInterval interval = MailSubscriptionInterval.immediate;
-
     private List<MailSubscriptionAgent> mailSubscriptionAgents;
 
-    protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
+    private void executeInternal(MailSubscriptionInterval interval) {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
@@ -65,11 +63,22 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
         }
     }
 
-    public void setInterval(MailSubscriptionInterval interval) {
-        this.interval = interval;
-    }
 
     public void setMailSubscriptionAgents(List<MailSubscriptionAgent> mailSubscriptionAgents) {
         this.mailSubscriptionAgents = mailSubscriptionAgents;
+    }
+
+    @Scheduled(cron = "${mail.subscription.trigger.weekly}")
+    public void mailSubscriptionJobWeekly(){
+        executeInternal(MailSubscriptionInterval.weekly);
+    }
+    @Scheduled(cron = "${mail.subscription.trigger.daily}")
+    public void mailSubscriptionTriggerDaily(){
+        executeInternal(MailSubscriptionInterval.daily);
+    }
+
+    @Scheduled(cron = "${mail.subscription.trigger.immediate}")
+    public void mailSubscriptionTriggerImmediate(){
+        executeInternal(MailSubscriptionInterval.immediate);
     }
 }

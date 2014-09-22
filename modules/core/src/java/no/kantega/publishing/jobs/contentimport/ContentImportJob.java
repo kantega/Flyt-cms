@@ -30,25 +30,23 @@ import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.event.ContentImporter;
 import no.kantega.publishing.security.SecuritySession;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: May 23, 2007
- * Time: 11:12:15 AM
+ * Job for running alle ContentImporters
  */
 public class ContentImportJob {
     private static final Logger log = LoggerFactory.getLogger(ContentImportJob.class);
+    private List<ContentImporter> contentImporters;
 
 
-
+    @Scheduled(cron = "${jobs.contentimport.trigger}")
     public void execute() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
@@ -58,17 +56,8 @@ public class ContentImportJob {
             SecuritySession session = SecuritySession.createNewAdminInstance();
             ContentManagementService cms = new ContentManagementService(session);
 
-            ApplicationContext context = RootContext.getInstance();
-            Map importers = context.getBeansOfType(ContentImporter.class);
-
-            if (importers != null) {
-                Iterator iter = importers.values().iterator();
-                while (iter.hasNext()) {
-                    ContentImporter ci = (ContentImporter) iter.next();
-                    if (ci != null) {
-                        importContentFromImporter(cms, ci);
-                    }
-                }
+            for (ContentImporter ci : contentImporters) {
+                importContentFromImporter(cms, ci);
             }
         } catch (SystemException | NotAuthorizedException | InvalidTemplateException | InvalidFileException e) {
             log.error("Error calling importer", e);
@@ -76,11 +65,10 @@ public class ContentImportJob {
     }
 
     private void importContentFromImporter(ContentManagementService cms, ContentImporter ci) throws NotAuthorizedException, InvalidFileException, InvalidTemplateException {
-        List contentList = ci.getContentList();
+        List<Content> contentList = ci.getContentList();
         if (contentList != null) {
             log.debug( "Starter import av " + contentList.size() + " elementer");
-            for (int i = 0; i < contentList.size(); i++) {
-                Content c = (Content) contentList.get(i);
+            for (Content c : contentList) {
                 ContentIdentifier cid = c.getContentIdentifier();
                 cid.setVersion(-1);
                 try {
@@ -91,11 +79,20 @@ public class ContentImportJob {
                         cms.checkInContent(c, ContentStatus.PUBLISHED);
                     }
                 } catch (ObjectLockedException e) {
-                    log.error( "Could not update:" + c.getTitle() + " was locked by someone else");
+                    log.error("Could not update:" + c.getTitle() + " was locked by someone else");
                 } catch (TransactionLockException e) {
-                    log.error( "Could not update:" + c.getTitle() + " was locked by another process/server");
+                    log.error("Could not update:" + c.getTitle() + " was locked by another process/server");
                 }
             }
+        }
+    }
+
+    @Autowired(required = false)
+    public void setContentImporters(List<ContentImporter> contentImporters){
+        if(contentImporters != null){
+            this.contentImporters = contentImporters;
+        } else {
+            this.contentImporters = Collections.emptyList();
         }
     }
 }

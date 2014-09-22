@@ -17,6 +17,7 @@ package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.publishing.common.ao.LinkDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,11 +26,13 @@ public class BrokenLinkNotifierJob {
 
 	@Autowired
     private LinkDao linkDao;
+
     @Autowired
 	private List<BrokenLinkEventListener> listeners = Collections.emptyList();
 
     private String sortBy = "";
 
+    @Scheduled(cron = "0 10 4 ? * MON")
 	public void execute() {
         List<LinkOccurrence> brokenlinks = linkDao.getAllBrokenLinks(sortBy);
         for(BrokenLinkEventListener listener : listeners){
