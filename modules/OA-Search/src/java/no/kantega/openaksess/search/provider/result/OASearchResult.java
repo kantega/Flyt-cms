@@ -3,12 +3,15 @@ package no.kantega.openaksess.search.provider.result;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.search.api.search.SearchResult;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OASearchResult extends SearchResult {
     private final int associationId;
     private final String author;
     private final List<PathEntry> pathEntries;
+    private final Map<String, Object> resultFields = new LinkedHashMap<>();
 
     /**
      * @param id                 of the content this result is based on.
@@ -39,5 +42,9 @@ public class OASearchResult extends SearchResult {
 
     public int getAssociationId() {
         return associationId;
+    }
+
+    public Map<String, Object> getResultFields(){
+        return this.resultFields;
     }
 }
