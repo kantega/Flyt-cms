@@ -1,4 +1,5 @@
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%--
 ~ Copyright 2009 Kantega AS
 ~
@@ -38,4 +39,12 @@
         <input type="submit" id="SearchButton" value="" title="<kantega:label key="aksess.search.submit"/>">
     </form>
 </div>
-</c:if>    
+</c:if>
+
+<script>
+    var url = "<aksess:geturl url="/admin/publish/CountBrokenLinks.action"/>";
+    var linkCheckerBtn = $('.linkcheck');
+    jQuery.getJSON(url, function (data) {
+        linkCheckerBtn.text(linkCheckerBtn.text() + " (" + data + ")");
+    });
+</script>

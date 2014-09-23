@@ -475,6 +475,7 @@
     <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/listbrokenlinks.jsp"/>
     </bean>
+    <bean id="CountBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.CountBrokenLinksAction"/>
 
     <!-- Statistics -->
     <bean id="StatisticsAction" class="no.kantega.publishing.admin.content.action.StatisticsAction" parent="abstractNavigateAction">

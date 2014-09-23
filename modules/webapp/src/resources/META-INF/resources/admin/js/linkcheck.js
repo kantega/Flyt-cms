@@ -30,12 +30,17 @@ openaksess.linkcheck = {
      * Loads the list of subpages for the given url.
      * @param url
      */
-    updateLinkList : function(sort) {
+    updateLinkList : function(sort, data) {
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Triggering contentupdate event");
         openaksess.content.triggerContentUpdateEvent(openaksess.linkcheck.currentUrl);
 
         openaksess.common.debug("openaksess.linkcheck.updateLinkList(): Calling ListBrokenLinks.action");
-        $("#MainPaneContent").load(properties.contextPath + "/admin/publish/ListBrokenLinks.action", {itemIdentifier: openaksess.linkcheck.currentUrl, sort:sort}, function(success){
+        if (!data) {
+            data = {};
+        }
+        data.itemIdentifier = openaksess.linkcheck.currentUrl;
+        data.sort = sort;
+        $("#MainPaneContent").load(properties.contextPath + "/admin/publish/ListBrokenLinks.action", data, function(success){
             openaksess.common.debug("openaksess.linkcheck.updateLinkList(): response from ListBrokenLinks.action received");
         });
     }

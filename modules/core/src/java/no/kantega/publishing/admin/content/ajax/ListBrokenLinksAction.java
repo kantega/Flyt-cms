@@ -29,10 +29,8 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  *
@@ -49,8 +47,10 @@ public class ListBrokenLinksAction extends SimpleAdminController {
 
         RequestParameters params = new RequestParameters(request);
         String url = params.getString(AdminRequestParameters.ITEM_IDENTIFIER);
-        List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
         String sort = params.getString("sort");
+        boolean thisPageOnly = params.getBoolean("thisPageOnly", false);
+
+        List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
         Map<String, Object> model = new HashMap<>();
 
         // Extracting currently selected content from it's url
@@ -58,8 +58,24 @@ public class ListBrokenLinksAction extends SimpleAdminController {
         if (!"".equals(url)) {
             try {
                 cid = contentIdHelper.fromRequestAndUrl(request, url);
-                brokenLinks = linkDao.getBrokenLinksUnderParent(cid, sort);
+                if (thisPageOnly) {
+                    brokenLinks = linkDao.getBrokenLinksforContentId(cid.getContentId());
+                } else {
+                    brokenLinks = linkDao.getBrokenLinksUnderParent(cid, sort);
+                }
+                Date lastChecked = null;
+                if (brokenLinks.size() > 0) {
+                    lastChecked = Collections.max(brokenLinks, new Comparator<LinkOccurrence>() {
+                        @Override
+                        public int compare(LinkOccurrence o1, LinkOccurrence o2) {
+                            return o1.getLastChecked().compareTo(o2.getLastChecked());
+                        }
+                    }).getLastChecked();
+                }
+
                 model.put("brokenLinks", brokenLinks);
+                model.put("lastChecked", lastChecked == null ? "" : new SimpleDateFormat().format(lastChecked));
+                model.put("thisPageOnly", thisPageOnly);
             } catch (ContentNotFoundException e) {
             }
         }
