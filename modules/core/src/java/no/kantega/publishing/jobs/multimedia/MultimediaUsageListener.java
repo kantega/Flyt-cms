@@ -84,12 +84,11 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
         }
     }
 
-    private void addAttributes(int contentId, List attributes) {
-        for (int i = 0; i < attributes.size(); i++) {
-            Attribute attribute = (Attribute)attributes.get(i);
+    private void addAttributes(int contentId, List<Attribute> attributes) {
+        for (Attribute attribute : attributes) {
             if (attribute instanceof MediaAttribute) {
                 // Mediaattribute contains id of mediaattribute
-                MediaAttribute mediaAttribute = (MediaAttribute)attribute;
+                MediaAttribute mediaAttribute = (MediaAttribute) attribute;
                 if (mediaAttribute.getValue() != null) {
                     try {
                         int multimediaId = Integer.parseInt(mediaAttribute.getValue());
@@ -99,7 +98,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
                     }
                 }
             } else if (attribute instanceof TextAttribute) {
-                TextAttribute textAttribute = (TextAttribute)attribute;
+                TextAttribute textAttribute = (TextAttribute) attribute;
 
                 // Links to multimediaobjects have /multimedia/ or multimedia.ap in URL
                 String value = textAttribute.getValue();
