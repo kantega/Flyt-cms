@@ -44,7 +44,7 @@ public class CacheManagerFactory implements ServletContextAware, FactoryBean<Cac
         InputStream is = XmlMerger.merge(OA_XML_CONFIG_FILE, PROJECT_XML_CONFIG_FILE, servletContext);
 
         Configuration configuration = ConfigurationFactory.parseConfiguration(is);
-        String path = System.getProperty("java.io.tmpdir") + servletContext.getContextPath();
+        String path = System.getProperty("java.io.tmpdir") + servletContext.getContextPath() + "/ehcache";
         configuration.addDiskStore(new DiskStoreConfiguration().path(path));
         configuration.setName(configuration.getName() + servletContext.getContextPath() + UUID.randomUUID());
         cacheManager = new CacheManager(configuration);
