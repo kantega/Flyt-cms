@@ -176,7 +176,7 @@
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
             <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked || !canEditContentAlias}">readonly</c:if>>
-            <div id="LockedHelp" class="ui-state-highlight" <c:if test="${!currentContent.locked && canEditContentAlias}">style="display:none"</c:if>>
+            <div id="LockedHelp" class="ui-state-highlight" style="clear:both; <c:if test="${!currentContent.locked && canEditContentAlias}">display:none</c:if>">
                 <ul>
                     <c:if test="${currentContent.locked}">
                         <li style="list-style: none"><kantega:label key="aksess.publishinfo.locked.help"/></li>
@@ -206,7 +206,7 @@
                     </div>
                 </c:if>
                 <c:if test="${!canEditContentTopics}">
-                    <div class="ui-state-highlight" >
+                    <div class="ui-state-highlight" style="clear:both">
                         <ul>
                             <li style="list-style: none"><kantega:label key="aksess.restricted.topics"/></li>
 

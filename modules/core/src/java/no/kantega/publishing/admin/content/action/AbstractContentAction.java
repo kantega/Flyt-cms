@@ -58,11 +58,11 @@ public abstract class AbstractContentAction extends AbstractController {
                     model.put("allowedTemplates", aksessService.getAllowedDisplayTemplates(current));
                 }
             }
-
-            model.put("canEditContentMetadata", canEditContentMetadata(securitySession));
-            model.put("canEditContentAlias", canEditContentAlias(securitySession));
-            model.put("canEditContentTopics", canEditContentTopics(securitySession));
         }
+
+        model.put("canEditContentMetadata", canEditContentMetadata(securitySession));
+        model.put("canEditContentAlias", canEditContentAlias(securitySession));
+        model.put("canEditContentTopics", canEditContentTopics(securitySession));
 
         model.put("topicMapsEnabled", Aksess.isTopicMapsEnabled());
 
@@ -78,8 +78,8 @@ public abstract class AbstractContentAction extends AbstractController {
      * @return true if editing is allowed
      */
     private boolean canEditContentMetadata(SecuritySession securitySession){
-        String[] restrictMetadataRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
-        return noRestriction(restrictMetadataRoles) || securitySession.isUserInRole(restrictMetadataRoles);
+        String[] restrictRoles =  Aksess.getConfiguration().getStrings("restrict.editing.content.metadata");
+        return noRestriction(restrictRoles) || securitySession.isUserInRole(restrictRoles);
     }
 
     /**
