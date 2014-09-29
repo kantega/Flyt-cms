@@ -343,6 +343,7 @@
         <property name="mailSubject" value="${security.login.requestresetpassword.mailsubject}"/>
         <property name="mailTemplate" value="${security.login.requestresetpassword.mailtemplate}"/>
     </bean>
+
     <bean class="no.kantega.publishing.security.action.ResetPasswordAction" id="ResetPasswordAction">
         <property name="resetPasswordView" value="${security.login.resetpassword.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>

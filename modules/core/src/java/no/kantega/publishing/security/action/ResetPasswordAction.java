@@ -1,7 +1,6 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.password.PasswordValidator;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.login.PostResetPasswordHandler;
@@ -11,12 +10,16 @@ import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.emptyList;
 
 public class ResetPasswordAction extends AbstractLoginAction {
     private static final Logger log = LoggerFactory.getLogger(ResetPasswordAction.class);
@@ -24,7 +27,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;
     private PasswordValidator passwordValidator;
-
+    private List<PostResetPasswordHandler> postResetPasswordHandlers;
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -88,15 +91,8 @@ public class ResetPasswordAction extends AbstractLoginAction {
         ResetPasswordTokenManager tokenManager = getResetPasswordTokenManager();
         tokenManager.deleteTokensForIdentity(identity);
 
-        Configuration c = Aksess.getConfiguration();
-        String postResetPasswordHandler = c.getString("security.login.postresetpasswordhandler");
-        if (postResetPasswordHandler != null && !postResetPasswordHandler.isEmpty()) {
-            try {
-                PostResetPasswordHandler resetHandler = (PostResetPasswordHandler)Class.forName(postResetPasswordHandler).newInstance();
-                resetHandler.handlePostResetPassword(identity, request);
-            } catch (Exception e) {
-                log.error("", e);
-            }
+        for (PostResetPasswordHandler resetPasswordHandler : postResetPasswordHandlers) {
+            resetPasswordHandler.handlePostResetPassword(identity, request);
         }
 
         model.put("loginLayout", getLoginLayout());
@@ -131,5 +127,14 @@ public class ResetPasswordAction extends AbstractLoginAction {
 
     public void setPasswordValidator(PasswordValidator passwordValidator) {
         this.passwordValidator = passwordValidator;
+    }
+
+    @Autowired(required = false)
+    public void setPostResetPasswordHandlers(List<PostResetPasswordHandler> postResetPasswordHandlers){
+        if(postResetPasswordHandlers == null){
+            this.postResetPasswordHandlers = emptyList();
+        } else {
+            this.postResetPasswordHandlers = postResetPasswordHandlers;
+        }
     }
 }
