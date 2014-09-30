@@ -294,4 +294,17 @@ public class ContentIdHelperImplTest {
         assertThat(contentIdentifier.getAssociationId(), is(4));
         assertThat(contentIdentifier.getSiteId(), is(site.getId()));
     }
+
+    @Test
+    public void shouldNotMessUpDoubleAlias() throws ContentNotFoundException {
+        String alias = "/double/alias";
+        Site site = new Site();
+        site.setAlias("/");
+        site.setId(2);
+        when(siteCache.getSites()).thenReturn(asList(site));
+
+        ContentIdentifier contentIdentifier = contentIdHelper.fromUrl(alias);
+        assertThat(contentIdentifier.getAssociationId(), is(6));
+        assertThat(contentIdentifier.getSiteId(), is(site.getId()));
+    }
 }
