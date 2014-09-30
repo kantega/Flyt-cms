@@ -88,18 +88,12 @@ public class LoginAction extends AbstractLoginAction {
             return new ModelAndView(new RedirectView(Aksess.getContextPath() + "/CreateInitialUser.action"));
         }
 
-        PasswordManager passwordManager = getPasswordManager(domain);
         ResetPasswordTokenManager resetPasswordTokenManager = getResetPasswordTokenManager();
 
         Map<String, Object> model = new HashMap<>();
 
         if (Aksess.isSecurityAllowPasswordReset() && resetPasswordTokenManager != null) {
             model.put("allowPasswordReset", true);
-        }
-
-
-        if (passwordManager == null) {
-            throw new ConfigurationException("PasswordManager == null");
         }
 
         if (username != null && password != null)  {
@@ -120,6 +114,11 @@ public class LoginAction extends AbstractLoginAction {
                     log.info( "Too many attempts. IP-adress is blocked from login:" + request.getRemoteAddr());
                 }
             } else {
+                PasswordManager passwordManager = getPasswordManager(domain);
+
+                if (passwordManager == null) {
+                    throw new ConfigurationException("PasswordManager == null");
+                }
                 if (passwordManager.verifyPassword(identity, password)) {
 
                     registerSuccessfulLogin(request, username, domain);
