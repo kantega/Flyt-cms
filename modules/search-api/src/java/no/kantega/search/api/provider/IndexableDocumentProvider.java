@@ -12,7 +12,7 @@ import java.util.concurrent.BlockingQueue;
 public interface IndexableDocumentProvider {
 
     /**
-     * @return a represenative name for the provider.
+     * @return a representative name for the provider.
      */
     public String getName();
 

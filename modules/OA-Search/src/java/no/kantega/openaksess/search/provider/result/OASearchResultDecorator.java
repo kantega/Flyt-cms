@@ -3,6 +3,7 @@ package no.kantega.openaksess.search.provider.result;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.openaksess.search.provider.transformer.MultimediaTransformer;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.path.PathEntryService;
 import no.kantega.search.api.provider.SearchResultDecorator;
@@ -25,7 +26,9 @@ public class OASearchResultDecorator implements SearchResultDecorator<OASearchRe
 
     @Override
     public Collection<String> handledindexedContentTypes() {
-        return Arrays.asList(AttachmentTransformer.HANDLED_DOCUMENT_TYPE, ContentTransformer.HANDLED_DOCUMENT_TYPE);
+        return Arrays.asList(AttachmentTransformer.HANDLED_DOCUMENT_TYPE,
+                ContentTransformer.HANDLED_DOCUMENT_TYPE,
+                MultimediaTransformer.HANDLED_DOCUMENT_TYPE);
     }
 
     private static final Logger log = LoggerFactory.getLogger(OASearchResultDecorator.class);
