@@ -122,17 +122,19 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
     public void streamMultimediaData(final int id, final InputStreamHandler ish) {
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?");
-                p.setInt(1, id);
-                ResultSet rs = p.executeQuery();
-                if (!rs.next()) {
-                    return null;
-                }
-                Blob blob = rs.getBlob("Data");
-                try {
-                    ish.handleInputStream(blob.getBinaryStream());
-                } catch (IOException e) {
-                    // User has aborted download
+                try(PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?")) {
+                    p.setInt(1, id);
+                    try(ResultSet rs = p.executeQuery()) {
+                        if (!rs.next()) {
+                            return null;
+                        }
+                        Blob blob = rs.getBlob("Data");
+                        try {
+                            ish.handleInputStream(blob.getBinaryStream());
+                        } catch (IOException e) {
+                            // User has aborted download
+                        }
+                    }
                 }
                 return null;
             }
