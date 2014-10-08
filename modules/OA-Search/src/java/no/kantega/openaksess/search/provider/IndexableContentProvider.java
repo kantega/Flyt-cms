@@ -101,9 +101,9 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         }
 
         public void run() {
-            try (Connection connection = dataSource.getConnection()){
+            try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT associations.associationId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
-                ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery()){
                 while (resultSet.next()){
                     ids.put(resultSet.getInt("associationId"));
                 }

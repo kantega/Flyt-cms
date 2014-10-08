@@ -101,10 +101,10 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
 
         @Override
         public void run() {
-            String sql = "SELECT m.id " + FROM_CLAUSE;
-            try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT id " + FROM_CLAUSE;
+            try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
-                ResultSet resultSet = statement.executeQuery();
+                ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     ids.put(resultSet.getInt("id"));
                 }

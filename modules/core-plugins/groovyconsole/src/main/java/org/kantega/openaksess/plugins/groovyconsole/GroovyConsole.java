@@ -55,6 +55,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
         return view;
     }
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.POST)
     public String processSubmit(@RequestParam("code") String code, HttpServletRequest request, ModelMap model) {
         Binding binding = new Binding();
@@ -69,8 +70,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
         inVariables.put("context", applicationContext);
         inVariables.put("servletContext", servletContext);
 
-
-        Map beans = new HashMap();
+        Map<String, Object> beans = new HashMap<>();
         beans.putAll(BeanFactoryUtils.beansOfTypeIncludingAncestors(rootApplicationContext, Object.class));
 
         inVariables.put("beans", beans);
@@ -93,7 +93,7 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
                 model.put("out", out.toString());
             }
 
-            Map variables = new HashMap();
+            Map<String, Object> variables = new HashMap<>();
             variables.putAll(binding.getVariables());
             for(String key : inVariables.keySet()) {
                 variables.remove(key);

@@ -51,9 +51,9 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
     }
 
     private void provideAttachments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
-        try (Connection connection = dataSource.getConnection()){
+        try (Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id " + FROM_CLAUSE);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            ResultSet resultSet = preparedStatement.executeQuery()){
             while (resultSet.next()){
                 int id = resultSet.getInt("Id");
                 provideDocument(indexableDocumentQueue, id);
