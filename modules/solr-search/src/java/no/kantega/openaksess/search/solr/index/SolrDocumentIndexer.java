@@ -77,9 +77,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     }
 
     public void deleteByUid(List<String> uids) {
-        if (uids.size() == 0) {
-            return;
-        }
+        log.info("Deleting by uid:" + uids);
         try {
             for (String uid : uids) {
                 UpdateResponse updateResponse = solrServer.deleteByQuery("uid:" + uid, 0);
@@ -90,8 +88,19 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     }
 
     public void deleteAllDocuments() {
+        log.info("Deleting all documents");
         try {
             solrServer.deleteByQuery("*:*");
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    @Override
+    public void deleteByDocType(String docType) {
+        log.info("Deleting by indexedContentType:" + docType);
+        try {
+            solrServer.deleteByQuery("indexedContentType:" + docType);
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }

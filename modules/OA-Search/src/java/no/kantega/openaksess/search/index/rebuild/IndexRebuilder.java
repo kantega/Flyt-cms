@@ -9,6 +9,7 @@ import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
@@ -38,12 +39,11 @@ public class IndexRebuilder {
     @Autowired
     private TaskExecutor executorService;
 
-    public List<ProgressReporter> startIndexing(int nThreads, List<String> providersToInclude, boolean clearIndex) {
-        if (clearIndex) {
-            documentIndexer.deleteAllDocuments();
-        }
+    @Value("${IndexRebuilder.queueLength:1}")
+    private int queueLength = 1;
 
-        BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(nThreads);
+    public List<ProgressReporter> startIndexing(List<String> providersToInclude) {
+        BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
 
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
         List<ProgressReporter> progressReporters = getProgressReporters(providers);
@@ -74,6 +74,10 @@ public class IndexRebuilder {
                 log.info("Starting reindex");
                 StopWatch stopWatch = new StopWatch("IndexRebuilder");
                 stopWatch.start();
+                for (ProgressReporter progressReporter : progressReporters) {
+                    String docType = progressReporter.getDocType();
+                    documentIndexer.deleteByDocType(docType);
+                }
                 try {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);

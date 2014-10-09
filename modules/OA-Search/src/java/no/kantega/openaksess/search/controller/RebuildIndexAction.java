@@ -27,7 +27,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -65,14 +64,14 @@ public class RebuildIndexAction {
     }
 
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.POST)
-    public ModelAndView handlePost(HttpServletRequest request, @RequestParam Integer numberOfConcurrentHandlers, @RequestParam(required = false, defaultValue = "false") boolean clearIndex) throws Exception {
+    public ModelAndView handlePost(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
 
         if (progressReporters == null) {
             SecuritySession securitySession = SecuritySession.getInstance(request);
             List<String> providersToInclude = getProvidersToInclude(request);
-            log.info("Rebuild index started by {}. Providers: {}, clear index: {}", securitySession.getUser().getId(), providersToInclude, clearIndex);
-            progressReporters = indexRebuilder.startIndexing(numberOfConcurrentHandlers, providersToInclude, clearIndex);
+            log.info("Rebuild index started by {}. Providers: {}", securitySession.getUser().getId(), providersToInclude);
+            progressReporters = indexRebuilder.startIndexing(providersToInclude);
         }
         return new ModelAndView(statusView, map);
     }
