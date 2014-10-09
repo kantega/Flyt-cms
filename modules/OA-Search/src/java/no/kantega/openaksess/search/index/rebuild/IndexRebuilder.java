@@ -118,4 +118,10 @@ public class IndexRebuilder {
             }
         }));
     }
+
+    public void deleteIndex() {
+        documentIndexer.deleteAllDocuments();
+        documentIndexer.commit();
+        documentIndexer.optimize();
+    }
 }

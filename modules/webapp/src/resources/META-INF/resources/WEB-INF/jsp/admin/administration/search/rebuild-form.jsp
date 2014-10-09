@@ -30,6 +30,10 @@
         .providers li{
             list-style: none outside none;
         }
+
+        .providers {
+            margin-left: 0;
+        }
     </style>
     <form action="RebuildIndex.action" name="searchindex" method="POST">
         <admin:box>
@@ -50,5 +54,14 @@
         </admin:box>
     </form>
 
+
+    <form action="DeleteIndex.action" name="deleteindex" method="POST">
+        <admin:box>
+            <h1><kantega:label key="aksess.search.rebuild.clearIndex"/></h1>
+            <div class="buttonGroup">
+                <a href="#" onclick="if(confirm('<kantega:label key="aksess.search.rebuild.clearIndexConfirm"/>')) document.deleteindex.submit()" class="button"><span class="ok"><kantega:label key="aksess.search.rebuild.clearIndex"/></span></a>
+            </div>
+        </admin:box>
+    </form>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

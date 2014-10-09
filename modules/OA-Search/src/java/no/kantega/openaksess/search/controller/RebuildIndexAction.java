@@ -68,8 +68,8 @@ public class RebuildIndexAction {
         Map<String, Object> map = new HashMap<>();
 
         if (progressReporters == null) {
-            SecuritySession securitySession = SecuritySession.getInstance(request);
             List<String> providersToInclude = getProvidersToInclude(request);
+            SecuritySession securitySession = SecuritySession.getInstance(request);
             log.info("Rebuild index started by {}. Providers: {}", securitySession.getUser().getId(), providersToInclude);
             progressReporters = indexRebuilder.startIndexing(providersToInclude);
         }
@@ -95,6 +95,14 @@ public class RebuildIndexAction {
         }
 
         return model;
+    }
+
+    @RequestMapping(value = "/admin/administration/DeleteIndex.action", method = RequestMethod.POST)
+    public ModelAndView deleteIndex(HttpServletRequest request) throws Exception {
+        SecuritySession securitySession = SecuritySession.getInstance(request);
+        log.info("{} deleted the search index", securitySession.getUser().getId());
+        indexRebuilder.deleteIndex();
+        return handleGet();
     }
 
     public void setFormView(String formView) {
