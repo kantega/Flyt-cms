@@ -1,7 +1,9 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.IndexableDocumentCustomizer;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 @Component
 public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia> {
@@ -46,6 +49,10 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         indexableDocument.addAttribute("filesize_i", document.getSize());
         indexableDocument.addAttribute("filetype_str", document.getMimeType().getType());
 
+        List<PathEntry> path = getMultimediaPath(document);
+        indexableDocument.addAttribute("location", getPathString(path));
+        indexableDocument.addAttribute("location_depth", path.size());
+
         try {
             File attachmentFile = File.createTempFile(document.getFilename(), "indexer");
             try (FileOutputStream out = new FileOutputStream(attachmentFile)){
@@ -60,6 +67,19 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
             indexableDocument = customizer.customizeIndexableDocument(document, indexableDocument);
         }
         return indexableDocument;
+    }
+
+    private String getPathString(List<PathEntry> path) {
+        StringBuilder pathBuilder = new StringBuilder();
+        for (PathEntry entry : path) {
+            pathBuilder.append('/');
+            pathBuilder.append(entry.getId());
+        }
+        return pathBuilder.toString();
+    }
+
+    private List<PathEntry> getMultimediaPath(Multimedia document) {
+        return PathWorker.getMultimediaPath(document);
     }
 
     @Override
