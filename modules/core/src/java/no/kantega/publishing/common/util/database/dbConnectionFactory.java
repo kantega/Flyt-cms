@@ -59,6 +59,7 @@ public class dbConnectionFactory {
     private static int dbMinIdleConnections = -1;
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
+    private static int dbDefaultQueryTimeout;
     private static int dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
 
     private static boolean dbUseTransactions = false;
@@ -103,6 +104,10 @@ public class dbConnectionFactory {
                 bds.setMinIdle(dbMinIdleConnections);
                 if (dbMaxWait != -1) {
                     bds.setMaxWaitMillis(1000 * dbMaxWait);
+                }
+
+                if(dbDefaultQueryTimeout != -1){
+                    bds.setDefaultQueryTimeout(dbDefaultQueryTimeout);
                 }
 
                 bds.setDriverClassName(dbDriver);
@@ -165,6 +170,7 @@ public class dbConnectionFactory {
         dbMaxIdleConnections = configuration.getInt("database.maxidleconnections", 16);
         dbMinIdleConnections = configuration.getInt("database.minidleconnections", 8);
         dbMaxWait = configuration.getInt("database.maxwait", 30);
+        dbDefaultQueryTimeout = configuration.getInt("database.defaultQueryTimeout", -1);
         dbRemoveAbandonedTimeout = configuration.getInt("database.removeabandonedtimeout", -1);
         dbEnablePooling = configuration.getBoolean("database.enablepooling", true);
         dbCheckConnections = configuration.getBoolean("database.checkconnections", true);
