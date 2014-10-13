@@ -69,14 +69,14 @@ public class InputScreenRenderer {
         JspWriter out = pageContext.getOut();
         ServletRequest request = pageContext.getRequest();
 
-        Map<String, List<ValidationError>> fieldErrors = new HashMap<String, List<ValidationError>>();
+        Map<String, List<ValidationError>> fieldErrors = new HashMap<>();
         ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
         if (errors != null) {
             for (ValidationError error : errors.getErrors()) {
                 if (error.getField() != null && error.getField().length() > 0) {
                     List<ValidationError> errorsForField = fieldErrors.get(error.getField());
                     if (errorsForField == null) {
-                        errorsForField = new ArrayList<ValidationError>();
+                        errorsForField = new ArrayList<>();
                         fieldErrors.put(error.getField(), errorsForField);
                     }
                     errorsForField.add(error);
@@ -213,11 +213,9 @@ public class InputScreenRenderer {
 
     private boolean roleCanEdit(Attribute attr, ServletRequest request) {
         String[] roles = attr.getEditableByRoles();
-        if (roles != null && roles.length > 0) {
-            return SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
-        }
+        return !(roles != null && roles.length > 0)
+                || SecuritySession.getInstance((HttpServletRequest) request).isUserInRole(roles);
 
-        return true;
     }
 
     private boolean attributeIsHiddenEmpty(Attribute attribute) {
@@ -231,7 +229,7 @@ public class InputScreenRenderer {
         return hiddenAttributes;
     }
 
-    class AttributeIsEmptyHandler implements AttributeHandler{
+    private static class AttributeIsEmptyHandler implements AttributeHandler{
         private boolean hasOnlyEmptyValues = true;
 
 
