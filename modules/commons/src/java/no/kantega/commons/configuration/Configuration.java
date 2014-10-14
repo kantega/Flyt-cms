@@ -87,7 +87,7 @@ public class Configuration {
         String val[] = null;
 
         if (name == null) {
-            throw new IllegalArgumentException("name kan ikke vaere null");
+            throw new IllegalArgumentException("name must be non-null");
         }
         String v = properties.getProperty(name);
         if (v != null) {
