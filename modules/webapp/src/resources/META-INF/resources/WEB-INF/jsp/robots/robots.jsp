@@ -2,7 +2,7 @@
 <%@ page import="no.kantega.commons.configuration.Configuration"%>
 <%@ page import="no.kantega.commons.util.URLHelper"%>
 <%@ page import="no.kantega.publishing.common.Aksess"%>
-<%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="java.io.BufferedReader"%><%@ page import="java.io.IOException"%><%@ page import="java.io.InputStream"%><%@ page import="java.io.InputStreamReader"%><%@ page import="java.util.List"%>
+<%@ page import="no.kantega.publishing.common.data.Content"%><%@ page import="no.kantega.publishing.common.data.ContentQuery"%><%@ page import="no.kantega.publishing.common.service.ContentManagementService"%><%@ page import="org.slf4j.LoggerFactory"%><%@ page import="java.io.BufferedReader"%><%@ page import="java.io.IOException"%><%@ page import="java.io.InputStream"%><%@ page import="java.io.InputStreamReader"%><%@ page import="java.util.List"%>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
@@ -36,12 +36,12 @@
             }
         }
     } catch (IOException e) {
-        System.out.println("robots.jsp: Exception while reading robots.txt: " + e.getMessage());
+        LoggerFactory.getLogger("no.kantega.openaksess.robots.jsp").error(" Exception while reading robots.txt: " + e.getMessage(), e);
     }
 
     // Hvis generering av sitemap.xml for crawlere er enabled,
     // legger vi til en linje som sier hvor denne filen ligger.
-    if (crawlerSiteMapEnabled.booleanValue()) {
+    if (crawlerSiteMapEnabled) {
         out.println("Sitemap: " + URLHelper.getRootURL(request) + "sitemap.xml");
     }
 
@@ -68,4 +68,6 @@
     out.println("Disallow: /admin/");
     out.println("Disallow: /login/");
     out.println("Disallow: /Login.action");
+    out.println("Disallow: /RequestPasswordReset.action");
+    out.println("Disallow: /ResetPassword.action");
 %>
