@@ -43,18 +43,18 @@ public class XMLCacheImpl implements XmlCache {
     public XMLCacheEntry getXMLFromCache(String id){
         XMLCacheEntry cacheEntry = null;
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement st = c.prepareStatement("select * from xmlcache where id = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement st = c.prepareStatement("select * from xmlcache where id = ?")){
             st.setString(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                cacheEntry = new XMLCacheEntry();
-                String tmp = rs.getString("Data");
-                cacheEntry.setId(id);
-                cacheEntry.setXml(XMLHelper.getDocument(tmp));
-                cacheEntry.setLastUpdated(rs.getTimestamp("LastUpdated"));
+            try(ResultSet rs = st.executeQuery()) {
+                if (rs.next()) {
+                    cacheEntry = new XMLCacheEntry();
+                    String tmp = rs.getString("Data");
+                    cacheEntry.setId(id);
+                    cacheEntry.setXml(XMLHelper.getDocument(tmp));
+                    cacheEntry.setLastUpdated(rs.getTimestamp("LastUpdated"));
+                }
             }
-            st.close();
         } catch (SQLException e) {
             log.error("SQL Feil ved databasekall", e);
             throw new SystemException("SQL Feil ved databasekall", e);
@@ -68,29 +68,30 @@ public class XMLCacheImpl implements XmlCache {
     public void storeXMLInCache(XMLCacheEntry cacheEntry){
         try (Connection c = dbConnectionFactory.getConnection()){
             boolean isUpdate = false;
+            try (PreparedStatement st = c.prepareStatement("select id from xmlcache where id = ?")){
 
-            PreparedStatement st = c.prepareStatement("select id from xmlcache where id = ?");
-            st.setString(1, cacheEntry.getId());
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                isUpdate = true;
-            }
-            st.close();
-
-            String str = XMLHelper.getString(cacheEntry.getXml());
-            if (isUpdate) {
-                st = c.prepareStatement("update xmlcache set Data = ?, LastUpdated = ? where Id = ?");
-                st.setString(1, str);
-                st.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
-                st.setString(3, cacheEntry.getId());
-            } else {
-                st = c.prepareStatement("insert into xmlcache values(?,?,?)");
                 st.setString(1, cacheEntry.getId());
-                st.setString(2, str);
-                st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()));
+                try (ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        isUpdate = true;
+                    }
+                }
             }
-            st.execute();
-            st.close();
+            String str = XMLHelper.getString(cacheEntry.getXml());
+            try(PreparedStatement st =
+                    isUpdate ? c.prepareStatement("update xmlcache set Data = ?, LastUpdated = ? where Id = ?")
+                    : c.prepareStatement("insert into xmlcache values(?,?,?)")) {
+                if (isUpdate) {
+                    st.setString(1, str);
+                    st.setTimestamp(2, new java.sql.Timestamp(new Date().getTime()));
+                    st.setString(3, cacheEntry.getId());
+                } else {
+                    st.setString(1, cacheEntry.getId());
+                    st.setString(2, str);
+                    st.setTimestamp(3, new java.sql.Timestamp(new Date().getTime()));
+                }
+                st.execute();
+            }
 
         } catch (SQLException e) {
             log.error("SQL Feil ved databasekall", e);
