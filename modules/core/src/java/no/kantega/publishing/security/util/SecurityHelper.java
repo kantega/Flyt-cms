@@ -73,7 +73,7 @@ public class SecurityHelper {
     public static Identity createApiIdentity(String aksessUserId) {
         String userId = "";
         String domain = "";
-        if (aksessUserId.indexOf(":") == -1) {
+        if (!aksessUserId.contains(":")) {
             userId = aksessUserId;
             domain = Aksess.getDefaultSecurityDomain();
         } else {
@@ -91,7 +91,7 @@ public class SecurityHelper {
     public static no.kantega.security.api.role.Role createApiRole(String aksessRoleId) {
         String roleId = "";
         String domain = "";
-        if (aksessRoleId.indexOf(":") == -1) {
+        if (!aksessRoleId.contains(":")) {
             roleId = aksessRoleId;
             domain = Aksess.getDefaultSecurityDomain();
         } else {
