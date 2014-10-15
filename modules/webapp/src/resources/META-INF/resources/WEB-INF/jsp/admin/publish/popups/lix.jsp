@@ -19,16 +19,10 @@
   --%>
 <kantega:section id="title"><kantega:label key="lix.title"/></kantega:section>
 
-<kantega:section id="head">
-</kantega:section>
-
 <kantega:section id="body">
 
     <%
         String lixScore  = request.getParameter("lix");
-        String words     = request.getParameter("wc");
-        String lwords    = request.getParameter("lwc");
-        String sentances = request.getParameter("sent");
 
         request.setAttribute("lix", Integer.parseInt(lixScore));
         request.setAttribute("wc", request.getParameter("wc"));
