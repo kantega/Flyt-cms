@@ -68,16 +68,16 @@ public class ResetPasswordAction extends AbstractLoginAction {
     public ModelAndView resetPassword(HttpServletRequest request) throws Exception {
         String password1 = request.getParameter("password1");
         String password2 = request.getParameter("password2");
+        Identity identity = getIdentityFromRequest(request);
 
-        ValidationErrors errors = passwordValidator.isValidPassword(password1, password2);
+        ValidationErrors errors = passwordValidator.isValidPassword(password1, password2, identity);
         if (errors.getLength() > 0) {
             ModelAndView modelAndView = showPasswordForm(request);
-            Map model = modelAndView.getModel();
+            Map<String, Object> model = modelAndView.getModel();
             model.put("passwordErrors", errors);
             return modelAndView;
         }
 
-        Identity identity = getIdentityFromRequest(request);
 
         PasswordManager passwordManager = getPasswordManager(identity.getDomain());
         if (passwordManager == null) {

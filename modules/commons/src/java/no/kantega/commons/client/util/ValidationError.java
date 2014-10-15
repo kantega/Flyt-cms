@@ -18,18 +18,19 @@ package no.kantega.commons.client.util;
 
 import no.kantega.commons.util.LocaleLabels;
 
-import java.util.Map;
+import java.util.Collections;
 import java.util.Locale;
-import java.util.Iterator;
+import java.util.Map;
 
 public class ValidationError {
-    private String field;
-    private String message;
-    private Map<String, Object> parameters;
+    private final String field;
+    private final String message;
+    private final Map<String, Object> parameters;
 
     public ValidationError(String field, String message) {
         this.field = field;
         this.message = message;
+        parameters = Collections.emptyMap();
     }
 
     public ValidationError(String field, String message, Map<String, Object> parameters) {
@@ -44,5 +45,13 @@ public class ValidationError {
 
     public String getField() {
         return field;
+    }
+
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

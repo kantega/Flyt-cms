@@ -1,23 +1,35 @@
 package no.kantega.commons.password;
 
 import no.kantega.commons.client.util.ValidationErrors;
+import no.kantega.security.api.common.SystemException;
+import no.kantega.security.api.identity.Identity;
+import no.kantega.security.api.password.PasswordManager;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
-public class PasswordValidator {
+public class PasswordValidator implements ApplicationContextAware {
     private int minLength = 6;
     private int minDigits = 0;
     private int minLowerCase = 0;
     private int minUpperCase = 0;
     private int minNonAlphaNumeric = 0;
+    private boolean allowUsernameInPassword = false;
+    private boolean allowSameAsPreviousPassword = false;
 
-    public ValidationErrors isValidPassword(String password, String password2) {
+    private String passwordManagerName;
+    private Map<String, PasswordManager> passwordManagers;
+
+    public ValidationErrors isValidPassword(String password, String password2, Identity identity) {
         ValidationErrors errors = new ValidationErrors();
 
         Map<String, Object> params = new HashMap<>();
 
-        if (password == null || !password.equals(password2)) {
+        if (!Objects.equals(password, password2)) {
             errors.add("password", "password.mismatch", params);
             return errors;
         }
@@ -68,7 +80,29 @@ public class PasswordValidator {
             errors.add("password", "password.minnonalpha", params);
         }
 
+        if(!allowUsernameInPassword && password.contains(identity.getUserId())){
+            errors.add("password", "password.usernameinpassword", params);
+        }
+
+        if(!allowSameAsPreviousPassword && passwordMatchesExisting(identity, password)){
+            errors.add("password", "password.matchesPrevious", params);
+
+        }
+
         return errors;
+    }
+
+    private boolean passwordMatchesExisting(Identity identity, String password) {
+        PasswordManager passwordManager = passwordManagers.get(passwordManagerName);
+        if(passwordManager == null){
+            throw new IllegalStateException("Passwordmanager with name " + passwordManagerName + " not found!");
+        }
+        try {
+            return passwordManager.verifyPassword(identity, password);
+        } catch (SystemException e) {
+            throw new IllegalStateException("Error verifying password", e);
+
+        }
     }
 
     public void setMinLength(int minLength) {
@@ -91,23 +125,20 @@ public class PasswordValidator {
         this.minNonAlphaNumeric = minNonAlphaNumeric;
     }
 
-    public int getMinLength() {
-        return minLength;
+    public void setAllowUsernameInPassword(boolean allowUsernameInPassword) {
+        this.allowUsernameInPassword = allowUsernameInPassword;
     }
 
-    public int getMinDigits() {
-        return minDigits;
+    public void setAllowSameAsPreviousPassword(boolean allowSameAsPreviousPassword) {
+        this.allowSameAsPreviousPassword = allowSameAsPreviousPassword;
     }
 
-    public int getMinLowerCase() {
-        return minLowerCase;
+    public void setPasswordManagerName(String passwordManagerName) {
+        this.passwordManagerName = passwordManagerName;
     }
 
-    public int getMinUpperCase() {
-        return minUpperCase;
-    }
-
-    public int getMinNonAlphaNumeric() {
-        return minNonAlphaNumeric;
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        passwordManagers = applicationContext.getBeansOfType(PasswordManager.class);
     }
 }

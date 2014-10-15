@@ -149,7 +149,7 @@ public class ResetPasswordController extends AbstractUserAdminController {
 
             } else {
                 // Just set the password
-                ValidationErrors errors = passwordValidator.isValidPassword(password1, password2);
+                ValidationErrors errors = passwordValidator.isValidPassword(password1, password2, ident);
                 if (errors.getLength() > 0) {
                     model.put("errors", errors);
                 } else {

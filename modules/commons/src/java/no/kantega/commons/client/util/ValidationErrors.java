@@ -21,16 +21,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 /**
- *
+ * Container for a list of <code>ValidationError</code>
  */
-
 public class ValidationErrors {
     List<ValidationError> errors = new ArrayList<>();
-
-    public ValidationErrors() {
-    }
 
     /**
      * Add error message
@@ -56,8 +51,7 @@ public class ValidationErrors {
     }
 
     /**
-     * Get number of validation errors
-     * @return
+     * @return number of validation errors
      */
     public int getLength() {
         return errors.size();
@@ -80,7 +74,7 @@ public class ValidationErrors {
     /**
      * Get the field with error
      * @param i - index
-     * @return
+     * @return field with index i
      */
     public String getField(int i) {
         return item(i).getField();
