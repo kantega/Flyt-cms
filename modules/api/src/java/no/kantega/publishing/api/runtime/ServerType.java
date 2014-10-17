@@ -1,4 +1,4 @@
-package no.kantega.publishing.common.data.enums;
+package no.kantega.publishing.api.runtime;
 
 /**
  *
