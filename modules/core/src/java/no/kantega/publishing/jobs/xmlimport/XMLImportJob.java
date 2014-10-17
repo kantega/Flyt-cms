@@ -18,37 +18,36 @@ package no.kantega.publishing.jobs.xmlimport;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XMLHelper;
+import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.ServerType;
-import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.w3c.dom.Document;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
-public class XMLImportJob  extends QuartzJobBean {
+public class XMLImportJob   {
     private static final Logger log = LoggerFactory.getLogger(XMLImportJob.class);
-    private String id  = null;
-    private String url = null;
+    private String id;
+    private String url;
     private XMLImportValidator validator = new DefaultXMLImportValidator();
     private XmlCache xmlCache;
+    @Autowired
+    private ServerType serverType;
 
-    protected void executeInternal(org.quartz.JobExecutionContext jobExecutionContext) throws org.quartz.JobExecutionException {
-        xmlCache = (XmlCache)jobExecutionContext.getMergedJobDataMap().get("xmlCache");
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
+    private ServerType disableForServerType;
+
+    protected void importXml() {
+        if (Objects.equals(serverType, disableForServerType)) {
+            log.info( "{} Import {} disabled for server type {}", id, url, disableForServerType);
             return;
         }
 
-        if (id == null || url == null) {
-            log.error( "Missing parameter id or url");
-            throw new JobExecutionException();
-        }
         log.info( "XMLImport started:" + id + ", url:" + url);
 
         try {
@@ -78,16 +77,22 @@ public class XMLImportJob  extends QuartzJobBean {
         return isValid;
     }
 
+    @Required
     public void setId(String id) {
         this.id = id;
     }
 
+    @Required
     public void setUrl(String url) {
         this.url = url;
     }
 
     public void setValidator(XMLImportValidator validator) {
         this.validator = validator;
+    }
+
+    public void setDisableForServerType(ServerType disableForServerType) {
+        this.disableForServerType = disableForServerType;
     }
 }
 
