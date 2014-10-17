@@ -18,7 +18,7 @@ package no.kantega.publishing.common;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
-import no.kantega.publishing.common.data.enums.ServerType;
+import no.kantega.publishing.api.runtime.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

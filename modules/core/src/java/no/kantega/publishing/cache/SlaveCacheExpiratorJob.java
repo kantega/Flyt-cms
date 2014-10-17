@@ -2,12 +2,12 @@ package no.kantega.publishing.cache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
