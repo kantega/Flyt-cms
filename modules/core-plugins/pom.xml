@@ -31,7 +31,7 @@
         <module>forms</module>
         <module>groovyconsole</module>
         <module>groovyscripts</module>
-        <module>jobexecuter</module>
+        <!--<module>jobexecuter</module>-->
         <module>core-plugins-dep</module>
     </modules>
 
