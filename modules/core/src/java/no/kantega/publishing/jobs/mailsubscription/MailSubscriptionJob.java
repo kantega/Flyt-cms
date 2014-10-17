@@ -18,9 +18,9 @@ package no.kantega.publishing.jobs.mailsubscription;
 
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
+import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
-import no.kantega.publishing.common.data.enums.ServerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;

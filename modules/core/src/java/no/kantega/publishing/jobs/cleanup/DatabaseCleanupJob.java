@@ -17,8 +17,8 @@
 package no.kantega.publishing.jobs.cleanup;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
