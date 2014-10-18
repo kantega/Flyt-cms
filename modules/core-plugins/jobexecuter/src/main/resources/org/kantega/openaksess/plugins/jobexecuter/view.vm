@@ -32,10 +32,3 @@
     #end
 #end
 #applyAdminLayout()
-<script type="text/javascript" src="${contextPath}/admin/oap/static/js/jquery.tablesorter.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function(){
-                $("#jobs").tablesorter( {sortList: [[0,0]]});
-            }
-    );
-</script>
