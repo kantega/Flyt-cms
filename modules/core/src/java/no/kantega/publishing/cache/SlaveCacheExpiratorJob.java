@@ -2,10 +2,11 @@ package no.kantega.publishing.cache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.runtime.ServerType;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.eventlog.Event;
@@ -36,13 +37,13 @@ public class SlaveCacheExpiratorJob {
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private SystemConfiguration configuration;
+
     @Scheduled(fixedRateString = "${jobs.slaveCacheExpirator.period}", initialDelay = 1000 * 60 )
+    @DisableOnServertype(ServerType.MASTER)
     public void expireSlaveCache() {
-        if (Aksess.getServerType() != ServerType.SLAVE) {
-            log.error("This job should not run on server type " + Aksess.getServerType());
-            return;
-        }
-        if(!Aksess.getConfiguration().getBoolean("caching.enabled", false)) {
+        if(!configuration.getBoolean("caching.enabled", false)) {
             return;
         }
 

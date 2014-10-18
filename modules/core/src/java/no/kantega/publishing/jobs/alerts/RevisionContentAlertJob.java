@@ -20,7 +20,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.runtime.ServerType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
@@ -47,13 +47,8 @@ public class RevisionContentAlertJob {
     private ContentAO contentAO;
 
     @Scheduled(cron = "${jobs.revision.trigger}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void revisionContentAlert() {
-
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
-        
         try {
             log.debug( "Looking for content revision in " + daysBeforeWarning + " days");
 

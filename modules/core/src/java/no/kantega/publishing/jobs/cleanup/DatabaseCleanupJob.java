@@ -18,6 +18,7 @@ package no.kantega.publishing.jobs.cleanup;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.runtime.ServerType;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -47,12 +48,8 @@ public class DatabaseCleanupJob {
     private ContentAO contentAO;
 
     @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void cleanDatabase() {
-
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
         log.info("Starting database cleanup job");
 
         try (Connection c = dbConnectionFactory.getConnection()){

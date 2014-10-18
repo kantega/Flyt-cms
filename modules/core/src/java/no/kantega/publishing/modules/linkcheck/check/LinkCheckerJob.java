@@ -19,7 +19,6 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.LinkDao;
@@ -108,13 +107,6 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     public void runLinkChecker() {
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        } else {
-            log.info("Started LinkCheckerJob");
-        }
-
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }

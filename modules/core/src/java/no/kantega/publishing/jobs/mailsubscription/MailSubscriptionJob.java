@@ -19,6 +19,7 @@ package no.kantega.publishing.jobs.mailsubscription;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
 import no.kantega.publishing.api.runtime.ServerType;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ScheduleLogAO;
 import org.slf4j.Logger;
@@ -38,12 +39,6 @@ public class MailSubscriptionJob  {
     private List<MailSubscriptionAgent> mailSubscriptionAgents;
 
     private void executeInternal(MailSubscriptionInterval interval) {
-
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
-
         boolean jobDisabled = Aksess.getConfiguration().getBoolean("mailsubscription.job.disabled", false);
 
         if(jobDisabled){
@@ -69,15 +64,19 @@ public class MailSubscriptionJob  {
     }
 
     @Scheduled(cron = "${mail.subscription.trigger.weekly}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void mailSubscriptionJobWeekly(){
         executeInternal(MailSubscriptionInterval.weekly);
     }
+
     @Scheduled(cron = "${mail.subscription.trigger.daily}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void mailSubscriptionTriggerDaily(){
         executeInternal(MailSubscriptionInterval.daily);
     }
 
     @Scheduled(cron = "${mail.subscription.trigger.immediate}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void mailSubscriptionTriggerImmediate(){
         executeInternal(MailSubscriptionInterval.immediate);
     }
