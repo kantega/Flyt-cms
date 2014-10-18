@@ -37,7 +37,7 @@ public class LinkCrawlerJob {
     private LinkEmitter emitter;
 
     @Scheduled(cron = "${jobs.linkCrawl.trigger}")
-    public void execute() {
+    public void runLinkCrawler() {
         log.info("Executing LinkCrawlerJob");
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
@@ -49,7 +49,7 @@ public class LinkCrawlerJob {
         }
         linkDao.saveAllLinks(emitter);
         log.info("Saved all links");
-        checker.execute();
+        checker.runLinkChecker();
 
         log.info("Execution of LinkCrawlerJob finished");
     }

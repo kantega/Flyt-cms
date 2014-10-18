@@ -47,7 +47,7 @@ public class ContentImportJob {
 
 
     @Scheduled(cron = "${jobs.contentimport.trigger}")
-    public void execute() {
+    public void importContent() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
