@@ -54,7 +54,7 @@ public class ExpireContentAlertJob {
     private ContentAO contentAO;
 
     @Scheduled(cron = "${jobs.expirecontent.trigger}")
-    public void execute() {
+    public void expireContentAlert() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");

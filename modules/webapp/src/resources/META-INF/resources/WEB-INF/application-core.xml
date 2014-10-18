@@ -24,6 +24,7 @@
     <context:annotation-config/>
 
     <bean class="no.kantega.publishing.admin.config.SecuritySessionConfiguration"/>
+    <bean class="no.kantega.publishing.configuration.ServertypeConfig"/>
 
     <bean id="contentManagmentService" class="no.kantega.publishing.common.service.impl.ContentServiceLegacyImpl">
         <lookup-method name="getSecuritySession" bean="securitySession"/>

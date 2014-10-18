@@ -108,7 +108,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    public void execute() {
+    public void runLinkChecker() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;

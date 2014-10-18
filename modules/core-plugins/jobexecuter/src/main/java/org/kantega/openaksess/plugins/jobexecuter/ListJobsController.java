@@ -1,15 +1,12 @@
 package org.kantega.openaksess.plugins.jobexecuter;
 
+import com.google.common.base.Predicate;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.AksessLocaleResolver;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.lang.StringUtils;
 import org.kantega.jexmec.PluginManager;
-import org.quartz.JobExecutionContext;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.support.AopUtils;
@@ -21,86 +18,97 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.support.MethodInvokingRunnable;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 import java.util.*;
+
+import static com.google.common.collect.Collections2.filter;
+import static java.util.Arrays.asList;
 
 /**
  * Controller that lists all jobs and may execute them.
  */
-public class ListJobsController extends AbstractController {
+@Controller
+@RequestMapping("/administration/jobs")
+public class ListJobsController {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private PluginManager<OpenAksessPlugin> pluginManager;
 
+    @Autowired
+    private SystemConfiguration configuration;
+
     /**
-     * ListJobsController is used to find all jobs that are scheduled using a quartz scheduler.
+     * ListJobsController is used to find all jobs that are scheduled using a Springs scheduling.
+     * Like <code>@Scheduled</code> and, <code>&lt;task:scheduled-tasks&gt; ... &lt;/task:scheduled-tasks&gt;</code>
      * Both jobs specified in a local projects and jobs specified by OpenAksess in application-jobs.xml
      * are listed. Use the aksess config parameter jobexecuter.jobs to limit which jobs are available.
      *
      * @param request The HTTP request
-     * @param response The HTTP response
      * @return ModelAndView Map containing both currently executing jobs and triggers specifying when they will fire.
      * @throws Exception
      */
-    @Override
-    public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        String[] jobs = Aksess.getConfiguration().getStrings("jobexecuter.jobs","all");
-
+    @RequestMapping(method = RequestMethod.GET)
+    public ModelAndView listJobs(HttpServletRequest request) throws Exception {
         LocaleResolver aksessLocaleResolver = new AksessLocaleResolver();
         request.setAttribute(DispatcherServlet.LOCALE_RESOLVER_ATTRIBUTE, aksessLocaleResolver);
 
-
         Map<String, Object> model = new HashMap<>();
 
-        String runJob = request.getParameter("runJobName");
-        String runGroupName = request.getParameter("runGroupName");
-        String runAnnotatedBeanJob = request.getParameter("runAnnotatedBeanClassName");
-        final String runAnnotatedMethodJob = request.getParameter("runAnnotatedMethodName");
-
         ApplicationContext rootcontext = RootContext.getInstance();
-        List <Scheduler> schedulers = new ArrayList<>();
-        schedulers.addAll(getSchedulersFromContext(rootcontext));
-        schedulers.addAll(getSchedulersFromPlugins());
-
-        if (StringUtils.isNotEmpty(runJob) && StringUtils.isNotEmpty(runGroupName)) {
-            executeSchedulerJobs(runJob, runGroupName, schedulers);
-        } else if (StringUtils.isNotEmpty(runAnnotatedBeanJob)){
-            executeAnnotatedScheduledJob(runAnnotatedBeanJob, runAnnotatedMethodJob, rootcontext);
-            return new ModelAndView(new RedirectView("jobs"));
-        }
-
-        putTriggersAndCurrentlyExecuting(jobs, model, schedulers);
 
         putAnnotationScheduledBeans(model, rootcontext);
 
         return new ModelAndView("org/kantega/openaksess/plugins/jobexecuter/view", model);
     }
 
+    @RequestMapping(method = RequestMethod.POST)
+    public ModelAndView executeJob(HttpServletRequest request) throws Exception {
+        String runAnnotatedBeanJob = request.getParameter("runAnnotatedBeanClassName");
+        String runAnnotatedMethodJob = request.getParameter("runAnnotatedMethodName");
+        SecuritySession securitySession = SecuritySession.getInstance(request);
+        log.info("{} is triggering job {} {}", securitySession.getUser().getId(), runAnnotatedBeanJob, runAnnotatedMethodJob);
+
+        ApplicationContext rootcontext = RootContext.getInstance();
+        executeAnnotatedScheduledJob(runAnnotatedBeanJob, runAnnotatedMethodJob, rootcontext);
+
+        return listJobs(request);
+    }
+
     private void putAnnotationScheduledBeans(Map<String, Object> model, ApplicationContext rootcontext) {
         Collection<ApplicationContext> applicationContexts = getPluginApplicationContexts();
         applicationContexts.add(rootcontext);
         Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs = getScheduledAnnotatedJobs(applicationContexts);
+
+        String[] enabledJobs = configuration.getStrings("jobexecuter.jobs","all");
+        if(shouldFilterJobs(enabledJobs)){
+            scheduledAnnotatedJobs = filterJobs(scheduledAnnotatedJobs, asList(enabledJobs));
+        }
+
         model.put("annotationScheduledBeans", scheduledAnnotatedJobs);
     }
 
-    private void executeSchedulerJobs(String runJob, String runGroupName, List<Scheduler> schedulers) throws SchedulerException {
-        for (Scheduler scheduler : schedulers) {
-            if (scheduler.getJobDetail(runJob,runGroupName) != null) {
-                log.info("Triggering job {}", runJob);
-                scheduler.triggerJob(runJob,runGroupName);
+    private Collection<AnnotatedScheduledJob> filterJobs(Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs, final List<String> enabledJobs) {
+        return filter(scheduledAnnotatedJobs, new Predicate<AnnotatedScheduledJob>() {
+            @Override
+            public boolean apply(AnnotatedScheduledJob annotatedScheduledJob) {
+                return enabledJobs.contains(annotatedScheduledJob.toString());
             }
-        }
+        });
+    }
+
+    private boolean shouldFilterJobs(String[] jobs) {
+        return !(jobs.length == 0 || jobs[0].equals("all"));
     }
 
     private void executeAnnotatedScheduledJob(String runAnnotatedBeanJob, String runAnnotatedMethodJob, ApplicationContext rootcontext) {
@@ -126,7 +134,7 @@ public class ListJobsController extends AbstractController {
         } catch (BeansException e) {
             return false;
         } catch (ClassNotFoundException e) {
-            logger.error("Could not find class", e);
+            log.error("Could not find class", e);
             return false;
         }
 
@@ -134,7 +142,6 @@ public class ListJobsController extends AbstractController {
         ReflectionUtils.doWithMethods(targetClass, new ReflectionUtils.MethodCallback() {
             public void doWith(Method method) throws IllegalArgumentException, IllegalAccessException {
                 if (method.getName().equals(runAnnotatedMethodJob)) {
-                    log.info("Triggering job {} {}", runAnnotatedBeanJob, runAnnotatedMethodJob);
                     MethodInvokingRunnable runnable = new MethodInvokingRunnable();
                     runnable.setTargetObject(bean);
                     runnable.setTargetMethod(method.getName());
@@ -149,62 +156,6 @@ public class ListJobsController extends AbstractController {
             }
         });
         return true;
-    }
-
-    private void putTriggersAndCurrentlyExecuting(String[] jobs, Map<String, Object> model, List<Scheduler> schedulers) throws SchedulerException {
-        List<JobExecutionContext> currentyExecuting = new ArrayList<>();
-
-        List<Trigger> triggers = new ArrayList<>();
-        for (Scheduler scheduler : schedulers) {
-            for (String group : scheduler.getTriggerGroupNames()) {
-                for (String trigger : scheduler.getTriggerNames(group)) {
-                    Trigger trig = scheduler.getTrigger(trigger, group);
-                    /*
-                    If trigger does not have any nextfiretime it is caused by a manual execution of a job.
-                    We do not want these triggers included, because they will result in duplicates.
-                    */
-                    if (trig.getNextFireTime() != null) {
-                        triggers.add(trig);
-                    }
-                }
-            }
-            currentyExecuting.addAll(scheduler.getCurrentlyExecutingJobs());
-        }
-        triggers = filterJobs(triggers, jobs);
-
-        model.put("currentlyExecuting", currentyExecuting);
-        model.put("triggers", triggers);
-    }
-
-    private List<Trigger> filterJobs(List<Trigger> triggers, String[] jobs) {
-        boolean allJobs = jobs[0].equals("all");
-        if (allJobs) {
-            return triggers;
-        } else {
-            ArrayList<Trigger> filtered = new ArrayList<>();
-            for (Trigger t : triggers) {
-                for (String s : jobs) {
-                    if (t.getJobName().equalsIgnoreCase(s)) {
-                        filtered.add(t);
-                    }
-                }
-            }
-            return filtered;
-        }
-    }
-
-    private Collection<Scheduler> getSchedulersFromContext(ApplicationContext rootcontext) {
-        return rootcontext.getBeansOfType(Scheduler.class).values();
-    }
-
-    private Collection<Scheduler> getSchedulersFromPlugins() {
-        List<Scheduler> schedulers = new ArrayList<>();
-
-        for (ApplicationContext pluginContext : getPluginApplicationContexts()) {
-            schedulers.addAll(getSchedulersFromContext(pluginContext));
-
-        }
-        return schedulers;
     }
 
     private Collection<ApplicationContext> getPluginApplicationContexts(){
@@ -245,7 +196,7 @@ public class ListJobsController extends AbstractController {
     /**
      * Find beans annotated with @Scheduled
      */
-    private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobsFromApplicationContext(ApplicationContext context) {
+    private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobsFromApplicationContext(final ApplicationContext context) {
         final Collection<AnnotatedScheduledJob> scheduledBeans = new HashSet<>();
         Map<String, Object> allBeans = context.getBeansOfType(Object.class);
         for (final Map.Entry<String, Object> bean : allBeans.entrySet()) {
@@ -283,6 +234,11 @@ public class ListJobsController extends AbstractController {
 
         public String getCron() {
             return cron;
+        }
+
+        @Override
+        public String toString() {
+            return className + '.' + methodName;
         }
     }
 }

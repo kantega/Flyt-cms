@@ -47,7 +47,7 @@ public class RevisionContentAlertJob {
     private ContentAO contentAO;
 
     @Scheduled(cron = "${jobs.revision.trigger}")
-    public void execute() {
+    public void revisionContentAlert() {
 
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");

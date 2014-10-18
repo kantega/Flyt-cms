@@ -31,7 +31,7 @@ public class ContentStateChangeJob  {
     private ContentStateUpdater stateUpdater;
 
     @Scheduled(cron = "${jobs.contentstatechange.trigger:0 0/5 * * * ?}")
-    public void execute() {
+    public void contentStateChange() {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
