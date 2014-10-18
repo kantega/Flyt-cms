@@ -67,7 +67,8 @@ public class ListJobsController {
 
         ApplicationContext rootcontext = RootContext.getInstance();
 
-        putAnnotationScheduledBeans(model, rootcontext);
+
+        model.put("annotationScheduledBeans", getAnnotationScheduledBeans(rootcontext));
 
         return new ModelAndView("org/kantega/openaksess/plugins/jobexecuter/view", model);
     }
@@ -85,17 +86,23 @@ public class ListJobsController {
         return listJobs(request);
     }
 
-    private void putAnnotationScheduledBeans(Map<String, Object> model, ApplicationContext rootcontext) {
+    private List<AnnotatedScheduledJob> getAnnotationScheduledBeans(ApplicationContext rootcontext) {
         Collection<ApplicationContext> applicationContexts = getPluginApplicationContexts();
         applicationContexts.add(rootcontext);
-        Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs = getScheduledAnnotatedJobs(applicationContexts);
+        List<AnnotatedScheduledJob> scheduledAnnotatedJobs = getScheduledAnnotatedJobs(applicationContexts);
 
         String[] enabledJobs = configuration.getStrings("jobexecuter.jobs","all");
         if(shouldFilterJobs(enabledJobs)){
-            scheduledAnnotatedJobs = filterJobs(scheduledAnnotatedJobs, asList(enabledJobs));
+            scheduledAnnotatedJobs = new ArrayList<>(filterJobs(scheduledAnnotatedJobs, asList(enabledJobs)));
         }
 
-        model.put("annotationScheduledBeans", scheduledAnnotatedJobs);
+        Collections.sort(scheduledAnnotatedJobs, new Comparator<AnnotatedScheduledJob>() {
+            @Override
+            public int compare(AnnotatedScheduledJob o1, AnnotatedScheduledJob o2) {
+                return o1.getMethodName().toLowerCase().compareTo(o2.getMethodName().toLowerCase());
+            }
+        });
+        return scheduledAnnotatedJobs;
     }
 
     private Collection<AnnotatedScheduledJob> filterJobs(Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs, final List<String> enabledJobs) {
@@ -172,14 +179,14 @@ public class ListJobsController {
         return contexts;
     }
 
-    private Collection<AnnotatedScheduledJob> getScheduledAnnotatedJobs(Collection<ApplicationContext> applicationContexts){
+    private List<AnnotatedScheduledJob> getScheduledAnnotatedJobs(Collection<ApplicationContext> applicationContexts){
         Collection<AnnotatedScheduledJob> jobs = new HashSet<>();
 
         for (ApplicationContext applicationContext : applicationContexts) {
             jobs.addAll(getScheduledAnnotatedJobsFromApplicationContext(applicationContext));
             jobs.addAll(getTaskScheduledJobsFromApplicationContext(applicationContext));
         }
-        return jobs;
+        return new ArrayList<>(jobs);
     }
 
     /**
@@ -213,7 +220,7 @@ public class ListJobsController {
         return scheduledBeans;
     }
 
-    public class AnnotatedScheduledJob {
+    public static class AnnotatedScheduledJob {
         private final String className;
         private final String methodName;
         private final String cron;
