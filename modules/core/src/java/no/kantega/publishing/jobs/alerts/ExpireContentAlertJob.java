@@ -23,6 +23,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.runtime.ServerType;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -54,16 +55,10 @@ public class ExpireContentAlertJob {
     private ContentAO contentAO;
 
     @Scheduled(cron = "${jobs.expirecontent.trigger}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void expireContentAlert() {
-
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
-        
         try {
             log.info( "Looking for content will expire in less than " + daysBeforeWarning + " days");
-
 
             List<Site> sites = siteCache.getSites();
             for (Site site : sites) {

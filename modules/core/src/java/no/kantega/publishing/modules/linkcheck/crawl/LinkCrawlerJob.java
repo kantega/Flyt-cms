@@ -17,6 +17,7 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.publishing.api.runtime.ServerType;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
@@ -37,16 +38,13 @@ public class LinkCrawlerJob {
     private LinkEmitter emitter;
 
     @Scheduled(cron = "${jobs.linkCrawl.trigger}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void runLinkCrawler() {
-        log.info("Executing LinkCrawlerJob");
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
-
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }
+        log.info("Executing LinkCrawlerJob");
+
         linkDao.saveAllLinks(emitter);
         log.info("Saved all links");
         checker.runLinkChecker();
@@ -58,7 +56,4 @@ public class LinkCrawlerJob {
         this.checker = checker;
     }
 
-    public void setLinkDao(LinkDao linkDao) {
-        this.linkDao = linkDao;
-    }
 }

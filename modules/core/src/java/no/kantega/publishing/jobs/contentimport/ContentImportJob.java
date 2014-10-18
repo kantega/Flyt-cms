@@ -22,7 +22,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.runtime.ServerType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
@@ -45,13 +45,9 @@ public class ContentImportJob {
     private static final Logger log = LoggerFactory.getLogger(ContentImportJob.class);
     private List<ContentImporter> contentImporters;
 
-
     @Scheduled(cron = "${jobs.contentimport.trigger}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void importContent() {
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
         try {
             SecuritySession session = SecuritySession.createNewAdminInstance();
             ContentManagementService cms = new ContentManagementService(session);

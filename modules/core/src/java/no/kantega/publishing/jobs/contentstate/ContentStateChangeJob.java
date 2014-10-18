@@ -18,7 +18,7 @@ package no.kantega.publishing.jobs.contentstate;
 
 
 import no.kantega.publishing.api.runtime.ServerType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,11 +31,9 @@ public class ContentStateChangeJob  {
     private ContentStateUpdater stateUpdater;
 
     @Scheduled(cron = "${jobs.contentstatechange.trigger:0 0/5 * * * ?}")
+    @DisableOnServertype(ServerType.SLAVE)
     public void contentStateChange() {
-        if (Aksess.getServerType() == ServerType.SLAVE) {
-            log.info( "Job is disabled for server type slave");
-            return;
-        }
+        log.info("Running ContentStateChangeJob");
         stateUpdater.expireContent();
         stateUpdater.publishContent();
     }
