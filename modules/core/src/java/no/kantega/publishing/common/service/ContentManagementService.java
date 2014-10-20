@@ -159,7 +159,7 @@ public class ContentManagementService {
 
         Content c = contentAO.checkOutContent(id);
         if (!securitySession.isAuthorized(c, Privilege.UPDATE_CONTENT)) {
-            throw new NotAuthorizedException("checkOutContent");
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to checkOutContent: " + c.getId());
         }
 
         if (request != null) {
@@ -285,7 +285,7 @@ public class ContentManagementService {
         }
 
         if (!securitySession.isAuthorized(c, Privilege.VIEW_CONTENT)) {
-            throw new NotAuthorizedException("User not authorized to view: " + c.getId());
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to view: " + c.getId());
         }
 
         if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode && !c.getModifiedBy().equals(userId)) {
@@ -324,7 +324,7 @@ public class ContentManagementService {
         boolean isNewContent = content.isNew();
 
         if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
-            throw new NotAuthorizedException("checkInContent");
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to checkInContent: " + content.getId());
         }
 
         String userId = securitySession.getUser().getId();
@@ -607,7 +607,7 @@ public class ContentManagementService {
         Content c = getContent(cid);
         boolean hasBeenPublished = contentAO.hasBeenPublished(c.getId());
         if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
-            throw new NotAuthorizedException("setContentStatus");
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to setContentStatus: " + c.getId());
         }
 
         if (note != null && note.length() > 0) {
@@ -682,7 +682,7 @@ public class ContentManagementService {
                     priv = Privilege.APPROVE_CONTENT;
                 }
                 if (!securitySession.isAuthorized(c, priv)) {
-                    throw new NotAuthorizedException("deleteContent");
+                    throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to deleteContent: " + c.getId());
                 }
                 if (Aksess.isEventLogEnabled()) {
                     title = c.getTitle();
@@ -720,7 +720,7 @@ public class ContentManagementService {
         if (id != null) {
             Content c = getContent(id);
             if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
-                throw new NotAuthorizedException("deleteContentVersion");
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to deleteContentVersion: " + c.getId());
             }
             if (c != null) {
                 title = c.getTitle();
@@ -901,7 +901,7 @@ public class ContentManagementService {
                 contentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
                 eventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
             } else {
-                throw new NotAuthorizedException("Cant update display period");
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to updateDisplayPeriod: " + content.getId());
             }
         }
     }
@@ -1390,7 +1390,7 @@ public class ContentManagementService {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to add attachment");
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to add attachment for content: " + content.getId());
             }
         }
 
@@ -1430,7 +1430,7 @@ public class ContentManagementService {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
             Content content = getContent(cid);
             if (!securitySession.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to delete attachment");
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " authorized to delete attachment for content " + content.getId());
             }
         }
 

@@ -90,10 +90,10 @@ public class MultimediaService {
             ContentIdentifier cid = ContentIdentifier.fromContentId(multimedia.getContentId());
             Content content = contentAO.getContent(cid, false);
             if (!securitySession.isAuthorized(content, Privilege.VIEW_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized for id:" + id);
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " authorized for id:" + id);
             }
         } else if (multimedia != null && !securitySession.isAuthorized(multimedia, Privilege.VIEW_CONTENT)) {
-            throw new NotAuthorizedException("Not authorized for id:" + id);
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " authorized for id:" + id);
         }
 
         return multimedia;
@@ -168,7 +168,7 @@ public class MultimediaService {
             newParent.setSecurityId(0);
         }
         if (!securitySession.isAuthorized(newParent, Privilege.UPDATE_CONTENT) || (!securitySession.isAuthorized(mm, Privilege.UPDATE_CONTENT))) {
-            throw new NotAuthorizedException("Kan ikke flytte multimedia");
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " is not authorized to move multimedia " + mm.getId());
         }
 
         multimediaDao.moveMultimedia(mmId, newParentId);
@@ -217,7 +217,7 @@ public class MultimediaService {
                 title = t.getName();
             }
             if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
-                throw new NotAuthorizedException("Not authorized to delete multimedia object with id " + id + ".");
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " authorized to delete multimedia object with id " + id + ".");
             }
         }
         Multimedia multimedia = getMultimedia(id);

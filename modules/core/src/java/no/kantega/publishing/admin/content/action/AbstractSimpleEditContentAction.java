@@ -103,7 +103,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
                 request.setAttribute(AdminRequestParameters.MINI_ADMIN_MODE, true);
                 return showEditForm(request, content);
             } else {
-                throw new NotAuthorizedException("Not authorized");
+                throw new NotAuthorizedException("Not authorized to edit " + content.getId());
             }
         }
     }

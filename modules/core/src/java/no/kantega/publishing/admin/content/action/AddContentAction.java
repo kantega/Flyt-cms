@@ -76,7 +76,7 @@ public class AddContentAction extends AbstractController {
         }
 
         if (!securitySession.isAuthorized(parent, Privilege.UPDATE_CONTENT)) {
-            throw new NotAuthorizedException("Not authorized to edit:" + parent.getTitle());
+            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to edit:" + parent.getTitle());
         }
 
         model.put("parent", parent);
