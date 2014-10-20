@@ -19,6 +19,7 @@ package no.kantega.publishing.security.action;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,9 +48,10 @@ public class LogoutAction extends HttpServlet {
             session.removeAttribute("adminMode");
             try {
                 ContentManagementService cms = new ContentManagementService(request);
-                if (cms.getSecuritySession() != null && cms.getSecuritySession().getUser() != null) {
-                    LockManager.releaseLocksForOwner(cms.getSecuritySession().getUser().getId());
-                    cms.getSecuritySession().logout(request, response);
+                SecuritySession securitySession = cms.getSecuritySession();
+                if (securitySession != null && securitySession.getUser() != null) {
+                    LockManager.releaseLocksForOwner(securitySession.getUser().getId());
+                    securitySession.logout(request, response);
                 }
             } catch (SystemException e) {
                 log.error("Error logging out");
