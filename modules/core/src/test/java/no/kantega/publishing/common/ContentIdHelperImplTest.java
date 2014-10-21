@@ -307,4 +307,19 @@ public class ContentIdHelperImplTest {
         assertThat(contentIdentifier.getAssociationId(), is(6));
         assertThat(contentIdentifier.getSiteId(), is(site.getId()));
     }
+
+    @Test
+    public void shouldHandleWithNorwegianCharsInUrl() throws ContentNotFoundException {
+        MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
+        request.setServerName("servername");
+        Site site = new Site();
+        site.setId(2);
+        when(siteCache.getSiteByHostname("servername")).thenReturn(site.setAlias("/snn/"));
+        when(siteCache.getSiteById(site.getId())).thenReturn(site);
+
+        ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, "/content/4/Årsplan");
+        assertThat(contentIdentifier.getAssociationId(), is(4));
+        assertThat(contentIdentifier.getSiteId(), is(site.getId()));
+
+    }
 }

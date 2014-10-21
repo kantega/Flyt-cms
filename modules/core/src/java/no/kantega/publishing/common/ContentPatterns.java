@@ -12,8 +12,9 @@ public class ContentPatterns {
     /**
      * Regexp matching «pretty urls» fragment with the following named groups:
      * - <code>prettythisId</code>, the id in urls like /content/123/title.
+     * http://www.regular-expressions.info/unicode.html,
      */
-    public static final String PRETTY_PATTERN = "(/content/(?<prettythisId>\\d+)/([a-zA-Z_0-9-+\\.:]+))";
+    public static final String PRETTY_PATTERN = "(/content/(?<prettythisId>\\d+)/([\\P{M}\\p{M}*_0-9-+\\.:]+))";
 
     /**
      * Regexp matching url fragment with content.ap with the following named groups:
