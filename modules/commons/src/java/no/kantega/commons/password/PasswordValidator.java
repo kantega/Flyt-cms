@@ -8,7 +8,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
@@ -27,10 +27,8 @@ public class PasswordValidator implements ApplicationContextAware {
     public ValidationErrors isValidPassword(String password, String password2, Identity identity) {
         ValidationErrors errors = new ValidationErrors();
 
-        Map<String, Object> params = new HashMap<>();
-
         if (!Objects.equals(password, password2)) {
-            errors.add("password", "password.mismatch", params);
+            errors.add("password", "password.mismatch", Collections.<String, Object>emptyMap());
             return errors;
         }
 
@@ -56,37 +54,31 @@ public class PasswordValidator implements ApplicationContextAware {
         }
 
         if (length < minLength) {
-            params.put("minlength", minLength);
-            errors.add("password", "password.minlength", params);
+            errors.add("password", "password.minlength", Collections.<String, Object>singletonMap("minlength", minLength));
         }
 
         if (digits < minDigits) {
-            params.put("mindigits", minDigits);
-            errors.add("password", "password.mindigits", params);
+            errors.add("password", "password.mindigits", Collections.<String, Object>singletonMap("mindigits", minDigits));
         }
 
         if (lowerCase < minLowerCase) {
-            params.put("minlowercase", minLowerCase);
-            errors.add("password", "password.minlowercase", params);
+            errors.add("password", "password.minlowercase", Collections.<String, Object>singletonMap("minlowercase", minLowerCase));
         }
 
         if (upperCase < minUpperCase) {
-            params.put("minuppercase", minUpperCase);
-            errors.add("password", "password.minuppercase", params);
+            errors.add("password", "password.minuppercase", Collections.<String, Object>singletonMap("minuppercase", minUpperCase));
         }
 
         if (nonAlphaNumeric < minNonAlphaNumeric) {
-            params.put("minnonalpha", minNonAlphaNumeric);
-            errors.add("password", "password.minnonalpha", params);
+            errors.add("password", "password.minnonalpha", Collections.<String, Object>singletonMap("minnonalpha", minNonAlphaNumeric));
         }
 
         if(!allowUsernameInPassword && password.contains(identity.getUserId())){
-            params.put("username", identity.getUserId());
-            errors.add("password", "password.usernameinpassword", params);
+            errors.add("password", "password.usernameinpassword", Collections.<String, Object>singletonMap("username", identity.getUserId()));
         }
 
         if(!allowSameAsPreviousPassword && passwordMatchesExisting(identity, password)){
-            errors.add("password", "password.matchesPrevious", params);
+            errors.add("password", "password.matchesPrevious", Collections.<String, Object>emptyMap());
 
         }
 
