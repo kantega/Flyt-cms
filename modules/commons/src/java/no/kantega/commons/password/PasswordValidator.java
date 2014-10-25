@@ -81,6 +81,7 @@ public class PasswordValidator implements ApplicationContextAware {
         }
 
         if(!allowUsernameInPassword && password.contains(identity.getUserId())){
+            params.put("username", identity.getUserId());
             errors.add("password", "password.usernameinpassword", params);
         }
 
