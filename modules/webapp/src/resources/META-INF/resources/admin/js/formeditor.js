@@ -491,10 +491,10 @@ function formSave() {
     $("#form_FormElements .formElement").removeAttr("style");
     $("#form_FormElements .formText").removeAttr("style");
 
-    // Remove disabled attribute except for elements that should be disabled
-    $("#form_FormElements input:not(#form_FormElements .readonly input)").removeAttr("disabled");
-    $("#form_FormElements textarea:not(#form_FormElements .readonly textarea)").removeAttr("disabled");
-    $("#form_FormElements select:not(#form_FormElements .readonly select)").removeAttr("disabled");
+    // Remove disabled attribute
+    $("#form_FormElements input").removeAttr("disabled");
+    $("#form_FormElements textarea").removeAttr("disabled");
+    $("#form_FormElements select").removeAttr("disabled");
 
     // Remove attributes set by JQuery
     var form_FormElements = $("#form_FormElements div");
@@ -646,7 +646,12 @@ function FormElementType(name, type) {
     };
 
     this.getHTMLForField = function(fieldName) {
-        return '<input type="text" name="' + fieldName + '" disabled>';
+        var readonly = "";
+        if ($("#form_FieldReadonly:checked").length == 1) {
+            readonly = "readonly";
+        }
+
+        return '<input type="text" name="' + fieldName + '" ' + readonly + ' disabled>';
     };
 
     this.getFieldHint = function() {
@@ -728,9 +733,14 @@ formElementText.getHTMLForField = function (fieldName) {
         maxsize = size;
     }
 
+
     html += '<input type="text" name="' + fieldName + '" disabled';
     if (!isNaN(size) && size > 0) {
         html += ' size="' + size + '"';
+    }
+
+    if ($("#form_FieldReadonly:checked").length == 1) {
+        html += ' readonly="readonly" ';
     }
 
     if (!isNaN(maxsize) && maxsize > 0) {
@@ -808,7 +818,12 @@ formElementTextArea.getHTMLForField = function(fieldName) {
         cols = 40;
     }
 
-    return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '" disabled></textarea>';
+    var readonly = '';
+    if ($("#form_FieldReadonly:checked").length == 1) {
+        readonly = ' readonly="readonly" ';
+    }
+
+    return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '"' + readonly + ' disabled></textarea>';
 };
 formElementTextArea.onActive = function (isSelected) {
     if (isSelected) {
@@ -856,7 +871,9 @@ formElementCheckbox.onActive = function (isSelected) {
             formAddInputValue("checkbox", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
     }
 };
@@ -899,10 +916,14 @@ formElementRadio.onActive = function (isSelected) {
             formAddInputValue("radio", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
     }
 };
+
+
 formElementTypes[formElementTypes.length] = formElementRadio;
 
 // Select
@@ -954,8 +975,9 @@ formElementSelect.onActive = function (isSelected) {
         }
         $(".form_params_list").show();
         form_params_select.show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
-        form_params_select.hide();
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
         form_params_select.hide();
     }
