@@ -17,6 +17,7 @@
 package no.kantega.commons.util;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -54,5 +55,24 @@ public class URLHelper {
             sb.append("?").append(queryString);
         }
         return sb.toString();
+    }
+
+    public static String getRequestedUrl(HttpServletRequest request){
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append(request.getScheme());
+        urlBuilder.append("://");
+        urlBuilder.append(request.getServerName());
+        int serverPort = request.getServerPort();
+        if(serverPort != 80 && serverPort != 443){
+            urlBuilder.append(":");
+            urlBuilder.append(serverPort);
+        }
+        urlBuilder.append(request.getAttribute("javax.servlet.forward.request_uri"));
+        if (request.getQueryString() != null && !request.getQueryString().isEmpty()){
+            urlBuilder.append("?").append(request.getQueryString());
+        }
+
+
+        return urlBuilder.toString();
     }
 }
