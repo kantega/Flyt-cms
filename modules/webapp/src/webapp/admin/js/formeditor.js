@@ -19,7 +19,6 @@
  * * formeditor.labels.buttonEdit
  * * formeditor.labels.buttonDelete
  * * formeditor.labels.deleteformdataConfirm
- * * formeditor.labels.duplicateName
  * * formeditor.labels.typeText
  * * formeditor.labels.typeTextarea
  * * formeditor.labels.typeCheckbox
@@ -37,7 +36,8 @@ var formTextEditorHTML = null;
 var formSectionEditorHTML = null;
 
 function formDeleteElement(element) {
-    var parent = $(element).parent();
+    var jqElement = $(element);
+    var parent = jqElement.parent();
     var parentRemoved = false;
 
     if ((parent).hasClass("formSection")) {
@@ -48,7 +48,7 @@ function formDeleteElement(element) {
     }
 
     if (!parentRemoved) {
-        $(element).remove();
+        jqElement.remove();
     }
 
     openaksess.editcontext.setIsModified();
@@ -62,10 +62,11 @@ function formEditElement(element) {
     formEditedElement = element;
 
     // Move edit form to current position
-    $(element).after(formEditorHTML);
+    var jqElement = $(element);
+    jqElement.after(formEditorHTML);
 
     // Hide element being edited
-    $(element).hide();
+    jqElement.hide();
 
     $("#form_ChildNo").val($("#form_FormElements .formElement").index(element));
 
@@ -76,35 +77,39 @@ function formEditElement(element) {
     if (helpText == undefined || helpText == null) helpText = "";
     $("#form_HelpText").val(helpText);
 
-    if ($(element).hasClass("readonly")) {
+    if (jqElement.hasClass("readonly")) {
         $("#form_FieldReadonly").attr("checked", true);
     } else {
         $("#form_FieldReadonly").attr("checked", false);
     }
 
-    if ($(element).hasClass("mandatory")) {
+    if (jqElement.hasClass("mandatory")) {
         $("#form_FieldMandatory").attr("checked", true);
     } else {
         $("#form_FieldMandatory").attr("checked", false);
     }
 
-    if ($(element).hasClass("nobreak")) {
+    if (jqElement.hasClass("nobreak")) {
         $("#form_NoBreak").attr("checked", true);
     } else {
         $("#form_NoBreak").attr("checked", false);
     }
 
-    var inputClasses = $("div.inputs", element).attr("class").split(" ");
     var type = "text";
-    if (inputClasses.length > 1) {
-        type = inputClasses[inputClasses.length - 1];
+    var inputs = $("div.inputs", element);
+    if (inputs.length > 0) {
+        var inputClasses = inputs.attr("class").split(" ");
+        if (inputClasses.length > 1) {
+            type = inputClasses[inputClasses.length - 1];
+        }
     }
 
-    $("#form_FieldType").unbind("change");
+    var form_FieldType = $("#form_FieldType");
+    form_FieldType.unbind("change");
 
-    $("#form_FieldType").val(type);
+    form_FieldType.val(type);
 
-    $("#form_FieldType").change(function() {
+    form_FieldType.change(function() {
         type = $("#form_FieldType").val();
         for (n in formElementTypes) {
             if (formElementTypes[n].type == formPrevType) {
@@ -122,13 +127,11 @@ function formEditElement(element) {
     formPrevType = type;
 
 
-    $("#form_CancelFormElement").unbind("click");
-    $("#form_CancelFormElement").click(function() {
+    $("#form_CancelFormElement").unbind("click").click(function() {
         formRemoveEditor();
     });
 
-    $("#form_SaveFormElement").unbind("click");
-    $("#form_SaveFormElement").click(function() {
+    $("#form_SaveFormElement").unbind("click").click(function() {
         formSaveElement();
     });
 
@@ -149,25 +152,26 @@ function formEditText(element) {
     formEditedElement = element;
 
     // Move edit form to current position
-    $(element).after(formTextEditorHTML);
+    var jqElement = $(element);
+    jqElement.after(formTextEditorHTML);
 
     // Hide element being edited
-    $(element).hide();
+    jqElement.hide();
 
     $("#form_TextChildNo").val($("#form_FormElements .formText").index(element));
 
-    $("#form_CancelFormText").unbind("click");
-    $("#form_CancelFormText").click(function() {
+    $("#form_CancelFormText").unbind("click").click(function() {
         formRemoveEditor();
     });
 
-    $("#form_SaveFormText").unbind("click");
-    $("#form_SaveFormText").click(function() {
+    $("#form_SaveFormText").unbind("click").click(function() {
         formSaveText();
-        $("#EditFormText").hide();
     });
 
     text = $("p", element).html();
+
+    text = text.replace(/<br>/g, "");
+
     $("#form_Text").val(text);
 }
 
@@ -185,13 +189,11 @@ function formEditSection(element) {
 
     $("#form_SectionChildNo").val($("#form_FormElements .formSection").index(element));
 
-    $("#form_CancelFormSection").unbind("click");
-    $("#form_CancelFormSection").click(function() {
+    $("#form_CancelFormSection").unbind("click").click(function() {
         formRemoveEditor();
     });
 
-    $("#form_SaveFormSection").unbind("click");
-    $("#form_SaveFormSection").click(function() {
+    $("#form_SaveFormSection").unbind("click").click(function() {
         formSaveSection();
         $("#EditFormSection").hide();
     });
@@ -223,13 +225,15 @@ function formRemoveEditor() {
 function formNewElement() {
     $("#form_ChildNo").val(-1);
 
-    var fieldName = "Felt " + ($("#form_FormElements .formElement").length + 1);
+    var form_FormElements = $("#form_FormElements .formElement");
+    var fieldName = "Felt " + (form_FormElements.length + 1);
 
     formAddOrSaveElement(fieldName, "text", "", -1);
     formBindSort();
 
-    // Edit this element
-    var elm = $("#form_FormElements .formElement").last();
+    // Edit this element, re-get all elements.
+    form_FormElements = $("#form_FormElements .formElement");
+    var elm = form_FormElements.last();
     formEditElement(elm);
 
     $("#form_FieldName").select();
@@ -276,8 +280,9 @@ function formAddInputValue(type, fieldName, value, checked) {
     html += '</div>';
     $("#form_Values").append(html);
 
-    $("#form_Values .formOptionDelete").unbind("click");
-    $("#form_Values .formOptionDelete").click(function(event) {
+    var form_Values = $("#form_Values .formOptionDelete");
+    form_Values.unbind("click");
+    form_Values.click(function(event) {
         event.preventDefault();
         $(this).parent().remove();
     });
@@ -314,13 +319,14 @@ function formAddOrSaveElement(fieldName, type, helpText, childNo) {
         elementClz += " hidden";
     }
 
+    var form_FormElements = $("#form_FormElements .formElement");
     if (childNo < 0) {
         getLastFormElementForAppend().append('<div class="' + elementClz + '">' + html + '</div>');
-        $("#form_ChildNo").val($("#form_FormElements .formElement").length-1);
+        $("#form_ChildNo").val(form_FormElements.length-1);
         formBindHover();
     } else {
-        $("#form_FormElements .formElement").eq(childNo).html(html);
-        $("#form_FormElements .formElement").eq(childNo).attr("class", elementClz);
+        form_FormElements.eq(childNo).html(html);
+        form_FormElements.eq(childNo).attr("class", elementClz);
     }
 
     openaksess.editcontext.setIsModified();
@@ -355,7 +361,8 @@ function formAddOrSaveSection(sectionChildNo) {
         sectionTitle = $("#form_SectionTitle").val();
     }
 
-    var numberOfSections = $("#form_FormElements .formSection").size();
+    var form_FormElements = $("#form_FormElements .formSection");
+    var numberOfSections = form_FormElements.size();
 
     if (sectionChildNo < 0) {
         $("#form_FormElements").append('<div class="formSection"><h2>' + sectionTitle + '</h2></div>');
@@ -365,7 +372,7 @@ function formAddOrSaveSection(sectionChildNo) {
             // Move existing form elements into first section when first section is created
             $formElements.appendTo("#form_FormElements div.formSection");
         }
-        $("#form_SectionChildNo").val($("#form_FormElements .formSection").length - 1);
+        $("#form_SectionChildNo").val(form_FormElements.length - 1);
         formBindHover();
     } else {
         openaksess.common.debug("Update section: " + sectionTitle);
@@ -374,9 +381,10 @@ function formAddOrSaveSection(sectionChildNo) {
 }
 
 function getLastFormElementForAppend() {
-    var sz = $("#form_FormElements .formSection").size();
+    var form_FormElements = $("#form_FormElements .formSection");
+    var sz = form_FormElements.size();
     if (sz > 0) {
-        return $("#form_FormElements .formSection").last();
+        return form_FormElements.last();
     } else {
         return $("#form_FormElements");
     }
@@ -385,6 +393,7 @@ function getLastFormElementForAppend() {
 function formSaveElement() {
     var fieldName = $("#form_FieldName").val();
     fieldName = formElementStripUnlegalChars(fieldName);
+
 
     if (fieldName == "") {
         $("#form_FieldName").focus();
@@ -411,6 +420,8 @@ function formSaveElement() {
     var type = $("#form_FieldType").val();
     var helpText = $("#form_HelpText").val();
 
+
+
     formAddOrSaveElement(fieldName, type, helpText, childNo);
 
     formRemoveEditor();
@@ -428,6 +439,8 @@ function formSaveText() {
 
     formRemoveEditor();
     formBindSort();
+
+    $("#EditFormText").hide();
 }
 
 function formSaveSection() {
@@ -444,30 +457,30 @@ function formBindSort() {
     var numberOfSections = $("div.formSection").size();
     if(numberOfSections > 0){
         $('#form_FormElements').sortable(
-        {
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      ' div.formSection',
-            handle:     'h2'
-        });
+            {
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      ' div.formSection',
+                handle:     'h2'
+            });
 
         $('#form_FormElements .formSection').sortable(
-        {
-            connectWith: '.formSection',
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      'div.formElement, div.formText'
-        });
+            {
+                connectWith: '.formSection',
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      'div.formElement, div.formText'
+            });
     }else{
         $('#form_FormElements').sortable(
-        {
-            opacity: 	0.8,
-            axis:		'vertically',
-            revert:		true,
-            items:      'div.formElement, div.formText'
-        });
+            {
+                opacity: 	0.8,
+                axis:		'vertically',
+                revert:		true,
+                items:      'div.formElement, div.formText'
+            });
     }
 }
 
@@ -478,20 +491,21 @@ function formSave() {
     $("#form_FormElements .formElement").removeAttr("style");
     $("#form_FormElements .formText").removeAttr("style");
 
-    // Remove disabled attribute except for elements that should be disabled
-    $("#form_FormElements input:not(#form_FormElements .readonly input)").removeAttr("disabled");
-    $("#form_FormElements textarea:not(#form_FormElements .readonly textarea)").removeAttr("disabled");
-    $("#form_FormElements select:not(#form_FormElements .readonly select)").removeAttr("disabled");
+    // Remove disabled attribute
+    $("#form_FormElements input").removeAttr("disabled");
+    $("#form_FormElements textarea").removeAttr("disabled");
+    $("#form_FormElements select").removeAttr("disabled");
 
     // Remove attributes set by JQuery
-    $("#form_FormElements div").removeAttr("unselectable");
-    $("#form_FormElements div").removeAttr("isdraggable");
-    $("#form_FormElements div").removeAttr("sizset");
-    $("#form_FormElements div").removeAttr("animationhandler");
-    $("#form_FormElements div").removeAttr("ui-sortable");
-    $("#form_FormElements div").removeAttr("sizcache");
-    $("#form_FormElements div").removeAttr("lpcachedvistime");
-    $("#form_FormElements div").removeAttr("lpcachedvisval");
+    var form_FormElements = $("#form_FormElements div");
+    form_FormElements.removeAttr("unselectable");
+    form_FormElements.removeAttr("isdraggable");
+    form_FormElements.removeAttr("sizset");
+    form_FormElements.removeAttr("animationhandler");
+    form_FormElements.removeAttr("ui-sortable");
+    form_FormElements.removeAttr("sizcache");
+    form_FormElements.removeAttr("lpcachedvistime");
+    form_FormElements.removeAttr("lpcachedvisval");
 
     // Remove editor buttons
     $("#form_FormElements .formElementButtons").remove();
@@ -509,58 +523,58 @@ function formBindHover() {
     $("#form_FormElements .formElement, #form_FormElements .formText, #form_FormElements .formSection h2").unbind("hover");
 
     $("#form_FormElements .formElement, #form_FormElements .formText").hover(
-            function () {
-                if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span><span class="delete">' + properties.formeditor.labels.buttonDelete + '</span></span>');
+        function () {
+            if ($(".formElementButtons", this).length == 0) {
+                $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span><span class="delete">' + properties.formeditor.labels.buttonDelete + '</span></span>');
 
-                    $("#form_FormElements .formElement > .formElementButtons .edit").unbind("click");
-                    $("#form_FormElements .formElement > .formElementButtons .delete").unbind("click");
+                $("#form_FormElements .formElement > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formElement > .formElementButtons .delete").unbind("click");
 
-                    $("#form_FormElements .formElement > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formElement");
-                        $(".formElementButtons", elm).remove();
-                        formEditElement(elm);
-                    });
-                    $("#form_FormElements .formElement > .formElementButtons .delete").click(function() {
-                        formDeleteElement($(this).closest("div.formElement"));
-                    });
+                $("#form_FormElements .formElement > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formElement");
+                    $(".formElementButtons", elm).remove();
+                    formEditElement(elm);
+                });
+                $("#form_FormElements .formElement > .formElementButtons .delete").click(function() {
+                    formDeleteElement($(this).closest("div.formElement"));
+                });
 
-                    $("#form_FormElements .formText > .formElementButtons .edit").unbind("click");
-                    $("#form_FormElements .formText > .formElementButtons .delete").unbind("click");
+                $("#form_FormElements .formText > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formText > .formElementButtons .delete").unbind("click");
 
-                    $("#form_FormElements .formText > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formText");
-                        $(".formElementButtons", elm).remove();
-                        formEditText(elm);
-                    });
-                    $("#form_FormElements .formText > .formElementButtons .delete").click(function() {
-                        formDeleteElement($(this).closest("div.formText"));
-                    });
-                }
-            },
-            function () {
-                $(".formElementButtons", this).remove();
+                $("#form_FormElements .formText > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formText");
+                    $(".formElementButtons", elm).remove();
+                    formEditText(elm);
+                });
+                $("#form_FormElements .formText > .formElementButtons .delete").click(function() {
+                    formDeleteElement($(this).closest("div.formText"));
+                });
             }
-            );
+        },
+        function () {
+            $(".formElementButtons", this).remove();
+        }
+    );
 
     $("#form_FormElements .formSection h2").hover(
-            function () {
-                if ($(".formElementButtons", this).length == 0) {
-                    $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span></span>');
+        function () {
+            if ($(".formElementButtons", this).length == 0) {
+                $(this).prepend('<span class="formElementButtons"><span class="edit">' + properties.formeditor.labels.buttonEdit + '</span></span>');
 
-                    $("#form_FormElements .formSection h2 > .formElementButtons .edit").unbind("click");
+                $("#form_FormElements .formSection h2 > .formElementButtons .edit").unbind("click");
 
-                    $("#form_FormElements .formSection h2 > .formElementButtons .edit").click(function() {
-                        var elm = $(this).closest("div.formSection");
-                        $(".formElementButtons", elm).remove();
-                        formEditSection(elm);
-                    });
-                }
-            },
-            function () {
-                $(".formElementButtons", this).remove();
+                $("#form_FormElements .formSection h2 > .formElementButtons .edit").click(function() {
+                    var elm = $(this).closest("div.formSection");
+                    $(".formElementButtons", elm).remove();
+                    formEditSection(elm);
+                });
             }
-            );
+        },
+        function () {
+            $(".formElementButtons", this).remove();
+        }
+    );
 }
 
 var formNextId = 0;
@@ -597,14 +611,17 @@ $(document).ready(function() {
     formBindHover();
     formInitElements();
 
-    formEditorHTML = $("#form_PlaceHolder").html();
-    $("#form_PlaceHolder").html("");
+    var form_PlaceHolder = $("#form_PlaceHolder");
+    formEditorHTML = form_PlaceHolder.html();
+    form_PlaceHolder.html("");
 
-    formTextEditorHTML = $("#form_TextPlaceHolder").html();
-    $("#form_TextPlaceHolder").html("");
+    var form_TextPlaceHolder = $("#form_TextPlaceHolder");
+    formTextEditorHTML = form_TextPlaceHolder.html();
+    form_TextPlaceHolder.html("");
 
-    formSectionEditorHTML = $("#form_SectionPlaceHolder").html();
-    $("#form_SectionPlaceHolder").html("");
+    var form_SectionPlaceHolder = $("#form_SectionPlaceHolder");
+    formSectionEditorHTML = form_SectionPlaceHolder.html();
+    form_SectionPlaceHolder.html("");
 
 
     $("#form_NewElement").click(function(event) {
@@ -629,16 +646,21 @@ function FormElementType(name, type) {
     };
 
     this.getHTMLForField = function(fieldName) {
-        return '<input type="text" name="' + fieldName + '" disabled>';
+        var readonly = "";
+        if ($("#form_FieldReadonly:checked").length == 1) {
+            readonly = "readonly";
+        }
+
+        return '<input type="text" name="' + fieldName + '" ' + readonly + ' disabled>';
     };
 
     this.getFieldHint = function() {
         return "";
-    }
+    };
 
     this.onActive = function(isSelected) {
     };
-};
+}
 
 var formElementTypes = [];
 
@@ -668,7 +690,8 @@ formElementText.onEdit = function(element) {
     $("#form_DateFormat").val(dateformat);
 
     var clz = $input.attr("class");
-    $("#form_Validator").val(clz);
+    var form_Validator = $("#form_Validator");
+    form_Validator.val(clz);
 
     var id = $input.attr('id');
     if ('RecipientEmail' == id) {
@@ -677,7 +700,7 @@ formElementText.onEdit = function(element) {
         $("#form_IsRecipientEmail").removeAttr('checked');
     }
 
-    $("#form_Validator").change(function() {
+    form_Validator.change(function() {
         $(".form_validatorparams_regularexpression").hide();
         $(".form_validatorparams_email").hide();
         var formParamsType = ".form_validatorparams_" + $(this).val();
@@ -710,9 +733,14 @@ formElementText.getHTMLForField = function (fieldName) {
         maxsize = size;
     }
 
+
     html += '<input type="text" name="' + fieldName + '" disabled';
     if (!isNaN(size) && size > 0) {
         html += ' size="' + size + '"';
+    }
+
+    if ($("#form_FieldReadonly:checked").length == 1) {
+        html += ' readonly="readonly" ';
     }
 
     if (!isNaN(maxsize) && maxsize > 0) {
@@ -790,7 +818,12 @@ formElementTextArea.getHTMLForField = function(fieldName) {
         cols = 40;
     }
 
-    return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '" disabled></textarea>';
+    var readonly = '';
+    if ($("#form_FieldReadonly:checked").length == 1) {
+        readonly = ' readonly="readonly" ';
+    }
+
+    return '<textarea rows="' + rows + '" cols="' + cols + '" name="' + fieldName + '"' + readonly + ' disabled></textarea>';
 };
 formElementTextArea.onActive = function (isSelected) {
     if (isSelected) {
@@ -828,8 +861,7 @@ formElementCheckbox.getHTMLForField = function (fieldName) {
 };
 formElementCheckbox.onActive = function (isSelected) {
     if (isSelected) {
-        $("#form_AddElement").unbind("click");
-        $("#form_AddElement").click(function(event) {
+        $("#form_AddElement").unbind("click").click(function(event) {
             event.preventDefault();
             var fieldName = $("#form_FieldName").val();
             formAddInputValue("checkbox", fieldName, "", false);
@@ -839,7 +871,9 @@ formElementCheckbox.onActive = function (isSelected) {
             formAddInputValue("checkbox", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
     }
 };
@@ -872,8 +906,7 @@ formElementRadio.getHTMLForField = function (fieldName) {
 };
 formElementRadio.onActive = function (isSelected) {
     if (isSelected) {
-        $("#form_AddElement").unbind("click");
-        $("#form_AddElement").click(function(event) {
+        $("#form_AddElement").unbind("click").click(function(event) {
             event.preventDefault();
             var fieldName = $("#form_FieldName").val();
             formAddInputValue("radio", fieldName, "", false);
@@ -883,10 +916,14 @@ formElementRadio.onActive = function (isSelected) {
             formAddInputValue("radio", fieldName, "", false);
         }
         $(".form_params_list").show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
     }
 };
+
+
 formElementTypes[formElementTypes.length] = formElementRadio;
 
 // Select
@@ -924,10 +961,10 @@ formElementSelect.getHTMLForField = function (fieldName) {
     return html;
 };
 formElementSelect.onActive = function (isSelected) {
+    var form_params_select = $(".form_params_select");
     if (isSelected) {
-        $(".form_params_select").show();
-        $("#form_AddElement").unbind("click");
-        $("#form_AddElement").click(function(event) {
+        form_params_select.show();
+        $("#form_AddElement").unbind("click").click(function(event) {
             event.preventDefault();
             fieldName = $("#form_FieldName").val();
             formAddInputValue("select", fieldName, "", false);
@@ -937,11 +974,12 @@ formElementSelect.onActive = function (isSelected) {
             formAddInputValue("select", fieldName, "", false);
         }
         $(".form_params_list").show();
-        $(".form_params_select").show();
+        form_params_select.show();
+        $("#form_FieldReadonly").attr("disabled", true);
     } else {
-        $(".form_params_select").hide();
+        $("#form_FieldReadonly").removeAttr("disabled");
         $(".form_params_list").hide();
-        $(".form_params_select").hide();
+        form_params_select.hide();
     }
 };
 formElementTypes[formElementTypes.length] = formElementSelect;
@@ -959,9 +997,9 @@ formElementHidden.getHTMLForField = function (fieldName) {
 formElementHidden.onActive = function (isSelected) {
     if (isSelected) {
         $(".form_params_hidden").show();
-        $("#form_FieldReadonly").attr("disabled", true);;
-        $("#form_FieldMandatory").attr("disabled", true);;
-        $("#form_NoBreak").attr("disabled", true);;
+        $("#form_FieldReadonly").attr("disabled", true);
+        $("#form_FieldMandatory").attr("disabled", true);
+        $("#form_NoBreak").attr("disabled", true);
     } else {
         $(".form_params_hidden").hide();
         $("#form_FieldReadonly").removeAttr("disabled");
