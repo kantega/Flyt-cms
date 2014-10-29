@@ -73,7 +73,7 @@ public class URLHelper {
         urlBuilder.append(request.getServerName());
         int serverPort = request.getServerPort();
 
-        // Ports
+        // Port
         if(serverPort != 80 && serverPort != 443){
             urlBuilder.append(":");
             urlBuilder.append(serverPort);
