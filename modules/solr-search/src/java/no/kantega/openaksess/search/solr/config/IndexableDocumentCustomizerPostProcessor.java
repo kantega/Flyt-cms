@@ -14,7 +14,6 @@ import java.util.Map;
 
 public abstract class IndexableDocumentCustomizerPostProcessor {
 
-    @SuppressWarnings("unchecked")
     public static Map<DocumentTransformer<?>, Collection<IndexableDocumentCustomizer<?>>>
             mapCustomizersToTransformers(List<DocumentTransformer<?>> transformers, List<IndexableDocumentCustomizer<?>> customizers){
 
