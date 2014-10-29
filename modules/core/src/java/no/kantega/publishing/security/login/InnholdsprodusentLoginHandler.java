@@ -16,17 +16,17 @@
 
 package no.kantega.publishing.security.login;
 
-import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.security.data.Role;
+import no.kantega.publishing.security.data.User;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
+import java.util.Map;
 
 public class InnholdsprodusentLoginHandler implements PostLoginHandler {
     public void handlePostLogin(User user, HttpServletRequest request) throws SystemException {
-        HashMap roles = user.getRoles();
+        Map<String, Role> roles = user.getRoles();
         Role innholdsprodusent = new Role();
         innholdsprodusent.setId(Aksess.getAuthorRoles()[0]);
         roles.put(innholdsprodusent.getId(), innholdsprodusent);
