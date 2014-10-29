@@ -47,7 +47,7 @@ public class AutocompleteContentAction implements Controller {
         if (isNotBlank(title)) {
             ContentQuery query = new ContentQuery();
             query.setKeyword(title + '%');
-             if (contentTemplateFilter != null && !contentTemplateFilter.isEmpty() && contentTemplateFilter != "-1"){
+             if (contentTemplateFilter != null && !contentTemplateFilter.isEmpty() && !contentTemplateFilter.equalsIgnoreCase("-1")){
                 query.setContentTemplate(contentTemplateFilter);
             }
             ContentManagementService cms = new ContentManagementService(request);
