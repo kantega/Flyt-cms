@@ -16,8 +16,8 @@
 
 package no.kantega.commons.util;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 
@@ -80,7 +80,7 @@ public class URLHelper {
         }
 
         // URI
-        urlBuilder.append(request.getAttribute("javax.servlet.forward.request_uri"));
+        urlBuilder.append(request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI));
 
         // Query params
         if (request.getQueryString() != null && !request.getQueryString().isEmpty()){
