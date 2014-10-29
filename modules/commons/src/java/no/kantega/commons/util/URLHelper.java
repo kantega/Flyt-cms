@@ -57,21 +57,35 @@ public class URLHelper {
         return sb.toString();
     }
 
+    /**
+     * Returns the actual URL requested by the client
+     * @param request
+     * @return String URL requested by client
+     */
     public static String getRequestedUrl(HttpServletRequest request){
         StringBuilder urlBuilder = new StringBuilder();
+
+        // protocol
         urlBuilder.append(request.getScheme());
         urlBuilder.append("://");
+
+        // server/domain
         urlBuilder.append(request.getServerName());
         int serverPort = request.getServerPort();
+
+        // Ports
         if(serverPort != 80 && serverPort != 443){
             urlBuilder.append(":");
             urlBuilder.append(serverPort);
         }
+
+        // URI
         urlBuilder.append(request.getAttribute("javax.servlet.forward.request_uri"));
+
+        // Query params
         if (request.getQueryString() != null && !request.getQueryString().isEmpty()){
             urlBuilder.append("?").append(request.getQueryString());
         }
-
 
         return urlBuilder.toString();
     }
