@@ -20,10 +20,7 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.enums.RoleType;
 import no.kantega.publishing.topicmaps.data.Topic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Represents a user with name, email, department, roles and some other properties.
@@ -35,7 +32,7 @@ public class User extends SecurityIdentifier {
     private String surname = "";
     private String email = null;
     private String department;
-    private HashMap<String, Role> roles = new HashMap<>();
+    private Map<String, Role> roles = new HashMap<>();
     private List<Topic> topics = null;
     private List<OrgUnit> orgUnits = new ArrayList<>();
     private Properties attributes;
@@ -73,7 +70,7 @@ public class User extends SecurityIdentifier {
         }
     }
 
-    public HashMap<String, Role> getRoles() {
+    public Map<String, Role> getRoles() {
         return roles;
     }
 
