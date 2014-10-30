@@ -37,13 +37,19 @@ public class URLHelper {
         return url;
     }
 
+    /**
+     * @param request - current request
+     * @return scheme, servername and port. If port is 80 or 443 it is omitted.
+     */
     public static String getServerURL(HttpServletRequest request){
         int port = request.getServerPort();
-        String portStr = "";
-        if (port != 80 && port != 443) {
-            portStr = ":" + port;
-        }
+        String portStr = isNormalPort(port) ? "" : ":" + port;
+
         return request.getScheme() + "://" +  request.getServerName() + portStr;
+    }
+
+    private static boolean isNormalPort(int port) {
+        return port != 80 && port != 443;
     }
 
     public static String getUrlWithHttps(HttpServletRequest request){
@@ -63,21 +69,7 @@ public class URLHelper {
      * @return String URL requested by client
      */
     public static String getRequestedUrl(HttpServletRequest request){
-        StringBuilder urlBuilder = new StringBuilder();
-
-        // protocol
-        urlBuilder.append(request.getScheme());
-        urlBuilder.append("://");
-
-        // server/domain
-        urlBuilder.append(request.getServerName());
-        int serverPort = request.getServerPort();
-
-        // Port
-        if(serverPort != 80 && serverPort != 443){
-            urlBuilder.append(":");
-            urlBuilder.append(serverPort);
-        }
+        StringBuilder urlBuilder = new StringBuilder(getServerURL(request));
 
         // URI
         urlBuilder.append(request.getAttribute(RequestDispatcher.FORWARD_REQUEST_URI));
