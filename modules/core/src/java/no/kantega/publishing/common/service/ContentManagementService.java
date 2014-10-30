@@ -285,7 +285,11 @@ public class ContentManagementService {
         }
 
         if (!securitySession.isAuthorized(c, Privilege.VIEW_CONTENT)) {
-            throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to view: " + c.getId());
+            if (securitySession.getUser() != null){
+                throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to view: " + c.getId());
+            }  else{
+                throw new NotAuthorizedException("Not authorized to view Content " + c.getId() + ", No user is logged in");
+            }
         }
 
         if(c.getStatus() == ContentStatus.HEARING && !securitySession.isUserInRole(Aksess.getQualityAdminRole()) && !HearingAO.isHearingInstance(c.getVersionId(), securitySession.getUser().getId()) && !adminMode && !c.getModifiedBy().equals(userId)) {
@@ -1459,7 +1463,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
-            return xmlCache.getXMLFromCache(id);
+        return xmlCache.getXMLFromCache(id);
     }
 
     /**
