@@ -177,7 +177,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (isAdminMode) {
             if (requestedVersion == -1) {
                 // When in administration mode users should see last version
-                List<Integer> contentVersionIds = jdbcTemplate.queryForList("select ContentVersionId from contentversion where ContentId = ? order by ContentVersionId desc", Integer.class, contentId);
+                List<Integer> contentVersionIds = jdbcTemplate.queryForList("select ContentVersionId from contentversion where ContentId = ? order by Version desc", Integer.class, contentId);
                 if (contentVersionIds.isEmpty()) {
                     return null;
                 }else {
@@ -186,15 +186,15 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             } else {
 
                 try {
-                    contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by ContentVersionId desc", contentId, requestedVersion);
+                    contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by Version desc", contentId, requestedVersion);
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
             }
         } else if(cid.getStatus() == ContentStatus.HEARING) {
             // Find version for hearing, if no hearing is found, active version is returned
-            int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by ContentVersionId desc", contentId);
-            contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by ContentVersionId desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
+            int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by Version desc", contentId);
+            contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by Version desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
         } else {
             // Others should see active version
             contentVersionId = -1;
