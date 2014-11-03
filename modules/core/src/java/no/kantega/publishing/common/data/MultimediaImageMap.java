@@ -25,7 +25,7 @@ import java.util.StringTokenizer;
 
 public class MultimediaImageMap {
     private static final Logger log = LoggerFactory.getLogger(MultimediaImageMap.class);
-    private List<CoordUrlMap> coordUrlMap = new ArrayList<CoordUrlMap>();
+    private List<CoordUrlMap> coordUrlMap = new ArrayList<>();
     private int multimediaId;
 
     public int getMultimediaId() {
@@ -47,7 +47,7 @@ public class MultimediaImageMap {
         return coordUrlMap.toArray(new CoordUrlMap[coordUrlMap.size()]);
     }
 
-    public class CoordUrlMap {
+    public static class CoordUrlMap {
         String coord;
         String url;
         String altName;
@@ -121,7 +121,7 @@ public class MultimediaImageMap {
                     startY = (startY*newHeight)/orgH;
                     stopY = (stopY*newHeight)/orgH;
 
-                    return "" + startX + "," + startY + "," + stopX + "," + stopY;
+                    return startX + "," + startY + "," + stopX + "," + stopY;
 
                 } catch (NumberFormatException e) {
                     log.error("", e);
