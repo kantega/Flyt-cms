@@ -85,7 +85,7 @@ public class IndexRebuilder {
                             log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
-                            log.error("Polling IndexableDocumentQueue resultet in null!");
+                            log.error("Polling IndexableDocumentQueue resulted in null!");
                         }
                     }
                 } catch (InterruptedException e) {
