@@ -35,8 +35,6 @@ public class MultimediaSearchController implements AksessController {
     @Value("${oa.usefuzzysearch:false}")
     private boolean useFuzzySearch;
 
-    private String searchResponseModelKey = "searchResponse";
-    private boolean includePaginationLinks = true;
     private List<String> facetQueries = emptyList();
     private List<String> facetFields = emptyList();
 
@@ -54,7 +52,7 @@ public class MultimediaSearchController implements AksessController {
             numberOfHits = searchResponse.getNumberOfHits().intValue();
 
             List<GroupResultResponse> groupResultResponses = searchResponse.getGroupResultResponses();
-            MultimediaService multimediaService = new MultimediaService(SecuritySession.createNewAdminInstance());
+            MultimediaService multimediaService = new MultimediaService(request);
             for (GroupResultResponse groupResultResponse : groupResultResponses) {
                 List<SearchResult> searchResults = groupResultResponse.getSearchResults();
                 for (SearchResult searchResult : searchResults) {
