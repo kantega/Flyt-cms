@@ -78,6 +78,7 @@ public class IndexRebuilder {
                     String docType = progressReporter.getDocType();
                     documentIndexer.deleteByDocType(docType);
                 }
+                documentIndexer.commit();
                 try {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
