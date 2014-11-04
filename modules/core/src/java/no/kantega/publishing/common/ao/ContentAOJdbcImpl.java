@@ -211,7 +211,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             // Hent aktiv versjon
             query.append(" and contentversion.IsActive = 1");
         }
-        query.append(" and content.ContentId = ? order by ContentVersionId");
+        query.append(" and content.ContentId = ? order by Version");
         params.add(contentId);
 
         Content content = null;
