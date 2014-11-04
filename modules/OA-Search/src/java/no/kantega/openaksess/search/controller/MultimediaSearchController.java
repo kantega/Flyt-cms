@@ -3,7 +3,10 @@ package no.kantega.openaksess.search.controller;
 import no.kantega.openaksess.search.provider.transformer.MultimediaTransformer;
 import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.controls.AksessController;
+import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.search.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,17 +45,29 @@ public class MultimediaSearchController implements AksessController {
     Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
         String query = getQuery(request);
+        int numberOfHits = 0;
+        List<Multimedia> mediaList = new ArrayList<>();
+
         if (isNotEmpty(query)) {
             SearchResponse searchResponse = performSearch(request, query);
-            model.put(searchResponseModelKey, searchResponse);
 
-            if(includePaginationLinks){
-                addLinks(model, searchResponse);
+            numberOfHits = searchResponse.getNumberOfHits().intValue();
+
+            List<GroupResultResponse> groupResultResponses = searchResponse.getGroupResultResponses();
+            MultimediaService multimediaService = new MultimediaService(SecuritySession.createNewAdminInstance());
+            for (GroupResultResponse groupResultResponse : groupResultResponses) {
+                List<SearchResult> searchResults = groupResultResponse.getSearchResults();
+                for (SearchResult searchResult : searchResults) {
+                    if (searchResult.getIndexedContentType().equals(MultimediaTransformer.HANDLED_DOCUMENT_TYPE)) {
+                        int id = searchResult.getId();
+                        mediaList.add(multimediaService.getMultimedia(id));
+                    }
+                } 
             }
-        } else {
-            model.put(searchResponseModelKey, emptyResponse(request));
         }
 
+        model.put("numberOfHits", numberOfHits);
+        model.put("mediaList", mediaList);
         return model;
     }
 

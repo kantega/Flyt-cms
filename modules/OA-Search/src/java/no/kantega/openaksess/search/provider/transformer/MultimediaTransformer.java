@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
@@ -42,12 +43,16 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         indexableDocument.setParentId(document.getParentId());
         indexableDocument.setSecurityId(document.getSecurityId());
 
+        indexableDocument.setLanguage(Language.getLanguageAsISOCode(Language.NORWEGIAN_BO));
+
         indexableDocument.addAttribute("altname", document.getAltname());
         indexableDocument.addAttribute("author", document.getAuthor());
         indexableDocument.addAttribute("publishDate", document.getLastModified());
         indexableDocument.addAttribute("filename_str", document.getFilename());
         indexableDocument.addAttribute("filesize_i", document.getSize());
         indexableDocument.addAttribute("filetype_str", document.getMimeType().getType());
+
+        indexableDocument.addAttribute("url", document.getUrl());
 
         List<PathEntry> path = getMultimediaPath(document);
         indexableDocument.addAttribute("location", getPathString(path));
