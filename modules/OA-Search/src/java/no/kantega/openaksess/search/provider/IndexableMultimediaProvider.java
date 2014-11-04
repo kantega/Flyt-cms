@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.provider;
 
 import no.kantega.openaksess.search.provider.transformer.MultimediaTransformer;
 import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.IndexableDocument;
@@ -66,7 +67,7 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                     Integer id = ids.poll(10L, TimeUnit.SECONDS);
                     if (id != null) {
                         Multimedia multimedia = multimediaService.getMultimedia(id);
-                        if (multimedia != null) {
+                        if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
                             IndexableDocument indexableDocument = transformer.transform(multimedia);
                             log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
                             indexableDocumentQueue.put(indexableDocument);
