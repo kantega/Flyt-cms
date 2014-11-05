@@ -48,11 +48,11 @@ import java.util.List;
 import java.util.Map;
 
 public class CreateInitialUserController extends AbstractController {
-    public static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
-    public static String CONFIRM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserconfirm.jsp";
-    public static String EXISTS_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserexists.jsp";
-    public static String CANT_CREATE_VIEW = "/WEB-INF/jsp/useradmin/setup/initialusercantcreate.jsp";
-    public static String NOT_AUTH_VIEW = "/WEB-INF/jsp/useradmin/setup/initialusernotauthorized.jsp";
+    public final static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
+    public final static String CONFIRM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserconfirm.jsp";
+    public final static String EXISTS_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuserexists.jsp";
+    public final static String CANT_CREATE_VIEW = "/WEB-INF/jsp/useradmin/setup/initialusercantcreate.jsp";
+    public final static String NOT_AUTH_VIEW = "/WEB-INF/jsp/useradmin/setup/initialusernotauthorized.jsp";
 
     private String defaultDomain;
     private List profileConfiguration;
@@ -63,7 +63,7 @@ public class CreateInitialUserController extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(CreateInitialUserController.class);
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         if (rolesExists()) {
             // Roles already exists - go to error page
@@ -161,8 +161,8 @@ public class CreateInitialUserController extends AbstractController {
         if(!tokenFile.exists()) {
             throw new IllegalStateException("Expected tokenFile to exist at this point: " + tokenFile);
         } else {
-            try {
-                return IOUtils.toString(new FileInputStream(tokenFile));
+            try (FileInputStream input = new FileInputStream(tokenFile)){
+                return IOUtils.toString(input);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -175,21 +175,11 @@ public class CreateInitialUserController extends AbstractController {
             byte[] bytes = new byte[16];
             random.nextBytes(bytes);
 
-            FileOutputStream out = null;
-            try {
+            try (FileOutputStream out = new FileOutputStream(tokenFile)) {
                 tokenFile.getParentFile().mkdirs();
-                out = new FileOutputStream(tokenFile);
                 IOUtils.write(Base64.encodeBase64(bytes), out);
             } catch (IOException e) {
                 throw new RuntimeException("Error writing token to file", e);
-            } finally {
-                try {
-                    if(out != null) {
-                        out.close();
-                    }
-                } catch (IOException e) {
-                    log.error("Error closing file output stream", e);
-                }
             }
         }
     }
