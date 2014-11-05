@@ -230,7 +230,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.24</version>
+                    <version>1.25</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -269,6 +269,7 @@
         <logback.version>1.1.2</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
         <commons-lang.version>2.6</commons-lang.version>
+        <commons-compress.version>1.9</commons-compress.version>
         <poi.version>3.11-beta2</poi.version>
         <tika.version>1.6</tika.version>
         <asm.version>5.0.3</asm.version>
