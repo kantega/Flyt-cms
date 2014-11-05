@@ -56,7 +56,7 @@ public class ProgressReporter {
      * @return true if the progress has been reported as many times as the number of total documents.
      */
     public boolean isFinished(){
-        return isFinished.get();
+        return isFinished.get() || total == 0L;
     }
 
     /**
