@@ -24,13 +24,14 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.8.15-SNAPSHOT</version>
+    <version>7.gittest</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
         <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
-    </scm>
+      <tag>openaksess-7.gittest</tag>
+  </scm>
 
     <pluginRepositories>
         <pluginRepository>
