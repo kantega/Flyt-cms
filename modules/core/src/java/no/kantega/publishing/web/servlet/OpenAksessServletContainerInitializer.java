@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * ServletContainerInitializer that adds OpenAksess' Filters such that they are run before the Filters
+ * ServletContainerInitializer that adds Flyt CMS' Filters such that they are run before the Filters
  * declared in the project.
  */
 public class OpenAksessServletContainerInitializer implements ServletContainerInitializer {
@@ -25,7 +25,7 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
 
     @Override
     public void onStartup(Set<Class<?>> c, ServletContext ctx) throws ServletException {
-        log.info("Registering OpenAksess filters");
+        log.info("Registering Flyt CMS filters");
 
         EnumSet<DispatcherType> dispatchRequests = EnumSet.allOf(DispatcherType.class);
         /*

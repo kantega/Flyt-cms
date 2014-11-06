@@ -32,7 +32,7 @@
     </script>
 
     <h1>
-        <a class="linkexternal" href="http://opensource.kantega.no/aksess">OpenAksess</a> ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
+        <a class="linkexternal" href="http://opensource.kantega.no/aksess">Flyt CMS</a> ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision.aksess"/> ${aksessRevision} / <kantega:label key="aksess.systeminfo.revisjon.webapp"/> ${webappRevision})
     </h1>
                 <pre id="Licence">
   ~ Copyright 2005-2010 <a class="linkexternal" href="http://www.kantega.no">Kantega AS</a>

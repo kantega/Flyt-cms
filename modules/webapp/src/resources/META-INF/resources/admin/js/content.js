@@ -52,7 +52,7 @@ $(document).ready(function(){
 
 /********************************************************************************
  *
- * OpenAksess content related functions.
+ * Flyt CMS content related functions.
  *
  ********************************************************************************/
 

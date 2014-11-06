@@ -19,7 +19,7 @@ package no.kantega.publishing.api.forms.delivery;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 
 /**
- * FormDeliveryServices provide a plugin mechanism for OpenAksess to send the result of submitted forms to a backend system
+ * FormDeliveryServices provide a plugin mechanism for Flyt CMS to send the result of submitted forms to a backend system
  * e.g via email, web services
  */
 public interface FormDeliveryService {

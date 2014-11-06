@@ -315,9 +315,10 @@ table.fullWidth {
 
 /************** Top menu **************/
 #TopMenu .logo {
-    background: transparent url("../bitmaps/sprite-common.png") no-repeat -157px -1818px;
+    background: transparent url("../admin/bitmaps/sprite-common.png") no-repeat -157px -1812px;
     line-height: 28px;
     padding-left: 31px;
+    display: inline-block;
 }
 #TopMenu a {
     line-height: 28px;
@@ -425,7 +426,7 @@ table.fullWidth {
 
 #ModesMenu #NotesCount {
     padding-left: 0;
-    display: inline;    
+    display: inline;
 }
 
 /************** Tools menu **************/
@@ -818,7 +819,7 @@ input.fullWidth, select.fullWidth {
 
 #Content td .button, #Content td .button:hover {
     background: transparent;
-    border: 0;    
+    border: 0;
 }
 
 
@@ -1009,7 +1010,7 @@ div.sidebarFieldset fieldset select {
 }
 
 #MainPaneContent {
-    overflow: auto;    
+    overflow: auto;
     padding-top: 10px;
     padding-bottom: 10px;
     min-width: 670px;
@@ -1229,7 +1230,7 @@ iframe #AjaxLoadingIllustration {
     padding: 2px;
     border: 1px solid #a9a9a9;
 }
-    
+
 #Notes .noteButtons .delete {
     background: url("../bitmaps/common/icons/small/delete.png") no-repeat left;
     display: inline-block;
@@ -1238,7 +1239,7 @@ iframe #AjaxLoadingIllustration {
 
 #Notes .noteButtons {
     float: right;
-    cursor: pointer;    
+    cursor: pointer;
 }
 
 #Notes {

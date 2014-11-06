@@ -28,7 +28,7 @@
 <kantega:section id="body">
     <h1>Can't create role</h1>
     <p>
-        The system has been setup so that roles are managed outside OpenAksess, eg LDAP or Active Directory.
+        The system has been setup so that roles are managed outside Flyt CMS, eg LDAP or Active Directory.
     </p>
 
     <p>

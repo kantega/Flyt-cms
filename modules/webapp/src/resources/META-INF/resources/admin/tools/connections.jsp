@@ -5,7 +5,7 @@
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
-<head><title>OpenAksess connections</title></head>
+<head><title>Flyt CMS connections</title></head>
 <body>
 <%
     Map<Connection, StackTraceElement[]> connections = dbConnectionFactory.connections;

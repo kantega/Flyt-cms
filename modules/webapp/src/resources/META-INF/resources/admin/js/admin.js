@@ -38,7 +38,7 @@ $(document).ready(function() {
 
 
 /********************************************************************************
- * Common functions for the OpenAksess admin interface.
+ * Common functions for the Flyt CMS admin interface.
  ********************************************************************************/
 
 openaksess.admin = {

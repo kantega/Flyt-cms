@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Custom ContextLoaderListener for Aksess.
+ * Custom ContextLoaderListener for Flyt CMS.
  * Locates the application directory and exposes it as a ${appDir} property in the Spring Application Context.
  */
 public class OpenAksessContextLoaderListener extends ContextLoaderListener {
@@ -219,7 +219,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
         DefaultConfigurationLoader loader = new DefaultConfigurationLoader(new ServletContextResourceLoader(context));
 
 
-        // First, load Aksess defaults
+        // First, load Flyt CMS defaults
         loader.addResource("/WEB-INF/config/aksess-defaults.conf");
 
         loader.addResource("classpath:no/kantega/publishing/configuration/aksess-organization.conf");

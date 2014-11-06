@@ -355,7 +355,7 @@
                 <xs:annotation>
                     <xs:documentation>
                         Specifies the number of versions of an content object to keep.
-                        If not specified the Aksess default value will be used.
+                        If not specified the Flyt CMS default value will be used.
                     </xs:documentation>
                 </xs:annotation>
             </xs:attribute>

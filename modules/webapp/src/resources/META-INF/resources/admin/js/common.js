@@ -23,9 +23,9 @@
  */
 
 /********************************************************************************
- * Common OpenAksess functions. Declares the global namespace for all objects.
+ * Common Flyt CMS functions. Declares the global namespace for all objects.
  *
- * Used both in standard admin context and by MiniAksess.
+ * Used both in standard admin context and by MiniFlyt.
  ********************************************************************************/
 
 var openaksess =  {
@@ -112,7 +112,7 @@ openaksess.common = {
         var $iframe = $('<iframe id="externalSite" frameborder="0" src="" />');
 
         var config = {
-            title: 'OpenAksess',
+            title: 'Flyt CMS',
             titlebar: true,
             resizable: true,
             modal: true,
@@ -272,13 +272,13 @@ openaksess.common = {
     },
 
     /**
-     * Triggers an OpenAksess specific event.
+     * Triggers an Flyt CMS specific event.
      * All events are prefixed with openaksess.[eventname], and
      * may possibly have data associated.
      *
      * If no context is given, the event is bound to the html element.
      *
-     * Known openaksess events are:
+     * Known Flyt CMS events are:
      * - openaksess.navigatorSelect: When an item in the navigator is selected.
      * - openaksess.navigatorOpen: When a navigator folder is opened.
      * - openaksess.navigatorClose: When a navigator folder is closed.

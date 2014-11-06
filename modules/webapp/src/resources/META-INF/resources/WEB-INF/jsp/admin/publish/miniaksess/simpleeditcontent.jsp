@@ -21,7 +21,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>OpenAksess7</title>
+    <title>Flyt CMS</title>
 
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-core.css"/>">
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/jquery-all.js"/>"></script>

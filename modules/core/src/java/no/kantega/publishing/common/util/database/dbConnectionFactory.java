@@ -155,7 +155,7 @@ public class dbConnectionFactory {
             }
 
         } catch (Exception e) {
-            log.error( "********* Klarte ikke å lese aksess.conf **********", e);
+            log.error( "********* could not read aksess.conf **********", e);
         }
 
 
@@ -270,7 +270,7 @@ public class dbConnectionFactory {
             productName = c.getMetaData().getDatabaseProductName();
 
         } catch (SQLException e) {
-            throw new SystemException("Error creating tables for Aksess", e);
+            throw new SystemException("Error creating tables for Flyt CMS", e);
         }
 
         String dbType = getDBVendor(productName);

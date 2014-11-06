@@ -13,7 +13,7 @@ import org.kantega.jexmec.PluginManager;
 import javax.sql.DataSource;
 
 /**
- * Services exposed to plugins by OpenAksess
+ * Services exposed to plugins by Flyt CMS
  */
 public interface OpenAksessServices {
 
