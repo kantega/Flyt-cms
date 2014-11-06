@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Interceptor that intercepts all requests to render an OpenAksess administration GUI view, e.g.
+ * Interceptor that intercepts all requests to render an Flyt CMS administration GUI view, e.g.
  * {@link no.kantega.publishing.admin.content.action.NavigateController}.
  */
 public class AdminViewInterceptor extends HandlerInterceptorAdapter {

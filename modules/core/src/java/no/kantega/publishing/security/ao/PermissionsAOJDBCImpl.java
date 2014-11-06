@@ -94,7 +94,7 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
                     st.execute();
                 }
             } else {
-                // Legger inn default rettigheter, alle har aksess til alt
+                // Legger inn default rettigheter, alle har tilgang til alt
                 st.setInt(1, object.getId());
                 st.setInt(2, object.getObjectType());
                 st.setInt(3, Privilege.FULL_CONTROL);

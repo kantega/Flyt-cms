@@ -28,7 +28,7 @@
         <c:choose>
             <c:when test="${createUserAccount}">
                 <p>
-                    Before you can use OpenAksess we must create an administrator account that you will need to access the administration interface.
+                    Before you can use Flyt CMS we must create an administrator account that you will need to access the administration interface.
                 </p>
                 <p>
                     Please enter a desired userid and password (minimum 6 chars) below to create a new account:

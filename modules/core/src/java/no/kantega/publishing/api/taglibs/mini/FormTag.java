@@ -73,7 +73,7 @@ public class FormTag extends BodyTagSupport {
             String body = bodyContent.getString();
             JspWriter out = bodyContent.getEnclosingWriter();
 
-            //TODO: Improvement: Use the page's language if this is one of Aksess' supported admin languages.
+            //TODO: Improvement: Use the page's language if this is one of Flyt CMS' supported admin languages.
             Locale locale = Aksess.getDefaultAdminLocale();
 
             out.write("<script type=\"text/javascript\">\n");

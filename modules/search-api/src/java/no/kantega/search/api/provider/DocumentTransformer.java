@@ -29,7 +29,7 @@ public interface DocumentTransformer<D> {
     public String generateUniqueID(D document);
 
     /**
-     * Allow projects using OpenAksess to customize the IndexableDocuments created by for instance ContentTransformer
+     * Allow projects using Flyt CMS to customize the IndexableDocuments created by for instance ContentTransformer
      * @param indexableDocumentCustomizers that handles D.
      */
     public void setIndexableDocumentCustomizers(List<IndexableDocumentCustomizer<D>> indexableDocumentCustomizers);

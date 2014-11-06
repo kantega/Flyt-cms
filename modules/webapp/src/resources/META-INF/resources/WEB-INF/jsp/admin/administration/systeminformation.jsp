@@ -36,7 +36,7 @@
                     <div class="formElement">
                         <div class="content">
                             <div class="row">
-                                OpenAksess: ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${aksessRevision},
+                                Flyt CMS: ${aksessVersion} (<kantega:label key="aksess.systeminfo.revision"/> ${aksessRevision},
                                                     <fmt:formatDate value="${aksessTimestamp}" pattern="dd.MM.yyyy HH:mm:ss" />)
                             </div>
                             <div class="row">

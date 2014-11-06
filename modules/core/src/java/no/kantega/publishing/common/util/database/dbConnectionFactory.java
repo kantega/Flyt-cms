@@ -155,7 +155,7 @@ public class dbConnectionFactory {
             }
 
         } catch (Exception e) {
-            log.error( "********* Klarte ikke å lese aksess.conf **********", e);
+            log.error( "********* could not read aksess.conf **********", e);
         }
 
 

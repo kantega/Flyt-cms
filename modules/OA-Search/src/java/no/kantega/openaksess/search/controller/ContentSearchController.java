@@ -26,7 +26,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
 /**
- * Performs search for Aksess content.
+ * Performs search for Flyt CMS content.
  */
 @Controller
 @RequestMapping("/oasearch")

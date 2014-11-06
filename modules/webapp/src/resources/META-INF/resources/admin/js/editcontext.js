@@ -594,7 +594,7 @@ openaksess.editcontext = function()  {
 
 
 /**
- * OpenAksess specific extension of the jQueryUI autocomplete plugin.
+ * Flyt CMS specific extension of the jQueryUI autocomplete plugin.
  */
 $.widget('ui.oaAutocomplete', $.ui.autocomplete, {
     _create: function() {
@@ -625,7 +625,7 @@ $.widget('ui.oaAutocomplete', $.ui.autocomplete, {
 });
 
 /**
- * Multimedia specific extension of the OpenAksess autocomplete plugin.
+ * Multimedia specific extension of the Flyt CMS autocomplete plugin.
  */
 $.widget('ui.oaAutocompleteMultimedia', $.ui.oaAutocomplete, {
 

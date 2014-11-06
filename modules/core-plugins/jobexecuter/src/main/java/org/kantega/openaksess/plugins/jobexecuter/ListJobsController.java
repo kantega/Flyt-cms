@@ -45,8 +45,8 @@ public class ListJobsController extends AbstractController {
 
     /**
      * ListJobsController is used to find all jobs that are scheduled using a quartz scheduler.
-     * Both jobs specified in a local projects and jobs specified by OpenAksess in application-jobs.xml
-     * are listed. Use the aksess config parameter jobexecuter.jobs to limit which jobs are available.
+     * Both jobs specified in a local projects and jobs specified by Flyt CMS in application-jobs.xml
+     * are listed. Use the Flyt CMS config parameter jobexecuter.jobs to limit which jobs are available.
      *
      * @param request The HTTP request
      * @param response The HTTP response

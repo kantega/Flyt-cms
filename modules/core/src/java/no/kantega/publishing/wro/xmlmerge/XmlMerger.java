@@ -19,7 +19,7 @@ import java.io.*;
 public class XmlMerger {
 
     /**
-     * @param oaXml xml from OpenAksess
+     * @param oaXml xml from Flyt CMS
      * @param projectXml xml from the current project
      * @param servletContext -
      * @return inputstream containing projectXml merged into oaXml.
