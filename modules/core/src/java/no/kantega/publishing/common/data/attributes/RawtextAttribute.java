@@ -1,7 +1,7 @@
 package no.kantega.publishing.common.data.attributes;
 
 /**
- * Custom Aksess attribute.
+ * Custom Flyt CMS attribute.
  * Raw text without formatting. Used for publishing tracking scripts.
  */
 

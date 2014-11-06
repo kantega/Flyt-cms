@@ -229,7 +229,7 @@ public class Aksess {
         // ContentLock
         lockTimeToLive = c.getInt("lock.timeToLive", lockTimeToLive);
 
-        // Setting aksess language. Use no_NO if locale isn't defined
+        // Setting Flyt CMS language. Use no_NO if locale isn't defined
         language = c.getString("admin.locale.language", "no");
         country = c.getString("admin.locale.country", "NO");
 
