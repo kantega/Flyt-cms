@@ -51,8 +51,8 @@
                 var startX = Math.floor( pos.left );
                 var startY = Math.floor( pos.top );
 
-                var endX = startX + current.width();
-                var endY = startY + current.height();
+                var endX = Math.floor(startX + current.width());
+                var endY = Math.floor(startY + current.height());
 
                 addRow(currentMapArea, startX, startY, endX, endY, 'http://', '', false);
             }
