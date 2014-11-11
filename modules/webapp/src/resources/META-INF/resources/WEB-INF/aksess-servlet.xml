@@ -75,7 +75,6 @@
                 <!-- Search for autocomplete -->
                 <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
                 <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
-                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
                 <prop key="/ajax/AutocompleteOrgUnits.action">AutocompleteOrgUnitsAction</prop>
                 <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
 
@@ -787,7 +786,6 @@
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.ajax.AutocompleteMultimediaAction" id="AutocompleteMultimediaAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteUsersAction" id="AutocompleteUsersAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteOrgUnitsAction" id="AutocompleteOrgUnitsAction"/>
 

@@ -1,12 +1,12 @@
 package no.kantega.openaksess.search.controller;
 
+import no.kantega.openaksess.search.model.AutocompleteMultimedia;
 import no.kantega.openaksess.search.provider.transformer.MultimediaTransformer;
 import no.kantega.openaksess.search.query.AksessSearchContextCreator;
 import no.kantega.openaksess.search.security.AksessSearchContext;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.controls.AksessController;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.search.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,11 +19,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
+import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang.StringUtils.isNotEmpty;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
 @Controller
-@RequestMapping("/oasearch")
+@RequestMapping("/multimediasearch")
 public class MultimediaSearchController implements AksessController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class MultimediaSearchController implements AksessController {
     private List<String> facetQueries = emptyList();
     private List<String> facetFields = emptyList();
 
-    @RequestMapping("/multimediasearch")
+    @RequestMapping("/search")
     public @ResponseBody
     Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
@@ -48,25 +49,45 @@ public class MultimediaSearchController implements AksessController {
 
         if (isNotEmpty(query)) {
             SearchResponse searchResponse = performSearch(request, query);
-
             numberOfHits = searchResponse.getNumberOfHits().intValue();
-
-            List<GroupResultResponse> groupResultResponses = searchResponse.getGroupResultResponses();
-            MultimediaService multimediaService = new MultimediaService(request);
-            for (GroupResultResponse groupResultResponse : groupResultResponses) {
-                List<SearchResult> searchResults = groupResultResponse.getSearchResults();
-                for (SearchResult searchResult : searchResults) {
-                    if (searchResult.getIndexedContentType().equals(MultimediaTransformer.HANDLED_DOCUMENT_TYPE)) {
-                        int id = searchResult.getId();
-                        mediaList.add(multimediaService.getMultimedia(id));
-                    }
-                } 
-            }
+            mediaList = getListFromSearchResponse(request, searchResponse);
         }
 
         model.put("numberOfHits", numberOfHits);
         model.put("mediaList", mediaList);
         return model;
+    }
+
+    @RequestMapping("/autocomplete")
+    public @ResponseBody List<AutocompleteMultimedia> autocomplete(HttpServletRequest request) {
+        List<AutocompleteMultimedia> autocompleteList = new ArrayList<>();
+        String term = request.getParameter("term");
+        if (isNotBlank(term)) {
+            SearchResponse searchResponse = performSearch(request, term);
+            List<Multimedia> multimediaList = getListFromSearchResponse(request, searchResponse);
+            for (Multimedia m : multimediaList) {
+                autocompleteList.add(new AutocompleteMultimedia(m, request));
+            }
+        }
+
+        return autocompleteList;
+    }
+
+    private List<Multimedia> getListFromSearchResponse(HttpServletRequest request, SearchResponse searchResponse) {
+        List<Multimedia> multimediaList = new ArrayList<>();
+
+        List<GroupResultResponse> groupResultResponses = searchResponse.getGroupResultResponses();
+        MultimediaService multimediaService = new MultimediaService(request);
+        for (GroupResultResponse groupResultResponse : groupResultResponses) {
+            List<SearchResult> searchResults = groupResultResponse.getSearchResults();
+            for (SearchResult searchResult : searchResults) {
+                if (searchResult.getIndexedContentType().equals(MultimediaTransformer.HANDLED_DOCUMENT_TYPE)) {
+                    int id = searchResult.getId();
+                    multimediaList.add(multimediaService.getMultimedia(id));
+                }
+            }
+        }
+        return multimediaList;
     }
 
     private SearchResponse performSearch(HttpServletRequest request, String query) {
@@ -154,43 +175,11 @@ public class MultimediaSearchController implements AksessController {
         return getStringParameter(request, QueryStringGenerator.QUERY_PARAM, "");
     }
 
-    private void addLinks(Map<String, Object> model, SearchResponse searchResponse) {
-        Map<String, Object> links = new HashMap<>();
-        model.put("links", links);
-        int currentPage = searchResponse.getCurrentPage();
-        if (currentPage > 0) {
-            String prevPageUrl = QueryStringGenerator.getPrevPageUrl(searchResponse.getQuery(), currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls());
-            links.put("prevPageUrl", prevPageUrl);
-        }
-
-        int numberOfPages = searchResponse.getNumberOfPages();
-        if (currentPage < (numberOfPages - 1)) {
-            String nextPageUrl = QueryStringGenerator.getNextPageUrl(searchResponse.getQuery(), currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls());
-            links.put("nextPageUrl", nextPageUrl);
-        }
-
-        if (numberOfPages > 1) {
-            links.put("pageUrls", QueryStringGenerator.getPageUrls(searchResponse, currentPage, searchResponse.getQuery().isAppendFiltersToPageUrls()));
-        }
-    }
-
     public SearchQuery customizeQuery(SearchQuery searchQuery, AksessSearchContext searchContext, HttpServletRequest request){
         return searchQuery;
     }
 
     public String getDescription() {
         return "Performs search for Aksess content";
-    }
-
-    private SearchResponse emptyResponse(HttpServletRequest request) {
-        return new SearchResponse(new SearchQuery(aksessSearchContextCreator.getSearchContext(request), ""), 0L, 0, Collections.<SearchResult>emptyList());
-    }
-
-    public void setFacetQueries(List<String> facetQueries) {
-        this.facetQueries = facetQueries;
-    }
-
-    public void setFacetFields(List<String> facetFields) {
-        this.facetFields = facetFields;
     }
 }
