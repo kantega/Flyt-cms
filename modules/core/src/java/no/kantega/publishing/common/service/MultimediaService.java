@@ -228,34 +228,6 @@ public class MultimediaService {
         }
     }
 
-    /**
-     * Performs a search for multimedia matching the given phrase, published on the given site and published in content
-     * which is a child of the content given by parentId.
-     *
-     * @param phrase   the text to search for
-     * @param site     the site to limit the search by, or -1 for global.
-     * @param parentId the root of the subtree of contents to limit the search by, or -1 for all
-     * @return a list of Multimedia-objects matching the given criteria
-     * @throws SystemException if a SystemException is thrown by the underlying AO
-     */
-    public List<Multimedia> searchMultimedia(String phrase, int site, int parentId) throws SystemException {
-        List<Multimedia> list = multimediaDao.searchMultimedia(phrase, site, parentId);
-
-        List<Multimedia> approved = new ArrayList<>();
-        // Legg kun til bilder og mapper som brukeren har tilgang til
-        for (Multimedia m : list) {
-            if (securitySession.isAuthorized(m, Privilege.VIEW_CONTENT)) {
-                approved.add(m);
-            }
-        }
-
-        return approved;
-    }
-
-    public List<Multimedia> searchMultimedia(String phrase) throws SystemException {
-        return searchMultimedia(phrase, -1, -1);
-    }
-
     public MultimediaMapEntry getPartialMultimediaMap(int[] idList, boolean getOnlyFolders) throws SystemException {
         return MultimediaMapWorker.getPartialSiteMap(idList, getOnlyFolders);
     }

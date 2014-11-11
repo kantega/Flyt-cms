@@ -71,18 +71,6 @@ public interface MultimediaDao {
 
 
     /**
-     * Searches the multimedia-archive for the given criteria
-     *
-     * @param phrase the text to search for. If this is a number it is interpreted as an ID to search for. If not,
-     *               this string is searched for in names, authors, and descriptions.
-     * @param site the site to limit the search by, or -1 for global.
-     * @param parentId the root of the subtree of contents to limit the search by, or -1 for all
-     * @return a list of Multimedia-objects matching the given criteria
-     */
-    public List<Multimedia> searchMultimedia(String phrase, int site, int parentId);
-
-
-    /**
      * Move a multimedia object
      * @param multimediaId - Id of object to be moved
      * @param newParentId - Ny plassering for objekt

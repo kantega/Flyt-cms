@@ -39,6 +39,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
             SolrInputDocument solrParams = getSolrParams(document);
             if (fileContent == null) {
                 UpdateResponse add = solrServer.add(solrParams);
+                log.debug("Response from Solr: {}", add);
             } else {
                 ContentStreamUpdateRequest contentStreamUpdateRequest = new ContentStreamUpdateRequest("/update/extract");
                 contentStreamUpdateRequest.setParams(getStreamParams(document));
@@ -46,6 +47,9 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
                 try {
                     NamedList<Object> request = solrServer.request(contentStreamUpdateRequest);
+                    log.debug("Response from Solr: {}", request);
+                } catch (Exception e) {
+                    log.error("Error when submitting index query", e);
                 } finally {
                     boolean deletedFileContent = fileContent.delete();
                     if(!deletedFileContent){

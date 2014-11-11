@@ -105,20 +105,6 @@ public class JdbcMultimediaDaoTest {
     }
 
     @Test
-    public void shouldReturn2ItemsForSearch() throws Exception {
-        Multimedia multimedia1 = createMultimedia();
-        multimedia1.setName("multimedia");
-        dao.setMultimedia(multimedia1);
-
-        Multimedia multimedia2 = createMultimedia();
-        multimedia2.setName("multimedia");
-        dao.setMultimedia(multimedia2);
-
-        List<Multimedia> multimedia = dao.searchMultimedia("multimedia", -1, -1);
-        assertEquals("searchMultimedia.size() == 2", 2, multimedia.size());
-    }
-
-    @Test
     public void shouldMoveMultimediaFolder() throws Exception {
         Multimedia folder = new Multimedia();
         folder.setType(MultimediaType.FOLDER);

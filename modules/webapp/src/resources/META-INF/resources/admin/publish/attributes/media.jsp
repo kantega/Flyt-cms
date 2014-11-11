@@ -93,7 +93,7 @@
                 $(document).ready(function () {
                     $("#${fieldName}text").oaAutocompleteMultimedia({
                         defaultValue:'<kantega:label key="aksess.insertlink.multimedia.hint"/>',
-                        source:"${pageContext.request.contextPath}/ajax/AutocompleteMultimedia.action",
+                        source:"${pageContext.request.contextPath}/multimediasearch/autocomplete",
                         select:openaksess.editcontext.autocompleteInsertIntoFormCallback
                     });
                 });

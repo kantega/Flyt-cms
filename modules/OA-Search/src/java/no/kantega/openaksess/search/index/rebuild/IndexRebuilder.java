@@ -78,6 +78,7 @@ public class IndexRebuilder {
                     String docType = progressReporter.getDocType();
                     documentIndexer.deleteByDocType(docType);
                 }
+                documentIndexer.commit();
                 try {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
@@ -85,7 +86,7 @@ public class IndexRebuilder {
                             log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
-                            log.error("Polling IndexableDocumentQueue resultet in null!");
+                            log.error("Polling IndexableDocumentQueue resulted in null!");
                         }
                     }
                 } catch (InterruptedException e) {

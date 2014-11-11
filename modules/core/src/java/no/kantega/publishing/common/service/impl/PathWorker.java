@@ -95,7 +95,7 @@ public class PathWorker {
 
         int parentId = mm.getParentId();
 
-        while (parentId != 0) {
+        while (parentId > 0) {
             SqlRowSet rs = dbConnectionFactory.getJdbcTemplate().queryForRowSet("select Id, ParentId, Name from multimedia where id = ?", parentId);
             if(rs.next()) {
                 int id = rs.getInt("Id");

@@ -75,7 +75,6 @@
                 <!-- Search for autocomplete -->
                 <prop key="/ajax/AutocompleteTopics.action">AutocompleteTopicsAction</prop>
                 <prop key="/ajax/AutocompleteContent.action">AutocompleteContentAction</prop>
-                <prop key="/ajax/AutocompleteMultimedia.action">AutocompleteMultimediaAction</prop>
                 <prop key="/ajax/AutocompleteOrgUnits.action">AutocompleteOrgUnitsAction</prop>
                 <prop key="/ajax/AutocompleteUsers.action">AutocompleteUsersAction</prop>
 
@@ -229,7 +228,7 @@
         </property>
     </bean>
 
-    
+
     <bean class="no.kantega.publishing.spring.PluginDelegatingHandlerMapping">
         <property name="pluginManager" ref="pluginManager"/>
         <property name="order" value="3"/>
@@ -550,7 +549,7 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
-    
+
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction" />
 
     <!-- Preview  -->
@@ -617,8 +616,11 @@
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/reloadparent.jsp"/>
     </bean>
     <!-- Search multimedia -->
-    <bean id="adminMultimediaSearchController" class="no.kantega.publishing.admin.multimedia.action.SearchMultimediaAction">
+    <bean id="adminMultimediaSearchController" class="no.kantega.openaksess.search.controller.AdminMultimediaSearchController">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/search.jsp"/>
+        <property name="multimediaSearchController">
+            <bean class="no.kantega.openaksess.search.controller.MultimediaSearchController"/>
+        </property>
     </bean>
     <!-- Multimedia -->
     <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
@@ -731,7 +733,7 @@
     <bean class="no.kantega.publishing.admin.topicmaps.action.DeleteTopicMapAction" id="deleteTopicMapAction"/>
     <bean class="no.kantega.publishing.admin.topicmaps.action.SaveImportedTopicMapAction" id="saveImportedTopicMapAction"/>
     <bean class="no.kantega.publishing.admin.topicmaps.action.ImportTopicMapAction" id="importTopicMapAction">
-         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listimportedtopicmap.jsp"/>
+        <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/listimportedtopicmap.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.topicmaps.action.EditTopicMapAction" id="editTopicMapAction">
         <property name="view" value="/WEB-INF/jsp/admin/topicmaps/admin/edittopicmap.jsp"/>
@@ -784,7 +786,6 @@
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
         <property name="siteCache" ref="aksessSiteCache"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.ajax.AutocompleteMultimediaAction" id="AutocompleteMultimediaAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteUsersAction" id="AutocompleteUsersAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteOrgUnitsAction" id="AutocompleteOrgUnitsAction"/>
 
