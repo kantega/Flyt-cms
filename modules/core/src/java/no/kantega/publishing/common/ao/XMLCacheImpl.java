@@ -24,8 +24,6 @@ import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,7 +36,6 @@ import java.util.List;
 public class XMLCacheImpl implements XmlCache {
     private static final Logger log = LoggerFactory.getLogger(XMLCacheImpl.class);
 
-    @Cacheable("XmlCache")
     @Override
     public XMLCacheEntry getXMLFromCache(String id){
         XMLCacheEntry cacheEntry = null;
@@ -63,7 +60,6 @@ public class XMLCacheImpl implements XmlCache {
         return cacheEntry;
     }
 
-    @CacheEvict(value = "XmlCache", key = "#cacheEntry.id")
     @Override
     public void storeXMLInCache(XMLCacheEntry cacheEntry){
         try (Connection c = dbConnectionFactory.getConnection()){
