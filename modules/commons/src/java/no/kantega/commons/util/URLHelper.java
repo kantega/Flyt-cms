@@ -49,7 +49,7 @@ public class URLHelper {
     }
 
     private static boolean isNormalPort(int port) {
-        return port != 80 && port != 443;
+        return port == 80 || port == 443;
     }
 
     public static String getUrlWithHttps(HttpServletRequest request){
