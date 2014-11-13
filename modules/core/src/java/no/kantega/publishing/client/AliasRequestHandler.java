@@ -4,6 +4,7 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.spring.AksessAliasHandlerMapping;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,10 +29,13 @@ public class AliasRequestHandler {
     @Autowired
     private SiteCache siteCache;
 
-    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public ModelAndView handleAlias(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
         String alias = (String) request.getAttribute(AksessAliasHandlerMapping.HANDLED_OA_ALIAS);
 
         ContentIdentifier cid = getBestMatchingAlias(alias, request.getServerName());
+        if(cid == null){
+            throw new ContentNotFoundException(alias);
+        }
         try {
             return contentRequestHandler.handleFromContentIdentifier(cid, request, response);
         } catch (Exception e) {
