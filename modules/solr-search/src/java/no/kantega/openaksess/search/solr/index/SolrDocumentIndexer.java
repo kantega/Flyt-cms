@@ -138,7 +138,15 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         streamParams.add("literal.visibilityStatus", document.getVisibility());
 
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
-            streamParams.add("literal." + attributeEntry.getKey(), getStringValue(attributeEntry.getValue()));
+            streamParams.add(new ModifiableSolrParams());
+            Object value = attributeEntry.getValue();
+            if (value instanceof List) {
+                for(Object o: (List)value){
+                    streamParams.add("literal." + attributeEntry.getKey(), getStringValue(o));
+                }
+            } else {
+                streamParams.add("literal." + attributeEntry.getKey(), getStringValue(value));
+            }
         }
         return streamParams;
     }

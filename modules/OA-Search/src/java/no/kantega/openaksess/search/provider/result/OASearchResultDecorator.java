@@ -39,8 +39,9 @@ public class OASearchResultDecorator implements SearchResultDecorator<OASearchRe
             pathEntries.remove(0);
         }
 
+        Integer associationId = (Integer) resultMap.get("associationId");
         OASearchResult result = new OASearchResult((Integer) resultMap.get("id"),
-                resultMap.get("associationId") == null ? -1 : (Integer) resultMap.get("associationId"),
+                resultMap.get("associationId") == null ? -1 : associationId,
                 (Integer) resultMap.get("securityId"),
                 (String) resultMap.get("indexedContentType"),
                 title,
