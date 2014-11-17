@@ -141,12 +141,16 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
             streamParams.add(new ModifiableSolrParams());
             Object value = attributeEntry.getValue();
-            if (value instanceof Collection) {
-                for(Object o: (Collection)value){
-                    streamParams.add("literal." + attributeEntry.getKey(), getStringValue(o));
+            if (value != null) {
+                if (value instanceof Collection) {
+                    for(Object o: (Collection)value){
+                        streamParams.add("literal." + attributeEntry.getKey(), getStringValue(o));
+                    }
+                } else {
+                    streamParams.add("literal." + attributeEntry.getKey(), getStringValue(value));
                 }
             } else {
-                streamParams.add("literal." + attributeEntry.getKey(), getStringValue(value));
+                log.warn("uid: " + document.getUId() + "." + attributeEntry.getKey() + " had value null!");
             }
         }
         return streamParams;
