@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -140,8 +141,8 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
             streamParams.add(new ModifiableSolrParams());
             Object value = attributeEntry.getValue();
-            if (value instanceof List) {
-                for(Object o: (List)value){
+            if (value instanceof Collection) {
+                for(Object o: (Collection)value){
                     streamParams.add("literal." + attributeEntry.getKey(), getStringValue(o));
                 }
             } else {
