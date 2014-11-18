@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * Attribute representing an number.
  */
 public class NumberAttribute extends Attribute {
-    //protected String regexp = "^\\-?[\\d]{1,}$";
+
     protected String numberRegExp = "^\\-?[\\d]{1,}$";
 
     public NumberAttribute() {
