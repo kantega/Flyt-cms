@@ -22,13 +22,15 @@ import java.text.*;
 import java.util.Collections;
 import java.util.Locale;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Attribute representing an number.
  */
 public class NumberAttribute extends Attribute {
-    protected String regexp = "^\\-?[\\d]{1,}$";
+    //protected String regexp = "^\\-?[\\d]{1,}$";
+    protected String numberRegExp = "^\\-?[\\d]{1,}$";
 
     public NumberAttribute() {
         super();
@@ -44,8 +46,9 @@ public class NumberAttribute extends Attribute {
             return;
         }
 
-        if (isNotBlank(value) && isNotBlank(regexp)) {
-            if (!value.matches(regexp)) {
+        if (isBlank(regexp)) regexp = numberRegExp;
+        if (isNotBlank(value)) {
+            if (!value.matches(regexp) && !value.matches(numberRegExp)) {
                 errors.add(name, "aksess.feil.invalidnumber", Collections.<String, Object>singletonMap("field", title));
             }
         }
@@ -72,7 +75,7 @@ public class NumberAttribute extends Attribute {
             formatter = new DecimalFormat(format);
         }
 
-        return formatter.format(Integer.parseInt(value));
+        return formatter.format(Double.parseDouble(value));
     }
 
 
