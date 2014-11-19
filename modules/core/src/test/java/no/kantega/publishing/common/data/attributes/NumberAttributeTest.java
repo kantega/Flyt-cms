@@ -4,6 +4,7 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.dom4j.dom.DOMElement;
 import org.junit.Test;
+import static org.junit.Assert.*;
 import org.w3c.dom.*;
 
 /**
@@ -26,13 +27,14 @@ public class NumberAttributeTest {
         // should validate ok
         ValidationErrors errors = new ValidationErrors();
         attribute.validate(errors);
-        assert errors.getLength() == 0;
+        assertEquals("Validation should not contain errors", 0, errors.getLength());
+
 
         // should not validate
         attribute.setValue(notANumber);
         errors = new ValidationErrors();
         attribute.validate(errors);
-        assert errors.getLength() > 0;
+        assertEquals("False validation occured!", 1, errors.getLength());
 
     }
 
@@ -43,17 +45,18 @@ public class NumberAttributeTest {
         attribute.setValue(decimalvalue);
         attribute.setConfig(generateCustomRegexpConfig(), null);
 
+        // should validate ok
         ValidationErrors errors = new ValidationErrors();
         attribute.validate(errors);
+        assertEquals("Validation should not contain errors", 0, errors.getLength());
 
-        // should validate ok
-        assert errors.getLength() == 0;
 
+        // should not validate
         attribute.setValue(notANumber);
         errors = new ValidationErrors();
         attribute.validate(errors);
 
-        assert errors.getLength() > 0;
+        assertEquals("False validation occured!", 1, errors.getLength());
 
     }
 
