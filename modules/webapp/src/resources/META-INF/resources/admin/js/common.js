@@ -194,9 +194,6 @@ openaksess.common = {
                 }
 
                 openaksess.common.debug("openaksess.common.modalWindow.open(): Opening modal window.");
-
-                console.log(config);
-
                 $content.dialog(config);
 
                 if (config.iframe) {
