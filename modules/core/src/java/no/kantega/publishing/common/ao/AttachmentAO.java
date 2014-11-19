@@ -94,7 +94,7 @@ public class AttachmentAO {
                 }
             }
 
-            indexAttachmentIfContentIdSetOrIsNew(attachment, data, attachmentExists);
+            indexAttachmentIfContentIdSet(attachment);
 
             return attachment.getId();
         } catch (SQLException e) {
@@ -103,8 +103,8 @@ public class AttachmentAO {
 
     }
 
-    private static void indexAttachmentIfContentIdSetOrIsNew(Attachment attachment, byte[] data, boolean attachmentExists) {
-        if(attachmentExists && data == null || !attachmentExists){
+    private static void indexAttachmentIfContentIdSet(Attachment attachment) {
+        if(attachment.getContentId() > 0){
             contentNotifier.attachmentUpdated(new ContentEvent().setAttachment(attachment));
         }
     }
@@ -130,10 +130,10 @@ public class AttachmentAO {
              PreparedStatement st = c.prepareStatement("delete from attachments where Id = ?")) {
             st.setInt(1, id);
             st.execute();
-            contentNotifier.attachmentDeleted(new ContentEvent().setAttachment(attachment));
         } catch (SQLException e) {
             throw new SystemException("SQL feil ved sletting av vedlegg", e);
         }
+        contentNotifier.attachmentDeleted(new ContentEvent().setAttachment(attachment));
     }
 
 
