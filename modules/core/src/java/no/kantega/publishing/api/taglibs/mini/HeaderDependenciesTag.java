@@ -47,6 +47,11 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
         ValidationErrors errors = (ValidationErrors)request.getAttribute("errors");
 
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getExpireUrl(request, "/wro-oa/miniaksess.css") + "\">\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/js/aksess-i18n.jjs") + "\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/jquery-all.js") + "\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/miniaksess.js") + "\"></script>\n");
+        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/tiny_mce/tiny_mce_gzip.js") + "\"></script>\n");
+
         out.write("<script type=\"text/javascript\">\n" +
                 "        var properties = {\n" +
                 "            contextPath : '"+((HttpServletRequest) pageContext.getRequest()).getContextPath()+"',\n" +
@@ -79,9 +84,7 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 "        $.datepicker.setDefaults($.datepicker.regional['" + Aksess.getDefaultAdminLocale().getCountry() + "']);\n" +
                 "        $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});" +
                 "    </script>");
-        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/js/aksess-i18n.jjs") + "\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/miniaksess.js") + "\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/tiny_mce/tiny_mce_gzip.js") + "\"></script>\n");
+
     }
 
     private String getExpireUrl(HttpServletRequest request, String url) {
