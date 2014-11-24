@@ -34,6 +34,9 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
          */
         dispatchRequests.remove(DispatcherType.INCLUDE);
 
+        ctx.addFilter("PluginDelegatingFilter", PluginDelegatingFilter.class)
+                .addMappingForUrlPatterns(dispatchRequests, false, "/*");
+
         FilterRegistration.Dynamic responseHeaderFilter = ctx.addFilter("ResponseHeaderFilter", ResponseHeaderFilter.class);
         if (responseHeaderFilter != null) {
             responseHeaderFilter.setInitParameters(getAdminResponseHeaderFilterParams());
@@ -71,9 +74,6 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
                 .addMappingForUrlPatterns(dispatchRequests, false, "/*");
 
         ctx.addFilter("AksessRequestFilter", AksessRequestFilter.class)
-                .addMappingForUrlPatterns(dispatchRequests, false, "/*");
-
-        ctx.addFilter("PluginDelegatingFilter", PluginDelegatingFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/*");
 
         FilterRegistration.Dynamic aksesswro = ctx.addFilter("aksesswro", OpenAksessConfiguredFilter.class);
