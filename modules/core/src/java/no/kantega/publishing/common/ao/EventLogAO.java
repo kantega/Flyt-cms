@@ -83,6 +83,10 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
                 username = username.substring(0, 254);
             }
 
+            if(subject != null && subject.length() > 255){
+                subject = subject.substring(0, 254);
+            }
+
             int subjectType = -1;
             int subjectId = -1;
             if (object != null) {
