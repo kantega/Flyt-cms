@@ -30,6 +30,29 @@ public class JdbcRatingDaoTest {
     }
 
     @Test
+    public void testGetRatingForObject () {
+        Rating r = new Rating();
+        r.setUserid("andska");
+        r.setContext(CONTENT);
+        r.setObjectId("5");
+        r.setRating(2);
+        r.setDate(new Date());
+        r.setComment("Comment");
+
+        dao.saveOrUpdateRating(r);
+
+        // Insert one rating
+        List<Rating> ratings = dao.getRatingsForObject("5", CONTENT);
+        assertEquals(1, ratings.size());
+        Rating actual = ratings.get(0);
+        assertEquals(r.getUserid(), actual.getUserid());
+        assertEquals(r.getContext(), actual.getContext());
+        assertEquals(r.getObjectId(), actual.getObjectId());
+        assertEquals(r.getRating(), actual.getRating());
+        assertEquals(r.getComment(), actual.getComment());
+    }
+
+    @Test
     public void testDeleteRatingsForObject() {
 
         Rating r = new Rating();
@@ -38,6 +61,7 @@ public class JdbcRatingDaoTest {
         r.setObjectId("5");
         r.setRating(2);
         r.setDate(new Date());
+        r.setComment("Comment");
 
         dao.saveOrUpdateRating(r);
 

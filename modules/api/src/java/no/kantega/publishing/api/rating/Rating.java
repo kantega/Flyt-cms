@@ -25,6 +25,7 @@ public class Rating {
     private String userid;
     private String objectId;
     private Date date;
+    private String comment;
 
 
     public int getRating() {
@@ -65,5 +66,13 @@ public class Rating {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 }
