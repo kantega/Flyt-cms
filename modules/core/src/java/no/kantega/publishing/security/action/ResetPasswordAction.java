@@ -27,7 +27,7 @@ public class ResetPasswordAction extends AbstractLoginAction {
     private String resetPasswordView = null;
     private String resetPasswordErrorView = null;
     private PasswordValidator passwordValidator;
-    private List<PostResetPasswordHandler> postResetPasswordHandlers;
+    private List<PostResetPasswordHandler> postResetPasswordHandlers = emptyList();
 
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -131,10 +131,6 @@ public class ResetPasswordAction extends AbstractLoginAction {
 
     @Autowired(required = false)
     public void setPostResetPasswordHandlers(List<PostResetPasswordHandler> postResetPasswordHandlers){
-        if(postResetPasswordHandlers == null){
-            this.postResetPasswordHandlers = emptyList();
-        } else {
-            this.postResetPasswordHandlers = postResetPasswordHandlers;
-        }
+        this.postResetPasswordHandlers = postResetPasswordHandlers;
     }
 }
