@@ -1,19 +1,24 @@
 package no.kantega.publishing.rating.score;
 
-import junit.framework.TestCase;
-
-import java.util.List;
-import java.util.ArrayList;
-
 import no.kantega.publishing.api.rating.AverageRatingScoreCalculator;
 import no.kantega.publishing.api.rating.Rating;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  */
-public class AverageRatingScoreCalculatorTest extends TestCase {
-    public void testGetScoreForRatings() {
+public class AverageRatingScoreCalculatorTest {
 
+    private AverageRatingScoreCalculator calculator = new AverageRatingScoreCalculator();
+
+
+    @Test
+    public void testGetScoreForRatings() {
         List<Rating> ratings = new ArrayList<Rating>();
 
         Rating r1 = new Rating();
@@ -32,10 +37,13 @@ public class AverageRatingScoreCalculatorTest extends TestCase {
         r4.setRating(4);
         ratings.add(r4);
 
-
-        AverageRatingScoreCalculator calculator = new AverageRatingScoreCalculator();
         float score = calculator.getScoreForRatings(ratings);
+        assertEquals(score, 3.5f, 0);
+    }
 
-        assertEquals(score, 3.5f);
+    @Test
+    public void shouldReturnZeroWhenNoRatings() {
+        float result = calculator.getScoreForRatings(new ArrayList<Rating>());
+        assertEquals(0, result, 0);
     }
 }
