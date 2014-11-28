@@ -252,6 +252,13 @@
         <name>headerdependencies</name>
         <tag-class>no.kantega.publishing.api.taglibs.mini.HeaderDependenciesTag</tag-class>
         <body-content>empty</body-content>
+        <attribute>
+            <description>Set to true to print /wro-oa/jquery-all.js along other dependencies. Default false</description>
+            <name>includejquery</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
     </tag>
     <tag>
         <description>Evaluates body if current page is a draft and editable by user</description>
