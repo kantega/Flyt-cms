@@ -33,6 +33,8 @@ import java.io.IOException;
 
 public class HeaderDependenciesTag extends SimpleTagSupport {
 
+    private boolean includejquery = false;
+
     private ResourceKeyProvider provider;
 
     @Override
@@ -48,7 +50,9 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
 
         out.write("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + getExpireUrl(request, "/wro-oa/miniaksess.css") + "\">\n");
         out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/js/aksess-i18n.jjs") + "\"></script>\n");
-        out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/jquery-all.js") + "\"></script>\n");
+        if (includejquery) {
+            out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/jquery-all.js") + "\"></script>\n");
+        }
         out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/wro-oa/miniaksess.js") + "\"></script>\n");
         out.write("<script type=\"text/javascript\" src=\""+ getExpireUrl(request, "/aksess/tiny_mce/tiny_mce_gzip.js") + "\"></script>\n");
 
@@ -100,5 +104,9 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                 throw new JspException("Could not find ResourceKeyProvider", e);
             }
         }
+    }
+
+    public void setIncludejquery(boolean includejquery) {
+        this.includejquery = includejquery;
     }
 }
