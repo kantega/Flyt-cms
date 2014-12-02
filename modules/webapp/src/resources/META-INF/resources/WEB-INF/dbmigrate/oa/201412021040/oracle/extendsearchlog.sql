@@ -1,0 +1,2 @@
+ALTER TABLE searchlog MODIFY (Query VARCHAR(4096));
+ALTER TABLE searchlog MODIFY (ExactQuery VARCHAR(4096));
