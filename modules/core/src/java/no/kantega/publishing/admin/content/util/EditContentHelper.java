@@ -319,14 +319,18 @@ public class EditContentHelper {
                 field = xmlAttribute.getAttribute("field");
             }
 
-            if (field != null && field.length() > 0) {
+            if (isNotBlank(field)) {
                 field = field.toLowerCase();
-                if (field.contains(ContentProperty.TITLE)) {
-                    titleField = name;
-                } else if (field.contains(ContentProperty.DESCRIPTION)) {
-                    descField = name;
-                } else if (field.contains(ContentProperty.IMAGE)) {
-                    imageField = name;
+                switch (field) {
+                    case ContentProperty.TITLE:
+                        titleField = name;
+                        break;
+                    case ContentProperty.DESCRIPTION:
+                        descField = name;
+                        break;
+                    case ContentProperty.IMAGE:
+                        imageField = name;
+                        break;
                 }
             }
 
