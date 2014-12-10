@@ -95,6 +95,13 @@
             </dependency>
 
             <dependency>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>${javax.servlet.jsp-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${jstl.version}</version>
@@ -129,13 +136,19 @@
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
-                <version>2.4</version>
+                <version>${commons-io.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang3.version}</version>
             </dependency>
 
             <dependency>
@@ -227,7 +240,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.25</version>
+                    <version>1.26</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -239,7 +252,8 @@
         <securityapi.openimpl.version>2.16</securityapi.openimpl.version>
 
         <codec.version>1.7</codec.version>
-        <commons-pool.version>1.5.4</commons-pool.version>
+        <commons-pool.version>1.6</commons-pool.version>
+        <commons-pool2.version>2.2</commons-pool2.version>
         <commons-logging.version>1.1</commons-logging.version>
         <dbcp.version>2.0.1</dbcp.version>
         <httpclient.version>4.3.1</httpclient.version>
@@ -255,7 +269,11 @@
         <psql.version>9.2-1002.jdbc4</psql.version>
         <servlet.version>3.0.1</servlet.version>
         <jsp.version>2.2</jsp.version>
+        <javax.servlet.jsp-api.version>2.3.1</javax.servlet.jsp-api.version>
         <jstl.version>1.2</jstl.version>
+        <jstl-api.version>1.2</jstl-api.version>
+        <javax.servlet.jstl-api>1.2.1</javax.servlet.jstl-api>
+
         <hsqldb.version>2.0.0</hsqldb.version>
         <aspectj.version>1.6.12</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -266,9 +284,12 @@
         <logback.version>1.1.2</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
         <commons-lang.version>2.6</commons-lang.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
         <commons-compress.version>1.9</commons-compress.version>
         <poi.version>3.11-beta2</poi.version>
         <tika.version>1.6</tika.version>
+        <pdfbox.version>1.8.7</pdfbox.version>
         <asm.version>5.0.3</asm.version>
         <cglib.version>3.1</cglib.version>
         <jackson.version>2.4.2</jackson.version>
