@@ -28,9 +28,9 @@ import no.kantega.publishing.security.data.*;
 import no.kantega.publishing.security.data.enums.NotificationPriority;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.jdbc.core.RowMapper;
@@ -46,20 +46,18 @@ import java.util.List;
 public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implements PermissionAO {
     private static final Logger log = LoggerFactory.getLogger(PermissionsAOJDBCImpl.class);
 
-    private static MultimediaAO multimediaAO;
+    @Autowired
+    private MultimediaAO multimediaAO;
 
     @Override
     @CacheEvict(value = "permissionCache", key = "#object.securityId")
     public void setPermissions(BaseObject object, List<Permission> permissions) throws SystemException {
-        if (multimediaAO == null) {
-            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+        if (object.getSecurityId() == -1) {
+            log.warn("object.securityId was -1!");
         }
-
         int securityId = object.getSecurityId();
 
         try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement st;
-
             log.debug( "Setting permissions for id: {}, securityId: {}", object.getId(), securityId);
 
             boolean setPermissionsFromParent = false;
@@ -74,34 +72,36 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
 
             if (securityId == object.getId()) {
                 // Slett gamle rettigheter
-                st = c.prepareStatement("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?");
-                st.setInt(1, securityId);
-                st.setInt(2, object.getObjectType());
-                st.execute();
-            }
-            st = c.prepareStatement("insert into objectpermissions values(?,?,?,?,?,?)");
-
-            // Sett inn nye rettigheter
-            if (permissions != null) {
-                for (Permission permission : permissions) {
-                    SecurityIdentifier sid = permission.getSecurityIdentifier();
-                    st.setInt(1, object.getId());
+                try(PreparedStatement st = c.prepareStatement("delete from objectpermissions where ObjectSecurityId = ? and ObjectType = ?")) {
+                    st.setInt(1, securityId);
                     st.setInt(2, object.getObjectType());
-                    st.setInt(3, permission.getPrivilege());
-                    st.setString(4, sid.getType());
-                    st.setString(5, sid.getId());
-                    st.setInt(6, permission.getNotificationPriority() != null ? permission.getNotificationPriority().getNotificationPriorityAsInt() : 0);
                     st.execute();
                 }
-            } else {
-                // Legger inn default rettigheter, alle har tilgang til alt
-                st.setInt(1, object.getId());
-                st.setInt(2, object.getObjectType());
-                st.setInt(3, Privilege.FULL_CONTROL);
-                st.setString(4, RoleType.ROLE);
-                st.setString(5, Aksess.getEveryoneRole());
-                st.setInt(6, NotificationPriority.PRIORITY1.getNotificationPriorityAsInt());
-                st.execute();
+            }
+            try(PreparedStatement st = c.prepareStatement("insert into objectpermissions values(?,?,?,?,?,?)")) {
+
+                // Sett inn nye rettigheter
+                if (permissions != null) {
+                    for (Permission permission : permissions) {
+                        SecurityIdentifier sid = permission.getSecurityIdentifier();
+                        st.setInt(1, object.getId());
+                        st.setInt(2, object.getObjectType());
+                        st.setInt(3, permission.getPrivilege());
+                        st.setString(4, sid.getType());
+                        st.setString(5, sid.getId());
+                        st.setInt(6, permission.getNotificationPriority() != null ? permission.getNotificationPriority().getNotificationPriorityAsInt() : 0);
+                        st.execute();
+                    }
+                } else {
+                    // Legger inn default rettigheter, alle har tilgang til alt
+                    st.setInt(1, object.getId());
+                    st.setInt(2, object.getObjectType());
+                    st.setInt(3, Privilege.FULL_CONTROL);
+                    st.setString(4, RoleType.ROLE);
+                    st.setString(5, Aksess.getEveryoneRole());
+                    st.setInt(6, NotificationPriority.PRIORITY1.getNotificationPriorityAsInt());
+                    st.execute();
+                }
             }
 
             if (object.getId() != -1) {
@@ -129,16 +129,9 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
     public List<ObjectPermissionsOverview> getPermissionsOverview(int objectType) throws SystemException {
         List<ObjectPermissionsOverview> overview = new ArrayList<>();
 
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            PreparedStatement st;
+        try (Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement st = getOverviewStatement(objectType, c)) {
 
-            if (objectType == ObjectType.MULTIMEDIA) {
-                st = c.prepareStatement("select multimedia.Name as Name, objectpermissions.* from multimedia, objectpermissions where multimedia.Id = objectpermissions.ObjectSecurityId and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
-            } else if (objectType == ObjectType.TOPICMAP) {
-                st = c.prepareStatement("select tmmaps.Name as Name, objectpermissions.* from tmmaps, objectpermissions where tmmaps.Id = objectpermissions.ObjectSecurityId and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
-            } else {
-                st = c.prepareStatement("select contentversion.Title as Name, objectpermissions.* from content, contentversion, objectpermissions, associations where (contentversion.ContentId = content.ContentId) and (contentversion.IsActive = 1) and (content.contentId = associations.ContentId) and (associations.UniqueId = objectpermissions.ObjectSecurityId) and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
-            }
             st.setInt(1, objectType);
             ResultSet rs = st.executeQuery();
 
@@ -178,6 +171,18 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
             throw new SystemException("SQL feil", e);
         }
 
+    }
+
+    private PreparedStatement getOverviewStatement(int objectType, Connection c) throws SQLException {
+        PreparedStatement st;
+        if (objectType == ObjectType.MULTIMEDIA) {
+            st = c.prepareStatement("select multimedia.Name as Name, objectpermissions.* from multimedia, objectpermissions where multimedia.Id = objectpermissions.ObjectSecurityId and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
+        } else if (objectType == ObjectType.TOPICMAP) {
+            st = c.prepareStatement("select tmmaps.Name as Name, objectpermissions.* from tmmaps, objectpermissions where tmmaps.Id = objectpermissions.ObjectSecurityId and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
+        } else {
+            st = c.prepareStatement("select contentversion.Title as Name, objectpermissions.* from content, contentversion, objectpermissions, associations where (contentversion.ContentId = content.ContentId) and (contentversion.IsActive = 1) and (content.contentId = associations.ContentId) and (associations.UniqueId = objectpermissions.ObjectSecurityId) and objectpermissions.ObjectType = ? order by Name, ObjectSecurityId, Role");
+        }
+        return st;
     }
 
     @Override
