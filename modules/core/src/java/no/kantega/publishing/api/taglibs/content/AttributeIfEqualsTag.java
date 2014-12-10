@@ -22,9 +22,8 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.jstl.core.ConditionalTagSupport;
 
@@ -36,7 +35,6 @@ public class AttributeIfEqualsTag  extends ConditionalTagSupport {
     private String contentId = null;
     private String collection = null;
     private boolean negate = false;
-    private static WebApplicationContext webApplicationContext;
 
     private boolean inheritFromAncestors = false;
 
@@ -71,10 +69,7 @@ public class AttributeIfEqualsTag  extends ConditionalTagSupport {
             cmd.setName(name);
             cmd.setProperty(AttributeProperty.VALUE);
 
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
 
             String result = AttributeTagHelper.getAttribute(session, content, cmd, inheritFromAncestors);
             if (result != null && result.equalsIgnoreCase(value)) {

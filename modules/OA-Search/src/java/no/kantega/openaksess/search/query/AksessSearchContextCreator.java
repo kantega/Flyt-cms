@@ -7,10 +7,7 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.search.api.search.context.SearchContextCreator;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 
@@ -19,15 +16,15 @@ import javax.servlet.http.HttpServletRequest;
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 
 @Component
-public class AksessSearchContextCreator implements SearchContextCreator, ApplicationContextAware {
+public class AksessSearchContextCreator implements SearchContextCreator {
 
     @Autowired
     private SiteCache siteCache;
-    private ApplicationContext applicationContext;
 
     public AksessSearchContext getSearchContext(HttpServletRequest request) {
         String searchUrl = URLHelper.getServerURL(request) + URLHelper.getCurrentUrl(request);
-        return new AksessSearchContext(applicationContext.getBean(SecuritySession.class), findSiteId(request), searchUrl);
+
+        return new AksessSearchContext(SecuritySession.getInstance(request), findSiteId(request), searchUrl);
     }
 
     private int findSiteId(HttpServletRequest request) {
@@ -47,8 +44,4 @@ public class AksessSearchContextCreator implements SearchContextCreator, Applica
         return siteId;
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

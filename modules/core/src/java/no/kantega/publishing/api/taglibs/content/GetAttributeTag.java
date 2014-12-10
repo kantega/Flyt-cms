@@ -25,8 +25,6 @@ import no.kantega.publishing.common.data.enums.Cropping;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -59,7 +57,6 @@ public class GetAttributeTag extends TagSupport {
     private int width  = -1;
     private int maxlen = -1;
     private Cropping cropping = Cropping.CONTAIN;
-    private static WebApplicationContext webApplicationContext;
 
     public void setName(String name) {
         this.name = name.toLowerCase();
@@ -133,10 +130,8 @@ public class GetAttributeTag extends TagSupport {
 
     public int doStartTag() throws JspException {
         JspWriter out;
-        if (webApplicationContext == null) {
-            webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-        }
-        SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+
+        SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
         try {
             out = pageContext.getOut();
             try {

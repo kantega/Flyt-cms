@@ -26,7 +26,6 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -51,10 +50,7 @@ public class FormTag extends BodyTagSupport {
 
         Boolean hearingEnabled = (Boolean)request.getAttribute("hearingEnabled");
 
-        if (webApplicationContext == null) {
-            webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-        }
-        SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+        SecuritySession session = SecuritySession.getInstance(request);
         boolean canApprove = session.isAuthorized(currentEditContent, Privilege.APPROVE_CONTENT);
         ContentStatus contentStatus = (canApprove) ? ContentStatus.PUBLISHED : ContentStatus.WAITING_FOR_APPROVAL;
 
@@ -123,7 +119,7 @@ public class FormTag extends BodyTagSupport {
             if (hearingEnabled != null && hearingEnabled) {
                 String url = "openaksess.common.modalWindow.open({title:'" + LocaleLabels.getLabel("aksess.hearing.title", locale) + "', iframe:true, href: '" + request.getContextPath() + "/admin/publish/popups/SaveHearing.action' ,width: 600, height:550});";
                 out.write("    <input class=\"editContentButton hearing\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.hearing", locale)+"\" onclick=\"" + url + "\">");
-            }            
+            }
             String cancelAction = request.getContextPath()+"/SimpleEditCancel.action";
             if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
                 cancelAction = cancelAction+"?redirectUrl="+cancelUrl;

@@ -9,8 +9,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,7 +19,6 @@ import java.io.IOException;
 
 public class RepeatAttributesTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(RepeatAttributesTag.class);
-    private static WebApplicationContext webApplicationContext;
 
     private String name = null;
     private String contentId = null;
@@ -41,10 +38,8 @@ public class RepeatAttributesTag extends BodyTagSupport {
                 } catch (NotAuthorizedException e) {
                     HttpServletRequest request  = (HttpServletRequest)pageContext.getRequest();
                     HttpServletResponse response = (HttpServletResponse)pageContext.getResponse();
-                    if (webApplicationContext == null) {
-                        webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-                    }
-                    SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+
+                    SecuritySession session = SecuritySession.getInstance(request);
                     if (session.isLoggedIn()) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     } else {

@@ -208,6 +208,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
 
                     if (beans.size() == 0) {
                         methodHasUnsatisfiableParameter = true;
+                        log.warn("No beans of type " + paramClazz + " exists");
                         break;
                     }else if (beans.size() > 1) {
 
@@ -215,6 +216,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                             if (annotation instanceof Qualifier) {
                                 Qualifier q = (Qualifier) annotation;
                                 if (!beans.containsKey(q.value())) {
+                                    log.warn("No beans of type " + paramClazz + " with qualifier " + q.value() + " exists");
                                     methodHasUnsatisfiableParameter = true;
                                     break;
                                 }

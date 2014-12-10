@@ -24,8 +24,6 @@ import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -47,7 +45,6 @@ public class GetMetaDataTag  extends TagSupport {
     private String property = AttributeProperty.HTML;
     private Content contentObject = null;
     private String repeater = null;
-    private static WebApplicationContext webApplicationContext;
 
     private boolean inheritFromAncestors = false;
 
@@ -95,10 +92,7 @@ public class GetMetaDataTag  extends TagSupport {
         JspWriter out;
 
         try {
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
             out = pageContext.getOut();
             try {
                 if (contentObject == null) {

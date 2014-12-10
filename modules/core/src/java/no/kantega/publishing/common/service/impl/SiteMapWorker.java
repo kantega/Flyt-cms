@@ -17,12 +17,8 @@
 package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.content.ContentStatus;
-import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
@@ -89,8 +85,8 @@ public class SiteMapWorker {
 
         SiteMapEntry sitemap = null;
 
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            ResultSet rs = SQLHelper.getResultSet(c, query.toString());
+        try (Connection c = dbConnectionFactory.getConnection();
+            ResultSet rs = SQLHelper.getResultSet(c, query.toString())) {
             while(rs.next()) {
                 int p = 1;
                 int contentId = rs.getInt(p++);
@@ -178,7 +174,6 @@ public class SiteMapWorker {
                     tmpentries.add(entry);
                 }
             }
-            rs.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }
@@ -314,76 +309,4 @@ public class SiteMapWorker {
         }
     }
 
-
-    public static SiteMapEntry getPartialSiteMap(Content content, AssociationCategory associationCategory, boolean useLocalMenus, boolean getAll) throws SystemException {
-        StringBuilder query = new StringBuilder();
-
-        if (content == null) {
-            return null;
-        }
-
-        int siteId = -1;
-
-        int pathIds[] = null;
-        Association association = content.getAssociation();
-        if (association != null) {
-            siteId = association.getSiteId();
-            if (association.getPath().length() > 0) {
-                String path = "/0" + association.getPath() + association.getId() + "/";
-                pathIds = StringHelper.getInts(path, "/");
-            }
-        }
-
-        // Kan ha mulighet for å bruke lokalmeny
-        int rootId = -1;
-        int pathStartOffset = 0;
-
-        if (siteId != -1) {
-            query.append(" and associations.SiteId = ").append(siteId);
-        }
-
-        if (pathIds != null) {
-            query.append(" and ((associations.ParentAssociationId in (");
-            if (useLocalMenus) {
-                // Ved lokale menyer skal kun endel av pathen returneres
-                List associations = AssociationAO.getAssociationsByContentId(content.getGroupId());
-                for (int i = 0; i < pathIds.length; i++) {
-                    for (int j = 0; j < associations.size(); j++) {
-                        Association a =  (Association)associations.get(j);
-                        if (pathIds[i] == a.getAssociationId()) {
-                            pathStartOffset = i;
-                            if (i > 0) {
-                                rootId = pathIds[i];
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-
-            for (int i = pathStartOffset; i < pathIds.length; i++) {
-                if (i > pathStartOffset) {
-                    query.append(",");
-                }
-                query.append(pathIds[i]);
-            }
-
-            if (associationCategory != null) {
-                query.append(") and (associations.Category = 0 or associations.Category = ").append(associationCategory.getId()).append("))");
-            } else {
-                query.append("))");
-            }
-
-            query.append(" or associations.AssociationId in (");
-            for (int i = pathStartOffset; i < pathIds.length; i++) {
-                if (i > pathStartOffset) {
-                    query.append(",");
-                }
-                query.append(pathIds[i]);
-            }
-            query.append("))");
-        }
-
-        return getSiteMapBySQL(query, rootId, getAll, null);
-    }
 }

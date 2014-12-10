@@ -23,9 +23,8 @@ import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
@@ -35,7 +34,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetUserNameTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserNameTag.class);
-    private static WebApplicationContext webApplicationContext;
 
     private String userid;
     private boolean useCache;
@@ -43,10 +41,6 @@ public class GetUserNameTag extends TagSupport {
     public int doStartTag() throws JspException {
         try {
 
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
             User user;
             if (!isBlank(userid)) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
@@ -56,6 +50,7 @@ public class GetUserNameTag extends TagSupport {
                     user = null;
                 }
             } else {
+                SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
                 user = session.getUser();
             }
 

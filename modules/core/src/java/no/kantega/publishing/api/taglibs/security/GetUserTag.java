@@ -51,11 +51,10 @@ public class GetUserTag  extends TagSupport {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         try {
-
             if (webApplicationContext == null) {
                 webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
             }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance(request);
             User user = null;
             if(!isBlank(userid)) {
                 try {

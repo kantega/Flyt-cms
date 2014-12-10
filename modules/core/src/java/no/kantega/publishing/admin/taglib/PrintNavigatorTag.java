@@ -110,7 +110,7 @@ public abstract class PrintNavigatorTag extends SimpleTagSupport {
     }
     @Override
     public void doTag() throws JspException, IOException {
-        menuitems = new ArrayList<NavigationMapEntry>();
+        menuitems = new ArrayList<>();
 
         try {
             if (site != null) {

@@ -117,7 +117,7 @@ public class LoginAction extends AbstractLoginAction {
                 PasswordManager passwordManager = getPasswordManager(domain);
 
                 if (passwordManager == null) {
-                    throw new ConfigurationException("PasswordManager == null");
+                    throw new ConfigurationException("PasswordManager == null for domain «" + domain + "»");
                 }
                 if (passwordManager.verifyPassword(identity, password)) {
 

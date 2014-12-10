@@ -29,7 +29,6 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -60,10 +59,7 @@ public class CreateTag extends AbstractSimpleEditTag {
                 content = AttributeTagHelper.getContent(pageContext, collection, parentId);
             }
 
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance(request);
             if (content != null && session.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
                 // Is authorized to edit page
                 link.append("<a");
@@ -145,7 +141,7 @@ public class CreateTag extends AbstractSimpleEditTag {
     }
 
     public void setDisplaytemplatename(String displaytemplatename) {
-        DisplayTemplate template = DisplayTemplateCache.getTemplateByPublicId(displaytemplatename);            
+        DisplayTemplate template = DisplayTemplateCache.getTemplateByPublicId(displaytemplatename);
         this.displayTemplateId = template.getId();
     }
 

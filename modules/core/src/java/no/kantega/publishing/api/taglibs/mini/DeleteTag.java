@@ -23,8 +23,6 @@ import no.kantega.commons.util.URLHelper;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -33,7 +31,6 @@ import java.io.IOException;
 import java.util.Locale;
 
 public class DeleteTag extends AbstractSimpleEditTag {
-    private static WebApplicationContext webApplicationContext;
 
     private String associationId = null;
     private String confirmationlabel = null;
@@ -48,10 +45,7 @@ public class DeleteTag extends AbstractSimpleEditTag {
             if (content == null) {
                 content = AttributeTagHelper.getContent(pageContext, collection, associationId);
             }
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance(request);
             if (content != null && session.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
                 StringBuilder link = new StringBuilder();
                 link.append("<a");

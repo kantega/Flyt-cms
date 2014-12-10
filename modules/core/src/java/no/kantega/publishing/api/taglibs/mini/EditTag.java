@@ -24,8 +24,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -35,7 +33,6 @@ import java.io.IOException;
 
 public class EditTag extends AbstractSimpleEditTag {
     private static final Logger log = LoggerFactory.getLogger(EditTag.class);
-    private static WebApplicationContext webApplicationContext;
 
     private String associationId = null;
     private String action;
@@ -49,10 +46,7 @@ public class EditTag extends AbstractSimpleEditTag {
             if (content == null) {
                 content = AttributeTagHelper.getContent(pageContext, collection, associationId);
             }
-            if (webApplicationContext == null) {
-                webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-            }
-            SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+            SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
             if (content != null && session.isAuthorized(content, Privilege.UPDATE_CONTENT)) {
 
                 StringBuilder link = new StringBuilder();
@@ -64,16 +58,16 @@ public class EditTag extends AbstractSimpleEditTag {
                     link.append(" id=\"").append(linkId).append("\"");
                 }
                 link.append(" href=\"");
-                link.append(URLHelper.getRootURL(request));                
-                if (action != null) {                	
+                link.append(URLHelper.getRootURL(request));
+                if (action != null) {
                     link.append(action);
                     if (!action.endsWith("?")) {
                         link.append("?");
-                    }                    
-                } else {                	
+                    }
+                } else {
                 	link.append("admin/publish/SimpleEditContent.action?");
                 }
-                link.append("thisId=");                	
+                link.append("thisId=");
                 link.append(content.getAssociation().getId());
                 if (redirectUrl != null) {
                     link.append("&amp;redirectUrl=");
@@ -82,12 +76,12 @@ public class EditTag extends AbstractSimpleEditTag {
                 if (cancelUrl != null) {
                     link.append("&amp;redirectUrl=");
                     link.append(cancelUrl);
-                }                
+                }
                 link.append("\">");
                 link.append(body);
                 link.append("</a>");
 
-                out.print(link.toString());                
+                out.print(link.toString());
             }
         } catch (IOException | SystemException e) {
             log.error("", e);
@@ -107,7 +101,7 @@ public class EditTag extends AbstractSimpleEditTag {
     public void setAssociationid(String associationid) {
         this.associationId = associationid;
     }
-    
+
    public void setAction(String action) {
         this.action = action;
     }

@@ -27,7 +27,6 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,7 +38,6 @@ import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
 public class IsInPathTag extends ConditionalTagSupport {
     private static final Logger log = LoggerFactory.getLogger(IsInPathTag.class);
     private static ContentIdHelper contentIdHelper;
-    private static WebApplicationContext webApplicationContext;
 
     private String contentId = null;
     private Content contentObject = null;
@@ -102,10 +100,7 @@ public class IsInPathTag extends ConditionalTagSupport {
                     }
 
                 } catch (NotAuthorizedException e) {
-                    if (webApplicationContext == null) {
-                        webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
-                    }
-                    SecuritySession session = webApplicationContext.getBean(SecuritySession.class);
+                    SecuritySession session = SecuritySession.getInstance((HttpServletRequest) pageContext.getRequest());
                     if (session.isLoggedIn()) {
                         response.sendError(HttpServletResponse.SC_FORBIDDEN);
                     } else {
