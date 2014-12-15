@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.jobs.systemstatus;
 
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import javax.annotation.PostConstruct;
@@ -38,12 +39,19 @@ public class SystemStatusJob {
     private DecimalFormat format;
     private long MB;
     private int debugConnectionsLogThreshold;
+    private int debugConnectionsLogStackDepth;
+
+
+    @Autowired
+    private SystemConfiguration configuration;
+
 
     @PostConstruct
     public void init(){
         format = new DecimalFormat("#,###.##");
         MB = 1024*1024;
-        debugConnectionsLogThreshold = Aksess.getConfiguration().getInt("database.debugconnections.logthreshold", 10);
+        debugConnectionsLogThreshold = configuration.getInt("database.debugconnections.logthreshold", 10);
+        debugConnectionsLogStackDepth = configuration.getInt("database.debugconnections.stacklength", 15);
     }
 
     @Scheduled(cron = "${SystemStatusJob.cron:30 0/5 * * * ?}")
@@ -73,7 +81,7 @@ public class SystemStatusJob {
             msg.append("Aksess open connections: ").append(map.values().size()).append(")\n");
             for (StackTraceElement[] stackTraceElement : map.values()) {
                 msg.append("*****\n");
-                for (int i = 0; i < stackTraceElement.length && i < 5; i++) {
+                for (int i = 0; i < stackTraceElement.length && i < debugConnectionsLogStackDepth; i++) {
                     StackTraceElement e = stackTraceElement[i];
                     msg.append(" - ").append(e.getClassName()).append(".").append(e.getMethodName()).append(" (").append(e.getLineNumber()).append(") \n");
                 }
