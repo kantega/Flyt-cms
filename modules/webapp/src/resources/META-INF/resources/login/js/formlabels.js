@@ -1,24 +1,32 @@
+var mobileLayout = false;
+
 $(document).ready(function(){
-    var $inputFields = $("input[type='text'], input[type='password']")
+    mobileLayout = $("#TopMenu").is(":hidden");
+    if(mobileLayout) {
 
-    // Check on page load if any fields has values and remove label if they do
-    checkAllInputsForValues($inputFields);
+    } else {
 
-    // Whenever a field changes all other fields must be searched for a change in value to fix browserbased autofill.
-    $inputFields.change(function(){
-        checkAllInputsForValues( $inputFields );
-    })
+        var $inputFields = $("input[type='text'], input[type='password']")
 
-    $inputFields.focusin(function(){
-        hideLabel( $(this) );
-    })
-    $inputFields.focusout(function(){
-        checkAllInputsForValues($inputFields)
-        var $activeElement = $(this);
-        if (!$activeElement.val()){
-            $activeElement.siblings("label").show();
-        }
-    })
+        // Check on page load if any fields has values and remove label if they do
+        checkAllInputsForValues($inputFields);
+
+        // Whenever a field changes all other fields must be searched for a change in value to fix browserbased autofill.
+        $inputFields.change(function () {
+            checkAllInputsForValues($inputFields);
+        })
+
+        $inputFields.focusin(function () {
+            hideLabel($(this));
+        })
+        $inputFields.focusout(function () {
+            checkAllInputsForValues($inputFields)
+            var $activeElement = $(this);
+            if (!$activeElement.val()) {
+                $activeElement.siblings("label").show();
+            }
+        })
+    }
 })
 function checkAllInputsForValues(inputElements){
     inputElements.each(function(){
@@ -31,3 +39,4 @@ function checkAllInputsForValues(inputElements){
 function hideLabel(inputElement) {
     inputElement.siblings("label").hide();
 }
+

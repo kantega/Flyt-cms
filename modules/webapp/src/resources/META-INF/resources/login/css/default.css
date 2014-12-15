@@ -132,6 +132,7 @@ form label{
     left:35px;
     position:absolute;
     top:6px;
+    text-indent: -9999px;
 }
 form .radio label{
     position:static;
@@ -291,5 +292,107 @@ body.error input[type=submit]{
     padding:2px 10px 5px;
 }
 
+@media screen and (max-width:768px) {
+    body {
+        background: #fff url("../bitmaps/splash_ulogo.jpg") no-repeat left top;
+    }
+    #contentWrapper {
+        margin: 0;
+        padding: 50px 0 0;
+        background: url("../bitmaps/flyt-logo.png") no-repeat center 10px;
+        background-size: 140px;
+    }
+    #contentWrapper .body {
+        padding: 0;
+        width: auto;
+    }
+    form label {
+        position: static;
+    }
+    body.login label {
+        position: static;
+        font-size: 1.3em;
+        color: #fff;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.8);
+        display: none;
+    }
+    #version {
+        margin: 10px 10px 0 0;
+        text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.7);
+        color: #555;
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+    }
+    #LoginForm {
+        overflow: hidden;
+        margin-top: 0;
+    }
+    #contentWrapper .body {
+        margin: .5em auto;
+        max-width: 400px;
+        padding: 0 .5em;
+    }
+    body.login input[type=text], body.login input[type=password] {
+        width: 100%;
+        box-sizing: border-box;
+        border: 1px solid #c6c6c6;
+        border-radius: 4px;
+        position: static;
+        font-size: 1.2em;
+        padding: .4em;
+        background: #fff;
+    }
+    body.login input[type=submit] {
+        background: none;
+        -webkit-appearance: none;
+        margin-left: 0;
+        height: auto;
+        width: auto;
+        padding: 8px 20px;
+    }
+    #Submit {
+        text-align: center;
+    }
+    #Submit.withPasswordReset {
+        float: left;
+    }
+    #TopMenu {
+        display:none;
+    }
+    body.login input[type=submit],
+    body.login input[type=submit]:hover{
+        background: #104666;
+        color: #fff;
+        font-family: inherit;
+        font-size: 1.1em;
+        border-radius: 3px;
+    }
+    #UserName, #Password, #RepeatPassword {
+        background: none;
+        height: auto;
+        position: static;
+        margin: 1em 0;
+        padding: 0;
+    }
+    #PasswordReset {
+        float: right;
+        margin-top: 8px;
+    }
+    #LoginMessages {
+        color:#fff;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+        font-size: 1.2em;
+        text-align: center;
+    }
+    #PasswordReset a,
+    #PasswordReset a:visited {
+        color: #fff;
+        text-decoration: underline;
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.7);
+        font-size: 1em;
+
+    }
+}
 
 
