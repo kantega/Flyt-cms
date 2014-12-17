@@ -62,11 +62,11 @@
             <c:set var="autocomplete"><aksess:getconfig key="security.login.autocomplete"/></c:set>
             <div id="UserName">
                 <label>Brukernavn...</label>
-                <input type="text" id="j_username" name="j_username" value="${username}" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
+                <input type="text" placeholder="Brukernavn" id="j_username" name="j_username" value="${username}" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
             </div>
             <div id="Password">
                 <label>Passord...</label>
-                <input type="password" id="j_password" name="j_password" size="25" maxlength="60">
+                <input type="password" id="j_password" placeholder="Passord" name="j_password" size="25" maxlength="60">
             </div>
             <c:set var="isRememberMe"><aksess:getconfig key="security.login.rememberme.enabled"/></c:set>
             <c:if test="${isRememberMe}">
@@ -75,7 +75,7 @@
                     <input type="checkbox" id="remember_me" name="remember_me">
                 </div>
             </c:if>
-            <div id="Submit">
+            <div id="Submit" class="<c:if test="${allowPasswordReset}">withPasswordReset</c:if>">
                 <input type="submit" value="<kantega:label key="aksess.login.login"/>">
             </div>
 

@@ -20,10 +20,18 @@
 <html>
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><kantega:hassection id="title"><kantega:getsection id="title"/> - </kantega:hassection><kantega:label key="aksess.title"/></title>
     <link rel="stylesheet" type="text/css" href="<kantega:expireurl url="/wro-oa/admin-loginlayout.css"/>">
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-loginlayout.js"/>"></script>
     <kantega:getsection id="head"/>
+    <!--[if lte IE 9]>
+    <style>
+        form label {
+            text-indent: 0;
+        }
+    </style>
+    <![endif]-->
 </head>
 <body class="<kantega:getsection id="bodyclass"/>">
 
