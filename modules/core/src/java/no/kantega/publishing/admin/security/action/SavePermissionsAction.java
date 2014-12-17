@@ -52,7 +52,7 @@ public class SavePermissionsAction extends AbstractController {
 
         HttpSession session = request.getSession(true);
 
-        List<Permission> permissions = new ArrayList<Permission>();
+        List<Permission> permissions = new ArrayList<>();
         Enumeration params = request.getParameterNames();
         while(params.hasMoreElements()) {
             String name = (String)params.nextElement();
@@ -96,7 +96,7 @@ public class SavePermissionsAction extends AbstractController {
         return new ModelAndView(view);
     }
 
-    private void setUpdatedPermissions(HttpServletRequest request, List permissions, BaseObject object) {
+    private void setUpdatedPermissions(HttpServletRequest request, List<Permission> permissions, BaseObject object) {
         eventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
         SecurityService.setPermissions(object, permissions);
     }

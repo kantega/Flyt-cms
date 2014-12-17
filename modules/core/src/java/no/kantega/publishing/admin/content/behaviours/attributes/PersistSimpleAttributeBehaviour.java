@@ -26,33 +26,33 @@ import java.sql.SQLException;
 
 public class PersistSimpleAttributeBehaviour implements PersistAttributeBehaviour {
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException {
-        PreparedStatement st = c.prepareStatement("insert into contentattributes (ContentVersionId, AttributeType, DataType, Name, Value) values (?,?,?,?,?)");
+        try(PreparedStatement st = c.prepareStatement("insert into contentattributes (ContentVersionId, AttributeType, DataType, Name, Value) values (?,?,?,?,?)")) {
 
-        st.setInt(1, content.getVersionId());
+            st.setInt(1, content.getVersionId());
 
-        // Klassenavn angir navnet som brukes i databasen som attributttype
-        String clsName = attribute.getClass().getName().toLowerCase();
-        clsName = clsName.substring(clsName.lastIndexOf(".") + 1, clsName.lastIndexOf("attribute"));
+            // Klassenavn angir navnet som brukes i databasen som attributttype
+            String clsName = attribute.getClass().getName().toLowerCase();
+            clsName = clsName.substring(clsName.lastIndexOf(".") + 1, clsName.lastIndexOf("attribute"));
 
-        st.setString(2, clsName);
-        st.setInt(3, attribute.getType());
-        st.setString(4, attribute.getNameIncludingPath());
+            st.setString(2, clsName);
+            st.setInt(3, attribute.getType());
+            st.setString(4, attribute.getNameIncludingPath());
 
-        String value = attribute.getValue();
-        if (attribute instanceof ListAttribute) {
-            // Legg til , foran og bak for å gjøre mere søkbart
-            if (value != null && value.length() > 0) {
-                if (value.charAt(0) != ',') {
-                    value = "," + value;
-                }
-                if (value.charAt(value.length()-1) != ',') {
-                    value = value + ",";
+            String value = attribute.getValue();
+            if (attribute instanceof ListAttribute) {
+                // Legg til , foran og bak for å gjøre mere søkbart
+                if (value != null && value.length() > 0) {
+                    if (value.charAt(0) != ',') {
+                        value = "," + value;
+                    }
+                    if (value.charAt(value.length() - 1) != ',') {
+                        value = value + ",";
+                    }
                 }
             }
+            st.setString(5, value);
+
+            st.execute();
         }
-        st.setString(5, value);
-
-        st.execute();
-
     }
 }

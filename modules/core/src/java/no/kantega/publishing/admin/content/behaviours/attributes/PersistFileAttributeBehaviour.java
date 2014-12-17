@@ -45,10 +45,11 @@ public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour 
             if (ContentProperty.URL.equalsIgnoreCase(field)) {
                 content.setLocation(attribute.getValue());
 
-                PreparedStatement cst = c.prepareStatement("update content set Location = ? where ContentId = ?");
-                cst.setString(1, content.getLocation());
-                cst.setInt(2, content.getId());
-                cst.execute();
+                try(PreparedStatement cst = c.prepareStatement("update content set Location = ? where ContentId = ?")) {
+                    cst.setString(1, content.getLocation());
+                    cst.setInt(2, content.getId());
+                    cst.execute();
+                }
             }
 
         }

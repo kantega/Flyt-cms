@@ -38,14 +38,14 @@ public class ContentEmailAlertListener implements ContentAlertListener {
     public void sendContentAlert(User user, List content) {
 
         String recipient = user.getEmail();
-        if (recipient == null || recipient.indexOf("@") == -1) {
+        if (recipient == null || !recipient.contains("@")) {
             log.info( "Kunne ikke sende epost til (mangler epostadresse): " + user.getId());
             return;
         }
 
 
         try {
-            Map param = new HashMap();
+            Map<String, Object> param = new HashMap<>();
             param.put("contentlist", content);
             param.put("editor", mailFrom);
 
