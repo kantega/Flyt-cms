@@ -17,7 +17,6 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
@@ -57,7 +56,6 @@ public class LoginAction extends AbstractLoginAction {
     private LoginRestrictor ipLoginRestrictor;
 
     @Autowired private EventLog eventLog;
-    @Autowired private SystemConfiguration configuration;
     @Autowired private RememberMeHandler rememberMeHandler;
 
     @Value("${security.login.usessl:false}")
@@ -120,7 +118,7 @@ public class LoginAction extends AbstractLoginAction {
                     throw new ConfigurationException("PasswordManager == null for domain «" + domain + "»");
                 }
                 if (passwordManager.verifyPassword(identity, password)) {
-
+                    log.info("Verified password for " + identity.getUserId());
                     registerSuccessfulLogin(request, username, domain);
 
                     boolean rememberMeEnabled = configuration.getBoolean("security.login.rememberme.enabled", false);
