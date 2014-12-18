@@ -63,7 +63,9 @@ public class MultimediaSearchController implements AksessController {
         List<AutocompleteMultimedia> autocompleteList = new ArrayList<>();
         String term = request.getParameter("term");
         if (isNotBlank(term)) {
-            SearchResponse searchResponse = performSearch(request, term);
+            AksessSearchContext searchContext = aksessSearchContextCreator.getSearchContext(request);
+
+            SearchResponse searchResponse = searcher.search(getAutocompleteQuery(term, searchContext));
             List<Multimedia> multimediaList = getListFromSearchResponse(request, searchResponse);
             for (Multimedia m : multimediaList) {
                 autocompleteList.add(new AutocompleteMultimedia(m, request));
@@ -71,6 +73,10 @@ public class MultimediaSearchController implements AksessController {
         }
 
         return autocompleteList;
+    }
+
+    private SearchQuery getAutocompleteQuery(String term, AksessSearchContext searchContext) {
+        return new SearchQuery(searchContext, "title_no:" + term + "*");
     }
 
     private List<Multimedia> getListFromSearchResponse(HttpServletRequest request, SearchResponse searchResponse) {

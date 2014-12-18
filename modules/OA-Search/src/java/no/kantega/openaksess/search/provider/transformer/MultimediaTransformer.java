@@ -42,6 +42,7 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         indexableDocument.setParentId(document.getParentId());
         indexableDocument.setSecurityId(document.getSecurityId());
         indexableDocument.setLanguage("nno");
+        indexableDocument.addAttribute("url", document.getUrl());
 
         indexableDocument.addAttribute("altname", document.getAltname());
         indexableDocument.addAttribute("author", document.getAuthor());

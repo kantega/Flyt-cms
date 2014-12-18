@@ -615,12 +615,14 @@
     <bean class="no.kantega.publishing.admin.multimedia.action.CopyPasteMultimediaAction" id="CopyPasteMultimediaAction">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/reloadparent.jsp"/>
     </bean>
+
+
     <!-- Search multimedia -->
+    <bean id="multimediaSearchController" class="no.kantega.openaksess.search.controller.MultimediaSearchController"/>
+
     <bean id="adminMultimediaSearchController" class="no.kantega.openaksess.search.controller.AdminMultimediaSearchController">
         <property name="view" value="/WEB-INF/jsp/admin/multimedia/search.jsp"/>
-        <property name="multimediaSearchController">
-            <bean class="no.kantega.openaksess.search.controller.MultimediaSearchController"/>
-        </property>
+        <property name="multimediaSearchController" ref="multimediaSearchController"/>
     </bean>
     <!-- Multimedia -->
     <bean class="no.kantega.publishing.admin.multimedia.ajax.CreateMediaFolderAction" id="CreateMediaFolderAction">
