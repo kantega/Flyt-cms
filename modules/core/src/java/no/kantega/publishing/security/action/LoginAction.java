@@ -27,10 +27,15 @@ import no.kantega.publishing.spring.RootContext;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
+import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
+import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.twofactorauth.LoginToken;
+import no.kantega.security.api.twofactorauth.LoginTokenManager;
+import no.kantega.security.api.twofactorauth.LoginTokenSender;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +60,9 @@ public class LoginAction extends AbstractLoginAction {
     private LoginRestrictor userLoginRestrictor;
     private LoginRestrictor ipLoginRestrictor;
 
+    private LoginTokenManager loginTokenManager;
+    private LoginTokenSender loginTokenSender;
+
     @Autowired private EventLog eventLog;
     @Autowired private RememberMeHandler rememberMeHandler;
 
@@ -64,6 +72,7 @@ public class LoginAction extends AbstractLoginAction {
     private String loginView = null;
 
     private boolean rolesExists = false;
+    private String twofactorAuthView;
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String username = request.getParameter("j_username");
@@ -89,15 +98,16 @@ public class LoginAction extends AbstractLoginAction {
         ResetPasswordTokenManager resetPasswordTokenManager = getResetPasswordTokenManager();
 
         Map<String, Object> model = new HashMap<>();
+        model.put("redirect", StringEscapeUtils.escapeHtml(redirect));
+        model.put("username", StringEscapeUtils.escapeHtml(username));
+        model.put("loginLayout", getLoginLayout());
 
         if (Aksess.isSecurityAllowPasswordReset() && resetPasswordTokenManager != null) {
             model.put("allowPasswordReset", true);
         }
 
         if (username != null && password != null)  {
-            DefaultIdentity identity = new DefaultIdentity();
-            identity.setUserId(username);
-            identity.setDomain(domain);
+            Identity identity = DefaultIdentity.withDomainAndUserId(domain, username);
 
             boolean blockedUser = userLoginRestrictor.isBlocked(username);
             boolean blockedIp = ipLoginRestrictor.isBlocked(request.getRemoteAddr());
@@ -119,14 +129,18 @@ public class LoginAction extends AbstractLoginAction {
                 }
                 if (passwordManager.verifyPassword(identity, password)) {
                     log.info("Verified password for " + identity.getUserId());
-                    registerSuccessfulLogin(request, username, domain);
+                    if (twoFactorAuthenticationEnabled()) {
+                        return handleTwoFactorAuthentication(identity, model);
+                    } else {
+                        LoginHelper.registerSuccessfulLogin(userLoginRestrictor, ipLoginRestrictor, request, username, domain);
 
-                    boolean rememberMeEnabled = configuration.getBoolean("security.login.rememberme.enabled", false);
-                    if (rememberMeEnabled && rememberMe != null && rememberMe.equals("on")) {
-                        rememberMeHandler.rememberUser(response, username, domain);
+                        boolean rememberMeEnabled = configuration.getBoolean("security.login.rememberme.enabled", false);
+                        if (rememberMeEnabled && rememberMe != null && rememberMe.equals("on")) {
+                            rememberMeHandler.rememberUser(response, username, domain);
+                        }
+
+                        return new ModelAndView(new RedirectView(redirect));
                     }
-
-                    return new ModelAndView(new RedirectView(redirect));
                 } else {
                     // Register failed login
                     userLoginRestrictor.registerLoginAttempt(username, false);
@@ -138,32 +152,29 @@ public class LoginAction extends AbstractLoginAction {
             }
         }
 
-        model.put("redirect", StringEscapeUtils.escapeHtml(redirect));
-        model.put("username", StringEscapeUtils.escapeHtml(username));
-        model.put("loginLayout", getLoginLayout());
-
         return new ModelAndView(loginView, model);
+    }
+
+    private ModelAndView handleTwoFactorAuthentication(Identity identity, Map<String, Object> model) throws SystemException {
+        Profile profile = getProfileManager().getProfileForUser(identity);
+        LoginToken loginToken = loginTokenManager.generateLoginToken(identity);
+        loginTokenSender.sendTokenToUser(profile, loginToken);
+
+        return new ModelAndView(twofactorAuthView, model);
+    }
+
+    private boolean twoFactorAuthenticationEnabled() {
+        boolean twoFactorAuthenticationEnabled = configuration.getBoolean("security.twoFactorAuthenticationEnabled", false);
+        if(twoFactorAuthenticationEnabled && (loginTokenManager == null || loginTokenSender == null)){
+            throw new IllegalStateException("security.twoFactorAuthenticationEnabled = true, but loginTokenManager or loginTokenSender is null!");
+        }
+        return twoFactorAuthenticationEnabled;
     }
 
     private ModelAndView redirectToSecure(HttpServletRequest request) {
         return new ModelAndView(new RedirectView(getUrlWithHttps(request)));
     }
 
-    private void registerSuccessfulLogin(HttpServletRequest request, String username, String domain) {
-
-        userLoginRestrictor.registerLoginAttempt(username, true);
-        ipLoginRestrictor.registerLoginAttempt(request.getRemoteAddr(), true);
-
-        HttpSession session = request.getSession(true);
-        IdentityResolver resolver = SecuritySession.getInstance(request).getRealm().getIdentityResolver();
-
-        // Set session logon info
-        session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_NAME, username);
-        session.setAttribute(resolver.getAuthenticationContext() + DefaultIdentityResolver.SESSION_IDENTITY_DOMAIN, domain);
-
-        // Finish login by getting instance
-        SecuritySession.getInstance(request);
-    }
 
     public void setLoginView(String loginView) {
         this.loginView = loginView;
@@ -177,6 +188,9 @@ public class LoginAction extends AbstractLoginAction {
         this.ipLoginRestrictor = ipLoginRestrictor;
     }
 
+    public void setTwofactorAuthView(String twofactorAuthView) {
+        this.twofactorAuthView = twofactorAuthView;
+    }
 
     private boolean rolesExists() throws SystemException {
         if (rolesExists) {
@@ -195,5 +209,15 @@ public class LoginAction extends AbstractLoginAction {
         }
 
         return false;
+    }
+
+    @Autowired(required = false)
+    public void setLoginTokenManager(LoginTokenManager loginTokenManager) {
+        this.loginTokenManager = loginTokenManager;
+    }
+
+    @Autowired(required = false)
+    public void setLoginTokenSender(LoginTokenSender loginTokenSender) {
+        this.loginTokenSender = loginTokenSender;
     }
 }

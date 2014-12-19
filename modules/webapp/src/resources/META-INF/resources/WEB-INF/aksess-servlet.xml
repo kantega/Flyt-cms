@@ -318,21 +318,20 @@
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
+    <bean id="userLoginRestrictor" class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+        <property name="maxAttempts" value="5"/>
+        <property name="timeoutInSeconds" value="900"/>
+    </bean>
+    <bean id="ipLoginRestrictor" class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+        <property name="maxAttempts" value="50"/>
+        <property name="timeoutInSeconds" value="3600"/>
+    </bean>
+
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
         <property name="loginView" value="${security.login.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>
-        <property name="userLoginRestrictor">
-            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
-                <property name="maxAttempts" value="5"/>
-                <property name="timeoutInSeconds" value="900"/>
-            </bean>
-        </property>
-        <property name="ipLoginRestrictor">
-            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
-                <property name="maxAttempts" value="50"/>
-                <property name="timeoutInSeconds" value="3600"/>
-            </bean>
-        </property>
+        <property name="userLoginRestrictor" ref="userLoginRestrictor"/>
+        <property name="ipLoginRestrictor" ref="ipLoginRestrictor"/>
     </bean>
 
     <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
@@ -354,6 +353,19 @@
         <property name="servletClass" value="no.kantega.publishing.security.action.LogoutAction"/>
         <property name="servletName" value="LogoutAction"/>
     </bean>
+
+    <bean class="no.kantega.publishing.security.action.LoginTokenAction">
+        <property name="twofactorAuthView" value="${security.login.twofactorAuthView}"/>
+        <property name="userLoginRestrictor" ref="userLoginRestrictor"/>
+        <property name="ipLoginRestrictor" ref="ipLoginRestrictor"/>
+        <property name="loginTokenRestrictor">
+            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+                <property name="maxAttempts" value="5"/>
+                <property name="timeoutInSeconds" value="900"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
     <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 

@@ -9,6 +9,8 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.twofactorauth.LoginTokenManager;
+import no.kantega.security.api.twofactorauth.LoginTokenSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +56,7 @@ public abstract class AbstractLoginAction implements Controller {
             return null;
         }
 
-        DefaultIdentity identity = new DefaultIdentity();
-        identity.setDomain(domain);
-        identity.setUserId(userid);
-        return identity;
+        return DefaultIdentity.withDomainAndUserId(domain, userid);
     }
 
     public String getLoginLayout() {
