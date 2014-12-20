@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.check.NotCheckedSinceTerm;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public interface LinkDao {
      * @param term
      * @param handler
      */
-    public void doForEachLink(SearchTerm term, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
+    public void doForEachLink(NotCheckedSinceTerm term, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
 
 
     /**
