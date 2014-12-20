@@ -34,7 +34,7 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Attribute referencing a media object.

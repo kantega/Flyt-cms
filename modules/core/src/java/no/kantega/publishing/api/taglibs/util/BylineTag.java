@@ -41,8 +41,8 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.Date;
 import java.util.Locale;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class BylineTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(BylineTag.class);

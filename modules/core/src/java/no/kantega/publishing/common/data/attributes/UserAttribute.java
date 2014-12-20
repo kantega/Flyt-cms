@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class UserAttribute extends Attribute {
 

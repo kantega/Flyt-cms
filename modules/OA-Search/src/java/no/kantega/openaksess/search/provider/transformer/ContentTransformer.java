@@ -32,8 +32,8 @@ import java.util.regex.Pattern;
 import static java.util.Arrays.asList;
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class ContentTransformer extends DocumentTransformerAdapter<Content> {

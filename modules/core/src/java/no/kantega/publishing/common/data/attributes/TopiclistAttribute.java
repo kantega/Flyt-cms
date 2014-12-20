@@ -38,7 +38,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class TopiclistAttribute extends ListAttribute {
     private static final Logger log = LoggerFactory.getLogger(TopiclistAttribute.class);

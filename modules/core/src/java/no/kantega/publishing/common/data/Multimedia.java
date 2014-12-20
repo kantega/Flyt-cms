@@ -25,7 +25,7 @@ import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.data.util.GeoCoordinateConverter;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;

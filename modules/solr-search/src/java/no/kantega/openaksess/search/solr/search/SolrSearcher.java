@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import no.kantega.openaksess.search.solr.provider.DefaultSearchResultDecorator;
 import no.kantega.search.api.provider.SearchResultDecorator;
 import no.kantega.search.api.search.*;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 import static java.util.AbstractMap.SimpleEntry;
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 @Component

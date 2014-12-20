@@ -19,8 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 import static java.util.Collections.emptyList;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
-import static org.apache.commons.lang.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import static org.springframework.web.bind.ServletRequestUtils.*;
 
 @Controller

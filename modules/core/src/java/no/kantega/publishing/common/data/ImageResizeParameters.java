@@ -2,7 +2,7 @@ package no.kantega.publishing.common.data;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.enums.Cropping;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class ImageResizeParameters {
 

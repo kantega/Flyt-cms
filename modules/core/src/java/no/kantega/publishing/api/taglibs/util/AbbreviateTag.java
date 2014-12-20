@@ -17,7 +17,7 @@
 package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.commons.util.StringHelper;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;

@@ -7,9 +7,8 @@ import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
 import org.apache.velocity.app.event.EventCartridge;
-import static org.apache.commons.lang.StringEscapeUtils.escapeHtml;
+import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
 import org.apache.velocity.tools.generic.DateTool;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -17,6 +16,8 @@ import org.springframework.core.io.ResourceLoader;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4;
 
 public class VelocityTemplateRenderer {
     private String templateFile;
@@ -48,7 +49,7 @@ public class VelocityTemplateRenderer {
                 context.attachEventCartridge(eventCartridge);
                 eventCartridge.addReferenceInsertionEventHandler(new ReferenceInsertionEventHandler() {
                     public Object referenceInsert(String reference, Object value) {
-                        return escapeHtml(value.toString());
+                        return escapeHtml4(value.toString());
                     }
                 });
             }

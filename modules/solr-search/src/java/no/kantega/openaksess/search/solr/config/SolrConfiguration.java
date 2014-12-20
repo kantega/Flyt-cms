@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.kantega.openaksess.search.solr.config.SolrConfigInitializer.initSolrConfigIfAbsent;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Configuration
 public class SolrConfiguration {

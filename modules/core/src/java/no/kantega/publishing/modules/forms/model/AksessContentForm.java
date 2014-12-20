@@ -16,7 +16,7 @@ import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class AksessContentForm extends DefaultForm {
 

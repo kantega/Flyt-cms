@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Compressor for TinyMCE JavaScript files.

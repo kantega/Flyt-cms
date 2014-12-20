@@ -4,7 +4,7 @@ import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.spring.AksessLocaleResolver;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kantega.jexmec.PluginManager;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;

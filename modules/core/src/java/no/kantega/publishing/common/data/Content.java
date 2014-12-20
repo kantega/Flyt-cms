@@ -31,7 +31,7 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  *

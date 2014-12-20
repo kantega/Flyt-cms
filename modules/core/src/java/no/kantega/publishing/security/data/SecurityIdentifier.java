@@ -20,7 +20,7 @@ import no.kantega.publishing.common.Aksess;
 
 import java.io.Serializable;
 
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class SecurityIdentifier implements Serializable {
     private static final long serialVersionUID = -8588017268623687907L;

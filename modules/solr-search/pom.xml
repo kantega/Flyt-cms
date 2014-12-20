@@ -263,6 +263,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.kantega.openaksess</groupId>
             <artifactId>openaksess-core</artifactId>
             <version>${project.version}</version>

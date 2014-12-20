@@ -11,7 +11,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jdom.Element;
 import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;

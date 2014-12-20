@@ -19,27 +19,20 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.FormatHelper;
-import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistFileAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateFileAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.apache.commons.lang.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class FileAttribute extends Attribute {
 
