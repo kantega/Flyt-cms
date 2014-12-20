@@ -21,14 +21,11 @@ import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
-import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.security.api.identity.DefaultIdentityResolver;
 import no.kantega.security.api.identity.Identity;
-import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.password.ResetPasswordTokenManager;
 import no.kantega.security.api.profile.Profile;
@@ -47,7 +44,6 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.Map;
 
