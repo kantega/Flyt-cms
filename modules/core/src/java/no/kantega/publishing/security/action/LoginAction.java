@@ -22,7 +22,6 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.data.LoginRestrictor;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
@@ -38,13 +37,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static no.kantega.commons.util.URLHelper.getUrlWithHttps;
@@ -87,7 +86,7 @@ public class LoginAction extends AbstractLoginAction {
         }
 
         // Checks if no roles exists and redirects to setup page
-        if (!rolesExists()) {
+        if (!rolesExists) {
             return new ModelAndView(new RedirectView(Aksess.getContextPath() + "/CreateInitialUser.action"));
         }
 
@@ -155,7 +154,7 @@ public class LoginAction extends AbstractLoginAction {
         Profile profile = getProfileManager().getProfileForUser(identity);
         LoginToken loginToken = loginTokenManager.generateLoginToken(identity);
         loginTokenSender.sendTokenToUser(profile, loginToken);
-
+        model.put("profile", profile);
         return new ModelAndView(twofactorAuthView, model);
     }
 
@@ -170,7 +169,6 @@ public class LoginAction extends AbstractLoginAction {
     private ModelAndView redirectToSecure(HttpServletRequest request) {
         return new ModelAndView(new RedirectView(getUrlWithHttps(request)));
     }
-
 
     public void setLoginView(String loginView) {
         this.loginView = loginView;
@@ -188,25 +186,6 @@ public class LoginAction extends AbstractLoginAction {
         this.twofactorAuthView = twofactorAuthView;
     }
 
-    private boolean rolesExists() throws SystemException {
-        if (rolesExists) {
-            return true;
-        }
-
-        ApplicationContext context = RootContext.getInstance();
-        Map<String, RoleManager> managers = context.getBeansOfType(RoleManager.class);
-        if (managers != null) {
-            for (RoleManager roleManager : managers.values()) {
-                if (roleManager.getAllRoles().hasNext()) {
-                    rolesExists = true;
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     @Autowired(required = false)
     public void setLoginTokenManager(LoginTokenManager loginTokenManager) {
         this.loginTokenManager = loginTokenManager;
@@ -215,5 +194,14 @@ public class LoginAction extends AbstractLoginAction {
     @Autowired(required = false)
     public void setLoginTokenSender(LoginTokenSender loginTokenSender) {
         this.loginTokenSender = loginTokenSender;
+    }
+
+    @Autowired
+    public void setRoleManagers(List<RoleManager> roleManagers) throws SystemException {
+        for (RoleManager roleManager : roleManagers) {
+            if (roleManager.getAllRoles().hasNext()) {
+                rolesExists = true;
+            }
+        }
     }
 }

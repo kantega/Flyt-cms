@@ -104,6 +104,7 @@ public class LoginTokenAction {
             log.info( "Too many attempts. User is blocked from login:" + identity.getUserId());
         }
         model.put("blockedUser", blocked);
+        model.put("loginfailed", true);
     }
 
     private void handleExpiredToken(Map<String, Object> model) {

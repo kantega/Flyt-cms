@@ -26,6 +26,11 @@
 
 <kantega:section id="body">
     <c:if test="${not blockedUser and not expiredLoginToken}">
+    <c:if test="${not empty profile}">
+        <div>
+            <kantega:label key="aksess.login.logintoken.help" recipient="${profile.email}"/>
+        </div>
+    </c:if>
     <div id="LoginForm">
         <form method="post" action="<%=response.encodeURL(Aksess.getContextPath() + "/LoginToken.action")%>" name="loginForm" >
             <input type="hidden" name="domain" value="<%=Aksess.getDefaultSecurityDomain()%>">
