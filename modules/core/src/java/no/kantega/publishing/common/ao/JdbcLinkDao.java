@@ -33,7 +33,6 @@ import org.springframework.jdbc.core.support.JdbcDaoSupport;
 import java.sql.*;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcLinkDao.class);
@@ -190,7 +189,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      */
     @Override
     public int getNumberOfLinks() {
-        return getJdbcTemplate().queryForInt("select count(*) from link");
+        return getJdbcTemplate().queryForObject("select count(*) from link", Integer.class);
     }
 
     private static int checkLinkInserted(String link, PreparedStatement checkLinkStatement, PreparedStatement insLinkStatement) throws SQLException {
@@ -262,7 +261,6 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     }
 
     private String getOrderByClause(String sort) {
-        Objects.nonNull(sort);
         String orderBy;
         switch (sort) {
             case "url":
