@@ -30,9 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
- * User: Kristian Selnæs / Anders Skar, Kantega AS
- * Date: Apr 26, 2007
- * Time: 2:14:23 PM
+ * Controller handling updating topics associated to a user
  */
 public class UpdateProfileController implements AksessController {
     private static final Logger log = LoggerFactory.getLogger(UpdateProfileController.class);
@@ -42,8 +40,8 @@ public class UpdateProfileController implements AksessController {
     /**
      * @see no.kantega.publishing.controls.AksessController#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public Map handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Map model = new HashMap();
+    public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        Map<String, Object> model = new HashMap<>();
 
         TopicMapService topicService = new TopicMapService(request);
         SecuritySession secSession = SecuritySession.getInstance(request);
@@ -56,12 +54,11 @@ public class UpdateProfileController implements AksessController {
 
             if(topicIds != null) {
                 //Legger til valgte emner
-                for(int i = 0; i < topicIds.length; i++) {
-                    String topicId = topicIds[i];
+                for (String topicId : topicIds) {
                     if (topicId != null) {
                         Topic t = topicService.getTopic(topicMapId, topicId);
                         if (t != null) {
-                            log.debug( "Valgt emne: " + t.getBaseName());
+                            log.debug("Valgt emne: " + t.getBaseName());
                             topicService.addTopicSIDAssociation(t, user);
                             //Legger inn i sesjon også slik at det blir oppdatert nå
                             user.addTopic(t);
@@ -71,11 +68,10 @@ public class UpdateProfileController implements AksessController {
             }
 
             //Fjerer emner som brukeren ønsker å fjerne fra profilen.
-            List userTopics = topicService.getTopicsBySID(user);
+            List<Topic> userTopics = topicService.getTopicsBySID(user);
             if(userTopics != null) {
-                for(int i = 0; i < userTopics.size(); i++) {
-                    Topic t = (Topic)userTopics.get(i);
-                    if(t != null && !isSelectedTopic(t.getId(), topicIds)) {
+                for (Topic t : userTopics) {
+                    if (t != null && !isSelectedTopic(t.getId(), topicIds)) {
                         topicService.removeTopicSIDAssociation(t, user);
                         user.removeTopic(t);
                     }
@@ -85,12 +81,11 @@ public class UpdateProfileController implements AksessController {
         }
 
         // Hent ut liste med alle emner
-        List topicTypes = topicService.getTopicTypes(topicMapId);
-        TreeMap allTopics = new TreeMap();
+        List<Topic> topicTypes = topicService.getTopicTypes(topicMapId);
+        Map<String, List<Topic>> allTopics = new TreeMap<>();
 
-        for (int i = 0; i < topicTypes.size(); i++) {
-            Topic topicType =  (Topic)topicTypes.get(i);
-            List topics = topicService.getTopicsByInstance(topicType);
+        for (Topic topicType : topicTypes) {
+            List<Topic> topics = topicService.getTopicsByInstance(topicType);
             allTopics.put(topicType.getBaseName(), topics);
         }
         model.put("allTopics", allTopics);
@@ -101,13 +96,13 @@ public class UpdateProfileController implements AksessController {
             model.put("userSelectedTopics", userSelectedTopics);
 
             //Finner forhåndsdefinerte emner for brukeren ved å ta differansen mellom alle emner og emner brukeren selv har valgt
-            List userTopics = user.getTopics(); //Alle topics, inkludert brukervalgte
+            List<Topic> userTopics = user.getTopics(); //Alle topics, inkludert brukervalgte
             if(userTopics == null) {
-                userTopics = new ArrayList();
+                userTopics = new ArrayList<>();
             }
-            List userTopicsClone = new ArrayList();
-            for(int i = 0; i < userTopics.size(); i++) {
-                userTopicsClone.add(userTopics.get(i));
+            List<Topic> userTopicsClone = new ArrayList<>();
+            for (Topic userTopic : userTopics) {
+                userTopicsClone.add(userTopic);
             }
             userTopicsClone.removeAll(userSelectedTopics); //Fjerer brukervalgte topics
 
@@ -129,8 +124,8 @@ public class UpdateProfileController implements AksessController {
         if (topicIds == null) {
             return false;
         }
-        for(int i = 0; i < topicIds.length; i ++) {
-            if(id.equals(topicIds[i])) {
+        for (String topicId : topicIds) {
+            if (id.equals(topicId)) {
                 return true;
             }
         }
