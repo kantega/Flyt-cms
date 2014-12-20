@@ -126,12 +126,6 @@
 
         <dependency>
             <groupId>org.kantega.security-api</groupId>
-            <artifactId>securityapi-common</artifactId>
-            <version>${securityapi.openimpl.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.kantega.security-api</groupId>
             <artifactId>securityapi-dbuser</artifactId>
             <version>${securityapi.openimpl.version}</version>
         </dependency>

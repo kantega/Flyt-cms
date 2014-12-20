@@ -55,7 +55,9 @@
     </bean>
 
 
-    <!-- Example for advanced use: compound realm -->
+    <!-- Example for advanced use: compound realm
+        Requires the artifact org.kantega.security-api:securityapi-compound
+    -->
     <!--
     <bean id="compoundProfileManager" parent="ldapConfigurable" class="no.kantega.security.api.impl.common.profile.CompoundProfileManager">
         <property name="domain">
