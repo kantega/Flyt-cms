@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
@@ -358,15 +359,16 @@ public class LinkCheckerJob implements InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         setWebroot(Aksess.getApplicationUrl());
-        setProxyHost(Aksess.getConfiguration().getString("linkchecker.proxy.host"));
-        String proxyPort = Aksess.getConfiguration().getString("linkchecker.proxy.port");
+        Configuration configuration = Aksess.getConfiguration();
+        setProxyHost(configuration.getString("linkchecker.proxy.host"));
+        String proxyPort = configuration.getString("linkchecker.proxy.port");
         if(proxyPort != null) {
             setProxyPort(Integer.parseInt(proxyPort));
         }
-        String proxyUser = Aksess.getConfiguration().getString("linkchecker.proxy.username");
+        String proxyUser = configuration.getString("linkchecker.proxy.username");
         setProxyUser(proxyUser);
 
-        String proxyPassword = Aksess.getConfiguration().getString("linkchecker.proxy.password");
+        String proxyPassword = configuration.getString("linkchecker.proxy.password");
         setProxyPassword(proxyPassword);
     }
 

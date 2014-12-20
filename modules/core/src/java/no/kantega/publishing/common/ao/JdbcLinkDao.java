@@ -108,7 +108,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      * @see no.kantega.publishing.common.ao.LinkDao#doForEachLink(NotCheckedSinceTerm, no.kantega.publishing.modules.linkcheck.check.LinkHandler)
      */
     @Override
-    public void doForEachLink(NotCheckedSinceTerm term, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
+    public void doForEachLink(final NotCheckedSinceTerm term, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
         final String query = term.getQuery();
 
         log.debug( "query={}", query);
@@ -116,24 +116,25 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
                 try(PreparedStatement p = connection.prepareStatement(query);
-                PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?");
-                ResultSet rs = p.executeQuery()) {
+                PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?")) {
+                    p.setDate(1, new java.sql.Date(term.getNotCheckedSince().getTime()));
+                    try(ResultSet rs = p.executeQuery()) {
+                        while (rs.next()) {
+                            int id = rs.getInt("Id");
+                            String url = rs.getString("url");
+                            log.debug("Checking url {}", url);
+                            LinkOccurrence occurrence = new LinkOccurrence();
+                            handler.handleLink(id, url, occurrence);
 
-                    while (rs.next()) {
-                        int id = rs.getInt("Id");
-                        String url = rs.getString("url");
-                        log.debug("Checking url {}", url);
-                        LinkOccurrence occurrence = new LinkOccurrence();
-                        handler.handleLink(id, url, occurrence);
+                            if (occurrence.getStatus() != -1) {
+                                updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+                                updateStatement.setInt(2, occurrence.getStatus());
+                                updateStatement.setInt(3, occurrence.getHttpStatus());
+                                updateStatement.setInt(4, id);
+                                updateStatement.executeUpdate();
+                            }
 
-                        if (occurrence.getStatus() != -1) {
-                            updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-                            updateStatement.setInt(2, occurrence.getStatus());
-                            updateStatement.setInt(3, occurrence.getHttpStatus());
-                            updateStatement.setInt(4, id);
-                            updateStatement.executeUpdate();
                         }
-
                     }
                 }
                 return null;
