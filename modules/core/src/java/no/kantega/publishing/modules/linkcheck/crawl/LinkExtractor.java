@@ -105,7 +105,7 @@ public class LinkExtractor {
     }
 
     private class LinkExtractingHandler extends DefaultHandler {
-        private List<String> links = new ArrayList<String>();
+        private List<String> links = new ArrayList<>();
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
             if(localName.equalsIgnoreCase("a")) {

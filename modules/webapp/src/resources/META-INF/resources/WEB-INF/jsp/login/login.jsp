@@ -104,26 +104,5 @@
             <div id="NoScript">Javascript must be enabled to login</div>
         </noscript>
     </div>
-
-    <%--
-    TODO: Add when data is ready
-    <div id="dagensTips" class="section">
-        <h2>
-            Dagens tips
-        </h2>
-        <div class="body">
-            Lorem ipsum dolor sit amet...
-        </div>
-    </div>
-
-    <div id="sisteFraBloggen" class="section">
-        <h2>
-            Siste fra bloggen
-        </h2>
-        <div class="body">
-            Lorem ipsum dolro sit amet
-        </div>
-    </div>
-    --%>
 </kantega:section>
 <jsp:include page="${loginLayout}"/>

@@ -17,18 +17,34 @@
 package no.kantega.publishing.modules.linkcheck.check;
 
 /**
- *
+ * Status for checked url
  */
-public interface CheckStatus {
-    int OK = 1;
-    int UNKNOWN_HOST = 2;
-    int HTTP_NOT_200 = 3;
-    int IO_EXCEPTION = 4;
-    int CONNECTION_TIMEOUT = 5;
-    int CIRCULAR_REDIRECT = 6;
-    int CONNECT_EXCEPTION = 7;
-    int CONTENT_AP_NOT_FOUND = 8;
-    int INVALID_URL = 9;
-    int ATTACHMENT_AP_NOT_FOUND = 10;
-    int MULTIMEDIA_AP_NOT_FOUND = 11;
+public enum CheckStatus {
+
+    OK(1),
+    UNKNOWN_HOST(2),
+    HTTP_NOT_200(3),
+    IO_EXCEPTION(4),
+    CONNECTION_TIMEOUT(5),
+    CIRCULAR_REDIRECT(6),
+    CONNECT_EXCEPTION(7),
+    CONTENT_AP_NOT_FOUND(8),
+    INVALID_URL(9),
+    ATTACHMENT_AP_NOT_FOUND(10),
+    MULTIMEDIA_AP_NOT_FOUND(11);
+
+    public final int intValue;
+
+    CheckStatus(int intValue) {
+        this.intValue = intValue;
+    }
+
+    public static CheckStatus getFromInt(int intValue){
+        for (CheckStatus checkStatus : CheckStatus.values()) {
+            if(intValue == checkStatus.intValue){
+                return checkStatus;
+            }
+        }
+        throw new IllegalArgumentException("Unknown intValue for CheckStatus");
+    }
 }

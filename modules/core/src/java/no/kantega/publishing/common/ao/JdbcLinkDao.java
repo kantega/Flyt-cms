@@ -19,6 +19,7 @@ package no.kantega.publishing.common.ao;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.modules.linkcheck.check.CheckStatus;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.check.NotCheckedSinceTerm;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
@@ -126,9 +127,9 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                             LinkOccurrence occurrence = new LinkOccurrence();
                             handler.handleLink(id, url, occurrence);
 
-                            if (occurrence.getStatus() != -1) {
+                            if (occurrence.getStatus() != null) {
                                 updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
-                                updateStatement.setInt(2, occurrence.getStatus());
+                                updateStatement.setInt(2, occurrence.getStatus().intValue);
                                 updateStatement.setInt(3, occurrence.getHttpStatus());
                                 updateStatement.setInt(4, id);
                                 updateStatement.executeUpdate();
@@ -242,7 +243,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         o.setUrl(rs.getString("url"));
         Timestamp lastChecked = rs.getTimestamp("lastchecked");
         o.setLastChecked(lastChecked == null ? null : new Date(lastChecked.getTime()));
-        o.setStatus(rs.getInt("status"));
+        o.setStatus(CheckStatus.getFromInt(rs.getInt("status")));
         o.setHttpStatus(rs.getInt("httpstatus"));
         o.setTimesChecked(rs.getInt("timeschecked"));
 

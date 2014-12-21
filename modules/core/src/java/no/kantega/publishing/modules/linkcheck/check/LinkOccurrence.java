@@ -26,7 +26,7 @@ public class LinkOccurrence {
     private int linkId;
     private Date firstFound;
     private Date lastChecked;
-    private int status = -1;
+    private CheckStatus status;
     private int httpStatus;
     private String url;
     private int timesChecked;
@@ -79,11 +79,11 @@ public class LinkOccurrence {
         this.lastChecked = lastChecked;
     }
 
-    public int getStatus() {
+    public CheckStatus getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(CheckStatus status) {
         this.status = status;
     }
 

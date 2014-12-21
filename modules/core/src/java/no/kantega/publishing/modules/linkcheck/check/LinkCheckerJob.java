@@ -307,7 +307,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
 
         int httpStatus = -1;
-        int status = CheckStatus.OK;
+        CheckStatus status = CheckStatus.OK;
 
         try (CloseableHttpResponse response = client.execute(get)){
             log.debug("Checking remote url {}, before client.execute(get)", link);
