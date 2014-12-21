@@ -41,15 +41,20 @@ public class ContentIdHelperImplTest {
 
     @Before
     public void setup(){
+        setDefaultSiteConfig();
+        MockServletContext servletContext = new MockServletContext();
+        servletContext.setContextPath("/");
+
+        ((ServletContextAware)contentIdHelper).setServletContext(servletContext);
+    }
+
+    private void setDefaultSiteConfig() {
         Site defaultSite = new Site();
         defaultSite.setId(1);
         defaultSite.setAlias("/alias");
         when(siteCache.getDefaultSite()).thenReturn(defaultSite);
         when(siteCache.getSiteById(1)).thenReturn(defaultSite);
-        MockServletContext servletContext = new MockServletContext();
-        servletContext.setContextPath("/");
-
-        ((ServletContextAware)contentIdHelper).setServletContext(servletContext);
+        when(siteCache.getSites()).thenReturn(asList(defaultSite));
     }
 
     @Test(expected = ContentNotFoundException.class)
@@ -127,6 +132,7 @@ public class ContentIdHelperImplTest {
 
     @Test
     public void baseReturnCorrectContentIdentifierWithThisId() throws ContentNotFoundException {
+        setDefaultSiteConfig();
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
         ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, "https://sub.domain.no/");
         assertNotNull("ContentIdentifier was null", cid);

@@ -21,9 +21,6 @@
 
     <bean name="multimediaDao" class="no.kantega.publishing.common.ao.JdbcMultimediaDao">
         <property name="dataSource" ref="dataSource"/>
-        <property name="sqlDialect">
-            <bean class="no.kantega.commons.sqlsearch.dialect.DerbySQLDialect"/>
-        </property>
         <property name="multimediaUsageDao">
             <bean class="no.kantega.publishing.common.ao.JdbcMultimediaUsageDao">
                 <property name="dataSource" ref="dataSource"/>

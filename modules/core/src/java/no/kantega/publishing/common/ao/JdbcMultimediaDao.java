@@ -2,7 +2,6 @@ package no.kantega.publishing.common.ao;
 
 import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.sqlsearch.dialect.SQLDialect;
 import no.kantega.publishing.common.ao.rowmapper.ExifMetadataToMultimediaRowMapper;
 import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
@@ -22,7 +21,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,8 +37,6 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
     private final MultimediaRowMapper rowMapper = new MultimediaRowMapper();
 
     private MultimediaUsageDao multimediaUsageDao;
-    private SQLDialect sqlDialect;
-
 
     public void deleteMultimedia(int id) throws ObjectInUseException {
         // Check if there are any children
@@ -312,11 +308,6 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
     @Required
     public void setMultimediaUsageDao(MultimediaUsageDao multimediaUsageDao) {
         this.multimediaUsageDao = multimediaUsageDao;
-    }
-
-    @Required
-    public void setSqlDialect(SQLDialect sqlDialect) {
-        this.sqlDialect = sqlDialect;
     }
 
     private class MultimediaRowMapper implements RowMapper<Multimedia> {

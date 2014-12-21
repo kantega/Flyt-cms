@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
+import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.sqlsearch.SearchTerm;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
@@ -31,15 +31,13 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
-import no.kantega.publishing.modules.linkcheck.sqlsearch.NotCheckedSinceTerm;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -104,6 +102,7 @@ public class LinkCheckerJob implements InitializingBean {
         } else {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
+                            .setRedirectsEnabled(true)
                             .setConnectTimeout(CONNECTION_TIMEOUT).build());
         }
     }
@@ -120,7 +119,6 @@ public class LinkCheckerJob implements InitializingBean {
             return;
         }
         Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
-        SearchTerm term = new NotCheckedSinceTerm(week);
 
         int noLinks = linkDao.getNumberOfLinks();
         int maxLinksPerDay = 1000;
@@ -129,29 +127,26 @@ public class LinkCheckerJob implements InitializingBean {
         }
 
         log.debug("Found {} total links in database", noLinks);
-
-        term.setMaxResults(maxLinksPerDay);
+        NotCheckedSinceTerm term = new NotCheckedSinceTerm(week, maxLinksPerDay);
 
         final Counter linkCounter = new Counter();
 
         long start = System.currentTimeMillis();
-        linkDao.doForEachLink(term, new LinkHandler() {
-
-            public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                try (CloseableHttpClient client = getHttpClient()){
-
+        try (CloseableHttpClient client = getHttpClient()){
+            linkDao.doForEachLink(term, new LinkHandler() {
+                public void handleLink(int id, String link, LinkOccurrence occurrence) {
                     if(link.startsWith("http")) {
                         checkRemoteUrl(link, occurrence, client);
                     } else if(link.startsWith(Aksess.VAR_WEB)) {
                         checkInternalLink(link, occurrence, client);
                     }
-                } catch (IOException e) {
-                    log.error("Error with HttpClient", e);
-                }
-                linkCounter.increment();
 
-            }
-        });
+                    linkCounter.increment();
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error with HttpClient", e);
+        }
         log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
 
     }
@@ -160,7 +155,7 @@ public class LinkCheckerJob implements InitializingBean {
         return httpClientBuilder.build();
     }
 
-    private void checkInternalLink(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkInternalLink(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         log.debug("Checking internal url {}", link);
         if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
             checkContent(link, occurrence, client);
@@ -179,7 +174,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkContent(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkContent(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         // Side i AP
         String idPart;
         if (link.startsWith(CONTENT_AP)) {
@@ -212,7 +207,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkMultimedia(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkMultimedia(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         // Bilde / multimedia
         String idPart;
         if (link.startsWith(MULTIMEDIA_AP)) {
@@ -246,7 +241,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkAttachment(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkAttachment(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         // Vedlegg
         String idPart;
         if (link.startsWith(ATTACHMENT_AP)) {
@@ -280,7 +275,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkAlias(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkAlias(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         // Kan være et alias, sjekk
         String alias = link.substring(Aksess.VAR_WEB.length());
         try {
@@ -301,7 +296,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkRemoteUrl(String link, LinkOccurrence occurrence, HttpClient client) {
+    private void checkRemoteUrl(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         log.debug("Checking remote url {}", link);
         HttpGet get;
         try {
@@ -314,9 +309,9 @@ public class LinkCheckerJob implements InitializingBean {
         int httpStatus = -1;
         int status = CheckStatus.OK;
 
-        try {
+        try (CloseableHttpResponse response = client.execute(get)){
             log.debug("Checking remote url {}, before client.execute(get)", link);
-            HttpResponse response = client.execute(get);
+
             httpStatus = response.getStatusLine().getStatusCode();
             log.debug("Checking remote url {}, after client.execute(get), status: {}", link, httpStatus);
 
@@ -364,15 +359,16 @@ public class LinkCheckerJob implements InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         setWebroot(Aksess.getApplicationUrl());
-        setProxyHost(Aksess.getConfiguration().getString("linkchecker.proxy.host"));
-        String proxyPort = Aksess.getConfiguration().getString("linkchecker.proxy.port");
+        Configuration configuration = Aksess.getConfiguration();
+        setProxyHost(configuration.getString("linkchecker.proxy.host"));
+        String proxyPort = configuration.getString("linkchecker.proxy.port");
         if(proxyPort != null) {
             setProxyPort(Integer.parseInt(proxyPort));
         }
-        String proxyUser = Aksess.getConfiguration().getString("linkchecker.proxy.username");
+        String proxyUser = configuration.getString("linkchecker.proxy.username");
         setProxyUser(proxyUser);
 
-        String proxyPassword = Aksess.getConfiguration().getString("linkchecker.proxy.password");
+        String proxyPassword = configuration.getString("linkchecker.proxy.password");
         setProxyPassword(proxyPassword);
     }
 
