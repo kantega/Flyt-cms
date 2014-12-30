@@ -153,7 +153,14 @@ public class LoginAction extends AbstractLoginAction {
     private ModelAndView handleTwoFactorAuthentication(Identity identity, Map<String, Object> model) throws SystemException {
         Profile profile = getProfileManager().getProfileForUser(identity);
         LoginToken loginToken = loginTokenManager.generateLoginToken(identity);
-        loginTokenSender.sendTokenToUser(profile, loginToken);
+        try {
+            loginTokenSender.sendTokenToUser(profile, loginToken);
+        } catch (IllegalArgumentException e) {
+            log.error(profile.getIdentity().getDomain() + " " + profile.getIdentity().getUserId() + " does not have required recipient attribute", e);
+            model.put("missingrecipientattribute", true);
+        } catch (SystemException e) {
+            model.put("sendtokenfailed", true);
+        }
         model.put("profile", profile);
         return new ModelAndView(twofactorAuthView, model);
     }

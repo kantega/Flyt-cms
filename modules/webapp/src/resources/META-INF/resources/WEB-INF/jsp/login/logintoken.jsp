@@ -25,7 +25,7 @@
 <kantega:section id="bodyclass">login</kantega:section>
 
 <kantega:section id="body">
-    <c:if test="${not blockedUser and not expiredLoginToken}">
+    <c:if test="${not blockedUser and not expiredLoginToken and not missingrecipientattribute and not sendtokenfailed}">
     <c:if test="${not empty profile}">
         <div>
             <kantega:label key="aksess.login.logintoken.help" recipient="${profile.email}"/>
@@ -52,18 +52,24 @@
 
     <div id="LoginMessages">
         <c:if test="${loginfailed}">
-            <div><kantega:label key="aksess.login.logintokenfailed"/></div>
+            <div><kantega:label key="aksess.login.logintoken.failed"/></div>
         </c:if>
         <c:if test="${blockedUser}">
-            <div><kantega:label key="aksess.login.logintokenblockeduser"/></div>
+            <div><kantega:label key="aksess.login.logintoken.blockeduser"/></div>
         </c:if>
         <c:if test="${expiredLoginToken}">
-            <div><kantega:label key="aksess.login.expiredLoginToken"/></div>
+                <div><kantega:label key="aksess.login.logintoken.expired"/></div>
             <script type="application/javascript">
                 setTimeout(function(){
                     window.location.href = '${pageContext.request.contextPath}/Login.action?j_username=${username}&redirect=${redirect}';
                 }, 5000)
             </script>
+        </c:if>
+        <c:if test="${missingrecipientattribute}">
+            <div><kantega:label key="aksess.login.logintoken.missingrecipientattribute"/></div>
+        </c:if>
+        <c:if test="${sendtokenfailed}">
+            <div><kantega:label key="aksess.login.logintoken.sendtokenfailed"/></div>
         </c:if>
     </div>
 </kantega:section>
