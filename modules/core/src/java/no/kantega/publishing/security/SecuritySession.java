@@ -140,10 +140,8 @@ public class SecuritySession {
         final String fakeUsername = root.getServletContext().getInitParameter("fakeUsername");
         final String fakeUserDomain= root.getServletContext().getInitParameter("fakeUserDomain");
         if(fakeUsername != null && fakeUserDomain != null) {
-            DefaultIdentity id = new DefaultIdentity();
-            id.setUserId(fakeUsername);
-            id.setDomain(fakeUserDomain);
-            return id;
+
+            return DefaultIdentity.withDomainAndUserId(fakeUserDomain, fakeUsername);
         } else {
             return null;
         }

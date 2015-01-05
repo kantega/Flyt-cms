@@ -1,6 +1,7 @@
 package no.kantega.publishing.security.action;
 
 import com.google.common.collect.Maps;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.security.api.identity.DefaultIdentity;
@@ -29,6 +30,8 @@ public abstract class AbstractLoginAction implements Controller {
 
     private Map<String, PasswordManager> passwordManagers;
     private ResetPasswordTokenManager resetPasswordTokenManager;
+    @Autowired SystemConfiguration configuration;
+
 
     protected PasswordManager getPasswordManager(String domain) {
         Objects.requireNonNull(domain, "Domain must be non-null!");
@@ -51,10 +54,7 @@ public abstract class AbstractLoginAction implements Controller {
             return null;
         }
 
-        DefaultIdentity identity = new DefaultIdentity();
-        identity.setDomain(domain);
-        identity.setUserId(userid);
-        return identity;
+        return DefaultIdentity.withDomainAndUserId(domain, userid);
     }
 
     public String getLoginLayout() {
