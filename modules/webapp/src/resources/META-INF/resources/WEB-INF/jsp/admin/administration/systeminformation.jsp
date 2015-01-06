@@ -1,5 +1,7 @@
 <%@ page import="no.kantega.publishing.common.util.database.dbConnectionFactory" %>
-<%@ page import="java.util.*" %>
+<%@ page import="java.util.Map" %>
+<%@ page import="static org.apache.commons.lang3.StringEscapeUtils.escapeHtml4" %>
+<%@ page import="java.util.TreeMap" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
@@ -140,28 +142,19 @@
                 </thead>
                 <tbody>
                 <%
-                    Properties configProperties = (Properties)request.getAttribute("configProperties");
+                    Map<String, String> configProperties = (Map<String, String>) request.getAttribute("configProperties");
+                    TreeMap<String, String> propertiesMap = new TreeMap<>(configProperties);
 
-                    Iterator properties = configProperties.entrySet().iterator();
-
-                    SortedSet<String> sortedProperties= new TreeSet<String>();
-
-                    while (properties.hasNext()) {
-                        Map.Entry entry = (Map.Entry) properties.next();
-                        String key = entry.getKey().toString();
-                        sortedProperties.add(key);
-                    }
-                    Iterator it = sortedProperties.iterator();
-                    while (it.hasNext()) {
-                        String key = (String)it.next();
-                        String value = configProperties.getProperty(key);
+                    for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue();
                         if (key.contains("password")) {
                             value = "******";
                         }
                 %>
                 <tr>
                     <td class="parameter"><%=key%></td>
-                    <td class="property"><%=value%></td>
+                    <td class="property"><%=escapeHtml4(value)%></td>
                 </tr>
                 <%
                     }
