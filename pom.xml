@@ -248,8 +248,8 @@
 
     <properties>
         <aksess-maven-plugin.version>2.9</aksess-maven-plugin.version>
-        <securityapi.version>2.9-SNAPSHOT</securityapi.version>
-        <securityapi.openimpl.version>2.17-SNAPSHOT</securityapi.openimpl.version>
+        <securityapi.version>2.9</securityapi.version>
+        <securityapi.openimpl.version>2.17</securityapi.openimpl.version>
 
         <codec.version>1.7</codec.version>
         <commons-pool.version>1.6</commons-pool.version>
