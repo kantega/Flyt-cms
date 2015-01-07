@@ -52,7 +52,7 @@ import java.util.List;
  * Receives all incoming request for content, fetches from database and sends request to a dispatcher
  */
 @Controller
-public abstract class ContentRequestHandler implements ServletContextAware {
+public class ContentRequestHandler implements ServletContextAware {
     private static final Logger log = LoggerFactory.getLogger(ContentRequestHandler.class);
 
     @Autowired
@@ -114,7 +114,7 @@ public abstract class ContentRequestHandler implements ServletContextAware {
 
     ModelAndView handleFromContentIdentifier(ContentIdentifier cid, HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         long start = System.currentTimeMillis();
-        SecuritySession securitySession = getSecuritySession();
+        SecuritySession securitySession = SecuritySession.getInstance(request);
 
         ContentManagementService cms = new ContentManagementService(securitySession, request);
         try {
@@ -147,16 +147,15 @@ public abstract class ContentRequestHandler implements ServletContextAware {
 
         } catch (NotAuthorizedException e) {
             // Check if user is logged in
-            SecuritySession secSession = getSecuritySession();
-            if (secSession.isLoggedIn()) {
-                log.debug("{} logged in but not authorized: {}", secSession.getIdentity().getUserId(), e.getMessage());
+            if (securitySession.isLoggedIn()) {
+                log.debug("{} logged in but not authorized: {}", securitySession.getIdentity().getUserId(), e.getMessage());
                 RequestHelper.setRequestAttributes(request, null);
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 request.getRequestDispatcher("/403.jsp").forward(request, response);
             } else {
                 // Start login process (redirect)
                 log.debug("User not logged in, initiateLogin: ", e.getMessage());
-                secSession.initiateLogin(request, response);
+                securitySession.initiateLogin(request, response);
             }
         } catch (ContentNotFoundException e) {
             try {
@@ -183,8 +182,6 @@ public abstract class ContentRequestHandler implements ServletContextAware {
         ContentVisibilityStatus visibilityStatus = content.getVisibilityStatus();
         return (visibilityStatus != ContentVisibilityStatus.ACTIVE && visibilityStatus != ContentVisibilityStatus.ARCHIVED);
     }
-
-    protected abstract SecuritySession getSecuritySession();
 
     private void logTimeSpent(long start, Content content) {
         long end = System.currentTimeMillis();

@@ -297,7 +297,6 @@
     <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler">
         <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
         <property name="siteCache" ref="aksessSiteCache"/>
-        <lookup-method name="getSecuritySession" bean="securitySession"/>
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
