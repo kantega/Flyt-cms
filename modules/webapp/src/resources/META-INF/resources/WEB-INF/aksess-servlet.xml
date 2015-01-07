@@ -306,7 +306,6 @@
         <property name="multimediaRequestHandlerHelper">
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
         </property>
-        <lookup-method name="getSecuritySession" bean="securitySession"/>
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
