@@ -1,13 +1,12 @@
 package no.kantega.publishing.modules.forms.control;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.publishing.modules.forms.model.AksessContentForm;
@@ -42,6 +41,8 @@ public class SaveFormSubmissionController implements AksessController {
     private PluginManager<OpenAksessPlugin> pluginManager;
     private String mailConfirmationSubject;
     private String mailConfirmationTemplate;
+
+    private SystemConfiguration configuration;
 
     public Map<String, Object> handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
@@ -84,7 +85,6 @@ public class SaveFormSubmissionController implements AksessController {
                     model.put("hasSubmitted", Boolean.TRUE);
                     model.put("hasErrors",Boolean.FALSE);
 
-                    Configuration configuration = Aksess.getConfiguration();
                     if (configuration.getBoolean("formengine.mailconfirmation.enabled", false)) {
                         sendConfirmationEmail(formSubmission, content);
                         model.put("mailSent", Boolean.TRUE);
@@ -110,7 +110,7 @@ public class SaveFormSubmissionController implements AksessController {
     }
 
     protected void sendConfirmationEmail(FormSubmission formsubmission, Content currentPage) throws ConfigurationException {
-        String from = Aksess.getConfiguration().getString("mail.from");
+        String from = configuration.getString("mail.from");
         String recipient = formsubmission.getSubmittedByEmail();
         if (recipient != null && recipient.contains("@")) {
             String subject = String.format(mailConfirmationSubject, formsubmission.getForm().getTitle());
@@ -206,5 +206,9 @@ public class SaveFormSubmissionController implements AksessController {
         if (prefillValues != null) {
             values.putAll(prefillValues);
         }
+    }
+
+    public void setConfiguration(SystemConfiguration configuration) {
+        this.configuration = configuration;
     }
 }
