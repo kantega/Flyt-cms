@@ -378,8 +378,8 @@ public class AssociationAO  {
                 pathst.execute();
             }
             // Oppdater gruppe for denne siden
-            try(PreparedStatement groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ?")) {
-                if (updateGroupId) {
+            if (updateGroupId) {
+                try(PreparedStatement groupst = c.prepareStatement("update content set GroupId = ? where ContentId = ?")) {
                     groupst.setInt(1, parentGroupId);
                     groupst.setInt(2, oldAssocation.getContentId());
                     groupst.execute();
@@ -387,8 +387,8 @@ public class AssociationAO  {
             }
 
             // Oppdater gruppe for denne siden
-            try(PreparedStatement securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ?")) {
-                if (updateSecurityId) {
+            if (updateSecurityId) {
+                try(PreparedStatement securityst = c.prepareStatement("update associations set SecurityId = ? where UniqueId = ?")) {
                     securityst.setInt(1, parentSecurityId);
                     securityst.setInt(2, newAssociation.getId());
                     securityst.execute();
