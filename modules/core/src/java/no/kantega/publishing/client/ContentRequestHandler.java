@@ -206,7 +206,9 @@ public class ContentRequestHandler implements ServletContextAware {
                     url = createRedirectUrlWithIncomingParameters(request, url);
                 }
 
-                url = scheme + "://" + hostname + (port != 80 && port != 443 ? ":" + port : "") + url;
+                url = scheme + "://" + hostname
+                        + (port == 80 || port == 443 ? "" : ":" + port )
+                        + url;
                 response.sendRedirect(url);
                 return true;
             }
