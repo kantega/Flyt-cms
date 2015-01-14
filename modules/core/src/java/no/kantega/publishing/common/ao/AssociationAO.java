@@ -313,15 +313,22 @@ public class AssociationAO  {
                             }
 
                         }
-
+// startCrossPublished = en krysspublisert versjon av gammel parent
                         if (startCrossPublished != null) {
                             // Sjekk under startpunktet om vi finner side med samme contentid som den som skal flyttes
-                            Association parent = getAssociationById(newAssociation.getParentAssociationId());
-                            List<Association> tmp = getAssociationsByContentIdAndParentId(parent.getContentId(), startCrossPublished.getId());
+
+                            List<Association> tmp = getAssociationsByContentIdAndParentId(contentId, startCrossPublished.getId());
                             if (tmp.size() == 1) {
-                                Association newAssociationCopy = tmp.get(0);
-                                copy.setParentAssociationId(newAssociationCopy.getId());
-                                modifyAssociation(copy, updateGroup);
+                                Association newAssociationCopy = tmp.get(0); // krysspublisert versjon av oldAssociation, vi må flytte denne også.
+                                Association newParent = getAssociationById(newAssociation.getParentAssociationId());
+                                List<Association> newParentAssociations = getAssociationsByContentId(newParent.getContentId());
+                                for (Association newParentAssociation : newParentAssociations) {
+                                    if(newParentAssociation.getId() != newParent.getId()){
+                                        newAssociationCopy.setParentAssociationId(newParentAssociation.getId());
+                                        modifyAssociation(newAssociationCopy, updateGroup);
+                                    }
+                                }
+
                             }
                         }
                     }
