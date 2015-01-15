@@ -59,12 +59,26 @@
                 }
             }
             <c:if test="${id == -1}">
+            var mediaNameRequired = ${mediaNameRequired};
+            if (mediaNameRequired) {
+                if (!document.uploadForm.elements.name.value) {
+                    alert('<kantega.label key="aksess.multimedia.mediaName.missing" escapeJavascript="true"/>');
+                    return false;
+                }
+            }
             <c:if test="${altNameRequired}">
             if (document.uploadForm.elements['altname'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
                 return false;
             }
             </c:if>
+            var authorRequired = ${authorRequired};
+            if (authorRequired) {
+                if (!document.uploadForm.elements.name.value) {
+                    alert('<kantega.label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
+                    return false;
+                }
+            }
             <c:if test="${fileUploadedFromEditor}">
             if ($("#MultimediaAddToArchive").is(":checked") && document.uploadForm.elements['parentId'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.selectfolder.missing" escapeJavascript="true"/>');

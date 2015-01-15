@@ -54,7 +54,9 @@ public class ViewUploadMultimediaFormController {
         model.addAttribute("id", id);
         model.addAttribute("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
         model.addAttribute("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());
+        model.addAttribute("mediaNameRequired", Aksess.getConfiguration().getBoolean("multimedia.mediaName.required", false));
         model.addAttribute("altNameRequired", Aksess.getConfiguration().getBoolean("multimedia.altname.required", false));
+        model.addAttribute("authorRequired", Aksess.getConfiguration().getBoolean("multimedia.author.required", false));
         model.addAttribute("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));
 
         return UPLOAD_FORM_VIEW;
