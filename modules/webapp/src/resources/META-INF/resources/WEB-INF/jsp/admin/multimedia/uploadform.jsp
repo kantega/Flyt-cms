@@ -75,7 +75,7 @@
             if (mediaNameRequired) {
                 var mediaName = document.uploadForm.elements.name.value;
                 if (!mediaName || !validateText(mediaName)) {
-                    alert('<kantega.label key="aksess.multimedia.mediaName.missing" escapeJavascript="true"/>');
+                    alert('<kantega:label key="aksess.multimedia.mediaName.missing" escapeJavascript="true"/>');
                     return false;
                 }
             }
@@ -90,7 +90,7 @@
             if (authorRequired) {
                 var author = document.uploadForm.elements.name.value;
                 if (!author || !validateText(author)) {
-                    alert('<kantega.label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
+                    alert('<kantega:label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
                     return false;
                 }
             }
