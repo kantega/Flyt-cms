@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.base.Predicate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.api.services.security.PermissionAO;
@@ -38,6 +39,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.collect.Collections2.filter;
 
 public class AssociationAO  {
     private static final Logger log = LoggerFactory.getLogger(AssociationAO.class);
@@ -250,27 +253,6 @@ public class AssociationAO  {
         return associations;
     }
 
-
-    public static List<Association> getAssociationsByContentIdAndParentId(int contentId, int parentId) throws SystemException {
-        List<Association> associations = new ArrayList<>();
-
-        try (Connection c = dbConnectionFactory.getConnection();
-             PreparedStatement st = c.prepareStatement("select * from associations where contentid = ? and path like ?")){
-            st.setInt(1, contentId);
-            st.setString(2, "%/" + parentId + "/%");
-            try(ResultSet rs = st.executeQuery()) {
-                while (rs.next()) {
-                    associations.add(getAssociationFromRS(rs));
-                }
-            }
-        } catch (SQLException e) {
-            throw new SystemException("SQL Feil ved databasekall", e);
-        }
-
-        return associations;
-    }
-
-
     /**
      * Flytter en struktur
      * @param newAssociation - oppdatert kopling
@@ -279,71 +261,58 @@ public class AssociationAO  {
      */
     public static void modifyAssociation(Association newAssociation, boolean updateCopies, boolean updateGroup) throws SystemException {
         if (updateCopies) {
-            // Hent fra basen kopling i nøvørende form og parent
-            Association oldAssociation = getAssociationById(newAssociation.getId());
+            final Association oldAssociation = getAssociationById(newAssociation.getId());
             if (oldAssociation.getParentAssociationId() > 0) {
-                // Siden som skal flyttes kan vøre krysspublisert
-
                 int contentId = newAssociation.getContentId();
 
                 List<Association> associations = getAssociationsByContentId(contentId);
-                for (Association copy : associations) {
-                    // Finn om dette er krysspublisert og finn startpunkt for krysspublisering
-
-                    if (newAssociation.getId() != copy.getId()) {
-                        int path[] = oldAssociation.getPathElementIds();
-                        int pathCopy[] = copy.getPathElementIds();
-
-                        Association startCrossPublished = null;
-
-                        // Finnes felles startpunkt for krysspublisering av denne kopien med den som flyttes
-                        if (copy.getId() != newAssociation.getId() && path.length > 1 && pathCopy.length > 1) {
-                            for (int j = 0; j < path.length && j < pathCopy.length; j++) {
-                                int parentId = path[(path.length - 1) - j];
-                                int parentIdCurrent = pathCopy[(pathCopy.length - 1) - j];
-
-                                Association parent = getAssociationById(parentId);
-                                Association parentCopy = getAssociationById(parentIdCurrent);
-                                if (parent.getContentId() != parentCopy.getContentId() || parent.getId() == parentCopy.getId()) {
-                                    // Vi har kommet til en side som ikke er krysspublisert eller til samme id, stopp
-                                    break;
-                                }
-
-                                startCrossPublished = parentCopy;
-                            }
-
+                boolean isCrossPublished = associations.size() > 1;
+                if (isCrossPublished){
+                    // The old associations, except the one that initiated the modify operation
+                    List<Association> interestingAssociations = new ArrayList<>(filter(associations, new Predicate<Association>() {
+                        @Override
+                        public boolean apply(Association input) {
+                            return input.getId() != oldAssociation.getId();
                         }
-// startCrossPublished = en krysspublisert versjon av gammel parent
-                        if (startCrossPublished != null) {
-                            // Sjekk under startpunktet om vi finner side med samme contentid som den som skal flyttes
-
-                            List<Association> tmp = getAssociationsByContentIdAndParentId(contentId, startCrossPublished.getId());
-                            if (tmp.size() == 1) {
-                                Association newAssociationCopy = tmp.get(0); // krysspublisert versjon av oldAssociation, vi må flytte denne også.
-                                Association newParent = getAssociationById(newAssociation.getParentAssociationId());
-                                List<Association> newParentAssociations = getAssociationsByContentId(newParent.getContentId());
-                                for (Association newParentAssociation : newParentAssociations) {
-                                    if(newParentAssociation.getId() != newParent.getId()){
-                                        newAssociationCopy.setParentAssociationId(newParentAssociation.getId());
-                                        modifyAssociation(newAssociationCopy, updateGroup);
-                                    }
-                                }
-
-                            }
-                        }
+                    }));
+                    AssociationAOHelper.MoveCrossPublishedResult moveCrossPublishedResult = AssociationAOHelper.handleMoveCrossPublished(oldAssociation, interestingAssociations, newAssociation);
+                    for (Association updatedAssociation : moveCrossPublishedResult.associationsToMove) {
+                        modifyAssociation(updatedAssociation, updateGroup);
                     }
+                    permanentlyDeleteAssociations(moveCrossPublishedResult.associationsToDelete);
 
+                    for (Association parentInNeedOfChild : moveCrossPublishedResult.parentAssociationsNeedingNewChild) {
+                        Association newCrosspublishing = new Association();
+                        newCrosspublishing.setParentAssociationId(parentInNeedOfChild.getAssociationId());
+                        newCrosspublishing.setCategory(newAssociation.getCategory());
+                        newCrosspublishing.setContentId(newAssociation.getContentId());
+                        newCrosspublishing.setSiteId(newCrosspublishing.getSiteId());
+                        addAssociation(newCrosspublishing);
+                    }
                 }
-
             }
         }
         modifyAssociation(newAssociation, updateGroup);
     }
 
+    private static void permanentlyDeleteAssociations(List<Association> associationsToDelete) {
+        if (!associationsToDelete.isEmpty()) {
+            log.info("Permanently deleting associations: " + associationsToDelete);
+            try (Connection c = dbConnectionFactory.getConnection();
+                 PreparedStatement ps = c.prepareStatement("DELETE FROM associations WHERE UniqueId = ?")){
+                for (Association association : associationsToDelete) {
+                    ps.setInt(1, association.getAssociationId());
+                    ps.addBatch();
+                }
+                ps.executeBatch();
+            } catch (SQLException e) {
+                throw new SystemException("SQL Feil ved databasekall", e);
+            }
+        }
+    }
+
     private static void modifyAssociation(Association newAssociation, boolean updateGroupId) throws SystemException {
-
         Association oldAssocation = getAssociationById(newAssociation.getId());
-
 
         // Finn path og lagre denne
         String path = AssociationHelper.getPathForId(newAssociation.getParentAssociationId());
@@ -650,8 +619,9 @@ public class AssociationAO  {
                     st.setInt(2, association.getCategory().getId());
                     st.setInt(3, association.getId());
 
-                    st.execute();
+                    st.addBatch();
                 }
+                st.executeBatch();
             } catch (SQLException e) {
                 throw new SystemException("SQL Feil ved databasekall", e);
             }
@@ -683,13 +653,15 @@ public class AssociationAO  {
                 st.setInt(2, aid);
                 st.setInt(3, object.getSecurityId());
 
-                st.execute();
+                st.addBatch();
             }
 
             st.setInt(1, newSecurityId);
             st.setInt(2, object.getId());
             st.setInt(3, object.getSecurityId());
-            st.execute();
+            st.addBatch();
+
+            st.executeBatch();
 
             object.setSecurityId(newSecurityId);
         }
@@ -742,8 +714,9 @@ public class AssociationAO  {
 
                     updateSt.setInt(1, type);
                     updateSt.setInt(2, a.getId());
-                    updateSt.executeUpdate();
+                    updateSt.addBatch();
                 }
+                updateSt.executeBatch();
             }
             DeletedItemsAO.purgeDeletedItem(deletedItemsId);
         } catch (SQLException e) {
@@ -763,9 +736,9 @@ public class AssociationAO  {
             } else {
                 sql += " content.Alias <> '' ";
             }
-            sql += " AND content.ContentId = associations.ContentId ";
-            sql += " AND (associations.Path LIKE '%/" + parent.getId() + "/%' OR associations.ParentAssociationId = " + parent.getId() + ")";
-            sql += " AND associations.IsDeleted = 0";
+            sql += " AND content.ContentId = associations.ContentId "
+                + " AND (associations.Path LIKE '%/" + parent.getId() + "/%' OR associations.ParentAssociationId = " + parent.getId() + ")"
+                + " AND associations.IsDeleted = 0";
 
             try(PreparedStatement listSt = c.prepareStatement(sql);
 
