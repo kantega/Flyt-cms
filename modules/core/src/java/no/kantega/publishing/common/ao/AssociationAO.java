@@ -254,16 +254,31 @@ public class AssociationAO  {
     }
 
     /**
-     * Flytter en struktur
-     * @param newAssociation - oppdatert kopling
-     * @param updateCopies - dersom siden er kopiert (krysspublisert), angi om krysspubliserte sider ogsø skal flyttes
-     * @throws SystemException - Systemfeil
+     * Update the given association.
+     *
+     * <p>
+     *     <b>Behavior when modifying cross published content(updateCopies = true)</b>:
+     *     <ul>
+     *         <li>When {@code association} is the primary cross published {@code Association}, only this {@code association} is modified.</li>
+     *         <li>When a parent of {@code association} is the cross published content all siblings of {@code association} are attempted to be modified.</li>
+     *         <li>If the new parent of {@code association} is cross published, all versions of parent is updated with a existing version of {@code association} or a new Association pointing at {@code association.contentId}</li>
+     *         <li>If new parent has more cross published versions than the old parent, new associations referring to {@code association.contentId} will be created</li>
+     *         <li>If new parent has less cross published versions than the old parent, the versions that does not have a corresponding new parent will de deleted(and cannot be restored)</li>
+     *     </ul>
+     * </p>
+     *
+     * @param association - An existing association with fields updated.
+     * @param updateCopies - if true cross published versions of association is also moved.
+     * @param updateGroup - true if content.groupId should be updated.
+     * @throws SystemException - if something®™ throws exception.
+     * @see no.kantega.publishing.common.ao.AssociationAOHelper#handleMoveCrossPublished(no.kantega.publishing.common.data.Association, java.util.List, no.kantega.publishing.common.data.Association)
+     * @see no.kantega.publishing.common.ao.AssociationAOHelper.MoveCrossPublishedResult
      */
-    public static void modifyAssociation(Association newAssociation, boolean updateCopies, boolean updateGroup) throws SystemException {
+    public static void modifyAssociation(Association association, boolean updateCopies, boolean updateGroup) throws SystemException {
         if (updateCopies) {
-            final Association oldAssociation = getAssociationById(newAssociation.getId());
+            final Association oldAssociation = getAssociationById(association.getId());
             if (oldAssociation.getParentAssociationId() > 0) {
-                int contentId = newAssociation.getContentId();
+                int contentId = association.getContentId();
 
                 List<Association> associations = getAssociationsByContentId(contentId);
                 boolean isCrossPublished = associations.size() > 1;
@@ -275,7 +290,7 @@ public class AssociationAO  {
                             return input.getId() != oldAssociation.getId();
                         }
                     }));
-                    AssociationAOHelper.MoveCrossPublishedResult moveCrossPublishedResult = AssociationAOHelper.handleMoveCrossPublished(oldAssociation, interestingAssociations, newAssociation);
+                    AssociationAOHelper.MoveCrossPublishedResult moveCrossPublishedResult = AssociationAOHelper.handleMoveCrossPublished(oldAssociation, interestingAssociations, association);
                     for (Association updatedAssociation : moveCrossPublishedResult.associationsToMove) {
                         modifyAssociation(updatedAssociation, updateGroup);
                     }
@@ -284,15 +299,15 @@ public class AssociationAO  {
                     for (Association parentInNeedOfChild : moveCrossPublishedResult.parentAssociationsNeedingNewChild) {
                         Association newCrosspublishing = new Association();
                         newCrosspublishing.setParentAssociationId(parentInNeedOfChild.getAssociationId());
-                        newCrosspublishing.setCategory(newAssociation.getCategory());
-                        newCrosspublishing.setContentId(newAssociation.getContentId());
+                        newCrosspublishing.setCategory(association.getCategory());
+                        newCrosspublishing.setContentId(association.getContentId());
                         newCrosspublishing.setSiteId(newCrosspublishing.getSiteId());
                         addAssociation(newCrosspublishing);
                     }
                 }
             }
         }
-        modifyAssociation(newAssociation, updateGroup);
+        modifyAssociation(association, updateGroup);
     }
 
     private static void permanentlyDeleteAssociations(List<Association> associationsToDelete) {

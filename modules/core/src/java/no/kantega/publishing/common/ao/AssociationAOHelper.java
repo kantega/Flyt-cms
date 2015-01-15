@@ -38,6 +38,15 @@ import static no.kantega.publishing.common.ao.AssociationAO.getAssociationsByCon
 
 class AssociationAOHelper {
 
+    /**
+     * Object containing lists that represent the {@code Association}s that will be affected by a modification of a cross published {@code Content}.
+     * <ul>
+     *     <li><b>associationsToMove</b>: {@code Association}s we have found a new parent for, and have set parentId on.</li>
+     *     <li><b>associationsToDelete</b>: {@code Association}s we did not find a new parent for.</li>
+     *     <li><b>parentAssociationsNeedingNewChild</b>: Cross published versions of the new parent we do not have a existing
+     *     {@code Association} for, so a new {@code Association} will have to be created.</li>
+     * </ul>
+     */
     static class MoveCrossPublishedResult {
         final List<Association> associationsToMove;
         final List<Association> associationsToDelete;
@@ -50,6 +59,13 @@ class AssociationAOHelper {
         }
     }
 
+    /**
+     *
+     * @param oldAssociation - the current {@code Association} that is being modified.
+     * @param interestingAssociations - all other cross published {@code Association}s refering to {@code oldAssociation.contentId}
+     * @param newAssociation - the updated version that in the future will be saved.
+     * @return {@code MoveCrossPublishedResult} containing lists of objects that will be moved, deleted or created new {@code Association}s under.
+     */
     static MoveCrossPublishedResult handleMoveCrossPublished(Association oldAssociation, List<Association> interestingAssociations, Association newAssociation){
         List<Association> associationsToMove = new ArrayList<>();
         List<Association> associationsToDelete = new ArrayList<>();
@@ -81,10 +97,10 @@ class AssociationAOHelper {
     }
 
     /**
-     * @param interestingAssociation the association we want to find new parent for.
+     * @param interestingAssociation the {@code Association} we want to find new parent for.
      * @param interestingNewParents the potential parents. The returned parent should be removed from the list.
-     * @return the new parent association.
-     * Currently just selects the first of interestingNewParents.
+     * @return the new parent {@code Association}.
+     * Currently just selects the first of interestingNewParents and remove it from interestingNewParents
      */
     private static Association findNewParent(Association interestingAssociation, List<Association> interestingNewParents) {
         if(interestingNewParents.size() > 0){
@@ -97,7 +113,7 @@ class AssociationAOHelper {
      * @param oldAssociation the association that initiated the operation
      * @param association the first sibling association that is not oldAssociation.
      * @return the first shared anchestor of both associations. I.e. the parent of association
-     * if association.parent.contentId == oldAssociation.parent.contentId. Null otherwise
+     * if association.parent.contentId == oldAssociation.parent.contentId. null otherwise
      *
      */
     private static Association getFirstSharedAnchestor(Association oldAssociation, Association association) {
