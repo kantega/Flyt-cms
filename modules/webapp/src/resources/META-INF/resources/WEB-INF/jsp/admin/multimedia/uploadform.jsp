@@ -61,36 +61,42 @@
 
             var validateText = function validateText(string) {
 
-                // This pattern ensures that the text consists of at least 5 characters
-                var atLeastFive = /.{5}.*/;
+                // This pattern ensures that the text consists of at least 3 characters
+                var atLeastThree = /.{3}.*/;
 
                 // This pattern ensures that there exists at least one character that is not whitespace
                 var notAllWhitespace = /[^\s]+/;
 
-                return atLeastFive.test(string) && notAllWhitespace.test(string);
+                return atLeastThree.test(string) && notAllWhitespace.test(string);
             };
 
             <c:if test="${id == -1}">
             var mediaNameRequired = ${mediaNameRequired};
             if (mediaNameRequired) {
-                var mediaName = document.uploadForm.elements.name.value;
-                if (!mediaName || !validateText(mediaName)) {
-                    alert('<kantega:label key="aksess.multimedia.mediaName.missing" escapeJavascript="true"/>');
+                var $mediaName = $(document.uploadForm.elements.name);
+                var mediaNameText = $mediaName.val();
+                if (!mediaNameText || !validateText(mediaNameText)) {
+                    alert('<kantega:label key="aksess.multimedia.medianame.missing" escapeJavascript="true"/>');
+                    $mediaName.focus();
                     return false;
                 }
             }
             <c:if test="${altNameRequired}">
-            var altName = document.uploadForm.elements.altname.value;
-            if (!altName || !validateText(altName)) {
+            var $altName = $(document.uploadForm.elements.altname);
+            var altNameText = $altName.val();
+            if (!altNameText || !validateText(altNameText)) {
                 alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
+                $altName.focus();
                 return false;
             }
             </c:if>
             var authorRequired = ${authorRequired};
             if (authorRequired) {
-                var author = document.uploadForm.elements.name.value;
-                if (!author || !validateText(author)) {
+                var $author = $(document.uploadForm.elements.author);
+                var authorText = $author.val();
+                if (!authorText || !validateText(authorText)) {
                     alert('<kantega:label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
+                    $author.focus();
                     return false;
                 }
             }
