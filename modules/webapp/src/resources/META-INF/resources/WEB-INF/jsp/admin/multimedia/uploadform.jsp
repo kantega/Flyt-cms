@@ -58,23 +58,38 @@
                     }
                 }
             }
+
+            var validateText = function validateText(string) {
+
+                // This pattern ensures that the text consists of at least 5 characters
+                var atLeastFive = /.{5}.*/;
+
+                // This pattern ensures that there exists at least one character that is not whitespace
+                var notAllWhitespace = /[^\s]+/;
+
+                return atLeastFive.test(string) && notAllWhitespace.test(string);
+            };
+
             <c:if test="${id == -1}">
             var mediaNameRequired = ${mediaNameRequired};
             if (mediaNameRequired) {
-                if (!document.uploadForm.elements.name.value) {
+                var mediaName = document.uploadForm.elements.name.value;
+                if (!mediaName || !validateText(mediaName)) {
                     alert('<kantega.label key="aksess.multimedia.mediaName.missing" escapeJavascript="true"/>');
                     return false;
                 }
             }
             <c:if test="${altNameRequired}">
-            if (document.uploadForm.elements['altname'].value == "") {
+            var altName = document.uploadForm.elements.altname.value;
+            if (!altName || !validateText(altName)) {
                 alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
                 return false;
             }
             </c:if>
             var authorRequired = ${authorRequired};
             if (authorRequired) {
-                if (!document.uploadForm.elements.name.value) {
+                var author = document.uploadForm.elements.name.value;
+                if (!author || !validateText(author)) {
                     alert('<kantega.label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
                     return false;
                 }
