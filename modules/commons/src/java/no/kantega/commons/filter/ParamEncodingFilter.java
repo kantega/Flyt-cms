@@ -28,7 +28,7 @@ import java.util.Iterator;
  */
 public class ParamEncodingFilter implements Filter {
     public static final String POST_PARAM_ENCODING = "encoding";
-    public static final String GET_PARA_ENCODING = "getencoding";
+    public static final String GET_PARAM_ENCODING = "getencoding";
 
     private String encoding;
     private String GETencoding;
@@ -39,7 +39,7 @@ public class ParamEncodingFilter implements Filter {
         String encoding = filterConfig.getInitParameter(POST_PARAM_ENCODING);
         this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");
 
-        String GETencoding = filterConfig.getInitParameter(GET_PARA_ENCODING);
+        String GETencoding = filterConfig.getInitParameter(GET_PARAM_ENCODING);
         this.GETencoding = StringUtils.defaultIfBlank(GETencoding, "iso-8859-1");
     }
 

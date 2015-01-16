@@ -50,12 +50,14 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         if (paramEncodingFilter != null) {
             String paramEncodingFilterEncoding = ctx.getInitParameter("ParamEncodingFilter.encoding");
             if (isNotBlank(paramEncodingFilterEncoding)) {
+                log.info("ParamEncodingFilter.encoding: " + paramEncodingFilterEncoding);
                 paramEncodingFilter.setInitParameter(ParamEncodingFilter.POST_PARAM_ENCODING, paramEncodingFilterEncoding);
             }
 
             String paramEncodingFilterGETEncoding = ctx.getInitParameter("ParamEncodingFilter.getencoding");
             if(isNotBlank(paramEncodingFilterGETEncoding)){
-                paramEncodingFilter.setInitParameter(ParamEncodingFilter.GET_PARA_ENCODING, paramEncodingFilterGETEncoding);
+                log.info("ParamEncodingFilter.getencoding: " + paramEncodingFilterGETEncoding);
+                paramEncodingFilter.setInitParameter(ParamEncodingFilter.GET_PARAM_ENCODING, paramEncodingFilterGETEncoding);
             }
 
             paramEncodingFilter
