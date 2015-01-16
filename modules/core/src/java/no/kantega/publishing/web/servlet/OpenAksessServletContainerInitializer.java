@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+
 /**
  * ServletContainerInitializer that adds Flyt CMS' Filters such that they are run before the Filters
  * declared in the project.
@@ -44,10 +46,10 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         } else {
             log.warn("ResponseHeaderFilter defined in web.xml, please remove it!");
         }
-
         FilterRegistration.Dynamic paramEncodingFilter = ctx.addFilter("ParamEncodingFilter", ParamEncodingFilter.class);
         if (paramEncodingFilter != null) {
-            paramEncodingFilter.setInitParameter("encoding", "utf-8");
+            String paramEncodingFilterEncoding = ctx.getInitParameter("ParamEncodingFilter.encoding");
+            paramEncodingFilter.setInitParameter("encoding", defaultIfBlank(paramEncodingFilterEncoding, "utf-8"));
             paramEncodingFilter
                     .addMappingForUrlPatterns(dispatchRequests, false, "/*");
         } else {
