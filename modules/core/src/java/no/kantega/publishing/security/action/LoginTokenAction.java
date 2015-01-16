@@ -21,7 +21,7 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.twofactorauth.DefaultLoginToken;
 import no.kantega.security.api.twofactorauth.LoginTokenManager;
 import no.kantega.security.api.twofactorauth.LoginTokenVerification;
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +85,8 @@ public class LoginTokenAction {
             }
         }
 
-        model.put("redirect", StringEscapeUtils.escapeHtml(redirect));
-        model.put("username", StringEscapeUtils.escapeHtml(username));
+        model.put("redirect", StringEscapeUtils.escapeHtml4(redirect));
+        model.put("username", StringEscapeUtils.escapeHtml4(username));
         return new ModelAndView(twofactorAuthView, model);
     }
 
