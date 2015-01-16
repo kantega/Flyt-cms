@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  *
@@ -49,10 +48,8 @@ public class ParamEncodingFilter implements Filter {
         } else {
             servletRequest.setCharacterEncoding(GETencoding);
         }
-        Iterator it = servletRequest.getParameterMap().keySet().iterator();
-        if (it.hasNext()) {
-            String key = (String) it.next();
-            servletRequest.getParameter(key);
+        for (String s : servletRequest.getParameterMap().keySet()) {
+            servletRequest.getParameter(s);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
