@@ -205,10 +205,10 @@
                             <label><kantega:label key="aksess.multimedia.altname"/></label>
                         </div>
                         <div class="inputs">
-                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
                             <div class="ui-state-highlight">
                                 <kantega:label key="aksess.multimedia.altinfo"/>
                             </div>
+                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
                         </div>
                     </div>
                     <div class="formElement">
