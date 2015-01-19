@@ -291,6 +291,9 @@ public class AssociationAO  {
                         }
                     }));
                     AssociationAOHelper.MoveCrossPublishedResult moveCrossPublishedResult = AssociationAOHelper.handleMoveCrossPublished(oldAssociation, interestingAssociations, association);
+                    log.info(association + " is cross published. Modifying " + moveCrossPublishedResult.associationsToMove
+                        + " deleting " + moveCrossPublishedResult.associationsToDelete
+                        + " Creating new association under " + moveCrossPublishedResult.parentAssociationsNeedingNewChild);
                     for (Association updatedAssociation : moveCrossPublishedResult.associationsToMove) {
                         modifyAssociation(updatedAssociation, updateGroup);
                     }
@@ -328,7 +331,7 @@ public class AssociationAO  {
 
     private static void modifyAssociation(Association newAssociation, boolean updateGroupId) throws SystemException {
         Association oldAssocation = getAssociationById(newAssociation.getId());
-
+        log.info("Moving association " + oldAssocation + " -> " + newAssociation);
         // Finn path og lagre denne
         String path = AssociationHelper.getPathForId(newAssociation.getParentAssociationId());
         newAssociation.setPath(path);
