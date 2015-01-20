@@ -197,6 +197,14 @@
                             <label><kantega:label key="aksess.multimedia.medianame"/></label>
                         </div>
                         <div class="inputs">
+                            <c:set var="medianameInfo"><kantega:label key="aksess.multimedia.medianame.info"/></c:set>
+                            <c:if test="${not empty medianameInfo}">
+                                <div class="ui-state-highlight">
+                                    <label>
+                                            ${medianameInfo}
+                                    </label>
+                                </div>
+                            </c:if>
                             <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
                         </div>
                     </div>
@@ -216,7 +224,15 @@
                             <label><kantega:label key="aksess.multimedia.author"/></label>
                         </div>
                         <div class="inputs">
-                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
+                            <c:set var="authorInfo"><kantega:label key="aksess.multimedia.author.info"/></c:set>
+                            <c:if test="${not empty authorInfo}">
+                                <div class="ui-state-highlight">
+                                    <label>
+                                            ${authorInfo}
+                                    </label>
+                                </div>
+                            </c:if>
+                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="<kantega:label key="aksess.multimedia.author.default"/>" maxlength="255">
                         </div>
                     </div>
                 </div>

@@ -184,10 +184,10 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.altname"/></legend>
-                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="${media.altname}" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                         <div class="ui-state-highlight">
                             <kantega:label key="aksess.multimedia.altinfo"/>
                         </div>
+                        <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="${media.altname}" maxlength="255" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
@@ -213,12 +213,30 @@
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.usage"/></legend>
-                        <textarea name="usage" id="MultimediaUsage" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>${media.usage}</textarea>
+                        <c:set var="usageHelptext"><kantega:label key="aksess.multimedia.usage.helptext"/></c:set>
+                        <c:if test="${not empty usageHelptext}">
+                            <div class="ui-state-highlight">
+                                ${usageHelptext}
+                            </div>
+                        </c:if>
+                        <c:if test="${not empty media.usage}">
+                            <c:set var="mediaUsage">${media.usage}</c:set>
+                        </c:if>
+                        <c:if test="${empty media.usage}">
+                            <c:set var="mediaUsage"><kantega:label key="aksess.multimedia.usage.defaultText"/></c:set>
+                        </c:if>
+                        <textarea name="usage" id="MultimediaUsage" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>${mediaUsage}</textarea>
                     </fieldset>
                 </div>
                 <div class="sidebarFieldset">
                     <fieldset>
                         <legend><kantega:label key="aksess.multimedia.description"/></legend>
+                        <c:set var="descriptionHelptext"><kantega:label key="aksess.multimedia.description.helptext"/></c:set>
+                        <c:if test="${not empty descriptionHelptext}">
+                            <div class="ui-state-highlight">
+                                ${descriptionHelptext}
+                            </div>
+                        </c:if>
                         <textarea name="description" id="MultimediaDescription" rows="3" cols="20" class="fullWidth" wrap="soft" <c:if test="${!isPropertyPaneEditable}">disabled="disabled"</c:if>>${media.description}</textarea>
                     </fieldset>
                 </div>
