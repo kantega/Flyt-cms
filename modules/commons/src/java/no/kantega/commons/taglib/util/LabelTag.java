@@ -70,7 +70,13 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                     locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
                 }
 
-                String textLabel = LocaleLabels.getLabel(key, bundle, locale, params);
+                String textLabel = "";
+                if (bundle.equals(LocaleLabels.DEFAULT_BUNDLE)) {
+                    textLabel = LocaleLabels.getLabel(key, "site", locale, params);
+                }
+                if (!bundle.equals(LocaleLabels.DEFAULT_BUNDLE) || textLabel.equals(key)) {
+                    textLabel = LocaleLabels.getLabel(key, bundle, locale, params);
+                }
                 if (escapeJavascript) {
                     textLabel = JavaScriptUtils.javaScriptEscape(textLabel);
                 }
