@@ -100,9 +100,12 @@
             </script>
         </div>
         <div class="buttonGroup">
-            <a href="#" onclick="openaksess.editcontext.uploadMultimedia(document.myform.${fieldName})" class="button"
+            <c:set var="isUploadButtonEnabled"><aksess:getconfig key="upload.button.enabled" default="true"/></c:set>
+            <c:if test="${isUploadButtonEnabled}">
+                <a href="#" onclick="openaksess.editcontext.uploadMultimedia(document.myform.${fieldName})" class="button"
                tabindex="<%=attribute.getTabIndex()%>"><span class="upload"><kantega:label
                     key="aksess.button.upload"/></span></a>
+            </c:if>
             <a href="#" onclick="openaksess.editcontext.selectMultimedia(document.myform.${fieldName}, '<%=filter%>')"
                class="button" tabindex="<%=attribute.getTabIndex()%>"><span class="choose"><kantega:label
                     key="aksess.button.choose-media"/></span></a>
