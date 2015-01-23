@@ -130,12 +130,7 @@ public class MultimediaRequestHandler {
     }
 
     private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
-        StringBuilder keyBuilder = new StringBuilder(Integer.toString(mmId));
-        keyBuilder.append("-");
-        keyBuilder.append(resizeParams.toString());
-        keyBuilder.append("-");
-        keyBuilder.append(mm.getLastModified().getTime());
-        return keyBuilder.toString();
+        return Integer.toString(mmId) + "-" + resizeParams.toString() + "-" + mm.getLastModified().getTime();
     }
 
     private boolean shouldResize(String mimetype, ImageResizeParameters resizeParams) {

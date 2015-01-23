@@ -48,7 +48,7 @@ public class DefaultImageEditor implements ImageEditor {
         // Because of rounding, images that have odd pixel sizes, will be cropped by 1px
         int width = image.getWidth() % 2 == 0? image.getWidth() : image.getWidth() -1;
         int height = image.getHeight() % 2 == 0? image.getHeight(): image.getHeight() -1;
-        BufferedImage newImage = new BufferedImage(height, width, image.getType());
+        BufferedImage newImage = new BufferedImage(width, height, image.getType());
         Graphics2D g2 = newImage.createGraphics();
 
         // applying transforms
@@ -57,8 +57,7 @@ public class DefaultImageEditor implements ImageEditor {
         g2.drawRenderedImage(image, null);
         g2.dispose();
 
-        Multimedia mm = updateMultimedia(newImage, multimedia);
-        return mm;
+        return updateMultimedia(newImage, multimedia);
     }
 
     /**
@@ -67,17 +66,11 @@ public class DefaultImageEditor implements ImageEditor {
     public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropX, int cropY, int cropWidth, int cropHeight) throws IOException, InvalidImageFormatException {
 
         BufferedImage image = getImageFromMultimedia(multimedia);
-        String imageFormat = getDefaultImageFormat();
-        if (multimedia.getMimeType().getType().contains("jpeg")) {
-            imageFormat = "jpg";
-        }
-
         image = resizeImage(image, targetWidth, targetHeight, Cropping.CONTAIN);
         if (cropX != -1 && cropY != -1 && cropWidth != -1 && cropHeight != -1) {
             image = cropImage(image, cropX, cropY, cropWidth, cropHeight);
         }
-        Multimedia mm = updateMultimedia(image, multimedia);
-        return mm;
+        return updateMultimedia(image, multimedia);
     }
 
     /**
@@ -116,9 +109,9 @@ public class DefaultImageEditor implements ImageEditor {
 
         // Write image
         ImageWriter writer = null;
-        Iterator iter = ImageIO.getImageWritersByFormatName(imageFormat);
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(imageFormat);
         if (iter.hasNext()) {
-            writer = (ImageWriter)iter.next();
+            writer = iter.next();
         }
 
         ByteArrayOutputStream bout = new ByteArrayOutputStream();
