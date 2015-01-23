@@ -143,7 +143,7 @@
                 <tbody>
                 <%
                     Map<String, String> configProperties = (Map<String, String>) request.getAttribute("configProperties");
-                    TreeMap<String, String> propertiesMap = new TreeMap<>(configProperties);
+                    TreeMap<String, String> propertiesMap = new TreeMap<String, String>(configProperties);
 
                     for (Map.Entry<String, String> entry : propertiesMap.entrySet()) {
                         String key = entry.getKey();
