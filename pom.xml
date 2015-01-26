@@ -27,11 +27,25 @@
     <version>7.8.18-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
+
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
         <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
+
+    <organization>
+        <name>Kantega AS</name>
+        <url>http://kantega.no</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <pluginRepositories>
         <pluginRepository>
