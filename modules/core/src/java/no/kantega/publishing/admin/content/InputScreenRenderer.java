@@ -171,9 +171,9 @@ public class InputScreenRenderer {
     private void renderSeparatorAttribute(JspWriter out, SeparatorAttribute separatorAttribute) throws IOException {
 
 
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         output.append("\n<div class=\"separator\">");
-        output.append("\n<h2 class=\"separator_heading\">" + separatorAttribute.getName() + "</h2>\n");
+        output.append("\n<h2 class=\"separator_heading\">").append(separatorAttribute.getName()).append("</h2>\n");
         if (separatorAttribute.getHelpText() != null && separatorAttribute.getHelpText().length() > 0){
             output.append("<div class=\"separator_description\">")
                     .append(separatorAttribute.getHelpText())

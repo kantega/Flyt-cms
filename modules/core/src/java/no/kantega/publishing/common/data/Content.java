@@ -24,7 +24,6 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.attributes.SeparatorAttribute;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;
@@ -129,7 +128,7 @@ public class Content extends BaseObject {
 
     private Date lastMajorChange;
     private String lastMajorChangeBy;
-    
+
     // Rating
     private float ratingScore = 0f;
     private int numberOfRatings = 0;
@@ -873,7 +872,7 @@ public class Content extends BaseObject {
     public void setNumberOfRatings(int numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
     }
-    
+
     public boolean isSearchable() {
         return isSearchable;
     }
