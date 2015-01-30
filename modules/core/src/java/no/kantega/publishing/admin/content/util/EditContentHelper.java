@@ -395,6 +395,8 @@ public class EditContentHelper {
             String type;
             if (xmlAttribute.getTagName().equalsIgnoreCase("repeater")) {
                 type = "repeater";
+            } else if(xmlAttribute.getTagName().equalsIgnoreCase("separator")) {
+                type = "separator";
             } else {
                 type = xmlAttribute.getAttribute("type");
             }
