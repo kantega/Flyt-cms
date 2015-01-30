@@ -128,7 +128,7 @@ public class Content extends BaseObject {
 
     private Date lastMajorChange;
     private String lastMajorChangeBy;
-    
+
     // Rating
     private float ratingScore = 0f;
     private int numberOfRatings = 0;
@@ -872,7 +872,7 @@ public class Content extends BaseObject {
     public void setNumberOfRatings(int numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
     }
-    
+
     public boolean isSearchable() {
         return isSearchable;
     }
