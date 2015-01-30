@@ -24,6 +24,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
+import no.kantega.publishing.common.data.attributes.SeparatorAttribute;
 import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;

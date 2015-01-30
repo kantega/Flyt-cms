@@ -29,6 +29,7 @@ import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
+import no.kantega.publishing.common.data.attributes.SeparatorAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
@@ -118,6 +119,8 @@ public class InputScreenRenderer {
 
             if (attribute instanceof RepeaterAttribute) {
                 renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute, tabIndex);
+            } else if(attribute instanceof SeparatorAttribute){
+                renderSeparatorAttribute(out, (SeparatorAttribute) attribute);
             } else {
                 tabIndex += 10;
                 attribute.setTabIndex(tabIndex);
@@ -164,6 +167,23 @@ public class InputScreenRenderer {
 
         return tabIndex;
     }
+
+    private void renderSeparatorAttribute(JspWriter out, SeparatorAttribute separatorAttribute) throws IOException {
+
+
+        StringBuffer output = new StringBuffer();
+        output.append("\n<div class=\"separator\">");
+        output.append("\n<h2 class=\"separator_heading\">" + separatorAttribute.getName() + "</h2>\n");
+        if (separatorAttribute.getHelpText() != null && separatorAttribute.getHelpText().length() > 0){
+            output.append("<div class=\"separator_description\">")
+                    .append(separatorAttribute.getHelpText())
+                    .append("</div>");
+        }
+        output.append("</div>");
+
+        out.print(output);
+    }
+
 
     public void renderNormalAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attr) throws IOException {
         request.setAttribute("attribute", attr);

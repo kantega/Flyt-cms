@@ -86,6 +86,7 @@ body.popup #Navigator{
 #NavigateContentHints {
     margin: 0;
     display: none;
+    padding: 20px;
 }
 
 /************** Navigation (left column) **************/

@@ -8,7 +8,7 @@ html, body {
 }
 
 #EditContentPane {
-    margin: 10px;
+    margin: 50px;
     width: 640px;
 }
 
@@ -239,6 +239,10 @@ html, body {
 .buttonRow .replace {
     background: url("../bitmaps/editor/editor_replace.gif") no-repeat;
     width: 18px;
+}
+
+.ui-state-highlight{
+    padding: 7px;
 }
 
 /* TinyMCE override styles */
