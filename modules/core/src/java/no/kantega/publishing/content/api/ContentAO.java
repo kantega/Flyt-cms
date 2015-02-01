@@ -77,24 +77,20 @@ public interface ContentAO {
 
     /**
      * @param contentQuery specifying the content wanted.
-     * @param maxElements to fetch.
-     * @param sort ordering of the returned list.
      * @param getAttributes if true, the Content objects are populated with their attributes.
      * @return Content matched by contentQuery.
      * @throws SystemException
      */
-    List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) throws SystemException;
+    List<Content> getContentList(ContentQuery contentQuery, boolean getAttributes) throws SystemException;
 
     /**
      * @param contentQuery specifying the content wanted.
-     * @param maxElements to fetch.
-     * @param sort ordering of the returned list.
      * @param getAttributes if true, the Content objects are populated with their attributes.
      * @param getTopics if true, the Content objects are populated with the topics associated to them.
      * @return Content matched by contentQuery.
      * @throws SystemException
      */
-    List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException;
+    List<Content> getContentList(ContentQuery contentQuery, boolean getAttributes, boolean getTopics) throws SystemException;
 
     /**
      * @return Content with status ContentStatus.WAITING_FOR_APPROVAL
@@ -110,12 +106,10 @@ public interface ContentAO {
     /**
      * Execute handler for each Content mateched by contentQuery, maxElements and sort.
      * @param contentQuery for finding Content.
-     * @param maxElements max elements to fetch.
-     * @param sort sorting to apply.
      * @param handler to execute for each content.
      * @throws SystemException
      */
-    void doForEachInContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, ContentHandler handler) throws SystemException;
+    void doForEachInContentList(ContentQuery contentQuery, ContentHandler handler) throws SystemException;
 
     /**
      * @param cid to find parent for.

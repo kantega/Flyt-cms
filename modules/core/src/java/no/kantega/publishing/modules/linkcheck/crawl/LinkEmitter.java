@@ -58,7 +58,7 @@ public class LinkEmitter {
             final Counter attributeLinkCount = new Counter();
             long start = System.currentTimeMillis();
 
-            contentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
+            contentAO.doForEachInContentList(new ContentQuery(), new ContentHandler() {
                 public void handleContent(Content content) {
 
                     linkDao.deleteLinksForContentId(content.getId());

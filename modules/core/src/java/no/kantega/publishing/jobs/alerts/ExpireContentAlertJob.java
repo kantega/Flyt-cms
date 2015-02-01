@@ -18,13 +18,12 @@ package no.kantega.publishing.jobs.alerts;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.scheduling.DisableOnServertype;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
@@ -54,6 +53,9 @@ public class ExpireContentAlertJob {
     @Autowired
     private ContentAO contentAO;
 
+    @Autowired
+    private SystemConfiguration config;
+
     @Scheduled(cron = "${jobs.expirecontent.trigger}")
     @DisableOnServertype(ServerType.SLAVE)
     public void expireContentAlert() {
@@ -77,11 +79,10 @@ public class ExpireContentAlertJob {
                 calendar.add(Calendar.DATE, daysBeforeWarning);
                 query.setExpireDateTo(calendar.getTime());
                 query.setSiteId(site.getId());
+                query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
 
-                SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
-                List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
+                List<Content> contentList = contentAO.getContentList(query, false);
 
-                Configuration config = Aksess.getConfiguration();
                 String defaultUserEmail = config.getString("mail" + alias + "contentexpire.recipient");
 
 

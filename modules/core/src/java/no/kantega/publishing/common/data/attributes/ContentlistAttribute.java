@@ -85,7 +85,7 @@ public class ContentlistAttribute extends ListAttribute {
         setSiteId(requestedSiteId, query);
 
         setLanguage(language, query);
-
+        query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
         return createListOptions(query);
     }
 
@@ -96,7 +96,7 @@ public class ContentlistAttribute extends ListAttribute {
             if(contentAO == null){
                 contentAO = RootContext.getInstance().getBean(ContentAO.class);
             }
-            List<Content> all = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.TITLE, false), false);
+            List<Content> all = contentAO.getContentList(query, false);
             for (Content c : all) {
                 String id = String.valueOf(c.getAssociation().getId());
                 ListOption option = new ListOption();

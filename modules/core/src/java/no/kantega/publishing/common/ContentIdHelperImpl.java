@@ -144,8 +144,9 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             ContentQuery query = new ContentQuery();
             query.setAssociatedId(parent);
             query.setAssociationCategory(association.getCategory());
+            query.setSortOrder(new SortOrder(ContentProperty.PRIORITY, false));
 
-            List<Content> children = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), false);
+            List<Content> children = contentAO.getContentList(query, false);
             for (int i = 0; i < children.size(); i++) {
                 Content c = children.get(i);
                 if (c.getAssociation().getId() == context.getAssociation().getId()) {

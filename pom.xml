@@ -175,6 +175,17 @@
                 <version>${httpclient.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity</artifactId>
+                <version>${velocity.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.velocity</groupId>
+                <artifactId>velocity-tools</artifactId>
+                <version>${velocity-tools.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -293,6 +304,8 @@
         <asm.version>5.0.3</asm.version>
         <cglib.version>3.1</cglib.version>
         <jackson.version>2.4.2</jackson.version>
+        <velocity.version>1.7</velocity.version>
+        <velocity-tools.version>2.0</velocity-tools.version>
     </properties>
 
     <profiles>

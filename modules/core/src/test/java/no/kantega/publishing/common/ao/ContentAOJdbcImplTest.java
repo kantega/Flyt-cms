@@ -194,7 +194,8 @@ public class ContentAOJdbcImplTest {
         final Content c = createAndCheckInContentObject(ContentStatus.PUBLISHED);
         ContentQuery contentQuery = new ContentQuery();
         contentQuery.setContentTemplate(c.getContentTemplateId());
-        List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, true);
+        contentQuery.setMaxRecords(10);
+        List<Content> contentList = contentAO.getContentList(contentQuery, true);
 
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
@@ -213,7 +214,8 @@ public class ContentAOJdbcImplTest {
         final Content c = createAndCheckInContentObject(ContentStatus.PUBLISHED);
         ContentQuery contentQuery = new ContentQuery();
         contentQuery.setContentTemplate(c.getContentTemplateId());
-        List<Content> contentList = contentAO.getContentList(contentQuery, 10, null, false);
+        contentQuery.setMaxRecords(10);
+        List<Content> contentList = contentAO.getContentList(contentQuery, false);
 
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());

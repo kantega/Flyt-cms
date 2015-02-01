@@ -193,8 +193,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             }
         } else if(cid.getStatus() == ContentStatus.HEARING) {
             // Find version for hearing, if no hearing is found, active version is returned
-            int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by Version desc", contentId);
-            contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by Version desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
+            int activeversion = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by Version desc", Integer.class, contentId);
+            contentVersionId = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by Version desc", Integer.class, contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
         } else {
             // Others should see active version
             contentVersionId = -1;
@@ -448,16 +448,16 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes) {
-        return getContentList(contentQuery, maxElements, sort, getAttributes, false);
+    public List<Content> getContentList(ContentQuery contentQuery, boolean getAttributes) {
+        return getContentList(contentQuery, getAttributes, false);
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery contentQuery, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
+    public List<Content> getContentList(ContentQuery contentQuery, boolean getAttributes, boolean getTopics) {
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
-        doForEachInContentList(contentQuery, maxElements, sort, new ContentHandler() {
+        doForEachInContentList(contentQuery, new ContentHandler() {
             public void handleContent(Content content) {
                 contentList.add(content);
                 contentMap.put(content.getVersionId(), content);
@@ -489,6 +489,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             }
         }
 
+        SortOrder sort = contentQuery.getSortOrder();
         if (sort != null) {
             // Sorter lista
             String sort1 = sort.getSort1();
@@ -516,16 +517,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     @Override
-    public void doForEachInContentList(final ContentQuery contentQuery, final int maxElements, SortOrder sort, final ContentHandler handler) {
-        if (sort != null) {
-            contentQuery.setSortOrder(sort);
-        }
-
-        // Query will be faster if we don't get all records
-        if(maxElements != -1) {
-            contentQuery.setMaxRecords(maxElements);
-        }
-
+    public void doForEachInContentList(final ContentQuery contentQuery, final ContentHandler handler) {
         ContentQuery.QueryWithParameters queryWithParameters = contentQuery.getQueryWithParameters();
 
         if (queryWithParameters != null) { // null is returned when querying for attributes, and attribute-value-pair does not exists
@@ -536,7 +528,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             @Override
             public void processRow(ResultSet rs) throws SQLException {
                 int contentId = rs.getInt("ContentId");
-                if(handledContentIds.add(contentId) && (maxElements == -1 || count < maxElements + contentQuery.getOffset())){
+                if(handledContentIds.add(contentId) && (contentQuery.getMaxRecords() == -1 || count < contentQuery.getMaxRecords() + contentQuery.getOffset())){
                     if (count >= contentQuery.getOffset()) {
                         Content content = contentRowMapper.mapRow(rs, count++);
                         handler.handleContent(content);

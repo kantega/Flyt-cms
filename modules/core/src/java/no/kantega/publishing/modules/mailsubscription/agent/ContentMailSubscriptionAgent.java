@@ -85,8 +85,9 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
         if (site != null) {
             query.setSiteId(site.getId());
         }
+        query.setSortOrder(new SortOrder(ContentProperty.PUBLISH_DATE, false));
 
-        List<Content> allContentList = contentAO.getContentList(query, -1, new SortOrder(ContentProperty.PUBLISH_DATE, false), true);
+        List<Content> allContentList = contentAO.getContentList(query, true);
 
         // This job only sends notificiation about content which is viewable by everyone, all protected content is excluded
         List<Content> contentList = new ArrayList<>();

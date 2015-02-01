@@ -767,14 +767,6 @@ public class ContentManagementService {
 
     private List<Content> getContentListFromCache(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
         if(cachingEnabled) {
-            if(maxElements != -1) {
-                query.setMaxRecords(maxElements);
-            }
-
-            if (sort != null){
-                query.setSortOrder(sort);
-            }
-
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
             String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
@@ -782,12 +774,12 @@ public class ContentManagementService {
             Element element = contentListCache.get(key);
 
             if(element == null) {
-                element = new Element(key, contentAO.getContentList(query, maxElements, sort, getAttributes, getTopics));
+                element = new Element(key, contentAO.getContentList(query, getAttributes, getTopics));
                 contentListCache.put(element);
             }
             return (List<Content>) element.getObjectValue();
         } else {
-            return contentAO.getContentList(query, maxElements, sort, getAttributes, getTopics);
+            return contentAO.getContentList(query, getAttributes, getTopics);
         }
     }
 

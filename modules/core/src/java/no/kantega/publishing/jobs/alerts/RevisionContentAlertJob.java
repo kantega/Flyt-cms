@@ -63,10 +63,9 @@ public class RevisionContentAlertJob {
             Calendar calendar = new GregorianCalendar();
             calendar.add(Calendar.DATE, 30);
             query.setRevisionDateTo(calendar.getTime());
+            query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
 
-            SortOrder sort = new SortOrder(ContentProperty.TITLE, false);
-
-            List<Content> contentList = contentAO.getContentList(query, -1, sort, false);
+            List<Content> contentList = contentAO.getContentList(query, false);
 
             // Insert docs into hashmap
             for (Content content : contentList) {
