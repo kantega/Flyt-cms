@@ -152,6 +152,18 @@
             </dependency>
 
             <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons-collections4.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>xalan</groupId>
                 <artifactId>xalan</artifactId>
                 <version>${xalan.version}</version>
@@ -298,6 +310,9 @@
         <commons-io.version>2.4</commons-io.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <commons-compress.version>1.9</commons-compress.version>
+        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections4.version>4.0</commons-collections4.version>
+
         <poi.version>3.11-beta2</poi.version>
         <tika.version>1.6</tika.version>
         <pdfbox.version>1.8.7</pdfbox.version>
