@@ -84,7 +84,7 @@ public class Configuration {
     }
 
     public String[] getStrings(String name) throws IllegalArgumentException {
-        String val[] = null;
+        String val[] = new String[]{};
 
         if (name == null) {
             throw new IllegalArgumentException("name must be non-null");
@@ -139,7 +139,6 @@ public class Configuration {
             return defaultValue;
         } else {
             try {
-
                 return Integer.parseInt(val);
             } catch (NumberFormatException e) {
                 log.warn("NumberFormatException when trying to parse {} as {}, returning default value {}", val, name, defaultValue);
