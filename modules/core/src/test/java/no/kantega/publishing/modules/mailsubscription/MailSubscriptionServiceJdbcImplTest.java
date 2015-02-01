@@ -9,9 +9,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static com.google.common.collect.Lists.transform;
@@ -22,7 +24,9 @@ import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath*:spring/testContext.xml")
-public class MailSubscriptionServiceJdbcImplTest {
+@TransactionConfiguration(defaultRollback = true)
+@Transactional
+public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
     private MailSubscriptionService mailSubscriptionService;
 
@@ -58,7 +62,7 @@ public class MailSubscriptionServiceJdbcImplTest {
 
         List<String> emails = transform(mailSubscriptionByInterval, mailTransformer);
 
-        assertTrue("Result did not contain both mailz@gmail.com and mailz4@stinessen.com",
+        assertTrue("Result did not contain both mailz@gmail.com and mailz2@gmail.com",
                 emails.contains("mailz@gmail.com") && emails.contains("mailz2@gmail.com"));
         for (MailSubscription mailSubscription : mailSubscriptionByInterval) {
             assertEquals("mailSubscription did not have MailSubscriptionInterval.immediate", MailSubscriptionInterval.daily, mailSubscription.getInterval());
@@ -115,9 +119,8 @@ public class MailSubscriptionServiceJdbcImplTest {
     }
 
     private static final Function<MailSubscription, String> mailTransformer = new Function<MailSubscription, String>() {
-        @Nullable
         @Override
-        public String apply(@Nullable MailSubscription input) {
+        public String apply(MailSubscription input) {
             return input.getEmail();
         }
     };

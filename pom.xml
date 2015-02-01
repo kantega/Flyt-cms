@@ -270,7 +270,7 @@
         <httpclient.version>4.3.1</httpclient.version>
         <fileupload.version>1.2.1</fileupload.version>
         <nekohtml.version>1.9.19</nekohtml.version>
-        <springframework.version>3.2.12.RELEASE</springframework.version>
+        <springframework.version>4.1.4.RELEASE</springframework.version>
 
         <xalan.version>2.7.1</xalan.version>
         <xml-apis.version>1.4.01</xml-apis.version>
@@ -306,6 +306,7 @@
         <jackson.version>2.4.2</jackson.version>
         <velocity.version>1.7</velocity.version>
         <velocity-tools.version>2.0</velocity-tools.version>
+        <junit.version>4.12</junit.version>
     </properties>
 
     <profiles>
