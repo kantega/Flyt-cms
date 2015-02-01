@@ -17,18 +17,35 @@
 package no.kantega.publishing.configuration;
 
 import no.kantega.commons.configuration.Configuration;
+import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.Aksess;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class LegacySystemConfiguration implements SystemConfiguration {
 
     private Configuration configuration;
+    private List<no.kantega.publishing.api.configuration.ConfigurationListener> configurationListeners = new ArrayList<>();
 
     public LegacySystemConfiguration() {
         this.configuration = Aksess.getConfiguration();
+        setConfigurationListener();
+    }
+
+    private void setConfigurationListener() {
+        final SystemConfiguration c = this;
+        this.configuration.addConfigurationListener(new ConfigurationListener() {
+            @Override
+            public void configurationRefreshed(Configuration configuration) {
+                for (no.kantega.publishing.api.configuration.ConfigurationListener listener : configurationListeners) {
+                    listener.configurationRefreshed(c);
+                }
+            }
+        });
     }
 
     public String getString(String name) {
@@ -73,5 +90,10 @@ public class LegacySystemConfiguration implements SystemConfiguration {
 
     public String getDefaultDatetimeFormat() {
         return Aksess.getDefaultDatetimeFormat();
+    }
+
+    @Override
+    public void addConfigurationListener(no.kantega.publishing.api.configuration.ConfigurationListener listener) {
+        configurationListeners.add(listener);
     }
 }

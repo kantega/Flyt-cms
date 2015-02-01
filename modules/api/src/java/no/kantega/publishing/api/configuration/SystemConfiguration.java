@@ -18,26 +18,75 @@ package no.kantega.publishing.api.configuration;
 
 import java.util.Locale;
 
+/**
+ * Access the configuration for the running system
+ */
 public interface SystemConfiguration {
 
+    /**
+     * @param name - configuration key to get.
+     * @return configuration string, or null if not defined.
+     */
     public String getString(String name);
 
+    /**
+     * @param name - configuration key to get.
+     * @param defaultValue - value to return if value is not present.
+     * @return configuration string, or defaultValue if not defined.
+     */
     public String getString(String name, String defaultValue);
 
+    /**
+     * @param name configuration key to get.
+     * @return the configuration value split by «,». If the configuration is not defined, [] is returned.
+     */
     public String[] getStrings(String name);
 
+    /**
+     * @param name configuration key to get.
+     * @param defaultValue - value to return if value is not present.
+     * @return the configuration value split by «,». If the configuration is not defined, {@code defaultValue.split(",")} is returned
+     */
     public String[] getStrings(String name, String defaultValue);
 
+    /**
+     * @param name - configuration key to get.
+     * @param defaultValue - value to return if value is not present.
+     * @return configuration string as boolean, or defaultValue if not defined.
+     */
     public boolean getBoolean(String name, boolean defaultValue);
 
+    /**
+     * @param name - configuration key to get.
+     * @param defaultValue- value to return if value is not present.
+     * @return configuration string as long, or defaultValue if not defined.
+     */
     public long getLong(String name, long defaultValue);
 
+    /**
+     * @param name - configuration key to get.
+     * @param defaultValue- value to return if value is not present.
+     * @return configuration string as int, or defaultValue if not defined.
+     */
     public int getInt(String name, int defaultValue);
 
+    /**
+     * @return Locale used in the admin interface
+     */
     public Locale getDefaultAdminLocale();
 
+    /**
+     * @return defualt dateformat, dd.MM.yyyy
+     */
     public String getDefaultDateFormat();
 
+    /**
+     * @return defualt dateformat, dd.MM.yyyy HH:mm
+     */
     public String getDefaultDatetimeFormat();
 
+    /**
+     * @param listener to notfiy when the SystemConfiguration is updated.
+     */
+    public void addConfigurationListener(ConfigurationListener listener);
 }
