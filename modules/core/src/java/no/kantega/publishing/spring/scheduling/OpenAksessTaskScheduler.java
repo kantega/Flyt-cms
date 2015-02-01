@@ -1,5 +1,6 @@
 package no.kantega.publishing.spring.scheduling;
 
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import org.slf4j.Logger;
@@ -14,6 +15,15 @@ import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.concurrent.*;
 
+/**
+ * Custom TaskScheduler that extends the original by supporting annotations for
+ * disabling certain jobs.
+ * The {@code @DisableOnServertype annotation} can be used to say that the job annotated should not be run when the server
+ * is running with a particular {@code ServerType}
+ *
+ * It is also possible to disable jobs with name.methodname.disable = true. e.g.
+ * DatabaseCleanupJob.cleanDatabase.disable = true
+ */
 public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
 
     private static final Logger log = LoggerFactory.getLogger(OpenAksessTaskScheduler.class);
@@ -21,6 +31,9 @@ public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
 
     @Autowired
     private ServerType serverType;
+
+    @Autowired
+    private SystemConfiguration configuration;
 
     @Override
     public ScheduledFuture schedule(Runnable task, Trigger trigger) {
@@ -67,6 +80,21 @@ public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
     }
 
     private boolean shouldScheduleTask(Runnable task) {
+        boolean isDisabled = isDisabledByServertype(task) || isDisabledByConfig(task);
+        return !isDisabled;
+    }
+
+    private boolean isDisabledByConfig(Runnable task) {
+        if(task instanceof ScheduledMethodRunnable){
+            ScheduledMethodRunnable runnable = (ScheduledMethodRunnable) task;
+            Method method = runnable.getMethod();
+            String configKey = method.getDeclaringClass().getSimpleName() + "." + method.getName() + ".disable";
+            return configuration.getBoolean(configKey, false);
+        }
+        return false;
+    }
+
+    private boolean isDisabledByServertype(Runnable task) {
         if(task instanceof ScheduledMethodRunnable){
             ScheduledMethodRunnable runnable = (ScheduledMethodRunnable) task;
             Method method = runnable.getMethod();
@@ -76,7 +104,7 @@ public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
                 return disabledOnServertype != serverType;
             }
         }
-        return true;
+        return false;
     }
 
     @Override

@@ -2,14 +2,17 @@ package no.kantega.publishing.spring.scheduling;
 
 import no.kantega.publishing.api.runtime.ServerType;
 import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-// Commented out becase this test fails sporadically because of its nature.
-//@RunWith(SpringJUnit4ClassRunner.class)
-//@ContextConfiguration(locations= "classpath*:spring/scheluderTestContext.xml")
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations= "classpath*:spring/scheluderTestContext.xml")
 public class OpenAksessTaskSchedulerTest {
 
     @Autowired
@@ -20,7 +23,7 @@ public class OpenAksessTaskSchedulerTest {
     @Autowired
     private ServerType serverType;
 
-    //@Test
+    @Test
     public void dotest() throws InterruptedException {
         Thread.sleep(800);
         assertTrue(true);
@@ -37,17 +40,20 @@ public class OpenAksessTaskSchedulerTest {
         String error = isMaster
                 ? "ran, but had @DisableOnServertype(value = ServerType.MASTER) with serverType " + serverType
                 : "Did not run with @DisableOnServertype(value = ServerType.SLAVE) with serverType " + serverType;
-        assertThat("annotatedJob.hasRunAnnotatedFixedMaster " + error, annotatedJob.hasRunAnnotatedFixedMaster, is(!isMaster));
-        assertThat("annotatedJob.hasRunAnnotatedCronMaster " + error, annotatedJob.hasRunAnnotatedCronMaster, is(!isMaster));
-        assertThat("job.hasRunAnnotatedCron " + error, job.hasRunAnnotatedCron, is(!isMaster));
-        assertThat("job.hasRunAnnotatedFixed " + error, job.hasRunAnnotatedFixed, is(!isMaster));
+        assertThat("annotatedJob.hasRunAnnotatedFixedMaster " + error, annotatedJob.hasRunAnnotatedFixedMaster, is(isMaster));
+        assertThat("annotatedJob.hasRunAnnotatedCronMaster " + error, annotatedJob.hasRunAnnotatedCronMaster, is(isMaster));
+        assertThat("job.hasRunAnnotatedCron " + error, job.hasRunAnnotatedCron, is(isMaster));
+        assertThat("job.hasRunAnnotatedFixed " + error, job.hasRunAnnotatedFixed, is(isMaster));
 
         String slaveError = isMaster
                 ? "ran, but had @DisableOnServertype(value = ServerType.MASTER) with serverType " + serverType
                 : "Did not run with @DisableOnServertype(value = ServerType.SLAVE) with serverType " + serverType;
-        assertThat("annotatedJob.hasRunAnnotatedFixedSlave " + slaveError, annotatedJob.hasRunAnnotatedFixedSlave, is(isMaster));
-        assertThat("annotatedJob.hasRunAnnotatedCronSlave " + slaveError, annotatedJob.hasRunAnnotatedCronSlave, is(isMaster));
-        assertThat("job.hasRunAnnotatedCronSlave " + slaveError, job.hasRunAnnotatedCronSlave, is(isMaster));
-        assertThat("job.hasRunAnnotatedSlave " + slaveError, job.hasRunAnnotatedSlave, is(isMaster));
+        assertThat("annotatedJob.hasRunAnnotatedFixedSlave " + slaveError, annotatedJob.hasRunAnnotatedFixedSlave, is(!isMaster));
+        assertThat("annotatedJob.hasRunAnnotatedCronSlave " + slaveError, annotatedJob.hasRunAnnotatedCronSlave, is(!isMaster));
+        assertThat("job.hasRunAnnotatedCronSlave " + slaveError, job.hasRunAnnotatedCronSlave, is(!isMaster));
+        assertThat("job.hasRunAnnotatedSlave " + slaveError, job.hasRunAnnotatedSlave, is(!isMaster));
+
+        assertThat("annotatedJob.hasRunAnnotatedCronConfig ran" , job.hasRunAnnotatedCronConfig, is(false));
+        assertThat("annotatedJob.hasRunAnnotatedCronConfig ran" , annotatedJob.hasRunAnnotatedCronConfig, is(false));
     }
 }

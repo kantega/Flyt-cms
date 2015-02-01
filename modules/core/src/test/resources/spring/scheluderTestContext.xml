@@ -33,5 +33,6 @@
         <task:scheduled ref="job" method="doNotSomethingCron" cron="* * * * * ?"/>
         <task:scheduled ref="job" method="doNotSomethingFixedRateSlave" fixed-rate="150"/>
         <task:scheduled ref="job" method="doNotSomethingCronSlave" cron="* * * * * ?"/>
+        <task:scheduled ref="job" method="doNotSomethingCronConfig" cron="* * * * * ?"/>
     </task:scheduled-tasks>
 </beans>

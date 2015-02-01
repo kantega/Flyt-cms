@@ -15,6 +15,7 @@ public class AnnotatedJob {
     public boolean hasRunAnnotatedFixedMaster = false;
     public boolean hasRunAnnotatedFixedSlave = false;
     public boolean hasRunAnnotatedCronSlave = false;
+    public boolean hasRunAnnotatedCronConfig = false;
 
     @Scheduled(fixedRate = 100)
     public void doSomethingFixedRate(){
@@ -54,5 +55,10 @@ public class AnnotatedJob {
     public void doNotSomethingCronSlave(){
         hasRunAnnotatedCronSlave = true;
         log.info("doNotSomethingCronSlave");
+    }
+    @Scheduled(cron = "* * * * * ?")
+    public void dohasRunAnnotatedCronConfig(){
+        hasRunAnnotatedCronConfig = true;
+        log.info("dohasRunAnnotatedCronConfig");
     }
 }

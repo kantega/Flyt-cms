@@ -14,6 +14,7 @@ public class Job {
     public boolean hasRunAnnotatedFixed;
     public boolean hasRunAnnotatedCronSlave;
     public boolean hasRunAnnotatedSlave;
+    public boolean hasRunAnnotatedCronConfig;
 
     public void doSomethingFixedRate(){
         hasRun = true;
@@ -47,5 +48,10 @@ public class Job {
     public void doNotSomethingCronSlave(){
         hasRunAnnotatedCronSlave = true;
         log.info("doNotSomethingCronSlave");
+    }
+
+    public void doNotSomethingCronConfig(){
+        hasRunAnnotatedCronConfig = true;
+        log.info("doNotSomethingCronConfig");
     }
 }
