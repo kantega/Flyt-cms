@@ -229,7 +229,7 @@ public class TopicMapService {
     }
 
 
-    public List getTopicsByContentId(int contentId) throws SystemException {
+    public List<Topic> getTopicsByContentId(int contentId) throws SystemException {
         return TopicAO.getTopicsByContentId(contentId);
     }
 
@@ -373,7 +373,7 @@ public class TopicMapService {
     public List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId) {
         return TopicAO.getTopicsInUseByChildrenOf(contentId, topicMapId);
     }
-    
+
     public boolean isTopicAssociatedWithInstanceOf(Topic topic, String instanceOf){
         return topicAssociationDao.isTopicAssociatedWithInstanceOf(topic.getId(), topic.getTopicMapId(),instanceOf);
     }
