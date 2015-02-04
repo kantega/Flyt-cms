@@ -300,7 +300,7 @@ public class LinkCheckerJob implements InitializingBean {
         log.debug("Checking remote url {}", link);
         HttpGet get;
         try {
-            get = new HttpGet(link);
+            get = new HttpGet(removeHash(link));
         } catch (Exception e) {
             occurrence.setStatus(CheckStatus.INVALID_URL);
             return;
@@ -331,6 +331,10 @@ public class LinkCheckerJob implements InitializingBean {
         }
         occurrence.setStatus(status);
         occurrence.setHttpStatus(httpStatus);
+    }
+
+    private String removeHash(String link) {
+        return link.contains("#") ? link.substring(0, link.indexOf('#')) : link;
     }
 
     public void setWebroot(String webroot) {
