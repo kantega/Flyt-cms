@@ -116,6 +116,13 @@
             </dependency>
 
             <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>${javax.el.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
                 <version>${jstl.version}</version>
@@ -254,7 +261,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.26</version>
+                    <version>1.27</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -287,6 +294,7 @@
         <jstl.version>1.2</jstl.version>
         <jstl-api.version>1.2</jstl-api.version>
         <javax.servlet.jstl-api>1.2.1</javax.servlet.jstl-api>
+        <javax.el.version>3.0.1-b04</javax.el.version>
 
         <hsqldb.version>2.0.0</hsqldb.version>
         <aspectj.version>1.6.12</aspectj.version>
