@@ -44,11 +44,12 @@
 <script>
     $( function () {
         var linkCheckerBtn = $('.linkcheck');
+        var text = linkCheckerBtn.text();
         linkCheckerBtn.bind("contentupdate", function(e, url){
             if(url != 'about:blank')
             jQuery.getJSON("${pageContext.request.contextPath}/admin/publish/CountBrokenLinks.action", {url: url}, function (data) {
                 if (data > 0) {
-                    linkCheckerBtn.text(linkCheckerBtn.text() + " (" + data + ")");
+                    linkCheckerBtn.text(text + " (" + data + ")");
                 }
             });
         });

@@ -36,6 +36,12 @@ import java.util.*;
  *
  */
 public class ListBrokenLinksAction extends SimpleAdminController {
+    private final Comparator<LinkOccurrence> comp = new Comparator<LinkOccurrence>() {
+        @Override
+        public int compare(LinkOccurrence o1, LinkOccurrence o2) {
+            return o1.getLastChecked().compareTo(o2.getLastChecked());
+        }
+    };
     @Autowired
     LinkDao linkDao;
 
@@ -50,14 +56,13 @@ public class ListBrokenLinksAction extends SimpleAdminController {
         String sort = params.getString("sort");
         boolean thisPageOnly = params.getBoolean("thisPageOnly", false);
 
-        List<LinkOccurrence> brokenLinks = new ArrayList<LinkOccurrence>();
         Map<String, Object> model = new HashMap<>();
 
         // Extracting currently selected content from it's url
-        ContentIdentifier cid = null;
         if (!"".equals(url)) {
             try {
-                cid = contentIdHelper.fromRequestAndUrl(request, url);
+                List<LinkOccurrence> brokenLinks;
+                ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
                 if (thisPageOnly) {
                     brokenLinks = linkDao.getBrokenLinksforContentId(cid.getContentId());
                 } else {
@@ -65,12 +70,7 @@ public class ListBrokenLinksAction extends SimpleAdminController {
                 }
                 Date lastChecked = null;
                 if (brokenLinks.size() > 0) {
-                    lastChecked = Collections.max(brokenLinks, new Comparator<LinkOccurrence>() {
-                        @Override
-                        public int compare(LinkOccurrence o1, LinkOccurrence o2) {
-                            return o1.getLastChecked().compareTo(o2.getLastChecked());
-                        }
-                    }).getLastChecked();
+                    lastChecked = Collections.max(brokenLinks, comp).getLastChecked();
                 }
 
                 model.put("brokenLinks", brokenLinks);
