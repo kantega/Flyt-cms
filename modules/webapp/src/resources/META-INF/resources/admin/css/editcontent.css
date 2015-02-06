@@ -242,7 +242,9 @@ html, body {
 }
 
 .ui-state-highlight{
-    padding: 7px;
+    padding: 10px;
+    border: 1px solid #DAD6C0;
+    border-radius: 5px;
 }
 
 /* TinyMCE override styles */
