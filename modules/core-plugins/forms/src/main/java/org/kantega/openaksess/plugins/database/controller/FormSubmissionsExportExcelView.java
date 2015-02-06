@@ -36,13 +36,13 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
 
                 String title = cleanUpTitle(form.getTitle());
                 HSSFSheet sheet = hssfWorkbook.createSheet(title);
-                HSSFRow row = sheet.createRow((short)0);
+                HSSFRow row = sheet.createRow(0);
 
-                HSSFCell cell = row.createCell((short)0);
+                HSSFCell cell = row.createCell(0);
                 cell.setCellValue("Dato innsendt");
                 for (int i = 0; i < fieldNames.size(); i++) {
                     String header = fieldNames.get(i);
-                    cell = row.createCell((short)(i+1));
+                    cell = row.createCell((i+1));
                     cell.setCellValue(header);
                 }
 
@@ -61,14 +61,14 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 for (FormSubmission formSubmission : formSubmissions) {
                     if (isWithinDatePeriod(formSubmission, dateFrom, dateUntil)) {
                         rowNo++;
-                        row = sheet.createRow((short) rowNo);
+                        row = sheet.createRow( rowNo);
 
                         Map<String, String> values = new HashMap<String, String>();
                         for (FormValue value : formSubmission.getValues()) {
                             values.put(value.getName(), value.getValuesAsString());
                         }
 
-                        cell = row.createCell((short)0);
+                        cell = row.createCell(0);
                         cell.setCellValue(formSubmission.getSubmissionDate());
                         cell.setCellStyle(dateCellStyle);
 
@@ -78,12 +78,12 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                             if (value == null) {
                                 value = "";
                             }
-                            cell = row.createCell((short) (j+1));
+                            cell = row.createCell( (j+1));
                             cell.setCellValue(value);
                         }
                     }
                 }
-                sheet.autoSizeColumn((short)0);
+                sheet.autoSizeColumn(0);
             }
         }
     }

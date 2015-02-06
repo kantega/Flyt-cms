@@ -75,6 +75,7 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
         executeTemplate(context);
     }
 
+    @SuppressWarnings("unchecked")
     private void executeTemplate(DispatchContext context) {
         String template = context.getTemplateUrl();
         if (template.contains(".")) {

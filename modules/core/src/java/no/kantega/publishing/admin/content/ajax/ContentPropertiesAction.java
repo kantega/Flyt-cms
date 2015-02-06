@@ -106,7 +106,7 @@ public class ContentPropertiesAction {
 
 
                 //Associations
-                List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
+                List<List<PathEntry>> associations = new ArrayList<>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
                         //Retrieve the path down to this association
