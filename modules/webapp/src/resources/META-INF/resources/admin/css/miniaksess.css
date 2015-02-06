@@ -2,12 +2,23 @@
     display:none;
 }
 
+.miniedit #contentWrapper{
+    padding: 50px;
+}
+
+
+#EditContentForm input[type=text]{
+    padding: 5px;
+
+}
+
 #EditContentForm .contentAttribute {
-    margin-bottom: 1em;
+    margin-bottom: 2em;
 }
 
 #EditContentForm .contentAttribute .heading, .contentAttributeRepeater .heading {
     font-weight: bold;
+    margin-bottom: 4px;
 }
 
 #EditContentForm .contentAttribute .buttonGroup, #EditContentForm .contentAttributeRepeater .buttonGroup, .formElement .buttonGroup {
@@ -156,4 +167,10 @@
 
 iframe#externalSite {
     padding: 0;
+}
+
+.ui-state-highlight{
+    padding: 10px;
+    border: 1px solid #DAD6C0;
+    border-radius: 5px;
 }
