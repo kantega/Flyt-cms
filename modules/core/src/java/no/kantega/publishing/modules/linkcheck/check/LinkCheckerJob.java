@@ -106,7 +106,7 @@ public class LinkCheckerJob implements InitializingBean {
         Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
 
         int noLinks = linkDao.getNumberOfLinks();
-        int maxLinksPerDay = 1000;
+        int maxLinksPerDay = configuration.getInt("linkchecker.maxLinksPerDay", 1000);
         if (noLinks > 7*maxLinksPerDay) {
             maxLinksPerDay = (noLinks/7) + 100;
         }
