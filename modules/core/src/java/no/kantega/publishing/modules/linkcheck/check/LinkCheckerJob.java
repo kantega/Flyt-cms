@@ -48,9 +48,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.regex.Pattern;
@@ -142,17 +144,20 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
-        log.debug("Checking internal url {}", link);
         if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
+            log.debug("Checking content path {}", link);
             checkContent(link, occurrence, client);
 
         } else if (link.startsWith(MULTIMEDIA_AP) || link.startsWith(MULTIMEDIA)) {
+            log.debug("Checking multimedia path {}", link);
             checkMultimedia(link, occurrence, client);
 
         } else if (link.startsWith(ATTACHMENT_AP) || link.startsWith(ATTACHMENT)) {
+            log.debug("Checking attachment path {}", link);
             checkAttachment(link, occurrence, client);
 
         } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
+            log.debug("Checking alias path {}", link);
             checkAlias(link, occurrence, client);
 
         } else {
@@ -167,6 +172,9 @@ public class LinkCheckerJob implements InitializingBean {
             idPart = link.substring(CONTENT_AP.length());
             if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf('&'));
+            }
+            if (idPart.contains("#")) {
+                idPart = idPart.substring(0, idPart.indexOf('#'));
             }
         } else {
             idPart = link.substring(CONTENT.length());
@@ -278,7 +286,7 @@ public class LinkCheckerJob implements InitializingBean {
 
         } catch (ContentNotFoundException e) {
             // Ikke et alias eller slettet alias
-            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+            checkRemoteUrl(webroot + alias, occurrence, client);
         } catch (SystemException e) {
             log.error("Error checking alias " + alias, e);
             occurrence.setStatus(CheckStatus.IO_EXCEPTION);
@@ -289,7 +297,8 @@ public class LinkCheckerJob implements InitializingBean {
         log.debug("Checking remote url {}", link);
         HttpGet get;
         try {
-            get = new HttpGet(clean(link));
+            URI uri = UriComponentsBuilder.fromHttpUrl(clean(link)).build().toUri();
+            get = new HttpGet(uri);
         } catch (Exception e) {
             occurrence.setStatus(CheckStatus.INVALID_URL);
             log.error("INVALID_URL " + link, e);
@@ -325,13 +334,13 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     /**
-     * Remove after #, replace space with encoded value, trim.
+     * Remove after #, replace space with encoded value, trim, and replace \ with /.
      */
     private Pattern spacePattern = Pattern.compile("\\s");
     private String clean(String link) {
         String s = link.contains("#") ? link.substring(0, link.indexOf('#')) : link;
         s = spacePattern.matcher(s).replaceAll("%20");
-        return s;
+        return s.replace('\\', '/');
     }
 
     public void setWebroot(String webroot) {

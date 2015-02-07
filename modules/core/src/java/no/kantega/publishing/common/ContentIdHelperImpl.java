@@ -358,7 +358,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             }
 
         } else {
-            log.error("Could not fint contentid for associationid " + associationId);
+            log.error("Could not find contentid for associationid " + associationId);
         }
         return contentId;
     }
