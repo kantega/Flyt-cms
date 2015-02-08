@@ -55,6 +55,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * A controller which updates breadcrumb and available buttons depending on current page
  */
@@ -66,6 +68,7 @@ public class ContentPropertiesAction {
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
     @Autowired private ContentIdHelper contentIdHelper;
+    @Autowired(required = false) private OrganizationManager orgManager;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -104,7 +107,7 @@ public class ContentPropertiesAction {
 
 
                 //Associations
-                List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
+                List<List<PathEntry>> associations = new ArrayList<>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
                         //Retrieve the path down to this association
@@ -166,18 +169,14 @@ public class ContentPropertiesAction {
                 contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
                 contentProperties.put("ownerperson", content.getOwnerPerson());
                 String owner = content.getOwner();
-                if (owner != null && owner.trim().length() > 0) {
-                    Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
-                    if (orgManagers != null && orgManagers.size() > 0) {
-                        OrganizationManager orgManager = (OrganizationManager) orgManagers.values().iterator().next();
-                        try {
-                            OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
-                            if (ownerUnit != null) {
-                                owner = ownerUnit.getName();
-                            }
-                        } catch (Exception e) {
-                            log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
+                if (isNotBlank(owner) && orgManager != null) {
+                    try {
+                        OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
+                        if (ownerUnit != null) {
+                            owner = ownerUnit.getName();
                         }
+                    } catch (Exception e) {
+                        log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
                     }
                 }
                 contentProperties.put("owner", owner);
