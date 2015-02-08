@@ -367,11 +367,14 @@ openaksess.content = {
                         statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
                     }
 
+                    var lastChecked = links[i].lastChecked;
+                    var lastCheckedFormated = lastChecked.getDate() + '-' + (lastChecked.getMonth() + 1)
+                        + '-' + lastChecked.getFullYear();
                     details += '<tr>' +
                              '  <td>'+links[i].attributeName+'</td>' +
                              '  <td>'+links[i].url+'</td>' +
                              '  <td>'+statustxt+'</td>' +
-                             '  <td>'+links[i].lastChecked+'</td>' +
+                             '  <td>'+ lastCheckedFormated +'</td>' +
                              '  <td>'+links[i].timesChecked+'</td>' +
                              '</tr>';
                 }
