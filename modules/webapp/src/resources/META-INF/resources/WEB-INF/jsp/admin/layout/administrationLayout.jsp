@@ -92,6 +92,8 @@
             overViewMenu.addLink("aksess.mailsubscription.title", adminRoot + "ViewMailSubscribers.action");
         }
 
+        menu.addLink("aksess.resetlinkchecker.title", adminRoot + "ResetLinkChecker.action");
+
         PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext()).getBean("pluginManager");
 
 

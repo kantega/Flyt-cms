@@ -447,6 +447,8 @@
     <bean class="no.kantega.publishing.admin.ajax.UserPreferencesHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
 
+    <bean class="no.kantega.publishing.admin.administration.action.ResetLinkChecker"/>
+
     <!-- Search content -->
     <bean id="adminContentSearchController" class="no.kantega.openaksess.search.controller.AdminContentSearchController">
         <property name="view" value="/WEB-INF/jsp/admin/publish/search.jsp"/>
