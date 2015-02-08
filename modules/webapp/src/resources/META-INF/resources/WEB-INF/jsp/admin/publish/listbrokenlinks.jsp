@@ -66,7 +66,7 @@
                 <c:forEach var="link" items="${brokenLinks}" varStatus="status">
                     <tr class="tableRow${status.index mod 2}" valign="top">
                         <td>
-                            <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action/?contentId=${link.contentId}" target="_top">${link.contentTitle}</a>
+                            <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?contentId=${link.contentId}" target="_top">${link.contentTitle}</a>
                         </td>
                         <td>
                             <c:if test="${link.attributeName != null}">
@@ -121,9 +121,7 @@
                                 <admin:formatdate date="${link.lastChecked}"/>
                             </c:if>
                         </td>
-                        <td>
-                                ${link.timesChecked}
-                        </td>
+                        <td>${link.timesChecked}</td>
                     </tr>
                 </c:forEach>
                 </tbody>
