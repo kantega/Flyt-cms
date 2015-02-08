@@ -23,6 +23,8 @@ import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -37,6 +39,7 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class EventLogAO extends JdbcDaoSupport implements EventLog {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Value("${eventlog.enabled}")
     private boolean eventlogIsEnabled = false;
@@ -93,13 +96,18 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
                 subjectType = object.getObjectType();
                 subjectId = object.getId();
             }
-            getJdbcTemplate().update("insert into eventlog values(?,?,?,?,?,?,?)", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+            try {
+                getJdbcTemplate().update("insert into eventlog values(?,?,?,?,?,?,?)", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+            } catch (Exception e) {
+                log.error("Tried to insert {}, {}, {}, {}, {}, {}, {}", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+                log.error("Error inserting ", e);
+            }
         }
     }
 
     private Pair<String, List<Object>> buildEventLogQueryString(EventLogQuery eventLogQuery) {
         StringBuilder where = new StringBuilder("select * from eventlog where");
-        List<Object> arguments = new ArrayList<Object>();
+        List<Object> arguments = new ArrayList<>();
         if (eventLogQuery.getFrom() != null) {
             where.append(" Time >= ?");
             arguments.add(eventLogQuery.getFrom());

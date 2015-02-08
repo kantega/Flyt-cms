@@ -24,14 +24,28 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.8.16-SNAPSHOT</version>
+    <version>7.8.18-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
+
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
         <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
+
+    <organization>
+        <name>Kantega AS</name>
+        <url>http://kantega.no</url>
+    </organization>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
     <pluginRepositories>
         <pluginRepository>
@@ -98,6 +112,13 @@
                 <groupId>javax.servlet.jsp</groupId>
                 <artifactId>javax.servlet.jsp-api</artifactId>
                 <version>${javax.servlet.jsp-api.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>${javax.el.version}</version>
                 <scope>provided</scope>
             </dependency>
 
@@ -263,7 +284,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.26</version>
+                    <version>1.27</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -271,8 +292,8 @@
 
     <properties>
         <aksess-maven-plugin.version>2.9</aksess-maven-plugin.version>
-        <securityapi.version>2.8</securityapi.version>
-        <securityapi.openimpl.version>2.16</securityapi.openimpl.version>
+        <securityapi.version>2.9</securityapi.version>
+        <securityapi.openimpl.version>2.17</securityapi.openimpl.version>
 
         <codec.version>1.7</codec.version>
         <commons-pool.version>1.6</commons-pool.version>
@@ -296,6 +317,7 @@
         <jstl.version>1.2</jstl.version>
         <jstl-api.version>1.2</jstl-api.version>
         <javax.servlet.jstl-api>1.2.1</javax.servlet.jstl-api>
+        <javax.el.version>3.0.1-b04</javax.el.version>
 
         <hsqldb.version>2.0.0</hsqldb.version>
         <aspectj.version>1.6.12</aspectj.version>

@@ -104,12 +104,12 @@
     request.setAttribute("cssPath", cssPath);
 
     int width = attribute.getWidth();
-    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", 600);
-    request.setAttribute("attributeWidth", width);
+    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", -1);
+    request.setAttribute("attributeWidth", width == -1 ? "100%" : width + "px");
 
     int height = attribute.getHeight();
-    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 350);
-    request.setAttribute("attributeHeight", height);
+    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 450);
+    request.setAttribute("attributeHeight", height + "px");
 
 %>
 <script type="text/javascript">
@@ -117,7 +117,7 @@
 </script>
 
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}px; height: ${attributeHeight}px"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({

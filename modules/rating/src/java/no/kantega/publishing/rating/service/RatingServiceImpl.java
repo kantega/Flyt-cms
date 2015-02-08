@@ -73,9 +73,9 @@ public class RatingServiceImpl implements RatingService, ApplicationContextAware
         notification.setScore(scoreCalculator.getScoreForRatings(ratings));
         notification.setRating(rating);
 
-        Map ratingNotificationListenerBeans = applicationContext.getBeansOfType(RatingNotificationListener.class);
+        Map<String, RatingNotificationListener> ratingNotificationListenerBeans = applicationContext.getBeansOfType(RatingNotificationListener.class);
         if (ratingNotificationListenerBeans != null && ratingNotificationListenerBeans.size() > 0)  {
-            for (RatingNotificationListener notificationListener : (Iterable<? extends RatingNotificationListener>) ratingNotificationListenerBeans.values()) {
+            for (RatingNotificationListener notificationListener : ratingNotificationListenerBeans.values()) {
                 notificationListener.newRatingNotification(notification);
             }
         }

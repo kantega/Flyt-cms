@@ -17,6 +17,7 @@
 package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -50,7 +51,8 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
                 for (int i = 0; i < tmpAssociations.length; i++) {
                     tmpAssociations[i] = associations.get(i).getAssociationId();
                 }
-                cms.deleteAssociationsById(tmpAssociations, false);
+                boolean deleteMultiple = Aksess.getConfiguration().getBoolean("expired.content.delete.multiple", false);
+                cms.deleteAssociationsById(tmpAssociations, deleteMultiple);
             } catch (SystemException e) {
                 log.error("Could not delete content", e);
             }

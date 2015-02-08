@@ -19,18 +19,18 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 
 <div class="buttonGroup">
-    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button first <c:if test="${navigateActive}"> active</c:if>"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action" class="button first<c:if test="${navigateActive}"> active</c:if>"><span class="view"><kantega:label key="aksess.mode.view"/></span></a>
     <span class="buttonSeparator"></span>
     <a href="#" class="button <c:if test="${editActive}"> active</c:if>"><span class="edit"><kantega:label key="aksess.mode.edit"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last <c:if test="${organizeActive}"> active</c:if>"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Organize.action" class="button last<c:if test="${organizeActive}"> active</c:if>"><span class="organize"><kantega:label key="aksess.mode.organize"/></span></a>
 </div>
 <div class="buttonGroup">
-    <a href="${pageContext.request.contextPath}/admin/publish/LinkCheck.action" class="button first <c:if test="${linkCheckActive}"> active</c:if>"><span class="linkcheck"><kantega:label key="aksess.mode.linkcheck"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/LinkCheck.action" class="button first<c:if test="${linkCheckActive}"> active</c:if>"><span class="linkcheck"><kantega:label key="aksess.mode.linkcheck"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="${pageContext.request.contextPath}/admin/publish/Statistics.action" class="button <c:if test="${statisticsActive}"> active</c:if>"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
+    <a href="${pageContext.request.contextPath}/admin/publish/Statistics.action" class="button<c:if test="${statisticsActive}"> active</c:if>"><span class="statistics"><kantega:label key="aksess.mode.statistics"/></span></a>
     <span class="buttonSeparator"></span>
-    <a href="${pageContext.request.contextPath}/admin/publish/Notes.action" class="button last <c:if test="${notesActive}"> active</c:if>"><span class="notes"><kantega:label key="aksess.mode.notes"/><span id="NotesCount"></span></span></a>    
+    <a href="${pageContext.request.contextPath}/admin/publish/Notes.action" class="button last<c:if test="${notesActive}"> active</c:if>"><span class="notes"><kantega:label key="aksess.mode.notes"/><span id="NotesCount"></span></span></a>
 </div>
 <c:if test="${!hideSearch}">
 <div class="buttonGroup search">
@@ -42,9 +42,16 @@
 </c:if>
 
 <script>
-    var url = "<aksess:geturl url="/admin/publish/CountBrokenLinks.action"/>";
-    var linkCheckerBtn = $('.linkcheck');
-    jQuery.getJSON(url, function (data) {
-        linkCheckerBtn.text(linkCheckerBtn.text() + " (" + data + ")");
+    $( function () {
+        var linkCheckerBtn = $('.linkcheck');
+        var text = linkCheckerBtn.text();
+        linkCheckerBtn.bind("contentupdate", function(e, url){
+            if(url != 'about:blank')
+            jQuery.getJSON("${pageContext.request.contextPath}/admin/publish/CountBrokenLinks.action", {url: url}, function (data) {
+                if (data > 0) {
+                    linkCheckerBtn.text(text + " (" + data + ")");
+                }
+            });
+        });
     });
 </script>

@@ -41,6 +41,7 @@ import no.kantega.security.api.identity.*;
 import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
+import no.kantega.security.api.role.RoleManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
@@ -140,10 +141,8 @@ public class SecuritySession {
         final String fakeUsername = root.getServletContext().getInitParameter("fakeUsername");
         final String fakeUserDomain= root.getServletContext().getInitParameter("fakeUserDomain");
         if(fakeUsername != null && fakeUserDomain != null) {
-            DefaultIdentity id = new DefaultIdentity();
-            id.setUserId(fakeUsername);
-            id.setDomain(fakeUserDomain);
-            return id;
+
+            return DefaultIdentity.withDomainAndUserId(fakeUserDomain, fakeUsername);
         } else {
             return null;
         }
@@ -172,6 +171,11 @@ public class SecuritySession {
         } else {
             user.setId(userId);
             user.setGivenName(identity.getUserId());
+        }
+
+        List<Role> roles = session.realm.lookupRolesForUser(userId);
+        for (Role r : roles) {
+            user.addRole(r);
         }
 
         session.user = user;

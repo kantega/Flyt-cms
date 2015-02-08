@@ -16,19 +16,19 @@
 
 package no.kantega.publishing.security.data;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: May 11, 2009
- * Time: 3:30:48 PM
+ * In memory implementation of <code>LoginRestrictor</code> that keeps track of
+ * previous login attempts that failed.
+ * The number of maximum allowed failed attempts and the timeout after this limit is reached is configurable.
  */
 public class PauseLoginRestrictor implements LoginRestrictor {
-    private Map<String, Integer> numberOfFailedLogins = new HashMap<String, Integer>();
-    private Map<String, Date> lastLogin = new HashMap<String, Date>();
+    private Map<String, Integer> numberOfFailedLogins = new HashMap<>();
+    private Map<String, Date> lastLogin = new HashMap<>();
 
     private int maxAttempts = 5;
     private long timeout = 15*60;
@@ -76,7 +76,7 @@ public class PauseLoginRestrictor implements LoginRestrictor {
             return true;
         }
 
-        return false;        
+        return false;
     }
 
     private void removeId(String id) {

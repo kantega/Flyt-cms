@@ -34,5 +34,6 @@
         <property name="formSubmissionBuilder" ref="aksessFormSubmissionBuilder"/>
         <property name="mailConfirmationSubject" value="${formengine.mailconfirmation.subject}"/>
         <property name="mailConfirmationTemplate" value="${formengine.mailconfirmation.mailtemplate}"/>
+        <property name="configuration" ref="systemConfiguration"/>
     </bean>
 </beans>

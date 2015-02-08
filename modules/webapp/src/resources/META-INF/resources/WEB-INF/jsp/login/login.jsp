@@ -61,11 +61,11 @@
 
             <c:set var="autocomplete"><aksess:getconfig key="security.login.autocomplete"/></c:set>
             <div id="UserName">
-                <label>Brukernavn...</label>
-                <input type="text" placeholder="Brukernavn" id="j_username" name="j_username" value="${username}" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
+                <label for="j_username"><kantega:label key="aksess.login.username"/></label>
+                <input type="text" placeholder="<kantega:label key="aksess.login.username"/>" id="j_username" name="j_username" value="${username}" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
             </div>
             <div id="Password">
-                <label>Passord...</label>
+                <label for="j_password"><kantega:label key="aksess.login.aksess.login.password"/></label>
                 <input type="password" id="j_password" placeholder="Passord" name="j_password" size="25" maxlength="60">
             </div>
             <c:set var="isRememberMe"><aksess:getconfig key="security.login.rememberme.enabled"/></c:set>
@@ -104,5 +104,6 @@
             <div id="NoScript">Javascript must be enabled to login</div>
         </noscript>
     </div>
+
 </kantega:section>
 <jsp:include page="${loginLayout}"/>
