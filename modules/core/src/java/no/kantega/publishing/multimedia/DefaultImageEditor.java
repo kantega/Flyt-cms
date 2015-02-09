@@ -102,14 +102,14 @@ public class DefaultImageEditor implements ImageEditor {
      */
     private Multimedia updateMultimedia(BufferedImage image, Multimedia multimedia) throws IOException {
         // Determine output format
-        String imageFormat = getDefaultImageFormat();
+        String imageFormat = multimedia.getMimeType().getFileExtension();
         if (multimedia.getMimeType().getType().contains("jpeg")) {
             imageFormat = "jpg";
         }
 
         // Write image
         ImageWriter writer = null;
-        Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(imageFormat);
+        Iterator<ImageWriter> iter = ImageIO.getImageWritersByMIMEType(multimedia.getMimeType().toString());
         if (iter.hasNext()) {
             writer = iter.next();
         }
