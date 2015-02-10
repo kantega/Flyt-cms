@@ -86,9 +86,9 @@
                         </a></td>
                         <td>
                             <c:choose>
-                                <c:when test="${link.status == 2}"><kantega:label
+                                <c:when test="${link.status == 'UNKNOWN_HOST'}"><kantega:label
                                         key="aksess.linkcheck.statuses.2"/></c:when>
-                                <c:when test="${link.status == 3}">
+                                <c:when test="${link.status == 'HTTP_NOT_200'}">
                                     <c:choose>
                                         <c:when test="${link.httpStatus == 401}"><kantega:label
                                                 key="aksess.linkcheck.httpstatus.401"/></c:when>
@@ -99,20 +99,20 @@
                                         <c:otherwise>HTTP ${link.httpStatus}</c:otherwise>
                                     </c:choose>
                                 </c:when>
-                                <c:when test="${link.status == 4}"><kantega:label
+                                <c:when test="${link.status == 'IO_EXCEPTION'}"><kantega:label
                                         key="aksess.linkcheck.statuses.4"/></c:when>
-                                <c:when test="${link.status == 5}"><kantega:label
+                                <c:when test="${link.status == 'CONNECTION_TIMEOUT'}"><kantega:label
                                         key="aksess.linkcheck.statuses.5"/></c:when>
-                                <c:when test="${link.status == 6}"><kantega:label
+                                <c:when test="${link.status == 'CIRCULAR_REDIRECT'}"><kantega:label
                                         key="aksess.linkcheck.statuses.6"/></c:when>
-                                <c:when test="${link.status == 7}"><kantega:label
+                                <c:when test="${link.status == 'CONNECT_EXCEPTION'}"><kantega:label
                                         key="aksess.linkcheck.statuses.7"/></c:when>
-                                <c:when test="${link.status == 8}"><kantega:label
+                                <c:when test="${link.status == 'CONTENT_AP_NOT_FOUND'}"><kantega:label
                                         key="aksess.linkcheck.statuses.8"/></c:when>
-                                <c:when test="${link.status == 9}"><kantega:label
+                                <c:when test="${link.status == 'INVALID_URL'}"><kantega:label
                                         key="aksess.linkcheck.statuses.9"/></c:when>
-                                <c:when test="${link.status == 10}"><kantega:label key="aksess.linkcheck.statuses.10"/></c:when>
-                                <c:when test="${link.status == 11}"><kantega:label key="aksess.linkcheck.statuses.11"/></c:when>
+                                <c:when test="${link.status == 'ATTACHMENT_AP_NOT_FOUND'}"><kantega:label key="aksess.linkcheck.statuses.10"/></c:when>
+                                <c:when test="${link.status == 'MULTIMEDIA_AP_NOT_FOUND'}"><kantega:label key="aksess.linkcheck.statuses.11"/></c:when>
                                 <c:otherwise>${link.status}</c:otherwise>
                             </c:choose>
                         </td>
