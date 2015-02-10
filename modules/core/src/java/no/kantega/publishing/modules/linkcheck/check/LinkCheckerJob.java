@@ -387,7 +387,10 @@ public class LinkCheckerJob implements InitializingBean {
             HttpHost proxy = new HttpHost(proxyHost, proxyPort);
 
             httpClientBuilder = HttpClients.custom()
-                .setProxy(proxy);
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setRedirectsEnabled(true)
+                            .setConnectTimeout(CONNECTION_TIMEOUT).build())
+                    .setProxy(proxy);
 
             if(isNotBlank(proxyUser)) {
                 CredentialsProvider credsProvider = new BasicCredentialsProvider();
@@ -396,9 +399,9 @@ public class LinkCheckerJob implements InitializingBean {
             }
         } else {
             httpClientBuilder = HttpClients.custom()
-                .setDefaultRequestConfig(RequestConfig.custom()
-                    .setRedirectsEnabled(true)
-                    .setConnectTimeout(CONNECTION_TIMEOUT).build());
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setRedirectsEnabled(true)
+                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
         }
     }
 }
