@@ -17,89 +17,35 @@
 package no.kantega.commons.xmlfilter;
 
 import no.kantega.commons.exception.SystemException;
-import org.apache.xml.serializer.Method;
-import org.apache.xml.serializer.OutputPropertiesFactory;
-import org.apache.xml.serializer.Serializer;
-import org.apache.xml.serializer.SerializerFactory;
-import org.cyberneko.html.parsers.SAXParser;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.XMLFilter;
-import org.xml.sax.helpers.XMLFilterImpl;
 
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import java.io.Reader;
-import java.io.Writer;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterPipeline extends XMLFilterImpl {
+public class FilterPipeline {
     private static final Logger log = LoggerFactory.getLogger(FilterPipeline.class);
 
-    List<XMLFilter> filters = new ArrayList<>();
+    List<Filter> filters = new ArrayList<>();
 
-    public void addFilter(XMLFilterImpl filter) {
-        if (filters.size() == 0) {
-            setContentHandler(filter);
-        } else {
-            XMLFilter parent = filters.get(filters.size() - 1);
-            parent.setContentHandler(filter);
-            filter.setParent(parent);
-        }
+    public void addFilter(Filter filter) {
         filters.add(filter);
     }
 
-    public void setEnd(ContentHandler end) {
-        if (filters.size() > 0) {
-            XMLFilter parent = filters.get(filters.size() - 1);
-            parent.setContentHandler(end);
-        }
-    }
-
-    public void filter(Reader reader, Writer writer) throws SystemException {
-        filter(reader, writer, "html");
-    }
-
-    public void filter(Reader reader, Writer writer, String method) throws SystemException {
-
+    public String filter(String content) throws SystemException {
         try {
+            Document document = Jsoup.parseBodyFragment(content);
+            document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+            document.outputSettings().prettyPrint(false);
 
-            System.setProperty("org.xml.sax.driver", "org.apache.xerces.parsers.SAXParser");
-            SAXParser parser = new SAXParser();
-            parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
-            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-
-
-            final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
-            URL resourceUrl = contextClassLoader.getResource("no/kantega/xml/serializer/XMLEntities.properties");
-
-            java.util.Properties props =
-                    OutputPropertiesFactory.getDefaultMethodProperties(Method.HTML);
-            props.setProperty(OutputPropertiesFactory.S_KEY_ENTITIES, resourceUrl.toString());
-
-            props.setProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            props.setProperty(OutputKeys.METHOD, method);
-            props.setProperty(OutputKeys.INDENT, "no");
-
-            Serializer serializer = SerializerFactory.getSerializer(props);
-
-            serializer.setWriter(writer);
-
-            ContentHandler end = serializer.asContentHandler();
-            this.setEnd(end);
-            if(filters.size() == 0) {
-                this.setContentHandler(end);
+            for (Filter filter : filters) {
+                document = filter.runFilter(document);
             }
 
-            parser.setContentHandler(this);
-            parser.parse(new InputSource(reader));
+            return document.getElementsByTag("body").html();
         } catch (Exception e) {
             log.error("Could not filter", e);
             throw new SystemException("Could not filter", e);
@@ -109,4 +55,5 @@ public class FilterPipeline extends XMLFilterImpl {
     public void removeFilters() {
         filters = new ArrayList<>();
     }
+
 }

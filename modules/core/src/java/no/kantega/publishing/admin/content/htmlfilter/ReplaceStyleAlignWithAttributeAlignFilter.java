@@ -16,10 +16,14 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  *
@@ -27,24 +31,27 @@ import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
  * This class will replace inline style attribute on text blocks with the align attribute.
  *
  */
-public class ReplaceStyleAlignWithAttributeAlignFilter extends XMLFilterImpl {
+public class ReplaceStyleAlignWithAttributeAlignFilter implements Filter {
 
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
+    private final List<String> tags = asList("p", "div");
 
-        if(name.equalsIgnoreCase("p") || name.equalsIgnoreCase("div")) {            
-            String style = attributes.getValue("style");
-            if (style != null) {
-                if(style.indexOf("right") != -1){
-                    attributes = HtmlFilterHelper.setAttribute("align", "right", attributes);
-                }else if(style.indexOf("left") != -1){
-                    attributes = HtmlFilterHelper.setAttribute("align", "left", attributes);
-                }else if(style.indexOf("center") != -1){
-                    attributes = HtmlFilterHelper.setAttribute("align", "center", attributes);
+    @Override
+    public Document runFilter(Document document) {
+        for (String tag : tags) {
+            for (Element element : document.getElementsByTag(tag)) {
+                String style = element.attr("style");
+                if (isNotBlank(style)) {
+                    if(style.contains("right")){
+                        element.attr("align", "right");
+                    }else if(style.contains("left")){
+                        element.attr("align", "left");
+                    }else if(style.contains("center")){
+                        element.attr("align", "center");
+                    }
+                    element.removeAttr("style");
                 }
-                attributes = HtmlFilterHelper.removeAttribute("style", attributes);
             }
         }
-
-        super.startElement(string,  localName, name, attributes);
+        return document;
     }
 }

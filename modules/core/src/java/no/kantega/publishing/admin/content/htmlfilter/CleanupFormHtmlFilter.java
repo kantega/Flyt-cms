@@ -16,30 +16,27 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.helpers.XMLFilterImpl;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- * Date: Apr 14, 2010
- * Time: 12:06:33 PM
+ *
  */
-public class CleanupFormHtmlFilter extends XMLFilterImpl {
-
+public class CleanupFormHtmlFilter implements Filter {
 
     @Override
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        if (name.equalsIgnoreCase("input")) {
-            // Set type attribute equal to "text" if it does not exist
-            if (attributes == null || attributes.getValue("type") == null) {
-                AttributesImpl newAttributes = new AttributesImpl(attributes);
-                newAttributes.addAttribute("", "type", "type", "CDATA", "text");
-                attributes = newAttributes;
+    public Document runFilter(Document document) {
+        Elements inputs = document.getElementsByTag("input");
+        for (Element input : inputs) {
+            String type = input.attr("type");
+            if(isBlank(type)){
+                input.attr("type", "text");
             }
         }
-
-        super.startElement(string,  localName, name, attributes);
+        return document;
     }
-
 }

@@ -18,12 +18,12 @@ package no.kantega.commons.util;
 
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
-import org.apache.xml.serialize.OutputFormat;
-import org.apache.xml.serialize.XMLSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.w3c.dom.*;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -56,35 +56,12 @@ public class XMLHelper {
         return doc;
     }
 
-    public static String getString(Document doc, Element element) throws SystemException {
-        StringWriter stringOut = new StringWriter();
-        try {
-            OutputFormat format = new OutputFormat(doc);
-            XMLSerializer serial = new XMLSerializer(stringOut, format);
-            serial.asDOMSerializer();
-            serial.serialize(element);
-        } catch (IOException e) {
-            log.error("Error converting Document to String", e);
-            throw new SystemException("Error converting Document to String", e);
-        }
-
-        return stringOut.toString();
-    }
 
 
     public static String getString(Document doc) throws SystemException {
-        StringWriter stringOut = new StringWriter();
-        try {
-            OutputFormat format = new OutputFormat(doc);
-            XMLSerializer serial = new XMLSerializer(stringOut, format);
-            serial.asDOMSerializer();
-            serial.serialize(doc.getDocumentElement());
-        } catch (IOException e) {
-            log.error("Error converting String to Document", e);
-            throw new SystemException("Error converting String to Document", e);
-        }
-
-        return stringOut.toString();
+        DOMImplementationLS domImplementation = (DOMImplementationLS) doc.getImplementation();
+        LSSerializer lsSerializer = domImplementation.createLSSerializer();
+        return lsSerializer.writeToString(doc);
     }
 
 
@@ -173,24 +150,6 @@ public class XMLHelper {
             return  openDocument(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             throw new InvalidFileException("Error opening XML document from File", e);
-        }
-    }
-
-
-    public static void saveDocument(Document doc, File file) throws SystemException {
-        try {
-            FileOutputStream fileOut = new FileOutputStream(file);
-            try {
-                OutputFormat format = new OutputFormat(doc);
-                XMLSerializer serial = new XMLSerializer(fileOut, format);
-                serial.asDOMSerializer();
-                serial.serialize(doc);
-            } catch (IOException e) {
-                throw new SystemException("Error saving Document to File", e);
-            }
-
-        } catch (Exception e) {
-            throw new SystemException("Error saving Document to File", e);
         }
     }
 

@@ -16,48 +16,51 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.XMLFilterImpl;
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * The filter ContextPathFilter replaces the contextpath in links and images with the text "<@WEB@>"
  * to prevent the context path being saved in text, causing problems when moving a site from a contextpath to another
  */
-public class ContextPathFilter extends XMLFilterImpl {
+public class ContextPathFilter implements Filter {
+    private final List<String> attributes = asList("href", "src", "movie");
     private String contextPath = "";
     private String rootUrlToken = "<@WEB@>";
 
-    public void startElement(String string, String localName, String string2, Attributes attributes) throws SAXException {
-        attributes = fixContextPathForAttribute(attributes, "href");
-        attributes = fixContextPathForAttribute(attributes, "src");
-        attributes = fixContextPathForAttribute(attributes, "movie");
-
-        super.startElement(string, localName, string2, attributes);
+    @Override
+    public Document runFilter(Document document) {
+        for (String attribute : attributes) {
+            Elements withHref = document.getElementsByAttribute(attribute);
+            fixContextPathForAttribute(withHref, attribute);
+        }
+        return document;
     }
 
-    private Attributes fixContextPathForAttribute(Attributes attributes, String name) {
-        String attributeValue = attributes.getValue(name);
-        if (attributeValue != null) {
-            if (attributeValue.startsWith("../")) {
-                attributeValue = rootUrlToken + "/" + attributeValue.substring(attributeValue.lastIndexOf("../") + 3, attributeValue.length());
-                attributes = HtmlFilterHelper.setAttribute(name, attributeValue, attributes);
-            }
+    private void fixContextPathForAttribute(Elements elements, String attribute) {
+        for (Element element : elements) {
+            String attributeValue = element.attr(attribute);
+            if (isNotBlank(attributeValue)) {
+                if (attributeValue.startsWith("../")) {
+                    attributeValue = rootUrlToken + "/" + attributeValue.substring(attributeValue.lastIndexOf("../") + 3, attributeValue.length());
+                    element.attr(attribute, attributeValue);
+                }
 
-            if (contextPath.length() > 0) {
-                if (attributeValue.startsWith(contextPath + "/")) {
-                    attributeValue = rootUrlToken + attributeValue.substring(contextPath.length(), attributeValue.length());
-                    attributes = HtmlFilterHelper.setAttribute(name, attributeValue, attributes);
+                if (contextPath.length() > 0) {
+                    if (attributeValue.startsWith(contextPath + "/")) {
+                        attributeValue = rootUrlToken + attributeValue.substring(contextPath.length(), attributeValue.length());
+                        element.attr(attribute, attributeValue);
+                    }
                 }
             }
         }
-        return attributes;
-    }
-
-    public void endElement(String string, String localname, String string2) throws SAXException {
-        super.endElement(string, localname, string2);
     }
 
     public void setContextPath(String contextPath) {
@@ -67,4 +70,6 @@ public class ContextPathFilter extends XMLFilterImpl {
     public void setRootUrlToken(String rootUrlToken) {
         this.rootUrlToken = rootUrlToken;
     }
+
+
 }

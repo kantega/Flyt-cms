@@ -8,8 +8,6 @@ import no.kantega.publishing.modules.forms.filter.FormSubmissionFillFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +17,7 @@ public class DefaultFormSubmissionValidator implements FormSubmissionValidator {
     FormElementValidatorFactory formElementValidatorFactory;
 
     public List<FormError> validate(FormSubmission formSubmission) {
-        Map<String, String[]> values = new HashMap<String, String[]>();
+        Map<String, String[]> values = new HashMap<>();
         for (FormValue value : formSubmission.getValues()) {
             values.put(value.getName(), value.getValues());
         }
@@ -31,9 +29,8 @@ public class DefaultFormSubmissionValidator implements FormSubmissionValidator {
 
         pipeline.addFilter(filter);
 
-        StringWriter sw = new StringWriter();
         try {
-            pipeline.filter(new StringReader(formSubmission.getForm().getFormDefinition()), sw);
+            pipeline.filter(formSubmission.getForm().getFormDefinition());
         } catch (SystemException e) {
             log.error("", e);
             return null;

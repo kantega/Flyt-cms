@@ -16,61 +16,50 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * This filter class converts valid html code for underline elements (<span style="text-decoration:underline;">)
  * to the editor specific <u> tag.
  */
-public class ConvertUnderlineToEditorStyleFilter extends XMLFilterImpl {
+public class ConvertUnderlineToEditorStyleFilter implements Filter {
 
-    /**
-     * Flag indicating if the current span end element should be converted. 
-     */
-    private boolean elementConverted = false;
-
-    /**
-     * Converts the valid tag (<span style="text-decoration: underline;">) to the editor specific <u> tag.
-     * @param string
-     * @param localName name of the tag.
-     * @param name name of the tag.
-     * @param attributes attributes of the current tag.
-     * @throws SAXException thrown when an error occurs during the parsing.
-     */
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        if(localName.equalsIgnoreCase("span")){
-            String style = attributes.getValue("style");
-            if(style != null){
-                String textDecoration = HtmlFilterHelper.getSubAttributeValue(style, "text-decoration");
-                if("underline".equalsIgnoreCase(textDecoration)){
-                    attributes = HtmlFilterHelper.removeAttribute("style", attributes);
-                    name = "u";
-                    localName = "u";
-                    elementConverted = true;
+    @Override
+    public Document runFilter(Document document) {
+        for (Element span : document.getElementsByTag("span")) {
+            String style = span.attr("style");
+            if (isNotBlank(style)) {
+                String textDecoration = getSubAttributeValue(style, "text-decoration");
+                if ("underline".equalsIgnoreCase(textDecoration)) {
+                    span.removeAttr("style");
+                    span.tagName("u");
                 }
             }
         }
-        super.startElement(string, localName, name, attributes);
+        return document;
     }
 
-    /**
-     * Checks if the current element is a span tag that needs to be converted to </u>.
-     * @param uri
-     * @param localName
-     * @param qName
-     * @throws SAXException
-     */
-    @Override
-    public void endElement(String uri, String localName, String qName) throws SAXException {
-        if(elementConverted){
-            elementConverted = false;
-            localName = "u";
-            qName = "u";
+    private String getSubAttributeValue(String attr, String subattr) {
+        String subAttributeValue = null;
+
+        attr = attr.toLowerCase();
+        subattr = subattr.toLowerCase();
+
+        int start = attr.indexOf(subattr);
+        if (start != -1) {
+            subAttributeValue = attr.substring(start + subattr.length() + 1, attr.length());
+            subAttributeValue = subAttributeValue.trim();
+
+            int end = subAttributeValue.indexOf(";");
+            if (end != -1) {
+                subAttributeValue = subAttributeValue.substring(0, end);
+            }
         }
-        super.endElement(uri, localName, qName);
-    }
 
+        return subAttributeValue;
+    }
 }

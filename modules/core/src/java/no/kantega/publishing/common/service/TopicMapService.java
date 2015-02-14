@@ -35,6 +35,7 @@ import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPathException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -98,7 +99,7 @@ public class TopicMapService {
                     }
                 }
             }
-        } catch (TransformerException e) {
+        } catch (TransformerException | XPathException e) {
             throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
         }
         return  new ImportedTopicMap(topicMap,topics,topicAssociations);
@@ -174,10 +175,7 @@ public class TopicMapService {
         Document doc;
         try {
             doc = XMLHelper.openDocument(new URL(topicMap.getUrl()));
-        } catch (MalformedURLException e) {
-            throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
-        }
-        catch (SystemException e) {
+        } catch (MalformedURLException | SystemException e) {
             throw new ImportTopicMapException("Error importing topic map from url:" + topicMap.getUrl() + ". Verify url and try again.", e);
         }
 

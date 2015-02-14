@@ -1,25 +1,22 @@
 package no.kantega.publishing.modules.forms.filter;
 
-import org.xml.sax.SAXException;
-import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
-import org.xml.sax.helpers.XMLFilterImpl;
+import no.kantega.commons.xmlfilter.Filter;
+import no.kantega.publishing.modules.forms.validate.FormError;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.web.util.HtmlUtils;
 
-import java.util.Map;
 import java.util.List;
-
-import no.kantega.publishing.modules.forms.validate.FormError;
+import java.util.Map;
 
 /**
  *  Prefills HTML form with values from hashmap
  *
  *  NOTE! This filter cannot be run twice in a row
  */
-public class FormFillFilter extends XMLFilterImpl {
+public class FormFillFilter implements Filter {
     private Map<String, String[]> params;
     private List<FormError> errors;
-    private String currentSelectList = null;
     private int currentFieldIndex;
 
     public FormFillFilter(Map<String, String[]> params, List<FormError> errors) {
@@ -28,13 +25,11 @@ public class FormFillFilter extends XMLFilterImpl {
         this.currentFieldIndex = 0;
     }
 
-    @Override
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        String inputName = attributes.getValue("name");
-        String inputType = attributes.getValue("type");
 
-        if (name.equalsIgnoreCase("div")) {
-            if (attributes != null && attributes.getValue("class") != null && attributes.getValue("class").contains("formElement")) {
+    @Override
+    public Document runFilter(Document document) {
+        for (Element div : document.getElementsByTag("div")) {
+            if (div.attr("class").contains("formElement")) {
                 currentFieldIndex++;
                 boolean hasError = false;
                 for (FormError error : errors) {
@@ -44,16 +39,14 @@ public class FormFillFilter extends XMLFilterImpl {
                     }
                 }
                 if (hasError) {
-                    AttributesImpl newAttributes = new AttributesImpl(attributes);
-                    int inx = newAttributes.getIndex("", "class");
-                    String clz = newAttributes.getValue("class");
-                    newAttributes.setAttribute(inx, "", "class", "class", "CDATA", clz + " error");
-                    attributes = newAttributes;
+                    div.addClass("error");
                 }
             }
         }
 
-        if (name.equalsIgnoreCase("input")) {
+        for (Element input : document.getElementsByTag("input")) {
+            String inputType = input.attr("type");
+            String inputName = input.attr("name");
             if ("text".equals(inputType) || "hidden".equals(inputType)) {
                 String[] values = params.get(inputName);
                 String value = null;
@@ -62,18 +55,11 @@ public class FormFillFilter extends XMLFilterImpl {
                 }
                 if (value != null) {
                     value = HtmlUtils.htmlEscape(value);
-                    AttributesImpl newAttributes = new AttributesImpl(attributes);
-                    int inx = newAttributes.getIndex("", "value");
-                    if (inx == -1) {
-                        newAttributes.addAttribute("", "value", "value", "CDATA", value);
-                    } else {
-                        newAttributes.setAttribute(inx, "", "value", "value", "CDATA", value);
-                    }                    
-                    attributes = newAttributes;
+                    input.attr("value", value);
                 }
-                               
+
             } else if ("radio".equals(inputType) || "checkbox".equals(inputType)) {
-                String inputValue = attributes.getValue("value");
+                String inputValue = input.attr("value");
                 String[] values = params.get(inputName);
                 String value = "";
                 if (inputValue != null && values != null) {
@@ -84,41 +70,39 @@ public class FormFillFilter extends XMLFilterImpl {
                         }
                     }
                 }
-                AttributesImpl newAttributes = new AttributesImpl();
-                newAttributes.addAttribute("", "type", "type", "CDATA", inputType);
-                newAttributes.addAttribute("", "name", "name", "CDATA", inputName);
-                newAttributes.addAttribute("", "value", "value", "CDATA", inputValue);
+                input.attr("type", inputType);
+                input.attr("name", inputName);
+                input.attr("value", inputValue);
                 if (value.equals(inputValue)) {
-                    newAttributes.addAttribute("", "checked", "checked", "CDATA", "checked");
+                    input.attr("checked", "checked");
+                } else {
+                    input.removeAttr("checked");
                 }
-                attributes = newAttributes;
             }
-        } else if ("select".equals(name)) {
-            // Add the name of the select list
-            currentSelectList = attributes.getValue("name");
-        } else if ("option".equals(name)) {
-            if (currentSelectList != null) {
-                String inputValue = attributes.getValue("value");
+        }
+
+        for (Element select : document.getElementsByTag("select")) {
+            String currentSelectList = select.attr("name");
+            for (Element option : select.getElementsByTag("option")) {
+                String inputValue = option.attr("value");
                 String[] values = params.get(currentSelectList);
                 String value = null;
                 if (values != null && values.length > 0) {
                     value = values[0];
                 }
                 if (value != null) {
-                    AttributesImpl newAttributes = new AttributesImpl(attributes);
-                    newAttributes.addAttribute("", "value", "value", "CDATA", inputValue);
+                    option.attr("value", inputValue);
                     if (value.equals(inputValue)) {
-                        newAttributes.addAttribute("", "selected", "selected", "CDATA", "selected");
+                        option.attr("selected", "selected");
+                    } else {
+                        option.removeAttr("selected");
                     }
-                    attributes = newAttributes;
                 }
             }
+
         }
-
-        super.startElement(string,  localName, name, attributes);
-
-        if ("textarea".equals(name) && inputName != null) {
-            // Add value in between textarea start and end
+        for (Element textarea : document.getElementsByTag("textarea")) {
+            String inputName = textarea.attr("name");
             String[] values = params.get(inputName);
             String value = null;
             if (values != null && values.length > 0) {
@@ -126,16 +110,9 @@ public class FormFillFilter extends XMLFilterImpl {
             }
             if (value != null) {
                 value = HtmlUtils.htmlEscape(value);
-                super.characters(value.toCharArray(), 0, value.length());
+                textarea.text(value);
             }
         }
-    }
-
-    @Override
-    public void endElement(String string, String localname, String name) throws SAXException {
-        if ("select".equals(name) && "option".equals(name) && "optgroup".equals(name)) {
-            currentSelectList = null;
-        }
-        super.endElement(string, localname, name);
+        return document;
     }
 }

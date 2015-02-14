@@ -25,14 +25,16 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
-import org.apache.xpath.XPathAPI;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathException;
+import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,9 +66,10 @@ public class ContentTemplateValidator {
             boolean foundForm = false;
 
             try {
-                NodeList attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attributes/attribute");
+                XPath xpath = XPathFactory.newInstance().newXPath();
+                NodeList attributes = (NodeList)xpath.evaluate("attributes/attribute", def.getDocumentElement(), XPathConstants.NODESET);
                 if (attributes.getLength()  == 0) {
-                    attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attribute");
+                    attributes = (NodeList)xpath.evaluate("attribute", def.getDocumentElement(), XPathConstants.NODESET);
                 }
 
                 for (int i = 0; i < attributes.getLength(); i++) {
@@ -107,7 +110,7 @@ public class ContentTemplateValidator {
                 if (attributes.getLength() == 0) {
                     errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.noattributes", null));
                 }
-            } catch (TransformerException e) {
+            } catch (XPathException e) {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.xmlerror", null));
             }
 

@@ -23,7 +23,6 @@ import no.kantega.commons.util.XPathHelper;
 import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
-import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -32,7 +31,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import javax.xml.transform.TransformerException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathException;
+import javax.xml.xpath.XPathFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,7 @@ public class ContentTemplateReader {
 
         // Check attributes in XML file
         try {
+            XPath xpath = XPathFactory.newInstance().newXPath();
             Resource resource = contentTemplateResourceLoader.getResource(contentTemplate.getTemplateFile());
             if (resource == null) {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
@@ -61,9 +64,9 @@ public class ContentTemplateReader {
 
             Document def = XMLHelper.openDocument(resource, entityResolver);
 
-            NodeList attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attributes/attribute|attributes/repeater");
+            NodeList attributes = (NodeList)xpath.evaluate("attributes/attribute|attributes/repeater", def.getDocumentElement(), XPathConstants.NODESET);
             if (attributes.getLength()  == 0) {
-                attributes = XPathAPI.selectNodeList(def.getDocumentElement(), "attribute|repeater");
+                attributes = (NodeList)xpath.evaluate("attribute|repeater", def.getDocumentElement(), XPathConstants.NODESET);
             }
             for (int i = 0; i < attributes.getLength(); i++) {
                 Element attr = (Element)attributes.item(i);
@@ -74,7 +77,7 @@ public class ContentTemplateReader {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.emptyfile", contentTemplate.getTemplateFile()));
             }
 
-            NodeList properties = XPathAPI.selectNodeList(def.getDocumentElement(), "properties/property");
+            NodeList properties = (NodeList)xpath.evaluate("properties/property", def.getDocumentElement(), XPathConstants.NODESET);
             for (int i = 0; i < properties.getLength(); i++) {
                 Element prop = (Element)properties.item(i);
                 contentTemplate.getPropertyElements().add(prop);
@@ -86,7 +89,7 @@ public class ContentTemplateReader {
         } catch (SystemException | InvalidFileException e) {
             errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
             log.error("Error loading: " + contentTemplate.getTemplateFile(), e);
-        } catch (TransformerException e) {
+        } catch (XPathException e) {
             errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.transformerexception", contentTemplate.getTemplateFile()));
             log.error("Error transforming: " + contentTemplate.getTemplateFile(), e);
         }
