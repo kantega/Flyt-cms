@@ -148,6 +148,50 @@ public class FormSubmissionFillFilterTest {
     }
 
     @Test
+    public void shouldhandleMandatory(){
+        Form form = new Form() {
+            public int getId() {
+                return 0;
+            }
+
+            public String getTitle() {
+                return "title";
+            }
+
+            public String getFormDefinition() {
+                return "<div class=\"formElement mandatory\"><div class=\"heading\"><label>Felt 1</label></div><div class=\"inputs text\"><input type=\"text\" name=\"Felt 1\" size=\"20\"></div><div class=\"helpText\">tyu</div></div>";
+            }
+
+            public String getEmail() {
+                return "donald@duck.com";
+            }
+
+            public List<String> getFieldNames() {
+                return null;
+            }
+
+            public String getUrl() {
+                return "http://www.valid.url";
+            }
+        };
+        FilterPipeline pipeline = new FilterPipeline();
+
+        Map<String, String[]> params = new HashMap<>();
+
+        FormSubmissionFillFilter filter = new FormSubmissionFillFilter(params, form, true);
+        filter.setFormElementValidatorFactory(formElementValidatorFactory);
+
+        pipeline.addFilter(filter);
+
+        pipeline.filter(form.getFormDefinition());
+
+        FormSubmission formSubmission = filter.getFormSubmission();
+        assertThat(filter.getErrors().size(), is(1));
+
+        assertThat(filter.getErrors().get(0).field, is("Felt 1"));
+    }
+
+    @Test
     public void shouldGetEverything(){
         Form form = new Form() {
             public int getId() {

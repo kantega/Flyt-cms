@@ -27,6 +27,22 @@ import java.util.Stack;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+/**
+ * Filter that removes nested spans.
+ *
+ *  <code><p>
+ </p>
+
+ <span>
+ <span> - remove
+ <p>
+ <span> - not remove
+ </span> - not remove
+ </p>
+ </span> - remove
+ </span>
+ </code>
+ */
 public class RemoveNestedSpanTagsFilter implements Filter {
 
     @Override
@@ -38,24 +54,6 @@ public class RemoveNestedSpanTagsFilter implements Filter {
         return clean;
     }
 
-    /*
-
-      <p>
-      </p>
-
-      <span>
-      <span> - remove
-      <p>
-      <span> - not remove
-      </span> - note remove
-      </p>
-      </span> - remove
-      </span>
-
-
-
-
-     */
     /**
      Iterates the input and copies trusted nodes (tags, attributes, text) into the destination.
      */

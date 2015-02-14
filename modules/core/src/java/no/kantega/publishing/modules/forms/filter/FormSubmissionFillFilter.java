@@ -5,7 +5,6 @@ import no.kantega.publishing.api.forms.model.*;
 import no.kantega.publishing.modules.forms.validate.FormElementValidator;
 import no.kantega.publishing.modules.forms.validate.FormElementValidatorFactory;
 import no.kantega.publishing.modules.forms.validate.FormError;
-import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -30,8 +29,6 @@ public class FormSubmissionFillFilter implements Filter {
     private Map<String, String[]> params;
     private DefaultFormSubmission formSubmission;
     private List<FormError> errors;
-    private boolean mandatory = false;
-    private int currentFieldIndex;
     private FormElementValidatorFactory formElementValidatorFactory;
 
     private boolean shouldAddParametersNotInForm = true;
@@ -41,7 +38,6 @@ public class FormSubmissionFillFilter implements Filter {
         this.formSubmission = new DefaultFormSubmission();
         formSubmission.setForm(form);
         this.errors = new ArrayList<>();
-        currentFieldIndex = 0;
         this.shouldAddParametersNotInForm = shouldAddParametersNotInForm;
     }
 
@@ -53,21 +49,7 @@ public class FormSubmissionFillFilter implements Filter {
         return formSubmission;
     }
 
-    private void checkIfDivTagIsNewFormElement(Attributes attributes) {
-        if (attributes != null && attributes.get("class") != null && attributes.get("class").contains("formElement")) {
-            // New form element, check if it is mandatory
-            mandatory = attributes.get("class").contains("mandatory");
-            currentFieldIndex++;
-        }
-    }
-
-    private void checkIfSpanTagContainsRegexpOrDateFormat(Attributes attributes) {
-        boolean capture = attributes != null
-                && attributes.get("class") != null
-                && (attributes.get("class").contains("regex") || attributes.get("class").contains("dateformat"));
-    }
-
-    private void processFormElement(String name, Element element) {
+    private void processFormElement(String name, Element element, int currentFieldIndex) {
         String inputName = element.attr("name");
         String inputType = element.attr("type");
 
@@ -78,15 +60,13 @@ public class FormSubmissionFillFilter implements Filter {
             formValue.setName(inputName);
             formValue.setValues(values);
 
-            validateField(name, element, inputName, inputType, formValue);
+            validateField(name, element, inputName, inputType, formValue, currentFieldIndex);
             setRecipientMailIfExists(formValue, element);
 
             formSubmission.addValue(formValue);
-        } else if (mandatory) {
+        } else if (element.parent().parent().hasClass("mandatory")) {
             errors.add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
         }
-
-        mandatory = false;
     }
 
     private void setRecipientMailIfExists(FormValue formValue, Element element) {
@@ -96,22 +76,22 @@ public class FormSubmissionFillFilter implements Filter {
         }
     }
 
-    private void validateField(String name, Element element, String inputName, String inputType, FormValue formValue) {
+    private void validateField(String name, Element element, String inputName, String inputType, FormValue formValue, int currentFieldIndex) {
         String formValueAsString = formValue.getValuesAsString();
         boolean isEmpty = isBlank(formValueAsString);
 
         String inputClass = element.attr("class");
         if (!isEmpty && inputType != null && "input".equalsIgnoreCase(name) && "text".equalsIgnoreCase(inputType)) {
-            validateMaxlength(element, inputName, formValueAsString);
-            validateFieldBasedOnType(formValue, inputClass, element);
+            validateMaxlength(element, inputName, formValueAsString, currentFieldIndex);
+            validateFieldBasedOnType(formValue, inputClass, element, currentFieldIndex);
         }
 
-        if (isEmpty && mandatory) {
+        if (isEmpty && element.parent().parent().hasClass("mandatory")) {
             errors.add(new FormError(inputName, currentFieldIndex, "aksess.formerror.mandatory"));
         }
     }
 
-    private void validateFieldBasedOnType(FormValue formValue, String inputClass, Element element) {
+    private void validateFieldBasedOnType(FormValue formValue, String inputClass, Element element, int currentFieldIndex) {
         if (formElementValidatorFactory != null) {
             FormElementValidator validator = formElementValidatorFactory.getFormElementValidatorById(inputClass);
             if (validator != null) {
@@ -139,7 +119,7 @@ public class FormSubmissionFillFilter implements Filter {
         return "";
     }
 
-    private void validateMaxlength(Element element, String inputName, String formValueAsString) {
+    private void validateMaxlength(Element element, String inputName, String formValueAsString, int currentFieldIndex) {
         String maxlength = element.attr("maxlength");
         if (isNotBlank(maxlength)) {
             int inputMaxlength = Integer.parseInt(maxlength);
@@ -181,16 +161,11 @@ public class FormSubmissionFillFilter implements Filter {
 
     @Override
     public Document runFilter(Document document) {
-        for (Element div : document.getElementsByTag("div")) {
-            checkIfDivTagIsNewFormElement(div.attributes());
-        }
-        for (Element span : document.getElementsByTag("span")) {
-            checkIfSpanTagContainsRegexpOrDateFormat(span.attributes());
-        }
+        int currentFieldIndex = 0;
         for (String input : inputs) {
             Elements elementsByTag = document.getElementsByTag(input);
             for (Element element : elementsByTag) {
-                processFormElement(input, element);
+                processFormElement(input, element, currentFieldIndex++);
             }
         }
 

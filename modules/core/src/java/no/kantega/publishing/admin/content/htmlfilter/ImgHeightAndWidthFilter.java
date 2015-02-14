@@ -33,6 +33,10 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+/**
+ * Filter that goes through img-tags, setting the width parameter based on height and
+ * width attributes on the img tag.
+ */
 public class ImgHeightAndWidthFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(ImgHeightAndWidthFilter.class);
 

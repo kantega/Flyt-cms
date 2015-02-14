@@ -24,7 +24,7 @@ import org.jsoup.select.Elements;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
- *
+ * Filter that set type=text if type is absent.
  */
 public class CleanupFormHtmlFilter implements Filter {
 
