@@ -75,7 +75,7 @@ public class HTMLEditorHelper {
         pipe.addFilter(new ImgHeightAndWidthFilter());
 
         // Remove nested span tags, typically caused by TinyMCE
-        //pipe.addFilter(new RemoveNestedSpanTagsFilter());
+        pipe.addFilter(new RemoveNestedSpanTagsFilter());
 
 
         // Replace context path with <@WEB@>
