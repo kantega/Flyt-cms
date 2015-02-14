@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  *
@@ -28,32 +28,22 @@ import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
  * This class will replace this invalid attribute to a valid inline style.
  *
  */
-public class ReplaceAlignAttributeFilter extends XMLFilterImpl {
+public class ReplaceAlignAttributeFilter implements Filter {
 
-    /**
-     * Replaces the align attribute on p and div elements with inline style attribute.
-     * @param string
-     * @param localName
-     * @param name
-     * @param attributes
-     * @throws SAXException
-     */
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-
-        if(name.equalsIgnoreCase("p") || name.equalsIgnoreCase("div")) {
-            String align = attributes.getValue("align");
-            if (align != null) {
-                if("right".equalsIgnoreCase(align)){
-                    attributes = HtmlFilterHelper.setAttribute("style", "text-align: right;", attributes);
-                } else if("left".equalsIgnoreCase(align)){
-                    attributes = HtmlFilterHelper.setAttribute("style", "text-align: left;", attributes);
-                } else if("center".equalsIgnoreCase(align)){
-                    attributes = HtmlFilterHelper.setAttribute("style", "text-align: center;", attributes);
-                }
-                attributes = HtmlFilterHelper.removeAttribute("align", attributes);
+    @Override
+    public Document runFilter(Document document) {
+        Elements elementsWithAlign = document.getElementsByAttribute("align");
+        for (Element element : elementsWithAlign) {
+            String align = element.attr("align");
+            if ("right".equalsIgnoreCase(align)) {
+                element.attr("style", "text-align: right;");
+            } else if ("left".equalsIgnoreCase(align)) {
+                element.attr("style", "text-align: left;");
+            } else if ("center".equalsIgnoreCase(align)) {
+                element.attr("style", "text-align: center;");
             }
+            element.removeAttr("align");
         }
-
-        super.startElement(string,  localName, name, attributes);
+        return document;
     }
 }

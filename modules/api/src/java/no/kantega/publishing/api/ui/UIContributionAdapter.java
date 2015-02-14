@@ -12,7 +12,7 @@ import java.util.Map;
  */
 public class UIContributionAdapter implements UIContribution {
 
-    private final List<MenuItem> adminMenuItems = new ArrayList<MenuItem>();
+    private final List<MenuItem> adminMenuItems = new ArrayList<>();
 
     @Autowired
     private UIServices uiServices;
@@ -38,16 +38,17 @@ public class UIContributionAdapter implements UIContribution {
         adminMenuItems.add(item);
     }
 
+    @SuppressWarnings("unchecked")
     private void processMenuItem(MenuItem item, Map<String, Object> map) {
-        for(String key : map.keySet()) {
-            Object dest = map.get(key);
+        for(Map.Entry<String, Object> i: map.entrySet()) {
+            Object dest = i.getValue();
             if(dest instanceof String) {
-                item.addLink(key, (String)dest);
+                item.addLink(i.getKey(), (String) dest);
             } else if (dest instanceof Map) {
-                MenuItem subitem = item.addChildMenuItem(key);
+                MenuItem subitem = item.addChildMenuItem(i.getKey());
                 processMenuItem(subitem, (Map<String, Object>) dest);
             } else {
-                throw new IllegalArgumentException("Map key " +key +" maps to illegal type " + dest.getClass().getName());
+                throw new IllegalArgumentException("Map key " + i.getKey() +" maps to illegal type " + dest.getClass().getName());
             }
         }
     }

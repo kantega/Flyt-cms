@@ -1,25 +1,30 @@
 package no.kantega.publishing.modules.forms.filter;
 
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLFilterImpl;
+import no.kantega.commons.xmlfilter.Filter;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetFormFieldsFilter extends XMLFilterImpl {
-    private List<String> fieldNames =  new ArrayList<String>();
+import static java.util.Arrays.asList;
 
-    @Override
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        if (name.equalsIgnoreCase("input") || name.equalsIgnoreCase("select") || name.equalsIgnoreCase("textarea")) {
-            String inputName = attributes.getValue("name");
-            fieldNames.add(inputName);
-        }
-        super.startElement(string,  localName, name, attributes);
-    }
+public class GetFormFieldsFilter implements Filter {
+    private final List<String> tags = asList("input", "select", "textarea");
+    private List<String> fieldNames =  new ArrayList<>();
 
     public List<String> getFieldNames() {
         return fieldNames;
+    }
+
+    @Override
+    public Document runFilter(Document document) {
+        for (String tag : tags) {
+            for (Element element : document.getElementsByTag(tag)) {
+                fieldNames.add(element.attr("name"));
+            }
+        }
+
+        return document;
     }
 }

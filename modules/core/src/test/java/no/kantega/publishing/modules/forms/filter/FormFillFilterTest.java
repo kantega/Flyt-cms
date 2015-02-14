@@ -20,7 +20,7 @@ public class FormFillFilterTest  {
     public void testInputText() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
         params.put("name", new String[] {"Lorum ipsum"});
 
         FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
@@ -36,7 +36,7 @@ public class FormFillFilterTest  {
     public void testInputTextArea() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
         params.put("name", new String[] {"Lorum ipsum"});
 
         FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
@@ -52,7 +52,7 @@ public class FormFillFilterTest  {
     public void testInputRadio() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
         params.put("choice", new String[] {"one"});
 
         FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());
@@ -68,7 +68,7 @@ public class FormFillFilterTest  {
     public void testInputSelect() throws SystemException {
         FilterPipeline pipeline = new FilterPipeline();
 
-        Map<String, String[]> params = new HashMap<String, String[]>();
+        Map<String, String[]> params = new HashMap<>();
         params.put("choice", new String[] {"one"});
 
         FormFillFilter filter = new FormFillFilter(params, new ArrayList<FormError>());

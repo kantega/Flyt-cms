@@ -16,57 +16,59 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.commons.xmlfilter.Filter;
+import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.common.util.MultimediaHelper;
 import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.spring.RootContext;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.XMLFilterImpl;
 
 import java.util.List;
 
-public class ImgHeightAndWidthFilter extends XMLFilterImpl {
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+public class ImgHeightAndWidthFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(ImgHeightAndWidthFilter.class);
 
-    private static MultimediaAO multimediaAO;
+    private static MultimediaDao multimediaDao;
+    private static ImageEditor imageEditor;
 
     @Override
-    public void startElement(String string, String localName, String name, Attributes attributes) throws SAXException {
-        if (multimediaAO == null) {
-            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
+    public Document runFilter(Document document) {
+        if(multimediaDao == null){
+            multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
+            imageEditor = RootContext.getInstance().getBean(ImageEditor.class);
         }
-        if (localName.equalsIgnoreCase("img")) {
-            String width = attributes.getValue("width");
-            String height = attributes.getValue("height");
 
-            // Replace image URL with resized image URL if necessary
-            if (width != null && height != null) {
+        for (Element img : document.getElementsByTag("img")) {
+            String width = img.attr("width");
+            String height = img.attr("height");
+            if(isNotBlank(width) && isNoneBlank(height)){
                 try {
                     int imageWidth = Integer.parseInt(width);
                     int imageHeight = Integer.parseInt(height);
 
-                    String url = attributes.getValue("src");
+                    String url = img.attr("src");
                     if (url != null) {
                         List<Integer> ids = MultimediaHelper.getMultimediaIdsFromText(url);
                         if (ids.size() == 1) {
                             int multimediaId = ids.get(0);
-                            Multimedia image = multimediaAO.getMultimedia(multimediaId);
+                            Multimedia image = multimediaDao.getMultimedia(multimediaId);
                             if (imageWidth != image.getWidth() || imageHeight != image.getHeight()) {
-                                ImageEditor imageEditor = (ImageEditor) RootContext.getInstance().getBean("aksessImageEditor");
-
                                 MultimediaDimensions d = imageEditor.getResizedImageDimensions(image.getWidth(), image.getHeight(), imageWidth, imageHeight);
-                                attributes = HtmlFilterHelper.setAttribute("height", "" + d.getHeight(), attributes);
-                                attributes = HtmlFilterHelper.setAttribute("width", "" + d.getWidth(), attributes);
-                                String resizedImageUrl = image.getUrl();
-                                resizedImageUrl += resizedImageUrl.indexOf("?") == -1 ? "?" : "&";
-                                resizedImageUrl += "width=" + d.getWidth();
-                                attributes = HtmlFilterHelper.setAttribute("src", resizedImageUrl, attributes);
+                                img.attr("height", String.valueOf(d.getHeight()));
+                                img.attr("width", String.valueOf(d.getWidth()));
+                                String imageUrl = image.getUrl();
+                                img.attr("src", imageUrl
+                                        + (imageUrl.contains("?") ? "&" : "?")
+                                        + "width=" + d.getWidth());
+
                             }
                         }
                     }
@@ -75,14 +77,8 @@ public class ImgHeightAndWidthFilter extends XMLFilterImpl {
                     log.error("Could not parse number", e);
                 }
             }
-
         }
-        super.startElement(string, localName, name, attributes);
-    }
-
-    @Override
-    public void endElement(String string, String localname, String name) throws SAXException {
-        super.endElement(string, localname, name);
+        return document;
     }
 }
 

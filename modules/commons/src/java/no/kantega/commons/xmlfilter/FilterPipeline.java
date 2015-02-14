@@ -22,40 +22,17 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.*;
-import org.xml.sax.helpers.DefaultHandler;
-import org.xml.sax.helpers.XMLFilterImpl;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FilterPipeline extends XMLFilterImpl {
+public class FilterPipeline {
     private static final Logger log = LoggerFactory.getLogger(FilterPipeline.class);
 
-    List<XMLFilter> filters = new ArrayList<>();
+    List<Filter> filters = new ArrayList<>();
 
-    public void addFilter(XMLFilterImpl filter) {
-        if (filters.size() == 0) {
-            setContentHandler(filter);
-        } else {
-            XMLFilter parent = filters.get(filters.size() - 1);
-            parent.setContentHandler(filter);
-            filter.setParent(parent);
-        }
+    public void addFilter(Filter filter) {
         filters.add(filter);
-    }
-
-    public void setEnd(ContentHandler end) {
-        if (filters.size() > 0) {
-            XMLFilter parent = filters.get(filters.size() - 1);
-            parent.setContentHandler(end);
-        }
     }
 
     public String filter(String content) throws SystemException {
@@ -64,24 +41,12 @@ public class FilterPipeline extends XMLFilterImpl {
             document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
             document.outputSettings().prettyPrint(false);
 
-            StringReader reader = new StringReader(document.getElementsByTag("body").html());
-            SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-            SAXParser saxParser = saxParserFactory.newSAXParser();
-            XMLReader xmlReader = saxParser.getXMLReader();
-            setParent(xmlReader);
-
-            DefaultHandler dh = null;
-            xmlReader.setContentHandler(this);
-
-            SerializerHandler end = new SerializerHandler();
-            this.setEnd(end);
-            if(filters.size() == 0) {
-                this.setContentHandler(end);
+            for (Filter filter : filters) {
+                document = filter.runFilter(document);
             }
 
-            saxParser.parse(new InputSource(reader), dh);
-            return end.getContent();
-        } catch (ParserConfigurationException | SAXException | IOException e) {
+            return document.getElementsByTag("body").html();
+        } catch (Exception e) {
             log.error("Could not filter", e);
             throw new SystemException("Could not filter", e);
         }
@@ -91,41 +56,4 @@ public class FilterPipeline extends XMLFilterImpl {
         filters = new ArrayList<>();
     }
 
-    private static class SerializerHandler extends DefaultHandler {
-        private final StringWriter stringWriter;
-
-        public SerializerHandler() {
-            stringWriter = new StringWriter();
-        }
-
-        @Override
-        public void characters(char[] ch, int start, int length) throws SAXException {
-            stringWriter.write(ch, start, length);
-
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-            stringWriter.write("<" + qName);
-
-            for(int i = 0; i < attributes.getLength(); i++){
-                stringWriter.append(' ');
-                stringWriter.append(attributes.getQName(i));
-                stringWriter.append("=\"");
-                stringWriter.append(attributes.getValue(i));
-                stringWriter.append('"');
-            }
-            stringWriter.write('>');
-        }
-
-        @Override
-        public void endElement(String uri, String localName, String qName) throws SAXException {
-            stringWriter.write("</" + qName + ">");
-
-        }
-
-        public String getContent() {
-            return stringWriter.getBuffer().toString();
-        }
-    }
 }

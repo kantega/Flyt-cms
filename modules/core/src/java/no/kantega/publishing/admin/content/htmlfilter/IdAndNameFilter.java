@@ -16,12 +16,18 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import org.xml.sax.helpers.XMLFilterImpl;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import no.kantega.publishing.common.util.PrettyURLEncoder;
-import no.kantega.publishing.admin.content.htmlfilter.util.HtmlFilterHelper;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.commons.xmlfilter.Filter;
+import no.kantega.publishing.common.util.PrettyURLEncoder;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * The A element: http://www.w3.org/TR/html401/struct/links.html#h-12.2
@@ -34,39 +40,33 @@ import no.kantega.commons.util.StringHelper;
  * @see HTMLEditorHelper#postEditFilter(String)
  */
 
-public class IdAndNameFilter extends XMLFilterImpl {
+public class IdAndNameFilter implements Filter{
 
-    boolean isAnchor = false;
+    @Override
+    public Document runFilter(Document document) {
+        List<String> tags = asList("a", "img");
+        List<String> attributes = asList("id", "name");
+        for (String tag : tags) {
+            Elements elementsByTag = document.getElementsByTag(tag);
+            for (Element element : elementsByTag) {
+                for (String attribute : attributes) {
+                    String value = element.attr(attribute);
+                    if(isNotBlank(value)){
+                        element.attr(attribute, validateAndCorrectAttributeValue(value));
+                    }
+                }
 
-    public void startElement(String string, String localName, String string2, Attributes attributes) throws SAXException {
-        if(localName.equalsIgnoreCase("a") || localName.equalsIgnoreCase("img")) {
-            String id = attributes.getValue("id");
-            if (id != null) {
-                id = validateAndCorrectAttributeValue(id);
-                attributes = HtmlFilterHelper.setAttribute("id", id, attributes);
+                String href = element.attr("href");
+                if (href.startsWith("#")) {
+                    href = href.substring(1, href.length());
+                    href = validateAndCorrectAttributeValue(href);
+                    element.attr("href", href);
+                }
             }
-
-            String name = attributes.getValue("name");
-            if (name != null) {
-                name = validateAndCorrectAttributeValue(name);
-                attributes = HtmlFilterHelper.setAttribute("name", name, attributes);
-            }
-
-            String href = attributes.getValue("href");
-            if (href != null && href.startsWith("#")) {
-                href = href.substring(1, href.length());
-                href = validateAndCorrectAttributeValue(href);
-                attributes = HtmlFilterHelper.setAttribute("href", "#" + href, attributes);
-            }
-
         }
-
-        super.startElement(string, localName, string2, attributes);
+        return document;
     }
 
-    public void endElement(String string, String localname, String string2) throws SAXException {
-        super.endElement(string, localname, string2);
-    }
 
     /**
      * This method replaces invalid characters in "id" and "name" attribute values according to W3C rules.
@@ -76,6 +76,9 @@ public class IdAndNameFilter extends XMLFilterImpl {
      * @param attributeValue The original attribute value
      * @return A valid attribute value
      */
+    private final Pattern charPattern = Pattern.compile("[A-Za-z]");
+    private final Pattern illegalPattern = Pattern.compile("[A-Za-z0-9\\-_:.]");
+
     private String validateAndCorrectAttributeValue(String attributeValue) {
         attributeValue = attributeValue.trim();
         attributeValue = attributeValue.replaceAll(" ", "_");
@@ -84,18 +87,20 @@ public class IdAndNameFilter extends XMLFilterImpl {
 
         // "id" and "name" attributes must begin with a letter
         String firstCharacter = attributeValue.substring(0, 1);
-        if (!firstCharacter.matches("[A-Za-z]")) {
+        if (!charPattern.matcher(firstCharacter).matches()) {
             attributeValue = "b_" + attributeValue;
         }
 
         for (int i = 0; i < attributeValue.length(); i++) {
             // Replace illegal characters with hyphens ("-"). http://www.w3.org/TR/html401/types.html#h-6.2
             String character = attributeValue.substring(i, i + 1);
-            if (!character.matches("[A-Za-z0-9\\-_:.]")) {
+            if (!illegalPattern.matcher(character).matches()) {
                 attributeValue = StringHelper.replace(attributeValue, character, "-");
             }
         }
 
         return attributeValue;
     }
+
+
 }

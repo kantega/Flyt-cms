@@ -19,7 +19,8 @@ package no.kantega.commons.xmlfilter;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 public class FilterPipelineTest {
     private FilterPipeline filterPipeline;
@@ -34,10 +35,11 @@ public class FilterPipelineTest {
         filterPipeline.removeFilters();
         String pre = "<html><head>";
         String meta = "</head>";
-        String body = "<body class=\"bodyclass\">Dette er en test med æøå ÆØÅ</body></html>";
+        String mainContent = "Dette er en test med æøå ÆØÅ";
+        String body = "<body class=\"bodyclass\">" + mainContent + "</body></html>";
         String input = pre + body;
         String filtered = filterPipeline.filter(input);
-        assertEquals(pre + meta + "<body class=\"bodyclass\">Dette er en test med æøå ÆØÅ</body></html>", filtered);
+        assertThat(filtered, is(mainContent));
 
     }
 
