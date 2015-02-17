@@ -278,7 +278,8 @@ public class DefaultImageEditor implements ImageEditor {
             cropping = Cropping.CONTAIN;
         }
 
-        if (targetHeight < image.getHeight() && targetHeight != -1 || targetWidth < image.getWidth() && targetWidth != -1) {
+
+        if (targetHeight != image.getHeight() && targetHeight != -1 || targetWidth != image.getWidth() && targetWidth != -1) {
             BufferedImage resizedImage = resizeImage(image, targetWidth, targetHeight, cropping);
             BufferedImage croppedImage = cropImage(resizedImage, targetWidth, targetHeight, cropping);
             updateMultimedia(croppedImage, multimedia);
