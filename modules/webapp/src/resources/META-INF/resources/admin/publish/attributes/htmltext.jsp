@@ -17,6 +17,7 @@
 <%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
 <%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -42,6 +43,7 @@
     value = HTMLEditorHelper.preEditFilter(value, URLHelper.getRootURL(request));
 
     Configuration conf = Aksess.getConfiguration();
+    ApplicationContext context = RootContext.getInstance();
 
     boolean isMiniAdminMode = (request.getAttribute(AdminRequestParameters.MINI_ADMIN_MODE) != null);
     String confPrefix = "editor.";
@@ -52,7 +54,7 @@
     }
     confPrefix += ".";
 
-    Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
+    Site site = context.getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
 
     String plugins = conf.getString(confPrefix + "plugins");
     if (plugins == null) {
@@ -104,11 +106,11 @@
     request.setAttribute("cssPath", cssPath);
 
     int width = attribute.getWidth();
-    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", -1);
+    if (width == -1) width = conf.getInt("editor.default.width", -1);
     request.setAttribute("attributeWidth", width == -1 ? "100%" : width + "px");
 
     int height = attribute.getHeight();
-    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 450);
+    if (height == -1) height = conf.getInt("editor.default.height", 450);
     request.setAttribute("attributeHeight", height + "px");
 
 %>
@@ -173,7 +175,7 @@
 
             // Plugin options
             <%
-                SpellcheckerService service = (SpellcheckerService)RootContext.getInstance().getBean("aksessSpellCheckerService");
+                SpellcheckerService service = context.getBean("aksessSpellCheckerService", SpellcheckerService.class);
                 Locale contentLocale = Language.getLanguageAsLocale(content.getLanguage());
                 if (service.supportsLocale(contentLocale)) {
             %>
