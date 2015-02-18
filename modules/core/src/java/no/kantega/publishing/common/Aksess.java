@@ -19,6 +19,7 @@ package no.kantega.publishing.common;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.publishing.common.data.enums.ServerType;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -220,7 +221,7 @@ public class Aksess {
         roleAdmin = c.getString("security.role.admin", "admin");
         roleAuthor = c.getStrings("security.role.author", "innholdsprodusent");
         roleForms = c.getStrings("security.role.forms", roleAdmin);
-        roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin + "," + roleAuthor);
+        roleHtmlEditor = c.getStrings("security.role.htmleditor", roleAdmin + "," + StringUtils.join(roleAuthor, ','));
         roleUnit = c.getString("security.role.unit", "enhet*");
         roleDeveloper = c.getString("security.role.developer", "developer");
         roleQualityAdmin = c.getString("security.role.qualityadmin", "qualityadmin");
