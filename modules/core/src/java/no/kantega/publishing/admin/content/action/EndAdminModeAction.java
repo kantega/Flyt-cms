@@ -24,14 +24,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: Jan 16, 2008
- * Time: 9:42:22 AM
+ * Removes session attribute «adminmode»
  */
 public class EndAdminModeAction extends AbstractController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession(true);
-        session.removeAttribute("adminMode");        
+        session.removeAttribute("adminMode");
         return null;
     }
 }
