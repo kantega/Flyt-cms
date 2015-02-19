@@ -108,7 +108,7 @@ public class Aksess {
 
     private static boolean eventLogEnabled  = false;
     private static boolean searchLogEnabled  = false;
-    private static int eventLogMaxAge = 6;
+    private static int eventLogMaxAge = 12;
 
 
     private static boolean topicMapsEnabled = false;
@@ -126,7 +126,7 @@ public class Aksess {
     private static boolean javascriptDebugEnabled;
 
     private static Configuration c;
-    
+
     private static String multimediaDefaultCopyright;
 
     private static ServerType serverType;
@@ -196,7 +196,7 @@ public class Aksess {
 
         internalIpSegment = c.getStrings("trafficlog.internalipsegment", "172.16.1");
 
-        eventLogEnabled = c.getBoolean("eventlog.enabled", false);
+        eventLogEnabled = c.getBoolean("eventlog.enabled", true);
         if (eventLogEnabled) {
             log.info( "Module enabled: Event log");
         }
@@ -447,7 +447,7 @@ public class Aksess {
 
     public static String getQualityAdminRole() {
         return roleQualityAdmin;
-    }    
+    }
 
     public static boolean isTrafficLogEnabled() {
         return trafficLogEnabled;

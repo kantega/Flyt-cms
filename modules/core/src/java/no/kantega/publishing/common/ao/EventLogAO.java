@@ -18,6 +18,7 @@ package no.kantega.publishing.common.ao;
 
 import com.google.gdata.util.common.base.Pair;
 import no.kantega.publishing.api.model.BaseObject;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
@@ -25,7 +26,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -41,16 +41,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class EventLogAO extends JdbcDaoSupport implements EventLog {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @Value("${eventlog.enabled}")
-    private boolean eventlogIsEnabled = false;
-
     public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery) {
         Pair<String, List<Object>> queryAndArguments = buildEventLogQueryString(eventLogQuery);
         return getJdbcTemplate().query(queryAndArguments.first, new EventLogQueryMapper(), queryAndArguments.second.toArray());
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object) {
-        if (eventlogIsEnabled) {
+        if (Aksess.isEventLogEnabled()) {
             User user = securitySession.getUser();
 
             String remoteAddr = "localhost";
@@ -72,7 +69,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
     }
 
     public void log(String username, String remoteAddr, String event, String subject, BaseObject object) {
-        if (eventlogIsEnabled) {
+        if (Aksess.isEventLogEnabled()) {
             if (event.length() > 255) {
                 event = event.substring(0, 254);
             }
