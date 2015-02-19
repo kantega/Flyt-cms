@@ -25,7 +25,10 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.*;
+import no.kantega.publishing.topicmaps.ao.TopicAssociationDao;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
 import no.kantega.publishing.topicmaps.data.*;
 import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
 import no.kantega.publishing.topicmaps.impl.XTMImportWorker;
@@ -209,7 +212,7 @@ public class TopicMapService {
                 // Create topicoccurences instanceof if they do not exist
                 if (occurence.getInstanceOf() != null) {
                     Topic instanceOf = occurence.getInstanceOf();
-                    if (instanceOf != null && TopicAO.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
+                    if (instanceOf != null && topicDao.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
                         topicDao.setTopic(instanceOf);
                     }
                 }

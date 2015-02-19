@@ -60,6 +60,7 @@ import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
+import no.kantega.publishing.eventlog.EventlogHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.data.enums.Privilege;
@@ -675,8 +676,6 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public void deleteContent(ContentIdentifier id) throws SystemException, ObjectInUseException, NotAuthorizedException {
-        String title = null;
-
         if (id != null) {
             Content c = getContent(id);
             if (c != null) {
@@ -688,9 +687,6 @@ public class ContentManagementService {
                 if (!securitySession.isAuthorized(c, priv)) {
                     throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to deleteContent: " + c.getId());
                 }
-                if (Aksess.isEventLogEnabled()) {
-                    title = c.getTitle();
-                }
 
                 contentNotifier.beforeContentDelete(new ContentEvent()
                         .setContent(c)
@@ -698,9 +694,7 @@ public class ContentManagementService {
                         .setUser(securitySession.getUser()));
 
                 contentAO.deleteContent(id);
-                if (title != null) {
-                    eventLog.log(securitySession, request, Event.DELETE_CONTENT, title);
-                }
+                eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle(), c);
 
                 contentNotifier.contentDeleted(new ContentEvent()
                         .setContent(c)
@@ -719,20 +713,14 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public void deleteContentVersion(ContentIdentifier id) throws SystemException, NotAuthorizedException {
-        String title = null;
 
         if (id != null) {
             Content c = getContent(id);
             if (!securitySession.isAuthorized(c, Privilege.APPROVE_CONTENT)) {
                 throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to deleteContentVersion: " + c.getId());
             }
-            if (c != null) {
-                title = c.getTitle();
-            }
-        }
-        contentAO.deleteContentVersion(id, false);
-        if (title != null) {
-            eventLog.log(securitySession, request, Event.DELETE_CONTENT_VERSION, title);
+            contentAO.deleteContentVersion(id, false);
+            eventLog.log(securitySession, request, Event.DELETE_CONTENT_VERSION, c.getTitle(), c);
         }
     }
 
@@ -743,7 +731,7 @@ public class ContentManagementService {
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
      * @param sort - Sorteringsrekkefølge
      * @param getAttributes - Hent attributter (true) for en side eller bare basisdata (false)
-     * @param getTopics - Hent topics (true) for en side eller ikke (false) 
+     * @param getTopics - Hent topics (true) for en side eller ikke (false)
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
@@ -903,7 +891,7 @@ public class ContentManagementService {
         if (content != null) {
             if (securitySession.isAuthorized(content, Privilege.APPROVE_CONTENT)) {
                 contentAO.updateDisplayPeriodForContent(cid, publishDate, expireDate, updateChildren);
-                eventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle());
+                eventLog.log(securitySession, request, Event.UPDATE_DISPLAY_PERIOD, content.getTitle(), content);
             } else {
                 throw new NotAuthorizedException(securitySession.getUser().getId() + " not authorized to updateDisplayPeriod: " + content.getId());
             }
@@ -1133,7 +1121,7 @@ public class ContentManagementService {
      * @param name - Navnet på spalten som skal hentes
      * @return
      * @throws SystemException
-     * @deprecated - Use getAssociationCategoryByPublicId 
+     * @deprecated - Use getAssociationCategoryByPublicId
      */
     @Deprecated
     public AssociationCategory getAssociationCategoryByName(String name) throws SystemException {
@@ -1246,7 +1234,7 @@ public class ContentManagementService {
         if (aDeleteHasHappened(deleteMultiple, pagesToBeDeleted)) {
             // Dette er innholdsobjekter som er slettet i sin helhet
             for (Content c : pagesToBeDeleted) {
-                eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle());
+                eventLog.log(securitySession, request, Event.DELETE_CONTENT, c.getTitle(), c);
                 contentNotifier.contentDeleted(new ContentEvent()
                         .setContent(c)
                         .setUser(securitySession.getUser()));
@@ -1398,7 +1386,7 @@ public class ContentManagementService {
             }
         }
 
-        eventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename());
+        eventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename(), EventlogHelper.toDummyBaseObject(attachment));
 
         int id = AttachmentAO.setAttachment(attachment);
         attachment.setId(id);
@@ -1421,14 +1409,11 @@ public class ContentManagementService {
         if (id == -1) {
             return;
         }
-        String title = null;
-
         Attachment attachment = AttachmentAO.getAttachment(id);
         if (attachment == null) {
             return;
         }
 
-        title = attachment.getFilename();
 
         if (attachment.getContentId() != -1) {
             ContentIdentifier cid =  ContentIdentifier.fromContentId(attachment.getContentId());
@@ -1439,7 +1424,7 @@ public class ContentManagementService {
         }
 
         AttachmentAO.deleteAttachment(id);
-        eventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, title);
+        eventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, attachment.getFilename(), EventlogHelper.toDummyBaseObject(attachment));
     }
 
 
@@ -1461,7 +1446,9 @@ public class ContentManagementService {
      * @param id - unik identifikator i basen
      * @return
      * @throws SystemException
+     * @deprecated Use XmlCache directly
      */
+    @Deprecated
     public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
         return xmlCache.getXMLFromCache(id);
     }
@@ -1472,7 +1459,9 @@ public class ContentManagementService {
      *
      * @return
      * @throws SystemException
+     * @deprecated Use XmlCache directly
      */
+    @Deprecated
     public List getXMLCacheSummary() throws SystemException {
         return xmlCache.getSummary();
     }

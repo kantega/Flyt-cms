@@ -143,12 +143,10 @@ public class MultimediaService {
 
         int id = multimediaAO.setMultimedia(multimedia);
         multimedia.setId(id);
-        if (Aksess.isEventLogEnabled()) {
-            if (multimedia.getType() == MultimediaType.FOLDER) {
-                eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName());
-            } else {
-                eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
-            }
+        if (multimedia.getType() == MultimediaType.FOLDER) {
+            eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
+        } else {
+            eventLog.log(securitySession, request, Event.SAVE_MULTIMEDIA, multimedia.getName(), multimedia);
         }
         multimediaListenerNotifier.afterSetMultimedia(new MultimediaEvent(multimedia));
         return id;
@@ -209,13 +207,10 @@ public class MultimediaService {
     }
 
     public void deleteMultimedia(int id) throws SystemException, ObjectInUseException, NotAuthorizedException {
-        String title = null;
         if (id != -1 && Aksess.isEventLogEnabled()) {
             Multimedia t = getMultimedia(id);
             multimediaListenerNotifier.beforeDeleteMultimedia(new MultimediaEvent(t));
-            if (t != null) {
-                title = t.getName();
-            }
+
             if (!securitySession.isAuthorized(t, Privilege.APPROVE_CONTENT)) {
                 throw new NotAuthorizedException(securitySession.getUser().getId() + " authorized to delete multimedia object with id " + id + ".");
             }
@@ -223,9 +218,7 @@ public class MultimediaService {
         Multimedia multimedia = getMultimedia(id);
         multimediaDao.deleteMultimedia(id);
         multimediaListenerNotifier.afterDeleteMultimedia(new MultimediaEvent(multimedia));
-        if (title != null) {
-            eventLog.log(securitySession, request, Event.DELETE_MULTIMEDIA, title);
-        }
+        eventLog.log(securitySession, request, Event.DELETE_MULTIMEDIA, multimedia.getName(), multimedia);
     }
 
     public MultimediaMapEntry getPartialMultimediaMap(int[] idList, boolean getOnlyFolders) throws SystemException {

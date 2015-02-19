@@ -68,9 +68,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject) {
-        if (eventlogIsEnabled) {
-            log(securitySession, request, event, subject, null);
-        }
+         log(securitySession, request, event, subject, null);
     }
 
     public void log(String username, String remoteAddr, String event, String subject, BaseObject object) {
