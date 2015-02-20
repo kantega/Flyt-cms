@@ -125,6 +125,7 @@
                     <ul>
                         <c:forEach var="worklist" items="${myWorkList}" varStatus="status">
                             <%
+                                // ${worklist.description} -> java.lang.NumberFormatException: For input string: "description"
                                 WorkList w = (WorkList)pageContext.getAttribute("worklist");
                                 request.setAttribute("workListDescription", w.getDescription());
                             %>
