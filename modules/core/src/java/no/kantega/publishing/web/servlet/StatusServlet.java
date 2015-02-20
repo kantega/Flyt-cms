@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class StatusServlet extends HttpServlet {
@@ -67,8 +68,9 @@ public class StatusServlet extends HttpServlet {
     }
 
     private boolean checkDatabase() {
-        try(Connection c = dbConnectionFactory.getConnection()){
-            boolean execute = c.prepareStatement("select 1").execute();
+        try(Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement ps = c.prepareStatement("select 1")){
+            boolean execute = ps.execute();
             return true;
         } catch (SQLException e) {
             return false;

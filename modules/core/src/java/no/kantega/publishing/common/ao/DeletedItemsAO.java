@@ -31,8 +31,8 @@ import java.util.List;
 public class DeletedItemsAO {
 
     public static int addDeletedItem(DeletedItem item) throws SystemException {
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement p = c.prepareStatement("INSERT INTO deleteditems (Title, ObjectType, DeletedDate, DeletedBy) VALUES (?, ?, ?, ?)", new String[] {"ID"});
+        try (Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("INSERT INTO deleteditems (Title, ObjectType, DeletedDate, DeletedBy) VALUES (?, ?, ?, ?)", new String[] {"ID"})){
 
             p.setString(1, item.getTitle());
             p.setInt(2, item.getObjectType());
@@ -41,13 +41,13 @@ public class DeletedItemsAO {
 
             p.executeUpdate();
 
-            ResultSet rs = p.getGeneratedKeys();
-            if(rs.next()) {
-                return rs.getInt(1);
-            } else {
-                throw new SystemException("Could get the generated key", null);
+            try(ResultSet rs = p.getGeneratedKeys()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                } else {
+                    throw new SystemException("Could get the generated key", null);
+                }
             }
-
         } catch (SQLException e) {
           throw new SystemException("SQL exception while adding deleteditem", e);
         }
@@ -55,9 +55,8 @@ public class DeletedItemsAO {
 
 
     public static void purgeDeletedItem(int id) throws SystemException {
-
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement p = c.prepareStatement("DELETE  FROM deleteditems WHERE Id = ?");
+        try (Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement("DELETE  FROM deleteditems WHERE Id = ?")){
             p.setInt(1, id);
             p.executeUpdate();
         } catch (SQLException e) {
@@ -77,14 +76,15 @@ public class DeletedItemsAO {
             query = "SELECT * FROM deleteditems";
         }
 
-        try (Connection c = dbConnectionFactory.getConnection()){
-            PreparedStatement p = c.prepareStatement(query + " ORDER By DeletedDate");
+        try (Connection c = dbConnectionFactory.getConnection();
+            PreparedStatement p = c.prepareStatement(query + " ORDER By DeletedDate")){
             if (userId != null && userId.length() != 0) {
                 p.setString(1, userId);
             }
-            ResultSet rs = p.executeQuery();
-            while(rs.next()) {
-                items.add(getDeletedItemFromResultSet(rs));
+            try(ResultSet rs = p.executeQuery()) {
+                while (rs.next()) {
+                    items.add(getDeletedItemFromResultSet(rs));
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Exception while getting deleteditems", e);
