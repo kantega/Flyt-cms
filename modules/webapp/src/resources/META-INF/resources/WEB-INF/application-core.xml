@@ -231,7 +231,7 @@
     <bean id="aksessPasswordValidator" class="no.kantega.commons.password.PasswordValidator">
         <property name="minLength" value="${security.password.minlength}"/>
         <property name="minDigits" value="${security.password.mindigits}"/>
-        <property name="minLowerCase" value="${security.password.minlowercase}"/>
+        <property name="minLowerCase" value="${security.password.minlowercase}"/>            w
         <property name="minUpperCase" value="${security.password.minuppercase}"/>
         <property name="minNonAlphaNumeric" value="${security.password.minnonalpha}"/>
         <property name="allowUsernameInPassword" value="${security.password.allowusernameinpassword}"/>
