@@ -31,6 +31,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -86,8 +87,7 @@ public class ImageCropAction extends AbstractEditMultimediaAction {
             log.error("", e);
         }
 
-        Map<String, Integer> model = new HashMap<String, Integer>();
-        model.put("id", mm.getId());
+        Map<String, Integer> model = Collections.singletonMap("id", mm.getId());
 
         return new ModelAndView(new RedirectView("Navigate.action"), model);
     }
