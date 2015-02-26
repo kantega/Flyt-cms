@@ -7,9 +7,14 @@
 }
 
 
-#EditContentForm input[type=text]{
+#EditContentForm input[type=text],#EditContentForm input[type=url] {
     padding: 5px;
+}
 
+#EditContentForm select{
+    border: 1px solid #ccc;
+    height: 3em;
+    background: #fff;
 }
 
 #EditContentForm .contentAttribute {
