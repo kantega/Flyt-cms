@@ -35,7 +35,7 @@ import java.util.Map;
  * Abstract base class for all actions in multimedia element such as edit, crop and create image map
  */
 public abstract class AbstractEditMultimediaAction extends AbstractController {
-    @SuppressWarnings("unchecked")
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
