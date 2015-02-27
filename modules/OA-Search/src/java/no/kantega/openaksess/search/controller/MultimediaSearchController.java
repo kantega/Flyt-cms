@@ -8,6 +8,8 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.controls.AksessController;
 import no.kantega.search.api.search.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -27,6 +29,8 @@ import static org.springframework.web.bind.ServletRequestUtils.*;
 @RequestMapping("/multimediasearch")
 public class MultimediaSearchController implements AksessController {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     @Autowired
     AksessSearchContextCreator aksessSearchContextCreator;
 
@@ -35,6 +39,12 @@ public class MultimediaSearchController implements AksessController {
 
     @Value("${oa.usefuzzysearch:false}")
     private boolean useFuzzySearch;
+
+    /**
+     * How many suggestions should autocomplete give?
+     */
+    @Value("${multimediasearch.autocomplete.suggestions:15}")
+    private int multimediaAutocompleteSuggestions;
 
     private List<String> facetQueries = emptyList();
     private List<String> facetFields = emptyList();
@@ -60,7 +70,7 @@ public class MultimediaSearchController implements AksessController {
 
     @RequestMapping("/autocomplete")
     public @ResponseBody List<AutocompleteMultimedia> autocomplete(HttpServletRequest request) {
-        List<AutocompleteMultimedia> autocompleteList = new ArrayList<>();
+        List<AutocompleteMultimedia> autocompleteList = new ArrayList<>(multimediaAutocompleteSuggestions);
         String term = request.getParameter("term");
         if (isNotBlank(term)) {
             AksessSearchContext searchContext = aksessSearchContextCreator.getSearchContext(request);
@@ -76,7 +86,11 @@ public class MultimediaSearchController implements AksessController {
     }
 
     private SearchQuery getAutocompleteQuery(String term, AksessSearchContext searchContext) {
-        return new SearchQuery(searchContext, "title_no:" + term + "*");
+        String queryString = "(title_no:" + term + "*) OR (altTitle_no:" + term + "*)";
+        SearchQuery query = new SearchQuery(searchContext, queryString, "indexedContentType:" + MultimediaTransformer.HANDLED_DOCUMENT_TYPE);
+        query.setResultsPerPage(multimediaAutocompleteSuggestions);
+        query.setQueryType(QueryType.Lucene);
+        return query;
     }
 
     private List<Multimedia> getListFromSearchResponse(HttpServletRequest request, SearchResponse searchResponse) {
@@ -87,9 +101,11 @@ public class MultimediaSearchController implements AksessController {
         for (GroupResultResponse groupResultResponse : groupResultResponses) {
             List<SearchResult> searchResults = groupResultResponse.getSearchResults();
             for (SearchResult searchResult : searchResults) {
-                if (searchResult.getIndexedContentType().equals(MultimediaTransformer.HANDLED_DOCUMENT_TYPE)) {
-                    int id = searchResult.getId();
+                int id = searchResult.getId();
+                try {
                     multimediaList.add(multimediaService.getMultimedia(id));
+                } catch (Exception e) {
+                    log.error("Error getting multimedia for id " + id, e);
                 }
             }
         }
