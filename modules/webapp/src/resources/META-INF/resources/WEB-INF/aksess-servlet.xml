@@ -791,6 +791,9 @@
     </bean>
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
+    <bean class="no.kantega.publishing.admin.administration.action.SqlToolController"/>
+
+
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">
