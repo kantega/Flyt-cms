@@ -24,7 +24,6 @@
 </kantega:section>
 
 <kantega:section id="contentclass">mypage</kantega:section>
-
 <kantega:section id="head extras">
     <script type="text/javascript">
         if (typeof properties == 'undefined') {
@@ -72,10 +71,6 @@
         $(document).ready(function(){
             $("#WorkList").tabs();
             $("#PropertySearch").load("${pageContext.request.contextPath}/admin/mypage/plugins/PropertySearch.action");
-            <%-- Disabled: https://jira.kantega.no/browse/AP-1710
-            $("#GoogleAnalytics").load("${pageContext.request.contextPath}/admin/mypage/plugins/GoogleAnalytics.action", function() {
-                widgetLoaded();
-            }); --%>
             $("#ContentStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/ContentStatistics.action");
             $("#OrgUnitStatistics").load("${pageContext.request.contextPath}/admin/mypage/plugins/OrgUnitStatistics.action");
             $("#UserInfo").load("${pageContext.request.contextPath}/admin/mypage/plugins/UserInfo.action");
@@ -221,15 +216,6 @@
                 </div>
             </div>
         </c:if>
-
-        <div class="widget">
-            <div class="widget-header">
-                <h2><a href="https://www.google.com/analytics/reporting/dashboard"><kantega:label key="aksess.googleanalytics.title"/></a></h2>
-            </div>
-            <div class="widget-content">
-                <div id="GoogleAnalytics"><div class="ajaxloading"><kantega:label key="aksess.ajax.loading"/></div></div>
-            </div>
-        </div>
     </div>
 
 </kantega:section>

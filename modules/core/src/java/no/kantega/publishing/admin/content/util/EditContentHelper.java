@@ -48,7 +48,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -387,7 +386,7 @@ public class EditContentHelper {
      * @throws InvalidTemplateException -
      */
     private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
-                                      @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
+                                      RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
                                       List<? extends Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
