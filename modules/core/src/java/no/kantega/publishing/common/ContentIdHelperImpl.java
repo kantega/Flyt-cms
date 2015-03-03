@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common;
 
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
 import no.kantega.publishing.api.cache.SiteCache;
@@ -35,6 +34,7 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,8 +245,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
                 }
             } else {
                 Pair<Integer, String> urlAdjustedBySiteAlias = getUrlAdjustedBySiteAlias(null, url);
-                siteId = urlAdjustedBySiteAlias.first;
-                url = urlAdjustedBySiteAlias.second;
+                siteId = urlAdjustedBySiteAlias.getLeft();
+                url = urlAdjustedBySiteAlias.getRight();
             }
 
             return getContentIdentifier(siteId, url);
@@ -282,7 +282,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             siteId = site.getId();
         }
 
-        return new Pair<>(siteId, url);
+        return Pair.of(siteId, url);
     }
 
     private ContentIdentifier getContentIdentifier(int siteId, String url) throws ContentNotFoundException {
@@ -347,12 +347,12 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
 
         List<Pair<Integer, Integer>> contentIdAndTypes = getJdbcTemplate().query("select ContentId, Type from associations where AssociationId = ?", associationContentIdAndTypeMapper, associationId);
         if(contentIdAndTypes.size() == 1){
-            contentId = contentIdAndTypes.get(0).first;
+            contentId = contentIdAndTypes.get(0).getLeft();
         } else if( contentIdAndTypes.size() > 1){
             log.warn("Got several results for select ContentId, Type from associations where AssociationId = {}: {}", associationId, contentIdAndTypes);
             for (Pair<Integer, Integer> contentIdAndType : contentIdAndTypes) {
-                if(contentIdAndType.second != AssociationType.SHORTCUT){
-                    contentId = contentIdAndType.first;
+                if(contentIdAndType.getRight() != AssociationType.SHORTCUT){
+                    contentId = contentIdAndType.getLeft();
                     break;
                 }
             }
@@ -364,7 +364,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     }
 
     private int getSiteIdFromRequest(HttpServletRequest request) throws SystemException {
-        return getSiteIdFromRequest(request, null).first;
+        return getSiteIdFromRequest(request, null).getLeft();
     }
 
     /**
@@ -404,8 +404,8 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             }
             if(url != null) {
                 Pair<Integer, String> urlAdjustedBySiteAlias = getUrlAdjustedBySiteAlias(site, url);
-                siteId = urlAdjustedBySiteAlias.first;
-                adjustedUrl = urlAdjustedBySiteAlias.second;
+                siteId = urlAdjustedBySiteAlias.getLeft();
+                adjustedUrl = urlAdjustedBySiteAlias.getRight();
 
             }
         }
@@ -413,7 +413,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
             siteId = siteCache.getDefaultSite().getId();
         }
 
-        return new Pair<>(siteId, adjustedUrl);
+        return  Pair.of(siteId, adjustedUrl);
     }
 
     @Override
@@ -475,7 +475,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     @Override
     public ContentIdentifier fromRequestAndUrl(HttpServletRequest request, String url) throws ContentNotFoundException, SystemException {
         Pair<Integer, String> siteId = getSiteIdFromRequest(request, url);
-        return findContentIdentifier(siteId.first, siteId.second);
+        return findContentIdentifier(siteId.getLeft(), siteId.getRight());
     }
 
     @Override
@@ -538,7 +538,7 @@ public class ContentIdHelperImpl extends JdbcDaoSupport implements ContentIdHelp
     private static final RowMapper<Pair<Integer, Integer>> associationContentIdAndTypeMapper = new RowMapper<Pair<Integer, Integer>>() {
         @Override
         public Pair<Integer, Integer> mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Pair<>(rs.getInt("ContentId"), rs.getInt("Type"));
+            return  Pair.of(rs.getInt("ContentId"), rs.getInt("Type"));
         }
     };
 }

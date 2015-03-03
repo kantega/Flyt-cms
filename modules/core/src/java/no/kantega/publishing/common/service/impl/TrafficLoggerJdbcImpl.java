@@ -24,7 +24,6 @@ import no.kantega.publishing.common.traffic.TrafficLogger;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.scheduling.annotation.Async;
 
-import javax.annotation.Nonnull;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
@@ -43,7 +42,7 @@ public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implemen
     private boolean trafficlogEnabled = true;
 
     @Async
-    public void log(@Nonnull Content content, @Nonnull HttpServletRequest request) {
+    public void log(Content content,HttpServletRequest request) {
         if (shouldLog(request)) {
             final String remoteAddr = request.getRemoteAddr();
             HttpSession session = request.getSession(false);

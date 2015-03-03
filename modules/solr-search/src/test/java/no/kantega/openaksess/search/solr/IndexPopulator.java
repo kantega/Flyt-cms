@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.solr;
 
+import com.drew.lang.annotations.Nullable;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -10,7 +11,6 @@ import org.apache.solr.common.SolrInputField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.*;

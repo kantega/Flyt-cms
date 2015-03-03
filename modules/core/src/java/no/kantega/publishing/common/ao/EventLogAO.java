@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.EventLog;
@@ -24,6 +23,7 @@ import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
@@ -43,7 +43,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
 
     public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery) {
         Pair<String, List<Object>> queryAndArguments = buildEventLogQueryString(eventLogQuery);
-        return getJdbcTemplate().query(queryAndArguments.first, new EventLogQueryMapper(), queryAndArguments.second.toArray());
+        return getJdbcTemplate().query(queryAndArguments.getLeft(), new EventLogQueryMapper(), queryAndArguments.getRight().toArray());
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object) {
@@ -133,7 +133,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
             arguments.add("%" + eventLogQuery.getEventName() + "%");
         }
         where.append(" order by Time desc");
-        return new Pair<>(where.toString(), arguments);
+        return  Pair.of(where.toString(), arguments);
     }
 
     private class EventLogQueryMapper implements RowMapper<EventLogEntry> {
