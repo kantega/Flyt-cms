@@ -19,10 +19,6 @@ import java.sql.ResultSetMetaData;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-/**
- * Created by magopl on 03.03.2015.
- */
-
 @Controller
 @RequestMapping("/admin/tools/sqltool")
 public class SqlToolController {
@@ -42,8 +38,9 @@ public class SqlToolController {
             if (isNotBlank(query)) {
                 try (Connection c  = dbConnectionFactory.getConnection();
                      PreparedStatement st = c.prepareStatement(query)){
-                    if(query.toLowerCase().contains("update") || query.toLowerCase().contains("insert")){
-                        lines.append("number of successful updates: " + st.executeUpdate());
+                    String lowerCaseQuery = query.toLowerCase();
+                    if(lowerCaseQuery.contains("update") || lowerCaseQuery.contains("insert")|| lowerCaseQuery.contains("delete")){
+                        lines.append("number of successful updates: ").append(st.executeUpdate());
                     }else{
                         ResultSet rs = st.executeQuery();
                         ResultSetMetaData mdata = rs.getMetaData();
