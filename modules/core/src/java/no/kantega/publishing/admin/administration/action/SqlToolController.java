@@ -25,7 +25,7 @@ public class SqlToolController {
     private static final Logger log = LoggerFactory.getLogger(SqlToolController.class);
 
     @RequestMapping(method = RequestMethod.GET)
-    public String placeHolderName(){
+    public String viewForm(){
         return "/admin/tools/sqltool.jsp";
     }
 
