@@ -86,6 +86,7 @@ public class MailSubscriptionServiceJdbcImplTest {
     @Test
     public void removeMailSubscriptionByMailChannelDocumentTypeShouldDelete(){
         List<MailSubscription> mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.daily);
+        List<MailSubscription> tempMailSubscriptions = mailSubscriptionByInterval;
         assertTrue("mailsubscriptions was empty", mailSubscriptionByInterval.size() > 0);
         for (MailSubscription mailSubscription : mailSubscriptionByInterval) {
             mailSubscriptionService.removeMailSubscription(mailSubscription.getEmail(), mailSubscription.getChannel(), mailSubscription.getDocumenttype());
@@ -93,11 +94,20 @@ public class MailSubscriptionServiceJdbcImplTest {
 
         mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.daily);
         assertEquals("mailSubscriptions was not removed", 0, mailSubscriptionByInterval.size());
+        reInsertmailSubscriptions( tempMailSubscriptions);
+
+    }
+
+    private void reInsertmailSubscriptions(List<MailSubscription> tempMailSubscriptions){
+        for (MailSubscription tempMailSubscription : tempMailSubscriptions) {
+            mailSubscriptionService.addMailSubscription(tempMailSubscription);
+        }
     }
 
     @Test
     public void removeMailSubscriptionByMail(){
         List<MailSubscription> mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.weekly);
+        List<MailSubscription> tempMailSubscriptions = mailSubscriptionByInterval;
         assertTrue("mailsubscriptions was empty", mailSubscriptionByInterval.size() > 0);
         for (MailSubscription mailSubscription : mailSubscriptionByInterval) {
             mailSubscriptionService.removeAllMailSubscriptions(mailSubscription.getEmail());
@@ -105,6 +115,7 @@ public class MailSubscriptionServiceJdbcImplTest {
 
         mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.weekly);
         assertEquals("mailSubscriptions was not removed", 0, mailSubscriptionByInterval.size());
+        reInsertmailSubscriptions( tempMailSubscriptions);
     }
 
     @Test
