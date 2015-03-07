@@ -2,10 +2,10 @@ package no.kantega.openaksess.search.solr.config;
 
 import no.kantega.search.api.IndexableDocumentCustomizer;
 import no.kantega.search.api.provider.DocumentTransformer;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
-import org.apache.solr.client.solrj.impl.CloudSolrServer;
-import org.apache.solr.client.solrj.impl.HttpSolrServer;
+import org.apache.solr.client.solrj.impl.CloudSolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.core.CoreContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,13 +51,13 @@ public class SolrConfiguration {
     private List<IndexableDocumentCustomizer<?>> customizers;
 
     @Bean(destroyMethod = "shutdown")
-    public SolrServer getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
+    public SolrClient getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         if(isNotBlank(cloudSolrServer)){
             log.info("Using CloudSolrServer " + cloudSolrServer);
-            return new CloudSolrServer(cloudSolrServer);
+            return new CloudSolrClient(cloudSolrServer);
         } else if(isNotBlank(httpSolrServerUrl)){
             log.info("Using HttpSolrServer " + httpSolrServerUrl);
-            return new HttpSolrServer(httpSolrServerUrl);
+            return new HttpSolrClient(httpSolrServerUrl);
         } else {
             log.info("Using EmbeddedSolrServer");
             File solrConfigFile = initSolrConfigIfAbsent(solrHome, disableUpdateSolrHome);

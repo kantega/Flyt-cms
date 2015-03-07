@@ -6,8 +6,8 @@ import no.kantega.openaksess.search.solr.provider.DefaultSearchResultDecorator;
 import no.kantega.search.api.provider.SearchResultDecorator;
 import no.kantega.search.api.search.*;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrQuery;
-import org.apache.solr.client.solrj.SolrServer;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.*;
 import org.apache.solr.client.solrj.util.ClientUtils;
@@ -41,7 +41,7 @@ public class SolrSearcher implements Searcher {
     private String boostByPublishDateQuery;
 
     @Autowired
-    private SolrServer solrServer;
+    private SolrClient solrServer;
 
     private Map<String, SearchResultDecorator<?>> resultDecoratorMap;
     private SearchResultDecorator<?> defaultSearchResultDecorator;

@@ -4,7 +4,10 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -24,15 +27,16 @@ public class SolrConfigInitializer {
      */
     public static File initSolrConfigIfAbsent(File solrHome, boolean disableUpdateSolrHome) throws IOException {
         File solrConfigFile = new File(solrHome, "solr.xml");
-        File confdir = new File(solrHome, "conf");
+        File coredir = new File(solrHome, "oacore");
+        File confdir = new File(coredir, "conf");
         File langdir = new File(confdir, "lang");
 
-        List<ConfigPair> configPairs = getConfigPairs(solrConfigFile, confdir, langdir);
+        List<ConfigPair> configPairs = getConfigPairs(solrConfigFile, coredir,  confdir, langdir);
         if(!solrHome.exists()){
             createSolrHome(solrHome, confdir, langdir, configPairs);
         } else if(!disableUpdateSolrHome){
             for (ConfigPair configPair : configPairs) {
-                 copyToConfigDir(configPair);
+                copyToConfigDir(configPair);
             }
         }
 
@@ -40,13 +44,15 @@ public class SolrConfigInitializer {
         return solrConfigFile;
     }
 
-    private static List<ConfigPair> getConfigPairs(File solrConfigFile, File confdir, File langdir) {
-        return asList(f("/solrconfig/schema.xml", new File(confdir, "schema.xml")),
-                    f("/solrconfig/solrconfig.xml", new File(confdir, "solrconfig.xml")),
-                    f("/solrconfig/elevate.xml", new File(confdir, "elevate.xml")),
-                    f("/solrconfig/solr.xml", solrConfigFile),
-                    f("/solrconfig/lang/stopwords_en.txt", new File(langdir, "stopwords_en.txt")),
-                    f("/solrconfig/lang/stopwords_no.txt", new File(langdir, "stopwords_no.txt")));
+    private static List<ConfigPair> getConfigPairs(File solrConfigFile, File coredir, File confdir, File langdir) {
+        return asList(
+                f("/solrconfig/solr.xml", solrConfigFile),
+                f("/solrconfig/oacore/core.properties", new File(coredir, "core.properties")),
+                f("/solrconfig/oacore/conf/schema.xml", new File(confdir, "schema.xml")),
+                f("/solrconfig/oacore/conf/solrconfig.xml", new File(confdir, "solrconfig.xml")),
+                f("/solrconfig/oacore/conf/elevate.xml", new File(confdir, "elevate.xml")),
+                f("/solrconfig/oacore/conf/lang/stopwords_en.txt", new File(langdir, "stopwords_en.txt")),
+                f("/solrconfig/oacore/conf/lang/stopwords_no.txt", new File(langdir, "stopwords_no.txt")));
     }
 
     private static ConfigPair f(String resourcePath, File targetFile) {
@@ -57,8 +63,8 @@ public class SolrConfigInitializer {
         log.info("Creating Solr home {}", solrHome.toString());
         boolean successfullMkdirs = solrHome.mkdirs();
 
-        successfullMkdirs &= confdir.mkdir();
-        successfullMkdirs &= langdir.mkdir();
+        successfullMkdirs &= confdir.mkdirs();
+        successfullMkdirs &= langdir.mkdirs();
 
         if(!successfullMkdirs) {
             throw new IllegalStateException("Creation of solrhome unsuccessful");
@@ -78,14 +84,11 @@ public class SolrConfigInitializer {
             log.info(configPair.targetFile.getAbsolutePath() + " exists, will not overwrite");
         } else {
             log.info("Copying {} to {}", configPair.resourcePath, configPair.targetFile);
-            copyAndCloseStreams(SolrConfigInitializer.class.getResourceAsStream(configPair.resourcePath), new FileOutputStream(configPair.targetFile));
+            try(InputStream in = SolrConfigInitializer.class.getResourceAsStream(configPair.resourcePath);
+                FileOutputStream out = new FileOutputStream(configPair.targetFile)){
+                IOUtils.copy(in, out);
+            }
         }
-    }
-
-    private static void copyAndCloseStreams(InputStream resourceAsStream, OutputStream output) throws IOException {
-        IOUtils.copy(resourceAsStream, output);
-        IOUtils.closeQuietly(resourceAsStream);
-        IOUtils.closeQuietly(output);
     }
 
     private static class ConfigPair {

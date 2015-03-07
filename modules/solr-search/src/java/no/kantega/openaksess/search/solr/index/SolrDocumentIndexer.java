@@ -4,7 +4,7 @@ import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.pdfbox.cos.COSName;
-import org.apache.solr.client.solrj.SolrServer;
+import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
@@ -30,7 +30,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
     private final Logger log  = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private SolrServer solrServer;
+    private SolrClient solrServer;
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     @Async
