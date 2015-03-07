@@ -90,10 +90,6 @@
                 <prop key="/TestPages.action">testPagesAction</prop>
 
                 <prop key="/PluginDeployment.action">pluginDeploymentController</prop>
-
-                <!-- XML Export -->
-                <prop key="Export.action">XmlExportAction</prop>
-
             </props>
         </property>
     </bean>
@@ -816,8 +812,6 @@
         <property name="pluginManager" ref="pluginManager"/>
         <property name="prefix" value="no/kantega/openaksess/admin/static/"/>
     </bean>
-
-    <bean id="XmlExportAction" class="no.kantega.publishing.controls.export.XmlExportAction"/>
 
     <bean id="velocityViewResolver" class="no.kantega.publishing.spring.ChainableVelocityViewResolver">
         <property name="viewClass" value="no.kantega.publishing.spring.CustomVelocityView"/>

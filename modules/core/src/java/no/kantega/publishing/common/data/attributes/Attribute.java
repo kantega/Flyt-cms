@@ -450,8 +450,4 @@ public abstract class Attribute implements Serializable {
         }
         return toString.toString();
     }
-
-    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
-        return new SimpleAttributeValueXMLExporter();
-    }
 }

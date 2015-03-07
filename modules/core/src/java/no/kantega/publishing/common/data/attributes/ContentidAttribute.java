@@ -17,8 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.admin.content.behaviours.attributes.ContentidAttributeValueXMLExporter;
-import no.kantega.publishing.admin.content.behaviours.attributes.XMLAttributeValueExporter;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -120,7 +118,4 @@ public class ContentidAttribute extends Attribute {
         return cids;
     }
 
-    public XMLAttributeValueExporter getXMLAttributeValueExporter() {
-        return new ContentidAttributeValueXMLExporter();
-    }
 }
