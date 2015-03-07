@@ -41,6 +41,28 @@
     -->
     <luceneMatchVersion>5.0.0</luceneMatchVersion>
 
+    <!-- <lib/> directives can be used to instruct Solr to load any Jars
+           identified and use them to resolve any "plugins" specified in
+           your solrconfig.xml or schema.xml (ie: Analyzers, Request
+           Handlers, etc...).
+
+           All directories and paths are resolved relative to the
+           instanceDir.
+
+           Please note that <lib/> directives are processed in the order
+           that they appear in your solrconfig.xml file, and are "stacked"
+           on top of each other when building a ClassLoader - so if you have
+           plugin jars with dependencies on other jars, the "lower level"
+           dependency jars should be loaded first.
+
+           If a "./lib" directory exists in your instanceDir, all files
+           found in it are included as if you had used the following
+           syntax...
+
+                  <lib dir="./lib" />
+     -->
+    <lib dir="./lib" />
+
     <!-- Data Directory
 
        Used to specify an alternate directory to hold all index data
