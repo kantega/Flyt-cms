@@ -17,13 +17,14 @@
 package no.kantega.publishing.common.ao;
 
 import com.google.gdata.util.common.base.Pair;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
@@ -38,8 +39,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class EventLogAO extends JdbcDaoSupport implements EventLog {
 
-    @Value("${eventlog.enabled}")
-    private boolean eventlogIsEnabled = false;
+    @Autowired
+    private SystemConfiguration configuration;
 
     public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery) {
         Pair<String, List<Object>> queryAndArguments = buildEventLogQueryString(eventLogQuery);
@@ -47,7 +48,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object) {
-        if (eventlogIsEnabled) {
+        if (eventlogIsEnabled()) {
             User user = securitySession.getUser();
 
             String remoteAddr = "localhost";
@@ -65,13 +66,13 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject) {
-        if (eventlogIsEnabled) {
+        if (eventlogIsEnabled()) {
             log(securitySession, request, event, subject, null);
         }
     }
 
     public void log(String username, String remoteAddr, String event, String subject, BaseObject object) {
-        if (eventlogIsEnabled) {
+        if (eventlogIsEnabled()) {
             if (event.length() > 255) {
                 event = event.substring(0, 254);
             }
@@ -97,9 +98,13 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
         }
     }
 
+    private boolean eventlogIsEnabled() {
+        return configuration.getBoolean("eventlog.enabled", true);
+    }
+
     private Pair<String, List<Object>> buildEventLogQueryString(EventLogQuery eventLogQuery) {
         StringBuilder where = new StringBuilder("select * from eventlog where");
-        List<Object> arguments = new ArrayList<Object>();
+        List<Object> arguments = new ArrayList<>();
         if (eventLogQuery.getFrom() != null) {
             where.append(" Time >= ?");
             arguments.add(eventLogQuery.getFrom());

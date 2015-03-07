@@ -217,9 +217,6 @@
                 <prop key="/admin/publish/AddListOption.action">AddListOptionAction</prop>
                 <prop key="/admin/publish/RemoveListOption.action">RemoveListOptionAction</prop>
 
-                <!-- XML Export -->
-                <prop key="/admin/export/export.action">XmlExportAction</prop>
-
             </props>
         </property>
     </bean>
