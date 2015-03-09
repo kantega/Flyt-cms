@@ -16,7 +16,9 @@
 
 package no.kantega.publishing.admin.administration.action;
 
-import no.kantega.publishing.common.service.lock.LockManager;
+
+import no.kantega.publishing.api.service.lock.LockManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -30,10 +32,11 @@ import java.util.Map;
  */
 public class ListContentLocksAction extends AbstractController {
     private String view;
+    @Autowired private LockManager lockManager;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        LockManager.cleanup();
-        Map locks = LockManager.getLocks();
+        lockManager.cleanup();
+        Map locks = lockManager.getLocks();
 
         Map<String, Object> model = new HashMap<>();
         model.put("locks", locks);
