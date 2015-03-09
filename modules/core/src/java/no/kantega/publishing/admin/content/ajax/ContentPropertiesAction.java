@@ -27,6 +27,8 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.api.service.lock.ContentLock;
+import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -36,8 +38,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.lock.ContentLock;
-import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
@@ -68,6 +68,7 @@ public class ContentPropertiesAction {
     @Autowired private UserPreferencesManager userPreferencesManager;
     @Autowired private ContentIdHelper contentIdHelper;
     @Autowired(required = false) private OrganizationManager organizationManager;
+    @Autowired private LockManager lockManager;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -150,7 +151,7 @@ public class ContentPropertiesAction {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.changefromdate", Aksess.getDefaultAdminLocale()));
                 }
 
-                ContentLock lock = LockManager.peekAtLock(content.getId());
+                ContentLock lock = lockManager.peekAtLock(content.getId());
                 if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
                     String lockedBy = lock.getOwner();
                     model.put(AdminRequestParameters.PERMISSONS_LOCKED_BY, lockedBy);

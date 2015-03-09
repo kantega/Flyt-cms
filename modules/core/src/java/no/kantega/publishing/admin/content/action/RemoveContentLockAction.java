@@ -17,22 +17,23 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.common.service.lock.LockManager;
+import no.kantega.publishing.api.service.lock.LockManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
-
 public class RemoveContentLockAction extends AbstractController {
+    @Autowired private LockManager lockManager;
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request, "utf-8");
         int contentId = param.getInt("contentId");
 
         if (contentId != -1) {
-            LockManager.releaseLock(contentId);
+            lockManager.releaseLock(contentId);
         }
 
         return new ModelAndView(new RedirectView("ListContentLocks.action"));

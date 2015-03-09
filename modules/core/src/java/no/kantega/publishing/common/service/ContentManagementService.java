@@ -30,6 +30,8 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.api.service.lock.ContentLock;
+import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
@@ -49,8 +51,6 @@ import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.service.impl.SiteMapWorker;
-import no.kantega.publishing.common.service.lock.ContentLock;
-import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.common.traffic.TrafficLogger;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import no.kantega.publishing.common.util.templates.TemplateHelper;
@@ -95,6 +95,7 @@ public class ContentManagementService {
     private ContentAO contentAO;
     private ContentIdHelper contentIdHelper;
     private ContentEventListener contentNotifier;
+    private LockManager lockManager;
 
     private ContentManagementService() {
         ApplicationContext context = RootContext.getInstance();
@@ -112,6 +113,8 @@ public class ContentManagementService {
         contentIdHelper = context.getBean(ContentIdHelper.class);
         cachingEnabled = Aksess.getConfiguration().getBoolean("caching.enabled", false);
         contentNotifier = context.getBean("contentListenerNotifier", ContentEventListener.class);
+        lockManager = context.getBean(LockManager.class);
+
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
@@ -153,7 +156,7 @@ public class ContentManagementService {
      */
     public Content checkOutContent(ContentIdentifier id) throws SystemException, NotAuthorizedException, InvalidFileException, InvalidTemplateException, ObjectLockedException {
         contentIdHelper.assureContentIdAndAssociationIdSet(id);
-        ContentLock lock = LockManager.peekAtLock(id.getContentId());
+        ContentLock lock = lockManager.peekAtLock(id.getContentId());
         if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
             throw new ObjectLockedException(securitySession.getUser().getId());
         }
@@ -170,7 +173,7 @@ public class ContentManagementService {
         // Reset minor change field
         c.setMinorChange(Aksess.isDefaultMinorChange());
 
-        LockManager.lockContent(securitySession.getUser().getId(), c.getId());
+        lockManager.lockContent(securitySession.getUser().getId(), c.getId());
 
         EditContentHelper.updateAttributesFromTemplate(c);
 
@@ -324,7 +327,7 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException, NotAuthorizedException {
-        LockManager.releaseLock(content.getId());
+        lockManager.releaseLock(content.getId());
         boolean hasBeenPublished = contentAO.hasBeenPublished(content.getId());
         boolean isNewContent = content.isNew();
 
