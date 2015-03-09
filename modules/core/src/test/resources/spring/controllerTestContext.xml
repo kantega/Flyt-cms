@@ -13,6 +13,8 @@
     </bean>
     <bean class="no.kantega.publishing.client.AliasRequestHandler" />
 
+    <bean class="no.kantega.publishing.common.service.lock.LockManager"/>
+
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMapping" />
     <bean class="no.kantega.publishing.spring.AksessAliasHandlerMappingAdapter"/>
 

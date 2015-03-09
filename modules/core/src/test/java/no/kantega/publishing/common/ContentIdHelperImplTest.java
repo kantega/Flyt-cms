@@ -1,6 +1,6 @@
 package no.kantega.publishing.common;
 
-import com.google.gdata.util.common.base.Pair;
+
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
@@ -8,6 +8,7 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -150,7 +151,7 @@ public class ContentIdHelperImplTest {
         Method getSiteIdFromRequest = ReflectionUtils.findMethod(ContentIdHelperImpl.class, "getSiteIdFromRequest", HttpServletRequest.class, String.class);
         getSiteIdFromRequest.setAccessible(true);
 
-        assertEquals(new Pair<>(1, "/?siteId=1"), getSiteIdFromRequest.invoke(contentIdHelper, new MockHttpServletRequest("GET", "/"), "/?siteId=1"));
+        assertEquals( Pair.of(1, "/?siteId=1"), getSiteIdFromRequest.invoke(contentIdHelper, new MockHttpServletRequest("GET", "/"), "/?siteId=1"));
     }
 
     @Test
@@ -160,7 +161,7 @@ public class ContentIdHelperImplTest {
 
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
         request.setParameter("siteId", "1");
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
     }
 
     @Test
@@ -174,7 +175,7 @@ public class ContentIdHelperImplTest {
         content.setAssociations(asList(association));
         MockHttpServletRequest request = new MockHttpServletRequest("GET", "/");
         request.setAttribute("aksess_this", content);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
     }
 
     @Test
@@ -189,7 +190,7 @@ public class ContentIdHelperImplTest {
         site.setId(1);
         site.setAlias("/alias");
         when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/alias"));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/alias"));
     }
 
     @Test
@@ -205,7 +206,7 @@ public class ContentIdHelperImplTest {
         String alias = "/" + serverName;
         site.setAlias(alias);
         when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, alias));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, alias));
     }
 
     @Test
@@ -219,7 +220,7 @@ public class ContentIdHelperImplTest {
         site.setId(1);
         site.setAlias("/" + serverName);
         when(siteCache.getSites()).thenReturn(singletonList(site));
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
     }
 
     @Test
@@ -235,7 +236,7 @@ public class ContentIdHelperImplTest {
         site.setAlias("/" + serverName);
 
         when(siteCache.getSiteByHostname(serverName)).thenReturn(site);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/" + serverName));
     }
 
     @Test
@@ -247,7 +248,7 @@ public class ContentIdHelperImplTest {
         Site site = new Site();
         site.setId(1);
         when(siteCache.getDefaultSite()).thenReturn(site);
-        assertEquals(new Pair<>(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
+        assertEquals(Pair.of(1, "/"), getSiteIdFromRequest.invoke(contentIdHelper, request, "/"));
     }
 
     @Test
