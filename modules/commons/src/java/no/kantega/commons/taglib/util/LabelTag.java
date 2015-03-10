@@ -71,6 +71,7 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                 }
 
                 String textLabel = "";
+                // Try site-bundle first, so that the project may overwrite properties from DEFAULT_BUNDLE
                 if (bundle.equals(LocaleLabels.DEFAULT_BUNDLE)) {
                     textLabel = LocaleLabels.getLabel(key, "site", locale, params);
                 }
