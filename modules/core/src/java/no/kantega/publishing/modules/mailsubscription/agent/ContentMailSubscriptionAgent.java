@@ -19,6 +19,7 @@ package no.kantega.publishing.modules.mailsubscription.agent;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.mailsubscription.MailSubscription;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
@@ -57,11 +58,13 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
     @Autowired
     private ContentAO contentAO;
 
+    private SystemConfiguration configuration;
+
     @Override
     public void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval) {
         if (previousRun != null) {
             // Send ut epost med alle nye meldinger
-            boolean groupEmails = Aksess.getConfiguration().getBoolean("mail.subscription.groupemails", false);
+            boolean groupEmails = configuration.getBoolean("mail.subscription.groupemails", false);
 
             if (groupEmails) {
                 // Send en epost for alle sites
@@ -93,7 +96,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
         Role everyone = new Role();
         everyone.setId(Aksess.getEveryoneRole());
 
-        boolean sendProtectedContent = Aksess.getConfiguration().getBoolean("mail.subscription.sendprotectedcontent", false);
+        boolean sendProtectedContent = configuration.getBoolean("mail.subscription.sendprotectedcontent", false);
 
         for (Content content : allContentList) {
             if (sendProtectedContent || SecurityService.isAuthorized(everyone, content, Privilege.VIEW_CONTENT)) {
@@ -140,7 +143,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
             if (email.contains("@")) {
                 List<Content> subscriberContent = subscribers.get(email);
                 if (subscriberContent == null) {
-                    subscriberContent = new ArrayList<Content>();
+                    subscriberContent = new ArrayList<>();
                     subscribers.put(email, subscriberContent);
                 }
 
