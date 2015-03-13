@@ -30,7 +30,8 @@
 
     <context:annotation-config/>
 
-    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"/>
+    <!--bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter" -->
+    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
 
     <mvc:default-servlet-handler/>
 
