@@ -42,12 +42,25 @@ public class IndexRebuilder {
     @Value("${IndexRebuilder.queueLength:1}")
     private int queueLength = 1;
 
+    private List<ProgressReporter> progressReporters;
+
+
+    public void stopIndexing(){
+        if(progressReporters==null)return;
+        for (ProgressReporter progressReporter : progressReporters) {
+            progressReporter.setIsFinished(true);
+        }
+        documentIndexer.deleteAllDocuments();
+        documentIndexer.commit();
+        documentIndexer.optimize();
+    }
+
     public List<ProgressReporter> startIndexing(List<String> providersToInclude) {
         BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
 
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
-        List<ProgressReporter> progressReporters = getProgressReporters(providers);
 
+        progressReporters = getProgressReporters(providers);
         startConsumer(indexableDocuments, progressReporters);
         startProducer(indexableDocuments, providers);
 
@@ -62,6 +75,7 @@ public class IndexRebuilder {
                     log.info("Starting IndexableDocumentProvider {}", provider.getName());
                     provider.provideDocuments(indexableDocuments);
                     log.info("Finished IndexableDocumentProvider {}", provider.getName());
+                    log.info("progressReportert stats: "+provider.getProgressReporter().getTotal()+", "+provider.getProgressReporter().isFinished());
                 }
             }
         });

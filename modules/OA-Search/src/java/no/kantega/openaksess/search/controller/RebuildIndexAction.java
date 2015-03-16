@@ -45,6 +45,8 @@ public class RebuildIndexAction {
 
     @Autowired
     private IndexRebuilder indexRebuilder;
+
+
     private List<ProgressReporter> progressReporters;
     @Autowired
     private List<IndexableDocumentProvider> indexableDocumentProviders;
@@ -66,12 +68,12 @@ public class RebuildIndexAction {
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.POST)
     public ModelAndView handlePost(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
-
         if (progressReporters == null) {
             List<String> providersToInclude = getProvidersToInclude(request);
             SecuritySession securitySession = SecuritySession.getInstance(request);
             log.info("Rebuild index started by {}. Providers: {}", securitySession.getUser().getId(), providersToInclude);
             progressReporters = indexRebuilder.startIndexing(providersToInclude);
+
         }
         return new ModelAndView(statusView, map);
     }
@@ -102,6 +104,14 @@ public class RebuildIndexAction {
         SecuritySession securitySession = SecuritySession.getInstance(request);
         log.info("{} deleted the search index", securitySession.getUser().getId());
         indexRebuilder.deleteIndex();
+        return handleGet();
+    }
+
+    @RequestMapping(value = "/admin/administration/StopIndex.action", method = RequestMethod.POST)
+    public ModelAndView stopIndex(HttpServletRequest request) throws Exception {
+        SecuritySession securitySession = SecuritySession.getInstance(request);
+        log.info("{} stop the search index", securitySession.getUser().getId());
+        indexRebuilder.stopIndexing();
         return handleGet();
     }
 

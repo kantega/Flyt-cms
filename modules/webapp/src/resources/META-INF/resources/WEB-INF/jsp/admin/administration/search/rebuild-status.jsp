@@ -47,5 +47,12 @@
         }
         updateStatus();
     </script>
+    <form action="StopIndex.action" name="stopIndex" method="POST">
+        <admin:box>
+            <div class="buttonGroup">
+                <a href="#" onclick="document.stopIndex.submit()" class="button"><span class="ok"><kantega:label key="aksess.button.stop"/></span></a>
+            </div>
+        </admin:box>
+    </form>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>

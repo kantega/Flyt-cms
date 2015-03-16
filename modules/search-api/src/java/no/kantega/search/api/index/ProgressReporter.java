@@ -31,6 +31,10 @@ public class ProgressReporter {
     private final AtomicBoolean isFinished;
     private final AtomicBoolean isStarted;
 
+    public void setIsFinished(boolean isFinished) {
+        this.isFinished.set(isFinished);
+    }
+
     /**
      * @param docType - the document type of this indexprocess, typically the value of indexedContentType
      * @param total - The total number of documents that is submitted.
