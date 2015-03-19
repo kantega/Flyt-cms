@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.service.lock;
+package no.kantega.publishing.api.service.lock;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
 
 public class ContentLock {
