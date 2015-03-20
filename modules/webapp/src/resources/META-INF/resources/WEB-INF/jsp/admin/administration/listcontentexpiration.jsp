@@ -32,7 +32,7 @@
 
   <form name="myform" action="ListContentExpiration.action" method="post">
     <admin:box>
-      <h1><kantega:label key="aksess.contentexpire.title"/></h1>
+      <h1><kantega:label key="aksess.contentexpire.title"/> je je</h1>
 
       <div class="formElement">
         <div class="heading"><kantega:label key="aksess.contentexpire.period"/></div>
@@ -71,8 +71,11 @@
           <aksess:getcollection name="pages" varStatus="status">
             <tr class="tableRow${status.index mod 2}">
               <td><aksess:getattribute name="expiredate" collection="pages"/></td>
-              <td><aksess:link collection="pages" target="_new"><aksess:getattribute name="title"
-                                                                                     collection="pages"/></aksess:link></td>
+              <td>
+                <a href="<aksess:geturl/>/admin/publish/Navigate.action?thisId=<aksess:getattribute name="id" collection="pages"/>">
+                  <aksess:getattribute name="title" collection="pages"/>
+                </a>
+              </td>
               <td>
                 <aksess:exists name="owner" collection="pages">
                   <aksess:getattribute name="owner" collection="pages"/>
