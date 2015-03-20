@@ -32,7 +32,7 @@
 
   <form name="myform" action="ListContentExpiration.action" method="post">
     <admin:box>
-      <h1><kantega:label key="aksess.contentexpire.title"/> je je</h1>
+      <h1><kantega:label key="aksess.contentexpire.title"/></h1>
 
       <div class="formElement">
         <div class="heading"><kantega:label key="aksess.contentexpire.period"/></div>
