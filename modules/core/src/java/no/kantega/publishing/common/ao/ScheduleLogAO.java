@@ -63,7 +63,7 @@ public class ScheduleLogAO {
 
     private static PreparedStatement getLastRunStatement(Connection c, Date lastRun) throws SQLException {
         if (lastRun == null) {
-            return c.prepareStatement("insert into schedulelog values(?,?)");
+            return c.prepareStatement("insert into schedulelog(LastRun, Service) values(?,?)");
         } else {
             return c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
         }
