@@ -16,21 +16,19 @@
 
 package no.kantega.publishing.velocity;
 
+import no.kantega.commons.filter.AksessRequestFilter;
+import org.apache.velocity.context.InternalContextAdapter;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.node.ASTReference;
 import org.apache.velocity.runtime.parser.node.ASTStringLiteral;
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.runtime.parser.node.Node;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.Writer;
 import java.io.IOException;
 import java.io.StringWriter;
-
-import no.kantega.commons.filter.AksessRequestFilter;
+import java.io.Writer;
 
 /**
  */

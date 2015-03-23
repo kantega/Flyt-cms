@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.admin.content.action;
 
-import javax.servlet.http.HttpServletRequest;
-
 import no.kantega.publishing.common.data.Content;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 

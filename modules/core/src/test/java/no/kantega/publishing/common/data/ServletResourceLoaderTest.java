@@ -17,15 +17,14 @@
 package no.kantega.publishing.common.data;
 
 import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.web.context.support.ServletContextResourceLoader;
+
+import java.io.IOException;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.springframework.web.context.support.ServletContextResourceLoader;
-import org.springframework.core.io.ByteArrayResource;
-
-import javax.servlet.ServletContext;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 /**
  *

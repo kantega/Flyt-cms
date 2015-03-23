@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.common.data;
 
-import java.util.Calendar;
-
 public class PeriodViewStatistics {
     private int noPageViews = 0;
     private String period = "";

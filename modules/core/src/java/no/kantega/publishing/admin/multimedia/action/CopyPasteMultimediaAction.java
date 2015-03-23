@@ -20,12 +20,11 @@ import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.service.MultimediaService;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 public class CopyPasteMultimediaAction implements Controller {
     private String view;

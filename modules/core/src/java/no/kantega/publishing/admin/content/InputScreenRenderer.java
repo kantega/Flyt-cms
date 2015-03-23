@@ -52,13 +52,13 @@ public class InputScreenRenderer {
 
     private PageContext pageContext = null;
     private Content content = null;
-    private int attributeType = -1;
+    private AttributeDataType attributeType = AttributeDataType.getDataTypeAsEnum(-1);
     private boolean hiddenAttributes = false;
 
-    public InputScreenRenderer(PageContext pageContext, Content content, int attributeType) {
+    public InputScreenRenderer(PageContext pageContext, Content content, AttributeDataType attributeDataType) {
         this.pageContext = pageContext;
         this.content  = content;
-        this.attributeType = attributeType;
+        this.attributeType = attributeDataType;
     }
 
 

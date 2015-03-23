@@ -214,17 +214,17 @@ public class EditContentHelper {
         }
     }
 
-    public static void addRepeaterRow(Content content, String rowPath, int attributeType) throws InvalidTemplateException {
+    public static void addRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) throws InvalidTemplateException {
         ContentTemplate template = null;
 
-        if (attributeType == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
-                content.setAttributes(new ArrayList<Attribute>(), attributeType);
+                content.setAttributes(new ArrayList<Attribute>(), attributeDataType);
             }
         }
 
@@ -232,7 +232,7 @@ public class EditContentHelper {
             return;
         }
 
-        Attribute attr = getAttributeByName(content.getAttributes(attributeType), rowPath);
+        Attribute attr = getAttributeByName(content.getAttributes(attributeDataType), rowPath);
         if (attr != null &&  attr instanceof RepeaterAttribute) {
             RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
 
@@ -241,7 +241,7 @@ public class EditContentHelper {
 
             List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
 
-            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
+            addAttributes(template, attributeDataType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
         }
     }
 
@@ -273,21 +273,21 @@ public class EditContentHelper {
         updateAttributesFromTemplate(content, AttributeDataType.META_DATA, defaultValues);
     }
 
-    private static void updateAttributesFromTemplate(Content content, int attributeType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
+    private static void updateAttributesFromTemplate(Content content, AttributeDataType attributeDataType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
         ContentTemplate template = null;
 
         if (defaultValues == null) {
             defaultValues = new HashMap<>();
         }
 
-        if (attributeType == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
-                content.setAttributes(new ArrayList<Attribute>(), attributeType);
+                content.setAttributes(new ArrayList<Attribute>(), attributeDataType);
             }
         }
 
@@ -297,14 +297,14 @@ public class EditContentHelper {
 
         List<Attribute> newAttributes = new ArrayList<>();
 
-        addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
+        addAttributes(template, attributeDataType, defaultValues, null, newAttributes, content.getAttributes(attributeDataType), template.getAttributeElements());
 
-        addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
+        addDefaultFieldMapping(attributeDataType, template, template.getAttributeElements(), newAttributes);
 
-        content.setAttributes(newAttributes, attributeType);
+        content.setAttributes(newAttributes, attributeDataType);
     }
 
-    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
+    private static void addDefaultFieldMapping(AttributeDataType attributeDataType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
         // Some attributes are mapped to specific properties in the Content object, search for these
         // These are always located at root level, never inside a repeater
         String titleField = null;
@@ -337,7 +337,7 @@ public class EditContentHelper {
         }
 
 
-        if (attributeType == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             /*
             * If mapping of attributes to Content properties are not specified
             * map them as follows:
@@ -377,7 +377,7 @@ public class EditContentHelper {
 
     /**
      * Create attributes recursively
-     * @param attributeType - type of attributes to create, content or metadata
+     * @param attributeDataType - type of attributes to create, content or metadata
      * @param defaultValues - used to initialize attributes with default values
      * @param newParentAttribute - parent of attributes
      * @param newAttributes - list with new attributes
@@ -386,7 +386,7 @@ public class EditContentHelper {
      * @throws SystemException -
      * @throws InvalidTemplateException -
      */
-    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
+    private static void addAttributes(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues,
                                       @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
                                       List<? extends Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
@@ -399,9 +399,9 @@ public class EditContentHelper {
                 type = xmlAttribute.getAttribute("type");
             }
 
-            Attribute attribute = createAttribute(template, attributeType, defaultValues, newParentAttribute, xmlAttribute, name, type);
+            Attribute attribute = createAttribute(template, attributeDataType, defaultValues, newParentAttribute, xmlAttribute, name, type);
 
-            addRepeaterAttribute(template, attributeType, defaultValues, oldAttributes, xmlAttribute, attribute);
+            addRepeaterAttribute(template, attributeDataType, defaultValues, oldAttributes, xmlAttribute, attribute);
 
             newAttributes.add(attribute);
 
@@ -415,7 +415,7 @@ public class EditContentHelper {
         }
     }
 
-    private static Attribute createAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues, RepeaterAttribute newParentAttribute, Element xmlAttribute, String name, String type) throws InvalidTemplateException {
+    private static Attribute createAttribute(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues, RepeaterAttribute newParentAttribute, Element xmlAttribute, String name, String type) throws InvalidTemplateException {
         AttributeFactory attributeFactory = new ClassNameAttributeFactory();
 
         Attribute attribute;
@@ -428,7 +428,7 @@ public class EditContentHelper {
         }
 
         attribute.setName(name);
-        attribute.setType(attributeType);
+        attribute.setType(attributeDataType);
 
         attribute.setConfig(xmlAttribute, defaultValues);
 
@@ -438,7 +438,7 @@ public class EditContentHelper {
         return attribute;
     }
 
-    private static void addRepeaterAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
+    private static void addRepeaterAttribute(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues,
                                              List<? extends Attribute> oldAttributes, Element xmlAttribute, Attribute attribute) throws InvalidTemplateException {
         if (attribute instanceof RepeaterAttribute) {
             /*
@@ -469,7 +469,7 @@ public class EditContentHelper {
                     }
                 }
 
-                addAttributes(template, attributeType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                addAttributes(template, attributeDataType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
                 repeater.addRow(newRowAttributes);
             }
         }
@@ -559,8 +559,8 @@ public class EditContentHelper {
         }
     }
 
-    public static void deleteRepeaterRow(Content content, String rowPath, int attributeType) {
-        List<Attribute> attributes = content.getAttributes(attributeType);
+    public static void deleteRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) {
+        List<Attribute> attributes = content.getAttributes(attributeDataType);
 
         if (rowPath.contains("[")) {
             String repeaterName = rowPath.substring(0, rowPath.indexOf('['));

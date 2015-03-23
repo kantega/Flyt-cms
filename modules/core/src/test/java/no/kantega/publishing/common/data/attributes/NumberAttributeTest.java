@@ -4,8 +4,9 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import org.dom4j.dom.DOMElement;
 import org.junit.Test;
-import static org.junit.Assert.*;
-import org.w3c.dom.*;
+import org.w3c.dom.Element;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by esphoe on 19/11/14.

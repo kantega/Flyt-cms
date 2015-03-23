@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.security.data;
 
-import no.kantega.publishing.common.data.enums.ObjectType;
-
 import java.util.List;
 
 public class ObjectPermissionsOverview {

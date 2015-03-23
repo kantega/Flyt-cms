@@ -16,21 +16,21 @@
 
 package no.kantega.publishing.admin.security.action;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.RoleType;
-import no.kantega.publishing.common.service.TopicMapService;
 import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.commons.client.util.RequestParameters;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Map;
 import java.util.HashMap;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
+import java.util.Map;
 
 public class AddTopicRoleAction extends AbstractController {
     private String view;

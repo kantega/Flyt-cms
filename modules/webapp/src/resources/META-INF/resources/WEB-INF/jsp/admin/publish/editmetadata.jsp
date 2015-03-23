@@ -3,6 +3,7 @@
 <%@ page import="no.kantega.publishing.common.data.attributes.OrgunitAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.UserAttribute" %>
 <%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
+<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataTypeOld" %>
 <%@ page import="no.kantega.publishing.forum.ForumProvider" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>

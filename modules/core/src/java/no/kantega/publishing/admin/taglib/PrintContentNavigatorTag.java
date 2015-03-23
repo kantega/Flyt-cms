@@ -23,7 +23,6 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.NavigationMapEntry;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.util.PrettyURLEncoder;
 
 import javax.servlet.jsp.JspWriter;
 import java.io.IOException;

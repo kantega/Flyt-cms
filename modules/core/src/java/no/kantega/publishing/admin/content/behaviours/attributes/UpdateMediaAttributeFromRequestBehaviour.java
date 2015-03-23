@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.multipart.MultipartFile;
 
 /**

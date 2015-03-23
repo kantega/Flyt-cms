@@ -16,17 +16,15 @@
 
 package no.kantega.publishing.admin.security.action;
 
-import org.springframework.web.servlet.mvc.AbstractController;
+import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.List;
-
-import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.publishing.admin.security.action.EditPermissionsAction;
 
 /**
  * User: Anders Skar, Kantega AS

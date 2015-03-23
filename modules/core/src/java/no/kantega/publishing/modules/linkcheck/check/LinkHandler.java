@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
-import java.sql.PreparedStatement;
-
 /**
  *
  */

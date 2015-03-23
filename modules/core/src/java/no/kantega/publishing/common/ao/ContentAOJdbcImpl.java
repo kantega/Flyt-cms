@@ -995,8 +995,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         return content;
     }
 
-    private void insertAttributes(final Connection c, final Content content, final int type) throws SQLException, SystemException {
-        content.doForEachAttribute(type, new AttributeHandler() {
+    private void insertAttributes(final Connection c, final Content content, final AttributeDataType attributeDataType) throws SQLException, SystemException {
+        content.doForEachAttribute(attributeDataType, new AttributeHandler() {
             public void handleAttribute(Attribute attr) {
                 PersistAttributeBehaviour attributeSaver = attr.getSaveBehaviour();
                 try {

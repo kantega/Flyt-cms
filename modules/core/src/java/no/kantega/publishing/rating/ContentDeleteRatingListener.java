@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.rating;
 
+import no.kantega.publishing.api.rating.RatingService;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
-import no.kantega.publishing.api.rating.RatingService;
 
 public class ContentDeleteRatingListener extends ContentEventListenerAdapter {
     private RatingService ratingService;

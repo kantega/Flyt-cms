@@ -16,19 +16,15 @@
 
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.common.ao.NotesDao;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletRequest;
-
-import no.kantega.publishing.common.ao.NotesDao;
-import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
-import no.kantega.commons.client.util.RequestParameters;
-
-import java.util.HashMap;
-import java.util.Map;
+import javax.servlet.http.HttpServletResponse;
 
 public class RemoveNoteAction extends SimpleAdminController {
     @Autowired

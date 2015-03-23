@@ -17,6 +17,7 @@
 package no.kantega.publishing.security.data;
 
 import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 
 /**

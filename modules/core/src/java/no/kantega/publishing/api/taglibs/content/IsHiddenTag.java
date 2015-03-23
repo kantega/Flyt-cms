@@ -18,7 +18,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
     private String contentId = null;
     private String collection = null;
     private boolean negate = false;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
+    private AttributeDataType attributeDataType = AttributeDataType.CONTENT_DATA;
     private Content contentObject = null;
     private String repeater;
 
@@ -47,9 +47,9 @@ public class IsHiddenTag extends ConditionalTagSupport {
 
     public void setAttributetype(String attr) {
         if (attr.equalsIgnoreCase("metadata")) {
-            attributeType = AttributeDataType.META_DATA;
+            attributeDataType = AttributeDataType.META_DATA;
         } else {
-            attributeType = AttributeDataType.CONTENT_DATA;
+            attributeDataType = AttributeDataType.CONTENT_DATA;
         }
     }
 
@@ -70,7 +70,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
 
                 String attributeName = AttributeTagHelper.getAttributeName(pageContext, attribute, repeater);
 
-                Attribute attribute = contentObject.getAttribute(attributeName, attributeType);
+                Attribute attribute = contentObject.getAttribute(attributeName, attributeDataType);
 
                 if (attribute.isHidden(contentObject)) {
                     return !negate;
@@ -87,7 +87,7 @@ public class IsHiddenTag extends ConditionalTagSupport {
         contentId = null;
         attribute = null;
         collection = null;
-        attributeType = AttributeDataType.CONTENT_DATA;
+        attributeDataType = AttributeDataType.CONTENT_DATA;
         negate = false;
         contentObject = null;
         repeater = null;

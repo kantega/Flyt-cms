@@ -39,7 +39,7 @@ public class PersistDateAttributeBehaviour implements PersistAttributeBehaviour 
             clsName = clsName.substring(clsName.lastIndexOf(".") + 1, clsName.lastIndexOf("attribute"));
 
             st.setString(2, clsName);
-            st.setInt(3, attribute.getType());
+            st.setInt(3, attribute.getType().getDataTypeAsId());
             st.setString(4, attribute.getNameIncludingPath());
 
             String value = attribute.getValue();
