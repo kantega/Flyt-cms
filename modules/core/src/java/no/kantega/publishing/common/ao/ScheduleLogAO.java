@@ -52,8 +52,8 @@ public class ScheduleLogAO {
 
         try (Connection c = dbConnectionFactory.getConnection();
              PreparedStatement st = getLastRunStatement(c, previous)) {
-            st.setString(1, service);
-            st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));
+            st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
+            st.setString(2, service);
 
             st.executeUpdate();
         } catch (SQLException e) {
