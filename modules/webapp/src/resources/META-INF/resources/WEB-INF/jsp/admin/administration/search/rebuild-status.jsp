@@ -46,11 +46,21 @@
             });
         }
         updateStatus();
+        function stopAndDisableButton(){
+            var button = $("#stopButton");
+            var textField = $("#stoppedFeedbackField");
+            $.post('<aksess:geturl url="/admin/administration/StopIndex.action"/>');
+            button.remove();
+            textField.text("<kantega:label key="aksess.search.rebuild.stop"/>");
+        }
     </script>
-    <form action="StopIndex.action" name="stopIndex" method="POST">
+    <ul id="progress"></ul>
+
+    <form action= "StopIndex.action"  name="stopIndex" method="POST">
         <admin:box>
             <div class="buttonGroup">
-                <a href="#" onclick="document.stopIndex.submit()" class="button"><span class="ok"><kantega:label key="aksess.button.stop"/></span></a>
+                <h3 id = "stoppedFeedbackField"></h3>
+                <a id="stopButton" href="#" onclick="stopAndDisableButton()" class="button"><span class="ok"><kantega:label key="aksess.button.cancel"/></span></a>
             </div>
         </admin:box>
     </form>

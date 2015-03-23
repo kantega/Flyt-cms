@@ -44,19 +44,19 @@ public class IndexRebuilder {
 
     private List<ProgressReporter> progressReporters;
 
+    BlockingQueue<IndexableDocument> indexableDocuments;
 
-    public void stopIndexing(){
-        if(progressReporters==null)return;
+    BlockingQueue<IndexableDocument> testing;
+
+    public synchronized void stopIndexing(){
         for (ProgressReporter progressReporter : progressReporters) {
             progressReporter.setIsFinished(true);
         }
-        documentIndexer.deleteAllDocuments();
-        documentIndexer.commit();
-        documentIndexer.optimize();
     }
 
     public List<ProgressReporter> startIndexing(List<String> providersToInclude) {
-        BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
+        indexableDocuments = new LinkedBlockingQueue<>(queueLength);
+        testing = new LinkedBlockingQueue<>(queueLength);
 
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
 
@@ -75,7 +75,6 @@ public class IndexRebuilder {
                     log.info("Starting IndexableDocumentProvider {}", provider.getName());
                     provider.provideDocuments(indexableDocuments);
                     log.info("Finished IndexableDocumentProvider {}", provider.getName());
-                    log.info("progressReportert stats: "+provider.getProgressReporter().getTotal()+", "+provider.getProgressReporter().isFinished());
                 }
             }
         });
@@ -97,7 +96,7 @@ public class IndexRebuilder {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
-                            log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
+                            //log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
                             log.error("Polling IndexableDocumentQueue resulted in null!");

@@ -23,6 +23,8 @@ import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +52,7 @@ public class RebuildIndexAction {
     private List<ProgressReporter> progressReporters;
     @Autowired
     private List<IndexableDocumentProvider> indexableDocumentProviders;
+
 
 
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.GET)
@@ -108,12 +111,13 @@ public class RebuildIndexAction {
     }
 
     @RequestMapping(value = "/admin/administration/StopIndex.action", method = RequestMethod.POST)
-    public ModelAndView stopIndex(HttpServletRequest request) throws Exception {
+    public ResponseEntity stopIndex(HttpServletRequest request) throws Exception {
         SecuritySession securitySession = SecuritySession.getInstance(request);
-        log.info("{} stop the search index", securitySession.getUser().getId());
+        log.info("{} stopped reindexing", securitySession.getUser().getId());
         indexRebuilder.stopIndexing();
-        return handleGet();
+        return new ResponseEntity(HttpStatus.OK);
     }
+
 
     public void setFormView(String formView) {
         this.formView = formView;

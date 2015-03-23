@@ -45,29 +45,32 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         try {
             ContentManagementService contentManagementService = new ContentManagementService(SecuritySession.createNewAdminInstance());
             LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
-            executorService.execute(new IDProducer(dataSource, ids));
-            progressReporter.setStarted();
-            while (!progressReporter.isFinished()){
-                try {
-                    Integer id = ids.poll(10L, TimeUnit.SECONDS);
-                    if (id != null) {
-                        ContentIdentifier contentIdentifier =  ContentIdentifier.fromAssociationId(id);
+            //Progressreporters is set to finish to stop reindexing, this if test is needed to hinder creation of IDProducers after the canceled reindex
+            if(progressReporter != null && !progressReporter.isFinished()) {
+                executorService.execute(new IDProducer(dataSource, ids));
+                while (!progressReporter.isFinished()) {
+                    try {
+                        Integer id = ids.poll(10L, TimeUnit.SECONDS);
+                        if (id != null) {
+                            ContentIdentifier contentIdentifier = ContentIdentifier.fromAssociationId(id);
 
-                        Content content = contentManagementService.getContent(contentIdentifier);
-                        if (content != null) {
-                            IndexableDocument indexableDocument = transformer.transform(content);
-                            log.debug("Transformed Content {} {}", content.getTitle(), content.getId());
-                            indexableDocuments.put(indexableDocument);
+                            Content content = contentManagementService.getContent(contentIdentifier);
+                            if (content != null) {
+                                IndexableDocument indexableDocument = transformer.transform(content);
+                                log.debug("Transformed Content {} {}", content.getTitle(), content.getId());
+                                indexableDocuments.put(indexableDocument);
+                            }
                         }
+                    } catch (Exception e) {
+                        log.error("Error transforming Content", e);
+                    } finally {
+                        progressReporter.reportProgress();
                     }
-                } catch (Exception e) {
-                    log.error("Error transforming Content", e);
-                } finally {
-                    progressReporter.reportProgress();
-                }
 
+                }
             }
         } finally {
+
             progressReporter = null;
         }
 
@@ -101,15 +104,17 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
         }
 
         public void run() {
+            log.info("starting IDProducer for " + this.getClass());
             try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement("SELECT associations.associationId FROM content, associations WHERE content.IsSearchable = 1 AND content.ContentId = associations.ContentId AND associations.IsDeleted = 0");
                 ResultSet resultSet = preparedStatement.executeQuery()){
-                while (!progressReporter.isFinished() && resultSet.next()){
+                while (resultSet.next()  && (progressReporter!= null) && !progressReporter.isFinished()){
                     ids.put(resultSet.getInt("associationId"));
                 }
             } catch (Exception e) {
                 log.error("Error getting IDs", e);
             }
+            log.info("stopped IDProducer for " + this.getClass());
         }
     }
 }
