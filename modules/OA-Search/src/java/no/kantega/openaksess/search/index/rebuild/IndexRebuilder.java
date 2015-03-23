@@ -44,10 +44,6 @@ public class IndexRebuilder {
 
     private List<ProgressReporter> progressReporters;
 
-    BlockingQueue<IndexableDocument> indexableDocuments;
-
-    BlockingQueue<IndexableDocument> testing;
-
     public synchronized void stopIndexing(){
         for (ProgressReporter progressReporter : progressReporters) {
             progressReporter.setIsFinished(true);
@@ -55,11 +51,8 @@ public class IndexRebuilder {
     }
 
     public List<ProgressReporter> startIndexing(List<String> providersToInclude) {
-        indexableDocuments = new LinkedBlockingQueue<>(queueLength);
-        testing = new LinkedBlockingQueue<>(queueLength);
-
+        BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
-
         progressReporters = getProgressReporters(providers);
         startConsumer(indexableDocuments, progressReporters);
         startProducer(indexableDocuments, providers);
@@ -96,7 +89,7 @@ public class IndexRebuilder {
                     while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
-                            //log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
+                            log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
                             log.error("Polling IndexableDocumentQueue resulted in null!");
