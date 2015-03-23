@@ -23,6 +23,8 @@ import no.kantega.search.api.provider.IndexableDocumentProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,9 +47,12 @@ public class RebuildIndexAction {
 
     @Autowired
     private IndexRebuilder indexRebuilder;
+
+
     private List<ProgressReporter> progressReporters;
     @Autowired
     private List<IndexableDocumentProvider> indexableDocumentProviders;
+
 
 
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.GET)
@@ -66,12 +71,12 @@ public class RebuildIndexAction {
     @RequestMapping(value = "/admin/administration/RebuildIndex.action", method = RequestMethod.POST)
     public ModelAndView handlePost(HttpServletRequest request) throws Exception {
         Map<String, Object> map = new HashMap<>();
-
         if (progressReporters == null) {
             List<String> providersToInclude = getProvidersToInclude(request);
             SecuritySession securitySession = SecuritySession.getInstance(request);
             log.info("Rebuild index started by {}. Providers: {}", securitySession.getUser().getId(), providersToInclude);
             progressReporters = indexRebuilder.startIndexing(providersToInclude);
+
         }
         return new ModelAndView(statusView, map);
     }
@@ -104,6 +109,15 @@ public class RebuildIndexAction {
         indexRebuilder.deleteIndex();
         return handleGet();
     }
+
+    @RequestMapping(value = "/admin/administration/StopIndex.action", method = RequestMethod.POST)
+    public ResponseEntity stopIndex(HttpServletRequest request) throws Exception {
+        SecuritySession securitySession = SecuritySession.getInstance(request);
+        log.info("{} stopped reindexing", securitySession.getUser().getId());
+        indexRebuilder.stopIndexing();
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 
     public void setFormView(String formView) {
         this.formView = formView;

@@ -46,6 +46,23 @@
             });
         }
         updateStatus();
+        function stopAndDisableButton(){
+            var button = $("#stopButton");
+            var textField = $("#stoppedFeedbackField");
+            $.post('<aksess:geturl url="/admin/administration/StopIndex.action"/>');
+            button.remove();
+            textField.text("<kantega:label key="aksess.search.rebuild.stop"/>");
+        }
     </script>
+    <ul id="progress"></ul>
+
+    <form action= "StopIndex.action"  name="stopIndex" method="POST">
+        <admin:box>
+            <div class="buttonGroup">
+                <h3 id = "stoppedFeedbackField"></h3>
+                <a id="stopButton" href="#" onclick="stopAndDisableButton()" class="button"><span class="ok"><kantega:label key="aksess.button.cancel"/></span></a>
+            </div>
+        </admin:box>
+    </form>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>
