@@ -23,6 +23,7 @@ import no.kantega.publishing.common.ao.EditableListAO;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class EditablelistAttribute extends ListAttribute {
 
         if (config != null) {
 
-            if(key == null || key.trim().length() == 0) {
+            if(StringUtils.isBlank(key)) {
                 key = getName();
             }
 

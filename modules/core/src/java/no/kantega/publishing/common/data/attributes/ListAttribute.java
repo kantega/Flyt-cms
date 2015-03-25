@@ -23,6 +23,7 @@ import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.common.ao.EditableListAO;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,10 +55,7 @@ public class ListAttribute extends Attribute {
                 this.multiple = true;
             }
 
-            key = config.getAttribute("key");
-            if (key == null || key.trim().length() == 0) {
-                key = "";
-            }
+            key = StringUtils.defaultString(config.getAttribute("key"));
 
             options = new ArrayList<>();
 
