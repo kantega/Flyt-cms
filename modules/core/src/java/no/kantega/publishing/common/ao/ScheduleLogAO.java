@@ -52,8 +52,8 @@ public class ScheduleLogAO {
 
         try (Connection c = dbConnectionFactory.getConnection();
              PreparedStatement st = getLastRunStatement(c, previous)) {
-            st.setString(1, service);
-            st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));
+            st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
+            st.setString(2, service);
 
             st.executeUpdate();
         } catch (SQLException e) {
@@ -63,7 +63,7 @@ public class ScheduleLogAO {
 
     private static PreparedStatement getLastRunStatement(Connection c, Date lastRun) throws SQLException {
         if (lastRun == null) {
-            return c.prepareStatement("insert into schedulelog values(?,?)");
+            return c.prepareStatement("insert into schedulelog(LastRun, Service) values(?,?)");
         } else {
             return c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
         }
