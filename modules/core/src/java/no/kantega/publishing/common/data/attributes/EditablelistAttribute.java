@@ -30,9 +30,7 @@ import java.util.Map;
 
 public class EditablelistAttribute extends ListAttribute {
 
-    private String key;
     private String[] editableBy;
-    private boolean ignoreVariant;
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
@@ -40,7 +38,6 @@ public class EditablelistAttribute extends ListAttribute {
 
         if (config != null) {
 
-            key = config.getAttribute("key");
             if(key == null || key.trim().length() == 0) {
                 key = getName();
             }
@@ -58,7 +55,6 @@ public class EditablelistAttribute extends ListAttribute {
             } else {
                 editableBy = new String[]{Aksess.getEveryoneRole()};                
             }
-            ignoreVariant = Boolean.valueOf(config.getAttribute("ignorevariant"));
         }
 
     }
