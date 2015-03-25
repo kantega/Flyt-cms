@@ -343,6 +343,16 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="key" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Only applicable for the types list and editablelist. For editablelist: defines a key used for
+                        saving and retrieving the list's options. For list: retrieve the options for the list from an
+                        editablelist with the same key. Manually added options overrides the key for list, but not for
+                        editablelist.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="startid" type="xs:string">
                 <xs:annotation>
                     <xs:documentation>
