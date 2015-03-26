@@ -48,6 +48,11 @@ public class Content extends BaseObject {
     private int groupId = 0;
 
     /**
+     * The crator of the content
+     */
+    private String creator = "";
+
+    /**
      * The department owning the content, or blank.
      */
     private String owner = "";
@@ -492,6 +497,14 @@ public class Content extends BaseObject {
 
     public String getPublisher() {
         return publisher;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public void setPublisher(String publisher) {
@@ -961,6 +974,8 @@ public class Content extends BaseObject {
     public void setAttributesAreUpdatedFromTemplate(boolean attributesAreUpdatedFromTemplate) {
         this.attributesAreUpdatedFromTemplate = attributesAreUpdatedFromTemplate;
     }
+
+
 
     @Override
     public String toString() {

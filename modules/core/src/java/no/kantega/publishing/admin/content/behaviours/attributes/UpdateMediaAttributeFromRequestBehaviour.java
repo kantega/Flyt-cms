@@ -34,6 +34,7 @@ public class UpdateMediaAttributeFromRequestBehaviour implements UpdateAttribute
         MultipartFile file = param.getFile(inputField + "_upload");
         if (file != null) {
             fattr.setImportFile(file);
+            if (fattr.getValue().trim().length() == 0) fattr.setValue("importfile");
         } else {
             String value = param.getString(inputField);
             if (value == null) {

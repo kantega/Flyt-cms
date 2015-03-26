@@ -87,6 +87,9 @@ public class EditContentHelper {
         // Set author
         content.setPublisher(securitySession.getUser().getName());
 
+        // Set creator
+        content.setCreator(securitySession.getUser().getId());
+
         inheritGroup = setContentAndDisplayTemplates(param, aksessService, inheritGroup, content);
         setAssociations(param, content);
 

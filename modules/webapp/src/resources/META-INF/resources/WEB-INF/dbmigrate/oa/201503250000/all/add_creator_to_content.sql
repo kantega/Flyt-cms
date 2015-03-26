@@ -1,0 +1,1 @@
+ALTER TABLE content ADD Creator VARCHAR(255) NULL;
