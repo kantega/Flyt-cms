@@ -49,7 +49,7 @@ public class ContentAOHelper {
     public static Content getContentFromRS(ResultSet rs, boolean getAssociationInfo) throws SQLException {
         Content content = new Content();
 
-        // Felter fra Content
+        // Fields from Content
         content.setId(rs.getInt("ContentId"));
 
         content.setType(ContentType.getContentTypeAsEnum(rs.getInt("ContentType")));
@@ -59,6 +59,7 @@ public class ContentAOHelper {
         content.setDocumentTypeId(rs.getInt("DocumentTypeId"));
         content.setGroupId(rs.getInt("GroupId"));
         content.setOwner(StringUtils.defaultIfEmpty(rs.getString("Owner"), ""));
+        content.setCreator(StringUtils.defaultIfEmpty(rs.getString("Creator"), ""));
 
         if (content.getType() != ContentType.PAGE) {
             content.setLocation(rs.getString("Location"));
