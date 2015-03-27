@@ -48,7 +48,7 @@ public class Content extends BaseObject {
     private int groupId = 0;
 
     /**
-     * The crator of the content
+     * The creator of the content
      */
     private String creator = "";
 
