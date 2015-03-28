@@ -43,7 +43,6 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +53,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * A controller which updates breadcrumb and available buttons depending on current page
@@ -66,6 +67,8 @@ public class ContentPropertiesAction {
     @Autowired private LinkDao aksessLinkDao;
     @Autowired private UserPreferencesManager userPreferencesManager;
     @Autowired private ContentIdHelper contentIdHelper;
+    @Autowired(required = false)
+    private OrganizationManager<? extends OrgUnit> organizationManager;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -109,7 +112,7 @@ public class ContentPropertiesAction {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
                         //Retrieve the path down to this association
                         List<PathEntry> paths = cms.getPathByAssociation(association);
-                        //Add the association itself to the path. 
+                        //Add the association itself to the path.
                         PathEntry leaf = new PathEntry(association.getId(), content.getTitle());
                         paths.add(leaf);
                         associations.add(paths);
@@ -166,12 +169,10 @@ public class ContentPropertiesAction {
                 contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
                 contentProperties.put("ownerperson", content.getOwnerPerson());
                 String owner = content.getOwner();
-                if (owner != null && owner.trim().length() > 0) {
-                    Map orgManagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
-                    if (orgManagers != null && orgManagers.size() > 0) {
-                        OrganizationManager orgManager = (OrganizationManager) orgManagers.values().iterator().next();
+                if (isNotBlank(owner)) {
+                    if (organizationManager != null ) {
                         try {
-                            OrgUnit ownerUnit = orgManager.getUnitByExternalId(owner);
+                            OrgUnit ownerUnit = organizationManager.getUnitByExternalId(owner);
                             if (ownerUnit != null) {
                                 owner = ownerUnit.getName();
                             }

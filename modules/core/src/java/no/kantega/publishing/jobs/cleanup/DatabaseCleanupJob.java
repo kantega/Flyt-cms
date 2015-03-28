@@ -23,7 +23,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentAO;
-import no.kantega.publishing.event.ContentListenerUtil;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import org.slf4j.Logger;
@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
+import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -46,6 +47,9 @@ public class DatabaseCleanupJob {
 
     @Autowired
     private ContentAO contentAO;
+
+    @Resource(name = "contentListenerNotifier")
+    private ContentEventListener contentEventListener;
 
     @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
     @DisableOnServertype(ServerType.SLAVE)
@@ -173,7 +177,7 @@ public class DatabaseCleanupJob {
                     log.info("Deleting page " + title + " because it has been in the trash can for over 1 month");
                     eventLog.log("System", null, Event.DELETE_CONTENT_TRASH, title, null);
 
-                    ContentListenerUtil.getContentNotifier().contentPermanentlyDeleted(cid);
+                    contentEventListener.contentPermanentlyDeleted(cid);
                     contentAO.deleteContent(cid);
                 }
             }

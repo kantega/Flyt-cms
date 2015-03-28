@@ -28,14 +28,16 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.common.util.TemplateMacroHelper;
-import no.kantega.publishing.spring.RootContext;
 import org.kantega.jexmec.PluginManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import static no.kantega.publishing.api.ContentUtil.tryGetFromRequest;
@@ -46,6 +48,8 @@ public class MiniViewTag extends TagSupport {
     private String collection = null;
     private String contentId = null;
     private Content contentObject;
+    private static PluginManager<OpenAksessPlugin> pluginManager;
+    private static SiteCache siteCache;
 
     public void setCollection(String collection) {
         this.collection = collection;
@@ -59,10 +63,20 @@ public class MiniViewTag extends TagSupport {
         this.contentId = contentId;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        if (pluginManager == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            pluginManager = (PluginManager<OpenAksessPlugin>) context.getBean("pluginManager", PluginManager.class);
+            siteCache = context.getBean("aksessSiteCache", SiteCache.class);
+        }
+    }
+
     public int doStartTag() throws JspException {
         HttpServletRequest request   = (HttpServletRequest)pageContext.getRequest();
-        PluginManager<OpenAksessPlugin> pluginManager = (PluginManager<OpenAksessPlugin>) RootContext.getInstance().getBean("pluginManager", PluginManager.class);
-        SiteCache siteCache = RootContext.getInstance().getBean("aksessSiteCache", SiteCache.class);
+
         DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
         try {

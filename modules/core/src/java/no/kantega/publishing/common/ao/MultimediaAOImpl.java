@@ -43,7 +43,6 @@ public class MultimediaAOImpl implements MultimediaAO {
      * @return
      * @throws no.kantega.commons.exception.SystemException
      */
-    @Deprecated
     @Cacheable("MultimediaCache")
     public Multimedia getMultimedia(int id) throws SystemException {
         return multimediaDao.getMultimedia(id);

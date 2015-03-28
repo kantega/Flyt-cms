@@ -21,9 +21,9 @@ import no.kantega.commons.configuration.ConfigurationLoader;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -47,13 +47,16 @@ public class ViewSystemInformationAction extends AbstractController {
     private static final Logger log = LoggerFactory.getLogger(ViewSystemInformationAction.class);
     private String view;
 
+    @Autowired
+    private Configuration configuration;
+    @Autowired
+    private ConfigurationLoader configurationLoader;
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
 
         if ("true".equals(request.getParameter("reload"))) {
-            Configuration conf = (Configuration) RootContext.getInstance().getBean("aksessConfiguration");
-            ConfigurationLoader loader = (ConfigurationLoader) RootContext.getInstance().getBean("aksessConfigurationLoader");
-            conf.setProperties(loader.loadConfiguration());
+            configuration.setProperties(configurationLoader.loadConfiguration());
         }
 
         addOAAndWebappVersionInformation(model);

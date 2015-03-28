@@ -45,10 +45,9 @@ public class DisplayTemplateCache {
         if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
             reloadCache();
         }
-        
-        for (Object o : displaytemplates.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            DisplayTemplate template = (DisplayTemplate) entry.getValue();
+
+        for (Map.Entry<Integer, DisplayTemplate> entry : displaytemplates.entrySet()) {
+            DisplayTemplate template = entry.getValue();
             if (id != null && id.equalsIgnoreCase(template.getPublicId())) {
                 return template;
             }
@@ -59,13 +58,12 @@ public class DisplayTemplateCache {
     public static synchronized void reloadCache() throws SystemException {
         log.debug( "Loading cache");
 
-        List dtlist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates();
+        List<DisplayTemplate> dtlist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates();
 
         synchronized (displaytemplates) {
             lastUpdate  = new Date();
             displaytemplates.clear();
-            for (int i = 0; i < dtlist.size(); i++) {
-                DisplayTemplate template = (DisplayTemplate)dtlist.get(i);
+            for (DisplayTemplate template : dtlist) {
                 displaytemplates.put(template.getId(), template);
             }
         }

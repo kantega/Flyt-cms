@@ -125,7 +125,7 @@ public class Aksess {
     private static boolean javascriptDebugEnabled;
 
     private static Configuration c;
-    
+
     private static String multimediaDefaultCopyright;
 
     private static ServerType serverType;
@@ -329,15 +329,6 @@ public class Aksess {
         return webappDate;
     }
 
-    /**
-     *
-     * @deprecated Bruk getApplicationUrl + getContextPath
-     */
-    public static String getRootUrl() {
-        // For kompabilitet
-        return  getContextPath();
-    }
-
     public static String getBaseUrl() {
         return baseUrl;
     }
@@ -446,7 +437,7 @@ public class Aksess {
 
     public static String getQualityAdminRole() {
         return roleQualityAdmin;
-    }    
+    }
 
     public static boolean isTrafficLogEnabled() {
         return trafficLogEnabled;

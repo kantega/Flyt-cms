@@ -14,9 +14,10 @@
 <%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.springframework.web.context.WebApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -52,7 +53,8 @@
     }
     confPrefix += ".";
 
-    Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
+    WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(application);
+    Site site = WebApplicationContextUtils.getRequiredWebApplicationContext(application).getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
 
     String plugins = conf.getString(confPrefix + "plugins");
     if (plugins == null) {
@@ -173,7 +175,7 @@
 
             // Plugin options
             <%
-                SpellcheckerService service = (SpellcheckerService)RootContext.getInstance().getBean("aksessSpellCheckerService");
+                SpellcheckerService service = context.getBean("aksessSpellCheckerService", SpellcheckerService.class);
                 Locale contentLocale = Language.getLanguageAsLocale(content.getLanguage());
                 if (service.supportsLocale(contentLocale)) {
             %>

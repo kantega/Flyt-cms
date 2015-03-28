@@ -28,7 +28,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.forum.ForumProvider;
-import no.kantega.publishing.spring.RootContext;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -36,6 +36,9 @@ import java.util.Map;
 
 public class SaveMetadataAction extends AbstractSaveContentAction {
     private String view;
+
+    @Autowired(required = false)
+    private ForumProvider forumProvider;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException {
         HttpServletRequest request = param.getRequest();
@@ -82,17 +85,15 @@ public class SaveMetadataAction extends AbstractSaveContentAction {
 
         ContentManagementService cms = new ContentManagementService(request);
 
-        Map forumProviders = RootContext.getInstance().getBeansOfType(ForumProvider.class);
         if (content.getDisplayTemplateId() > 0) {
             DisplayTemplate dt = cms.getDisplayTemplate(content.getDisplayTemplateId());
-            if (forumProviders.size() > 0 && dt.getDefaultForumId() != null) {
-                ForumProvider forumProvider = (ForumProvider) forumProviders.values().iterator().next();
+            if (forumProvider != null && dt.getDefaultForumId() != null) {
                 model.put("forumProvider", forumProvider);
             }
         }
 
         model.put("documentTypes", cms.getDocumentTypes());
-        
+
         return model;
     }
 

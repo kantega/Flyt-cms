@@ -4,7 +4,6 @@
 <%@ page import="no.kantega.publishing.api.path.PathEntry" %>
 <%@ page import="no.kantega.publishing.common.data.*" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
-<%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="java.util.List" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
@@ -138,6 +137,8 @@
 <kantega:section id="content">
     <%
         ContentManagementService aksessService = new ContentManagementService(request);
+        SiteCache siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(application).getBean(SiteCache.class);
+
     %>
 
     <div id="MainPaneContent">
@@ -150,22 +151,21 @@
 
                         <table width="100%">
                             <%
-                                List path ;
                                 for (int i = 0; i < associations.size(); i++) {
                                     Association parentAssociation = (Association)associations.get(i);
-                                    path = aksessService.getPathByAssociation(parentAssociation);
+                                    List<PathEntry> path = aksessService.getPathByAssociation(parentAssociation);
                                     out.write("<tr class=\"tableRow" + (i%2) + "\">");
                                     out.write("<td width=\"20\"><input type=\"checkbox\" name=\"parentIds\" value=\"" + parentAssociation.getId() +  "\" checked=\"checked\"></td>");
                                     out.write("<td>");
                                     for (int j = 0; j < path.size(); j++) {
-                                        PathEntry entry = (PathEntry)path.get(j);
+                                        PathEntry entry = path.get(j);
                                         String title = entry.getTitle();
                                         if (j > 0) {
                                             out.write("&nbsp;&gt;&nbsp;");
                                         }
                                         if (j == 0) {
                                             // On the first level we print the site name
-                                            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(parentAssociation.getSiteId());
+                                            Site site = siteCache.getSiteById(parentAssociation.getSiteId());
                                             out.write(site.getName());
                                         } else {
                                             out.write(title);
@@ -178,7 +178,7 @@
                                         if (path.size() > 0) {
                                             out.write("&nbsp;&gt;&nbsp;<b>" + c.getTitle() + "</b>");
                                         } else {
-                                            Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(c.getAssociation().getSiteId());
+                                            Site site = siteCache.getSiteById(c.getAssociation().getSiteId());
                                             out.write(site.getName());
                                         }
                                     }

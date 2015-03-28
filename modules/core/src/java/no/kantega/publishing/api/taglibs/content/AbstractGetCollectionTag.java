@@ -29,12 +29,12 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.data.User;
-import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -97,6 +97,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
     private static SiteCache siteCache;
     private static ContentIdHelper contentIdHelper;
+    private static TopicMapDao topicMapDao;
 
     /**
      * Cleanup after tag is finished
@@ -145,18 +146,26 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         return EVAL_PAGE;
     }
 
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        if (contentIdHelper == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            contentIdHelper = context.getBean(ContentIdHelper.class);
+            topicMapDao = context.getBean(TopicMapDao.class);
+            siteCache = context.getBean(SiteCache.class);
+        }
+    }
 
     /**
      * Gets collection of pages using ContentManagementService
-     * @param pageContext
-     * @return
+     * @param pageContext for access to HttpServletRequest
+     * @return {@code List<Content>} matching either the parameters, or ContentQuery set.
      * @throws SystemException
      * @throws JspException
      */
-    protected List getCollection(PageContext pageContext) throws SystemException, JspException {
+    protected List<Content> getCollection(PageContext pageContext) throws SystemException, JspException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
-        List collection = new ArrayList();
 
         ContentManagementService cs = new ContentManagementService(request);
 
@@ -171,7 +180,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
         ContentQuery query = new ContentQuery();
         query.setShowArchived(showArchived);
         query.setShowExpired(showExpired);
-        
+
         if (contentQuery == null) {
             boolean useAssociatedId = true;
             if (modifiedDate != null) {
@@ -319,9 +328,6 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     if (content != null) {
                         associatedId = content.getContentIdentifier();
                     } else {
-                        if(contentIdHelper == null){
-                            contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
-                        }
                         associatedId = contentIdHelper.fromRequest(request);
                     }
                 } catch (Exception e) {
@@ -338,6 +344,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             query = contentQuery;
         }
 
+        List<Content> collection = new ArrayList<>();
 
         if (query != null) {
             query.setOffset(offset);
@@ -374,7 +381,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     }
 
     public void setTopicmap(String topicmap) {
-        TopicMap tm = TopicMapAO.getTopicMapByName(topicmap);
+        TopicMap tm = topicMapDao.getTopicMapByName(topicmap);
         if (tm != null) {
             this.topicMapId = tm.getId();
         }
@@ -447,7 +454,6 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 this.siteId = Integer.parseInt(siteId);
             } catch (NumberFormatException e) {
                 try {
-                    setSiteCacheIfNull();
                     Site site = siteCache.getSiteByPublicIdOrAlias(siteId);
                     if (site != null) {
                         this.siteId = site.getId();
@@ -456,12 +462,6 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                     log.error("Could not set site " + siteId, e1);
                 }
             }
-        }
-    }
-
-    private void setSiteCacheIfNull() {
-        if(siteCache == null){
-            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
         }
     }
 
@@ -505,7 +505,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
     /**
      * @deprecated Use associationcategory
      */
-    @Deprecated    
+    @Deprecated
     public void setAssociation(String association) {
         this.association = association;
     }
@@ -553,7 +553,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
                 try {
                     date = df.parse((String)dateObj);
                 } catch (ParseException e) {
-                    log.error("Could not parse " + date, e);
+                    log.error("Could not parse " + dateObj, e);
                 }
             }
         }
@@ -567,9 +567,6 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
             if (!Character.isDigit(id.charAt(0))) {
                 //Alias
                 try {
-                    if(contentIdHelper == null){
-                        contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
-                    }
                     ContentIdentifier contentIdentifier = contentIdHelper.fromRequestAndUrl(request, id);
                     id = String.valueOf(contentIdentifier.getAssociationId());
                 } catch (Exception e) {

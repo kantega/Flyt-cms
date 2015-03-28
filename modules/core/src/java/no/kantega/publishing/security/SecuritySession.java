@@ -46,6 +46,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -90,14 +91,14 @@ public class SecuritySession {
             httpSession.setAttribute("aksess.securitySession", session);
         }
 
-        session.setRememberMeHandlerIfNull();
+        session.setRememberMeHandlerIfNull(request.getServletContext());
 
         Identity identity = session.rememberMeHandler.getRememberedIdentity(request);
         if (identity == null) {
 
             IdentityResolver resolver = session.realm.getIdentityResolver();
             try {
-                Identity fakeIdentity = getFakeIdentity();
+                Identity fakeIdentity = getFakeIdentity(request.getServletContext());
                 if(fakeIdentity != null) {
                     identity = fakeIdentity;
 
@@ -135,10 +136,9 @@ public class SecuritySession {
         return session;
     }
 
-    private static Identity getFakeIdentity() {
-        WebApplicationContext root = (WebApplicationContext) RootContext.getInstance();
-        final String fakeUsername = root.getServletContext().getInitParameter("fakeUsername");
-        final String fakeUserDomain= root.getServletContext().getInitParameter("fakeUserDomain");
+    private static Identity getFakeIdentity(ServletContext servletContext) {
+        final String fakeUsername = servletContext.getInitParameter("fakeUsername");
+        final String fakeUserDomain = servletContext.getInitParameter("fakeUserDomain");
         if(fakeUsername != null && fakeUserDomain != null) {
             DefaultIdentity id = new DefaultIdentity();
             id.setUserId(fakeUsername);
@@ -336,7 +336,7 @@ public class SecuritySession {
             log.error("Error in url " + redirect, e);
         }
 
-        setRememberMeHandlerIfNull();
+        setRememberMeHandlerIfNull(request.getServletContext());
         rememberMeHandler.forgetUser(request, response);
 
         try {
@@ -434,9 +434,9 @@ public class SecuritySession {
         }
     }
 
-    private void setRememberMeHandlerIfNull() {
+    private void setRememberMeHandlerIfNull(ServletContext servletContext) {
         if (rememberMeHandler == null) {
-            rememberMeHandler = RootContext.getInstance().getBean(RememberMeHandler.class);
+            rememberMeHandler = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext).getBean(RememberMeHandler.class);
         }
     }
 

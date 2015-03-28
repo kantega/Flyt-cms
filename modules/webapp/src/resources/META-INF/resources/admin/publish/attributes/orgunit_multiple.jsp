@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.Attribute,
                  no.kantega.publishing.org.OrganizationManager,
-                 no.kantega.publishing.spring.RootContext"%>
+                 org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -25,8 +25,7 @@
 
     String value = attribute.getValue();
 
-    OrganizationManager manager = (OrganizationManager)
-    RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
+    OrganizationManager manager = WebApplicationContextUtils.getRequiredWebApplicationContext(application).getBeansOfType(OrganizationManager.class).values().iterator().next();
 %>
 <div class="inputs">
         <input type="hidden" name="<%=fieldName%>" value="<%=value%>">
@@ -35,9 +34,9 @@
             if (value != null && value.length() > 0) {
                 String[] ids = value.split(",");
 
-                for (int i = 0; i < ids.length; i++) {
-                    String name = manager.getUnitByExternalId(ids[i]).getName();
-                    out.write("<option value=\"" + ids[i] + "\">" + name + "</option>");
+                for (String id : ids) {
+                    String name = manager.getUnitByExternalId(id).getName();
+                    out.write("<option value=\"" + id + "\">" + name + "</option>");
                 }
             }
         %>

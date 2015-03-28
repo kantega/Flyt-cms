@@ -18,23 +18,36 @@ package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class GetOrgUnitTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetOrgUnitTag.class);
 
     private String name = "currentorgunit";
     private String orgUnitId = null;
+    private static List<OrganizationManager> organizationManagers;
 
-    @SuppressWarnings("unchecked")
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        Collection<OrganizationManager> values = context.getBeansOfType(OrganizationManager.class).values();
+        organizationManagers = new ArrayList<>(values);
+
+    }
+
     public int doStartTag() throws JspException {
         if (orgUnitId == null || orgUnitId.trim().length() == 0) {
             return SKIP_BODY;
@@ -42,12 +55,11 @@ public class GetOrgUnitTag extends TagSupport {
 
         try {
             HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-            Map<String, OrganizationManager> organizationManagers =  RootContext.getInstance().getBeansOfType(OrganizationManager.class);
 
             OrgUnit orgUnit = null;
 
             if (organizationManagers != null && organizationManagers.size() > 0) {
-                for (OrganizationManager organizationManager : organizationManagers.values()) {
+                for (OrganizationManager organizationManager : organizationManagers) {
                     orgUnit = organizationManager.getUnitByExternalId(orgUnitId);
                     if (orgUnit != null) {
                         break;

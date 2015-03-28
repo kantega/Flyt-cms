@@ -30,7 +30,7 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
      * @param manager
      * @throws java.io.IOException
      */
-    private void printUnit(OrgUnit orgUnit, OrganizationManager manager) throws IOException {
+    private void printUnit(OrgUnit orgUnit, OrganizationManager<? extends OrgUnit> manager) throws IOException {
         JspWriter out = getJspContext().getOut();
 
         out.write("<ul class=\"navigator");
@@ -40,7 +40,7 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
         out.write("\">");
         out.write("<li>");
 
-        List<OrgUnit> childUnits = new ArrayList<OrgUnit>();
+        List<? extends OrgUnit> childUnits = new ArrayList<>();
         if (orgUnit == null || (openUnits != null && openUnits.contains(orgUnit.getExternalId()))) {
             if (manager != null) {
                 childUnits = manager.getChildUnits(orgUnit);
@@ -81,11 +81,11 @@ public class PrintOrgUnitNavigatorTag  extends SimpleTagSupport {
             }
 
             ApplicationContext context = RootContext.getInstance();
-            Map managers = context.getBeansOfType(OrganizationManager.class);
-            Iterator i  = managers.values().iterator();
-            OrganizationManager manager = null;
+            Map<String, OrganizationManager> managers = context.getBeansOfType(OrganizationManager.class);
+            Iterator<OrganizationManager> i  = managers.values().iterator();
+            OrganizationManager<? extends OrgUnit> manager = null;
             if (i.hasNext()) {
-                manager = (OrganizationManager) i.next();
+                manager = i.next();
             }
             printUnit(null, manager);
         } catch (Exception e) {

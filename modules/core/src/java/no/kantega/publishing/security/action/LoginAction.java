@@ -24,7 +24,6 @@ import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.LoginRestrictor;
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.DefaultIdentityResolver;
@@ -37,7 +36,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -45,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static no.kantega.commons.util.URLHelper.getUrlWithHttps;
@@ -59,6 +58,7 @@ public class LoginAction extends AbstractLoginAction {
     @Autowired private EventLog eventLog;
     @Autowired private SystemConfiguration configuration;
     @Autowired private RememberMeHandler rememberMeHandler;
+    @Autowired private List<RoleManager> roleManagers;
 
     @Value("${security.login.usessl:false}")
     private boolean loginRequireSsl;
@@ -185,10 +185,8 @@ public class LoginAction extends AbstractLoginAction {
             return true;
         }
 
-        ApplicationContext context = RootContext.getInstance();
-        Map<String, RoleManager> managers = context.getBeansOfType(RoleManager.class);
-        if (managers != null) {
-            for (RoleManager roleManager : managers.values()) {
+        if (roleManagers != null) {
+            for (RoleManager roleManager : roleManagers) {
                 if (roleManager.getAllRoles().hasNext()) {
                     rolesExists = true;
                     return true;
