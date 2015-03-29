@@ -25,12 +25,15 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.SecurityIdentifier;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.*;
+import no.kantega.publishing.topicmaps.ao.TopicAssociationDao;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
 import no.kantega.publishing.topicmaps.data.*;
 import no.kantega.publishing.topicmaps.data.exception.ImportTopicMapException;
 import no.kantega.publishing.topicmaps.impl.XTMImportWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Document;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,15 +70,16 @@ public class TopicMapService {
     }
 
     private void initDao() {
-        topicAssociationDao = RootContext.getInstance().getBean(TopicAssociationDao.class);
-        topicDao = RootContext.getInstance().getBean(TopicDao.class);
-        topicMapDao = RootContext.getInstance().getBean(TopicMapDao.class);
-        eventLog = RootContext.getInstance().getBean(EventLog.class);
+        ApplicationContext context = RootContext.getInstance();
+        topicAssociationDao = context.getBean(TopicAssociationDao.class);
+        topicDao = context.getBean(TopicDao.class);
+        topicMapDao = context.getBean(TopicMapDao.class);
+        eventLog = context.getBean(EventLog.class);
     }
 
 
     public void deleteTopicMap(int id) throws SystemException, ObjectInUseException {
-        TopicMapAO.deleteTopicMap(id);
+        topicMapDao.deleteTopicMap(id);
     }
 
     public ImportedTopicMap importTopicMap(int id) throws ImportTopicMapException {
@@ -183,23 +187,23 @@ public class TopicMapService {
     }
 
     public TopicMap getTopicMap(int id) throws SystemException {
-        return TopicMapAO.getTopicMap(id);
+        return topicMapDao.getTopicMapById(id);
     }
 
     public TopicMap getTopicMapByName(String name) throws SystemException{
-        return TopicMapAO.getTopicMapByName(name);
+        return topicMapDao.getTopicMapByName(name);
     }
 
     public TopicMap setTopicMap(TopicMap topicMap) throws SystemException {
-        return TopicMapAO.setTopicMap(topicMap);
+        return topicMapDao.saveOrUpdateTopicMap(topicMap);
     }
 
     public List<TopicMap> getTopicMaps() throws SystemException {
-        return TopicMapAO.getTopicMaps();
+        return topicMapDao.getTopicMaps();
     }
 
     public Topic getTopic(int topicMapId, String topicId) throws SystemException {
-        return TopicAO.getTopic(topicMapId, topicId);
+        return topicDao.getTopic(topicMapId, topicId);
     }
 
     public void setTopic(Topic topic) throws SystemException {
@@ -210,59 +214,59 @@ public class TopicMapService {
                 // Create topicoccurences instanceof if they do not exist
                 if (occurence.getInstanceOf() != null) {
                     Topic instanceOf = occurence.getInstanceOf();
-                    if (instanceOf != null && TopicAO.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
-                        TopicAO.setTopic(instanceOf);
+                    if (instanceOf != null && topicDao.getTopic(topic.getTopicMapId(), instanceOf.getId()) == null) {
+                        topicDao.setTopic(instanceOf);
                     }
                 }
             }
         }
 
-        TopicAO.setTopic(topic);
+        topicDao.setTopic(topic);
     }
 
     public void deleteTopic(Topic topic) throws SystemException {
         eventLog.log(securitySession, request, Event.DELETE_TOPIC, topic.getBaseName());
-        TopicAO.deleteTopic(topic);
-        TopicAssociationAO.deleteTopicAssociations(topic);
+        topicDao.deleteTopic(topic);
+        topicAssociationDao.deleteTopicAssociations(topic);
     }
 
 
     public List getTopicsByContentId(int contentId) throws SystemException {
-        return TopicAO.getTopicsByContentId(contentId);
+        return topicDao.getTopicsByContentId(contentId);
     }
 
 
     public List<Topic> getAllTopics() throws SystemException {
-        return TopicAO.getAllTopics();
+        return topicDao.getAllTopics();
     }
 
     public List<Topic> getTopicsByTopicMapId(int topicMapId) throws SystemException {
-        return TopicAO.getTopicsByTopicMapId(topicMapId);
+        return topicDao.getTopicsByTopicMapId(topicMapId);
     }
 
     public List<Topic> getTopicTypes(int topicMapId) throws SystemException {
-        return TopicAO.getTopicTypes(topicMapId);
+        return topicDao.getTopicTypesForTopicMapId(topicMapId);
     }
 
     public List<Topic> getTopicsByInstance(Topic instance) throws SystemException {
-        return TopicAO.getTopicsByInstance(instance);
+        return topicDao.getTopicsByTopicInstance(instance);
     }
 
     public List<Topic> getTopicsByNameAndTopicMapId(String topicName, int topicMapId) throws SystemException {
-        return TopicAO.getTopicsByNameAndTopicMapId(topicName, topicMapId);
+        return topicDao.getTopicsByNameAndTopicMapId(topicName, topicMapId);
     }
 
     public List<Topic> getTopicsByNameAndInstance(String topicName, Topic instance) throws SystemException {
-        return TopicAO.getTopicsByNameAndInstance(topicName, instance);
+        return topicDao.getTopicsByNameAndTopicInstance(topicName, instance);
     }
 
     public List<TopicAssociation> getTopicAssociations(Topic atopic) throws SystemException {
-        return TopicAssociationAO.getTopicAssociations(atopic);
+        return topicAssociationDao.getTopicAssociations(atopic);
     }
 
     public void addTopicAssociation(Topic topic1, Topic topic2) throws SystemException {
-        topic1 = TopicAO.getTopic(topic1.getTopicMapId(), topic1.getId());
-        topic2 = TopicAO.getTopic(topic2.getTopicMapId(), topic2.getId());
+        topic1 = topicDao.getTopic(topic1.getTopicMapId(), topic1.getId());
+        topic2 = topicDao.getTopic(topic2.getTopicMapId(), topic2.getId());
 
         if (topic1 == null || topic2 == null || topic1.getTopicMapId() != topic2.getTopicMapId()) {
             return;
@@ -281,8 +285,8 @@ public class TopicMapService {
         association1.setRolespec(new Topic(topic1.getInstanceOf().getId(), topic1.getInstanceOf().getTopicMapId()));
         association2.setRolespec(new Topic(topic2.getInstanceOf().getId(), topic2.getInstanceOf().getTopicMapId()));
 
-        TopicAssociationAO.addTopicAssociation(association1);
-        TopicAssociationAO.addTopicAssociation(association2);
+        topicAssociationDao.addTopicAssociation(association1);
+        topicAssociationDao.addTopicAssociation(association2);
     }
 
 
@@ -302,8 +306,8 @@ public class TopicMapService {
         association2.setTopicRef(topic2);
         association2.setAssociatedTopicRef(topic1);
 
-        TopicAssociationAO.deleteTopicAssociation(association1);
-        TopicAssociationAO.deleteTopicAssociation(association2);
+        topicAssociationDao.deleteTopicAssociation(association1);
+        topicAssociationDao.deleteTopicAssociation(association2);
     }
 
     /**
@@ -313,7 +317,7 @@ public class TopicMapService {
      * @throws SystemException
      */
     public List<Topic> getTopicsBySID(SecurityIdentifier securityIdentifier) throws SystemException {
-        return TopicAO.getTopicsBySID(securityIdentifier);
+        return topicDao.getTopicsForSecurityIdentifier(securityIdentifier);
     }
 
     /**
@@ -323,7 +327,7 @@ public class TopicMapService {
      * @throws SystemException
      */
     public List<Role> getRolesByTopic(Topic topic) throws SystemException {
-        return TopicAO.getRolesByTopic(topic);
+        return topicDao.getRolesForTopic(topic);
     }
 
 
@@ -334,7 +338,7 @@ public class TopicMapService {
      * @throws SystemException
      */
     public void addTopicContentAssociation(Topic topic, int contentId) throws SystemException {
-        TopicAO.addTopicContentAssociation(topic, contentId);
+        topicDao.addTopicToContentAssociation(topic, contentId);
     }
 
 
@@ -345,7 +349,7 @@ public class TopicMapService {
      * @throws SystemException
      */
     public void removeTopicContentAssociation(Topic topic, int contentId) throws SystemException {
-        TopicAO.removeTopicContentAssociation(topic, contentId);
+        topicDao.deleteTopicToContentAssociation(topic, contentId);
     }
 
     /**
@@ -355,7 +359,7 @@ public class TopicMapService {
      * @throws SystemException
      */
     public void addTopicSIDAssociation(Topic topic, SecurityIdentifier securityIdentifier) throws SystemException {
-        TopicAO.addTopicSIDAssociation(topic, securityIdentifier);
+        topicDao.addTopicToSecurityIdentifierAssociation(topic, securityIdentifier);
     }
 
     /**
@@ -365,13 +369,13 @@ public class TopicMapService {
      * @throws SystemException
      */
     public void removeTopicSIDAssociation(Topic topic, SecurityIdentifier securityIdentifier) throws SystemException {
-        TopicAO.removeTopicSIDAssociation(topic, securityIdentifier);
+        topicDao.deleteTopicToSecurityIdentifierAssociation(topic, securityIdentifier);
     }
 
     public List<Topic> getTopicsInUseByChildrenOf(int contentId, int topicMapId) {
-        return TopicAO.getTopicsInUseByChildrenOf(contentId, topicMapId);
+        return topicDao.getTopicsInUseByChildrenOf(contentId, topicMapId);
     }
-    
+
     public boolean isTopicAssociatedWithInstanceOf(Topic topic, String instanceOf){
         return topicAssociationDao.isTopicAssociatedWithInstanceOf(topic.getId(), topic.getTopicMapId(),instanceOf);
     }

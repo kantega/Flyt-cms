@@ -18,12 +18,12 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
-import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.TopiclistAttribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,14 @@ import java.util.List;
 
 public class MapTopiclistAttributeValueToContentPropertyBehaviour implements MapAttributeValueToContentPropertyBehaviour {
     private static final Logger log = LoggerFactory.getLogger(MapTopiclistAttributeValueToContentPropertyBehaviour.class);
+
+    private static TopicDao topicDao;
+
     public void mapAttributeValue(RequestParameters param, Content content, Attribute attribute, String field, ValidationErrors errors) {
+        if(topicDao == null){
+            topicDao = RootContext.getInstance().getBean(TopicDao.class);
+        }
+
         if (field != null) {
             if (field.equalsIgnoreCase(ContentProperty.TOPICS)) {
                 TopiclistAttribute topicsAttr = (TopiclistAttribute)attribute;
@@ -45,10 +52,10 @@ public class MapTopiclistAttributeValueToContentPropertyBehaviour implements Map
                 }
 
                 // Fjern eksisterende topics
-                List topics = content.getTopics();
-                Iterator it = topics.iterator();
+                List<Topic> topics = content.getTopics();
+                Iterator<Topic> it = topics.iterator();
                 while (it.hasNext()) {
-                    Topic t = (Topic)it.next();
+                    Topic t = it.next();
                     if (t.getTopicMapId() == topicMapId && (t.getInstanceOf().getId().equals(instanceOf) || instanceOf.length() == 0)) {
                         it.remove();
                     }
@@ -59,17 +66,13 @@ public class MapTopiclistAttributeValueToContentPropertyBehaviour implements Map
                 if (value != null && value.length() > 0) {
                     String[] newTopics = value.split(",");
 
-                    for (int j = 0; j < newTopics.length; j++) {
-                        String topicStr = newTopics[j];
-                        if (topicStr.indexOf(":") != -1) {
+                    for (String topicStr : newTopics) {
+                        if (topicStr.contains(":")) {
                             String strTopicMapId = topicStr.substring(0, topicStr.indexOf(":"));
                             String topicId = topicStr.substring(topicStr.indexOf(":") + 1, topicStr.length());
                             Topic t = null;
-                            try {
-                                t = TopicAO.getTopic(Integer.parseInt(strTopicMapId), topicId);
-                            } catch (SystemException e) {
-                                log.error("", e);
-                            }
+                            t = topicDao.getTopic(Integer.parseInt(strTopicMapId), topicId);
+
                             if (t != null) {
                                 topics.add(t);
                             }

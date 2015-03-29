@@ -35,7 +35,7 @@ import no.kantega.publishing.security.realm.SecurityRealmFactory;
 import no.kantega.publishing.security.service.SecurityService;
 import no.kantega.publishing.security.util.SecurityHelper;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.security.api.identity.*;
 import no.kantega.security.api.password.PasswordManager;
@@ -261,14 +261,16 @@ public class SecuritySession {
         for (Role role : roles) {
             user.addRole(role);
         }
+        WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
 
         if (Aksess.isTopicMapsEnabled()) {
-            user.setTopics(TopicAO.getTopicsBySID(user));
+            TopicDao topicDao = ctx.getBean(TopicDao.class);
+            user.setTopics(topicDao.getTopicsForSecurityIdentifier(user));
 
             // Og for roller brukeren har tilgang til
             if (user.getRoles() != null) {
                 for (Role role : roles) {
-                    List<Topic> topicsForRole = TopicAO.getTopicsBySID(role);
+                    List<Topic> topicsForRole = topicDao.getTopicsForSecurityIdentifier(role);
                     for (Topic aTopicsForRole : topicsForRole) {
                         user.addTopic( aTopicsForRole );
                     }
@@ -276,7 +278,6 @@ public class SecuritySession {
             }
         }
 
-        WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(request.getServletContext());
         Map<String, OrganizationManager> orgManagers = ctx.getBeansOfType(OrganizationManager.class);
         if(orgManagers.size() > 0) {
             OrganizationManager<OrgUnit> manager = (OrganizationManager<OrgUnit>) orgManagers.values().iterator().next();

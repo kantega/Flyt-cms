@@ -39,7 +39,7 @@ import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +59,7 @@ public class EditContentHelper {
     private static ContentAO contentAO;
 
     private static ContentIdHelper contentIdHelper;
+    private static TopicDao topicDao;
 
     /**
      * Create a new Content object
@@ -507,7 +508,7 @@ public class EditContentHelper {
         } else if (property.equalsIgnoreCase(ContentProperty.EXPIRE_DATE)) {
             dest.setExpireDate(from.getExpireDate());
         } else if (property.equalsIgnoreCase(ContentProperty.TOPICS)) {
-            List<Topic> topics1 = TopicAO.getTopicsByContentId(from.getId());
+            List<Topic> topics1 = topicDao.getTopicsByContentId(from.getId());
             if (topics1 != null) {
                 // Copy only topics which dont exists from before
                 for (Topic topic : topics1) {
@@ -531,6 +532,8 @@ public class EditContentHelper {
                         ApplicationContext context = RootContext.getInstance();
                         contentAO = context.getBean(ContentAO.class);
                         contentIdHelper = context.getBean(ContentIdHelper.class);
+                        topicDao = context.getBean(TopicDao.class);
+
                     }
                     ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
                     Content parent = contentAO.getContent(parentCid, true);

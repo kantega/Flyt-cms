@@ -21,16 +21,19 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -50,6 +53,7 @@ public class GetTopicsTag extends LoopTagSupport {
     private String instance = null;
     private String topicid = null;
     private String topiclist = null;
+    private static TopicMapDao topicMapDao;
 
     protected Object next() throws JspTagException {
         return i.next();
@@ -61,7 +65,7 @@ public class GetTopicsTag extends LoopTagSupport {
 
     protected void prepare() throws JspTagException {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-        
+
         try {
             TopicMapService topicService = new TopicMapService(request);
             if (topicid != null) {
@@ -69,7 +73,7 @@ public class GetTopicsTag extends LoopTagSupport {
                     throw new JspTagException("topicmapid must be specified when topicid is specified");
                 }
                 Topic t = topicService.getTopic(topicmapid, topicid);
-                List<Topic> list = new ArrayList<Topic>();
+                List<Topic> list = new ArrayList<>();
                 if(t != null) {
                     list.add(t);
                 }
@@ -88,14 +92,14 @@ public class GetTopicsTag extends LoopTagSupport {
                 }
                 Topic topic = topicService.getTopic(topicmapid, associatedid);
 
-                List associations = topicService.getTopicAssociations(topic);
+                List<TopicAssociation> associations = topicService.getTopicAssociations(topic);
 
                 i = clean(associations, ignoretopics).iterator();
             } else if (topiclist != null) {
                 if (topiclist.length() > 0) {
                     String[] topics = topiclist.split(",");
 
-                    List<Topic> l = new ArrayList<Topic>();
+                    List<Topic> l = new ArrayList<>(topics.length);
                     for (String topicStr : topics) {
                         if (topicStr.contains(":")) {
                             String topicMapId = topicStr.substring(0, topicStr.indexOf(":"));
@@ -130,6 +134,7 @@ public class GetTopicsTag extends LoopTagSupport {
             topiclist = null;
 
         } catch (SystemException | NotAuthorizedException | JspException e) {
+            log.error(":(", e);
             throw new JspTagException(e);
 
         }
@@ -143,8 +148,8 @@ public class GetTopicsTag extends LoopTagSupport {
         this.collection = collection;
     }
 
-    private List clean(List associations, String ignore) {
-        List<String> ignoreList = new ArrayList<String>();
+    private List clean(List<TopicAssociation> associations, String ignore) {
+        List<String> ignoreList = new ArrayList<>();
         if(ignore != null) {
             String[] ignoreIds = ignore.split(",");
             for (String ignoreId : ignoreIds) {
@@ -154,10 +159,9 @@ public class GetTopicsTag extends LoopTagSupport {
             }
         }
         if(ignoreList.size() > 0) {
-            List clean = new ArrayList();
-            for (int i = 0; i < associations.size(); i++) {
-                TopicAssociation association = (TopicAssociation) associations.get(i);
-                if(!ignoreList.contains(association.getAssociatedTopicRef().getId())) {
+            List<TopicAssociation> clean = new ArrayList<>();
+            for (TopicAssociation association : associations) {
+                if (!ignoreList.contains(association.getAssociatedTopicRef().getId())) {
                     clean.add(association);
                 }
             }
@@ -171,16 +175,8 @@ public class GetTopicsTag extends LoopTagSupport {
         this.associatedid = associatedid;
     }
 
-    /**
-     * @deprecated use topicMap
-     */
-    @Deprecated
-    public void setTopicmapid(int topicmapid) {
-        this.topicmapid = topicmapid;
-    }
-
     public void setTopicmap(String topicmap) {
-        TopicMap tm = TopicMapAO.getTopicMapByName(topicmap);
+        TopicMap tm = topicMapDao.getTopicMapByName(topicmap);
         if (tm != null) {
             this.topicmapid = tm.getId();
         }
@@ -202,5 +198,14 @@ public class GetTopicsTag extends LoopTagSupport {
 
     public void setTopiclist(String topiclist) {
         this.topiclist = topiclist;
+    }
+
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        if (topicMapDao == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            topicMapDao = context.getBean(TopicMapDao.class);
+        }
     }
 }

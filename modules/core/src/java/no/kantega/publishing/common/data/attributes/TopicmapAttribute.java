@@ -16,26 +16,26 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 
-import java.text.ParseException;
 import java.util.List;
 
-public class TopicmapAttribute  extends Attribute {
+public class TopicmapAttribute extends Attribute {
+
+    private static TopicMapDao topicMapDao;
 
     public String getRenderer() {
         return "topicmap";
     }
 
-    public List getTopicMaps() throws SystemException {
-        List topicmaps = TopicMapAO.getTopicMaps();
-        return topicmaps;
+    public List<TopicMap> getTopicMaps() throws SystemException {
+        if(topicMapDao == null){
+            topicMapDao = RootContext.getInstance().getBean(TopicMapDao.class);
+        }
+        return topicMapDao.getTopicMaps();
     }
 }
 
