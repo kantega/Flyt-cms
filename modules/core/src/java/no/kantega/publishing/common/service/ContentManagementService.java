@@ -743,7 +743,7 @@ public class ContentManagementService {
      * @param maxElements - Max antall elementer som skal hentes, -1 for alle
      * @param sort - Sorteringsrekkefølge
      * @param getAttributes - Hent attributter (true) for en side eller bare basisdata (false)
-     * @param getTopics - Hent topics (true) for en side eller ikke (false) 
+     * @param getTopics - Hent topics (true) for en side eller ikke (false)
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
@@ -1119,19 +1119,6 @@ public class ContentManagementService {
     public AssociationCategory getAssociationCategoryByPublicId(String id) throws SystemException {
         return AssociationCategoryCache.getAssociationCategoryByPublicId(id);
     }
-
-    /**
-     * Henter en spalte basert på navn
-     * @param name - Navnet på spalten som skal hentes
-     * @return
-     * @throws SystemException
-     * @deprecated - Use getAssociationCategoryByPublicId 
-     */
-    @Deprecated
-    public AssociationCategory getAssociationCategoryByName(String name) throws SystemException {
-        return AssociationCategoryCache.getAssociationCategoryByPublicId(name);
-    }
-
 
     /**
      * Setter rekkefølge pø koplinger for sortering i menyer
