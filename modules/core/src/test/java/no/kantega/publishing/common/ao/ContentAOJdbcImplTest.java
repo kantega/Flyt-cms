@@ -21,8 +21,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
 
-import static junit.framework.Assert.*;
 import static org.apache.commons.collections.CollectionUtils.select;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations= "classpath*:spring/testContext.xml")

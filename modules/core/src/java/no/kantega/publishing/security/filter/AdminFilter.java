@@ -101,7 +101,7 @@ public class AdminFilter implements Filter {
 
             Throwable cause = e;
             if (cause instanceof javax.servlet.jsp.JspException) {
-                cause = ((javax.servlet.jsp.JspException) cause).getRootCause();
+                cause = cause.getCause();
                 if (cause == null) {
                     cause = e;
                 }

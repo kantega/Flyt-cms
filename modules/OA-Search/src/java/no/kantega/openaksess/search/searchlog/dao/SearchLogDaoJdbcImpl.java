@@ -46,7 +46,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
             params.put("beforetime", new Timestamp(before.getTime()));
 
         }
-        return namedjdbcTemplate.queryForInt(queryString.toString(), params);
+        return namedjdbcTemplate.queryForObject(queryString.toString(), params, Integer.class);
     }
 
     public List getMostPopularQueries(int siteId) {

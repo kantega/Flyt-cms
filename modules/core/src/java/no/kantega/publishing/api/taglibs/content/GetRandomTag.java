@@ -51,7 +51,7 @@ public class GetRandomTag  extends BodyTagSupport {
     private String displayTemplate = null;
     private ContentIdentifier associatedId = null;
     private int max = 1;
-    private List collection = null;
+    private List<Content> collection = null;
     private int offset = 0;
     private static ContentIdHelper contentIdHelper;
 
@@ -127,8 +127,8 @@ public class GetRandomTag  extends BodyTagSupport {
 
         ContentQuery query = new ContentQuery();
 
-        List tmpcollection = null;
-        collection = new ArrayList();
+        List<Content> tmpcollection = null;
+        collection = new ArrayList<>();
 
         try {
             ContentManagementService cs = new ContentManagementService(request);
@@ -185,7 +185,7 @@ public class GetRandomTag  extends BodyTagSupport {
                     // Finner ikke noe innhold
                     return SKIP_BODY;
                 }
-                query.setAssociatedId(associatedId);                
+                query.setAssociatedId(associatedId);
             }
 
             AssociationCategory category = null;
@@ -221,10 +221,10 @@ public class GetRandomTag  extends BodyTagSupport {
     private int doIter() {
         int size = collection.size();
         if (offset < size) {
-            pageContext.setAttribute("aksess_collection_" + name, (Content)collection.get(offset));
+            pageContext.setAttribute("aksess_collection_" + name, collection.get(offset));
             pageContext.setAttribute("aksess_collection_offset" + name, offset);
             offset++;
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             pageContext.removeAttribute("aksess_collection_" + name);
             pageContext.removeAttribute("aksess_collection_offset" + name);

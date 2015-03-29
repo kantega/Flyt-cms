@@ -14,10 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
 import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 import static org.apache.commons.collections.CollectionUtils.select;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})

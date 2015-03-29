@@ -52,7 +52,7 @@ public class EditLinkTag  extends BodyTagSupport {
     }
 
     public int doStartTag()  throws JspException {
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException {

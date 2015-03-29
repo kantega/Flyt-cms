@@ -4,7 +4,7 @@ import no.kantega.publishing.common.data.enums.AssociationType;
 import org.junit.Test;
 
 import static java.util.Arrays.asList;
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class ContentQueryTest {
 

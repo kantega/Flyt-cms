@@ -332,6 +332,7 @@ public class SolrSearcher implements Searcher {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void addFacetResults(SearchResponse searchResponse, QueryResponse queryResponse) {
         SearchQuery query = searchResponse.getQuery();
         Multimap<String,FacetResult> facets = ArrayListMultimap.create();

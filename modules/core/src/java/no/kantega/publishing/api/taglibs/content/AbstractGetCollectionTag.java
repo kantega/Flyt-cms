@@ -310,7 +310,7 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
             AssociationCategory associationCategory = null;
             if (association != null && association.length() > 0) {
-                associationCategory = cs.getAssociationCategoryByName(association);
+                associationCategory = cs.getAssociationCategoryByPublicId(association);
                 if (associationCategory == null) {
                     // If the category / column was not found, nothing should be returned
                     associationCategory = new AssociationCategory();

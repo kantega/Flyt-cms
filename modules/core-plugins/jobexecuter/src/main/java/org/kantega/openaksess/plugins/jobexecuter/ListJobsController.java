@@ -26,6 +26,7 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -47,6 +48,12 @@ public class ListJobsController {
 
     @Autowired
     private SystemConfiguration configuration;
+    private ApplicationContext rootcontext;
+
+    @PostConstruct
+    public void init(){
+        rootcontext = RootContext.getInstance();
+    }
 
     /**
      * ListJobsController is used to find all jobs that are scheduled using a Springs scheduling.
@@ -65,9 +72,6 @@ public class ListJobsController {
 
         Map<String, Object> model = new HashMap<>();
 
-        ApplicationContext rootcontext = RootContext.getInstance();
-
-
         model.put("annotationScheduledBeans", getAnnotationScheduledBeans(rootcontext));
 
         return new ModelAndView("org/kantega/openaksess/plugins/jobexecuter/view", model);
@@ -80,7 +84,6 @@ public class ListJobsController {
         SecuritySession securitySession = SecuritySession.getInstance(request);
         log.info("{} is triggering job {} {}", securitySession.getUser().getId(), runAnnotatedBeanJob, runAnnotatedMethodJob);
 
-        ApplicationContext rootcontext = RootContext.getInstance();
         executeAnnotatedScheduledJob(runAnnotatedBeanJob, runAnnotatedMethodJob, rootcontext);
 
         return listJobs(request);

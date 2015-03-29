@@ -41,15 +41,16 @@ public class DbDiffController {
     @Autowired
     private PluginManager<OpenAksessPlugin> pluginManager;
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public String view(ModelMap model) throws IOException {
 
 
-        List<OaDatabaseSchema> schemas = new ArrayList<OaDatabaseSchema>();
+        List<OaDatabaseSchema> schemas = new ArrayList<>();
 
-        Set<String> allTableNames = new TreeSet<String>();
+        Set<String> allTableNames = new TreeSet<>();
 
-        Set<String> knownTableNames = new TreeSet<String>();
+        Set<String> knownTableNames = new TreeSet<>();
 
         final String name = null;
         final String catalog = null;
@@ -106,9 +107,7 @@ public class DbDiffController {
                     schemas.add(new OaDatabaseSchema(path, actualCopy, wanted, sql, changes, platform, e));
                 }
 
-
-
-        }
+            }
         }
 
         Collections.sort(schemas, new Comparator<OaDatabaseSchema>() {
@@ -170,20 +169,20 @@ public class DbDiffController {
             final Enumeration<URL> schemaListResources = classLoader.getResources("META-INF/services/openaksess-dbschemas.txt");
 
             for (URL listUrl : Collections.list(schemaListResources)) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")));
-                String line = null;
-                while ((line = br.readLine()) != null) {
-                    line = line.trim();
-                    if (line.length() > 0) {
-                        URL resource = classLoader.getResource(line);
-                        if(resource == null) {
-                            throw new IllegalArgumentException("File " + listUrl + " specifies schema file which could not be found: " + line);
+                try(BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")))) {
+                    String line = null;
+                    while ((line = br.readLine()) != null) {
+                        line = line.trim();
+                        if (line.length() > 0) {
+                            URL resource = classLoader.getResource(line);
+                            if (resource == null) {
+                                throw new IllegalArgumentException("File " + listUrl + " specifies schema file which could not be found: " + line);
+                            }
+                            resourcePaths.put(line, resource);
                         }
-                        resourcePaths.put(line, resource);
                     }
-                }
 
-                br.close();
+                }
             }
         }
         return resourcePaths;
