@@ -20,7 +20,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
 /**
- * @deprecated Use WebApplicationContextUtils.getRequiredWebApplicationContext()
+ * Singleton object for holding a reference to the root ApplicationContext.
+ * Should be avoided if WebApplicationContextUtils.getRequiredWebApplicationContext() can be used.
  */
 public class RootContext implements ApplicationContextAware {
 
@@ -30,7 +31,7 @@ public class RootContext implements ApplicationContextAware {
         setInstance(context);
     }
     public static ApplicationContext getInstance() {
-        if (instance==null) throw new RuntimeException("RootContext.setInstance() has not yet been run! Is your application context properly set up?");
+        if (instance == null) throw new RuntimeException("RootContext.setInstance() has not yet been run! Is your application context properly set up?");
         return instance;
     }
 
