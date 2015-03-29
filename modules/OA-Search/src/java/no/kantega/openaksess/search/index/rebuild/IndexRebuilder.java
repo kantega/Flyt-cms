@@ -42,12 +42,18 @@ public class IndexRebuilder {
     @Value("${IndexRebuilder.queueLength:1}")
     private int queueLength = 1;
 
+    private List<ProgressReporter> progressReporters;
+
+    public synchronized void stopIndexing(){
+        for (ProgressReporter progressReporter : progressReporters) {
+            progressReporter.setIsFinished(true);
+        }
+    }
+
     public List<ProgressReporter> startIndexing(List<String> providersToInclude) {
         BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
-
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
-        List<ProgressReporter> progressReporters = getProgressReporters(providers);
-
+        progressReporters = getProgressReporters(providers);
         startConsumer(indexableDocuments, progressReporters);
         startProducer(indexableDocuments, providers);
 

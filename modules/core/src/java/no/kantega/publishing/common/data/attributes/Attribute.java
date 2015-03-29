@@ -39,7 +39,7 @@ import org.w3c.dom.Element;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -255,7 +255,7 @@ public abstract class Attribute implements Serializable {
     public String getHelpText() {
         return helpText;
     }
-    
+
     public String getScript(){
     	return script;
     }
@@ -318,8 +318,7 @@ public abstract class Attribute implements Serializable {
 
     public  void validate(ValidationErrors errors) {
         if (mandatory && editable && isBlank(value)) {
-            Map<String, Object> objects = new HashMap<>();
-            objects.put("field", title);
+            Map<String, Object> objects = Collections.<String, Object>singletonMap("field", title);
             errors.add(name, "aksess.feil.mandatoryfield", objects);
         }
     }

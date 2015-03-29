@@ -60,23 +60,27 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
         try {
             MultimediaService multimediaService = new MultimediaService(SecuritySession.createNewAdminInstance());
             LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
-            taskExecutor.execute(new IDProducer(dataSource, ids));
-            progressReporter.setStarted();
-            while (!progressReporter.isFinished()) {
-                try {
-                    Integer id = ids.poll(10L, TimeUnit.SECONDS);
-                    if (id != null) {
-                        Multimedia multimedia = multimediaService.getMultimedia(id);
-                        if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
-                            IndexableDocument indexableDocument = transformer.transform(multimedia);
-                            log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
-                            indexableDocumentQueue.put(indexableDocument);
+            //Progressreporters is set to finish to stop reindexing, this if test is needed to hinder creation of IDProducers after the canceled reindex
+            if(progressReporter!=null && !progressReporter.isFinished()){
+                log.info("creating IDProudcer ! - " + this.getClass());
+
+                taskExecutor.execute(new IDProducer(dataSource, ids));
+                while (!progressReporter.isFinished()) {
+                    try {
+                        Integer id = ids.poll(10L, TimeUnit.SECONDS);
+                        if (id != null) {
+                            Multimedia multimedia = multimediaService.getMultimedia(id);
+                            if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
+                                IndexableDocument indexableDocument = transformer.transform(multimedia);
+                                log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
+                                indexableDocumentQueue.put(indexableDocument);
+                            }
                         }
+                    } catch (Exception e) {
+                        log.error("Error transforming multimedia", e);
+                    } finally {
+                        progressReporter.reportProgress();
                     }
-                } catch (Exception e) {
-                    log.error("Error transforming multimedia", e);
-                } finally {
-                    progressReporter.reportProgress();
                 }
             }
         } finally {
@@ -102,16 +106,18 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
 
         @Override
         public void run() {
+            log.info("starting IDProducer for " + this.getClass());
             String sql = "SELECT id " + FROM_CLAUSE;
             try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
+                while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()) {
                     ids.put(resultSet.getInt("id"));
                 }
             } catch (Exception e) {
                 log.error("Error getting IDs", e);
             }
+            log.info("stopped IDProducer for " + this.getClass());
         }
     }
 }

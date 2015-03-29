@@ -211,9 +211,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.google.code</groupId>
+            <groupId>com.mortennobel</groupId>
             <artifactId>java-image-scaling</artifactId>
-            <version>0.8.4</version>
+            <version>0.8.6</version>
         </dependency>
 
         <dependency>
@@ -270,18 +270,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-context-support</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.gdata</groupId>
-            <artifactId>gdata-analytics-2.1</artifactId>
-            <version>1.41.5</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.collections</groupId>
-                    <artifactId>google-collections</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>

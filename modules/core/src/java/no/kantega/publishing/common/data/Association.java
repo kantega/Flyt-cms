@@ -27,7 +27,7 @@ import java.util.StringTokenizer;
  */
 public class Association extends BaseObject {
     private int associationId = -1;
-    private int contentId = -1; // 
+    private int contentId = -1; //
     private int parentAssociationId = -1;
     private AssociationCategory category = null;
     private int siteId = 1;
@@ -179,7 +179,7 @@ public class Association extends BaseObject {
 
     @Override
     public String toString() {
-        return String.format("associationId: %s\ncontentId: %s\nparentAssociationId: %s\nsiteId: %s\nassociationType: %s",
+        return String.format("{associationId: %s, contentId: %s, parentAssociationId: %s, siteId: %s, associationType: %s}",
         associationId,contentId,parentAssociationId,siteId,associationtype);
     }
 }

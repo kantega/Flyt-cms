@@ -67,9 +67,7 @@ public class ViewSystemInformationAction extends AbstractController {
 
         model.put("databaseUrl", Aksess.getConfiguration().getString("database.url"));
 
-        if (dbConnectionFactory.isPoolingEnabled()) {
-            model.put("dbConnectionPoolEnabled", Boolean.TRUE);
-        }
+        model.put("dbConnectionPoolEnabled", dbConnectionFactory.isPoolingEnabled());
 
         addMemoryInformation(model);
 

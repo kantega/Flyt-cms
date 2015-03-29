@@ -144,6 +144,7 @@ public class ContentAOJdbcImplTest {
         assertEquals(content.getDescription(), saved.getDescription());
         assertEquals(content.getType(), saved.getType());
         assertNotNull(saved.getAssociation().getAssociationId());
+        assertEquals(content.getCreator(), saved.getCreator());
         assertEquals(content.getAssociation().getParentAssociationId(), saved.getAssociation().getParentAssociationId());
 
 
@@ -162,6 +163,7 @@ public class ContentAOJdbcImplTest {
         c.setDisplayTemplateId(1);
         c.setDescription("Bra innhold!");
         c.setTitle("LALA");
+        c.setCreator("Flyt Test");
         c.setType(ContentType.PAGE);
         c.setAttributes(Arrays.asList(new TextAttribute("text", "En kort liten tekst"),
                 new HtmltextAttribute("htmltext", "<p>lalalla</p>"),

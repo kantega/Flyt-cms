@@ -60,6 +60,8 @@ public class ContentQuery {
     private Date expireDateTo = null;
     private Date revisionDateFrom = null;
     private Date revisionDateTo = null;
+    private String publisher = null;
+    private String creator = null;
 
     private List<ContentIdentifier> pathElementIds = null; // include only pages under given id in path
     private List<ContentIdentifier> excludedPathElementIds = null; // exclude pages under given id in path
@@ -270,6 +272,19 @@ public class ContentQuery {
             parameters.put("ownerpersons", asList(ownerPerson.split(",")));
 
         }
+
+        if (publisher != null) {
+            query.append(" and content.publisher in = :publisher");
+            parameters.put("publisher", publisher);
+
+        }
+
+         if (creator != null) {
+            query.append(" and content.creator = :creator");
+            parameters.put("creator", creator);
+        }
+
+
 
         if (keyword != null) {
             // Keyword given, search title and alternative title
@@ -825,5 +840,21 @@ public class ContentQuery {
 
     public int getMaxRecords() {
         return maxRecords;
+    }
+
+    public String getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 }

@@ -44,7 +44,8 @@ public class EditableListAO {
         }
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionFactory.getDataSource());
         String language = (ignoreVariant)? getLocaleAsString(locale, true) + '%' : getLocaleAsString(locale, false);
-        return jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY Value", new Object[]{attributeKey.toLowerCase(), language}, new RowMapper<ListOption>(){
+
+        List<ListOption> options = jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY DefaultSelected DESC, Value", new Object[]{attributeKey.toLowerCase(), language}, new RowMapper<ListOption>(){
             public ListOption mapRow(ResultSet rs, int i) throws SQLException {
                 ListOption option = new ListOption();
                 option.setText(rs.getString("Value"));
@@ -53,6 +54,7 @@ public class EditableListAO {
                 return option;
             }
         });
+        return options;
     }
 
 

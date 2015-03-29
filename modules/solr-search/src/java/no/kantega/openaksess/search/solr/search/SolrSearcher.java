@@ -40,6 +40,9 @@ public class SolrSearcher implements Searcher {
     @Value("${search.boostByPublishDateQuery:recip(ms(NOW/HOUR,publishDate),3.16e-11,1,1)}")
     private String boostByPublishDateQuery;
 
+    @Value("${search.boostByLastModifiedDateQuery:recip(ms(NOW,lastModified),3.16e-11,1,1)}")
+    private String boostByLastModified;
+
     @Autowired
     private SolrClient solrServer;
 
@@ -217,7 +220,10 @@ public class SolrSearcher implements Searcher {
     private String[] getBoostFunctions(SearchQuery query) {
         List<String> boostFunctions = new ArrayList<>(query.getBoostFunctions());
         if (query.isBoostByPublishDate()) {
-            boostFunctions.add( boostByPublishDateQuery );
+            boostFunctions.add(boostByPublishDateQuery);
+        }
+        if (query.isBoostByLastModifiedDate()){
+            boostFunctions.add(boostByLastModified);
         }
         return boostFunctions.toArray(new String[boostFunctions.size()]);
     }

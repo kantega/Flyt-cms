@@ -117,7 +117,6 @@
                 <prop key="/admin/mypage/MyPageSettings.action">MyPageSettingsAction</prop>
                 <prop key="/admin/mypage/RestoreDeletedItem.action">RestoreDeletedItemAction</prop>
                 <prop key="/admin/mypage/plugins/PropertySearch.action">propertySearchAction</prop>
-                <prop key="/admin/mypage/plugins/GoogleAnalytics.action">googleAnalyticsAction</prop>
                 <prop key="/admin/mypage/plugins/ContentStatistics.action">contentStatisticsAction</prop>
                 <prop key="/admin/mypage/plugins/OrgUnitStatistics.action">orgUnitStatisticsAction</prop>
                 <prop key="/admin/mypage/plugins/UserInfo.action">userInfoAction</prop>
@@ -290,7 +289,6 @@
     <bean class="no.kantega.publishing.client.ContentRequestHandler" id="ContentRequestHandler">
         <property name="contentRequestDispatcher" ref="ContentRequestDispatcher"/>
         <property name="siteCache" ref="aksessSiteCache"/>
-        <lookup-method name="getSecuritySession" bean="securitySession"/>
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
@@ -300,7 +298,6 @@
         <property name="multimediaRequestHandlerHelper">
             <bean class="no.kantega.publishing.client.MultimediaRequestHandlerHelper" />
         </property>
-        <lookup-method name="getSecuritySession" bean="securitySession"/>
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
@@ -311,21 +308,21 @@
         <property name="addPagetypeToResponseHeader" value="${addPagetypeToResponseHeader:false}"/>
     </bean>
 
+    <bean id="userLoginRestrictor" class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+        <property name="maxAttempts" value="5"/>
+        <property name="timeoutInSeconds" value="900"/>
+    </bean>
+    <bean id="ipLoginRestrictor" class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+        <property name="maxAttempts" value="50"/>
+        <property name="timeoutInSeconds" value="3600"/>
+    </bean>
+
     <bean class="no.kantega.publishing.security.action.LoginAction" id="LoginAction">
         <property name="loginView" value="${security.login.view}"/>
         <property name="loginLayout" value="${security.login.layout}"/>
-        <property name="userLoginRestrictor">
-            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
-                <property name="maxAttempts" value="5"/>
-                <property name="timeoutInSeconds" value="900"/>
-            </bean>
-        </property>
-        <property name="ipLoginRestrictor">
-            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
-                <property name="maxAttempts" value="50"/>
-                <property name="timeoutInSeconds" value="3600"/>
-            </bean>
-        </property>
+        <property name="twofactorAuthView" value="${security.login.twofactorAuthView}"/>
+        <property name="userLoginRestrictor" ref="userLoginRestrictor"/>
+        <property name="ipLoginRestrictor" ref="ipLoginRestrictor"/>
     </bean>
 
     <bean class="no.kantega.publishing.security.action.RequestPasswordResetAction" id="RequestPasswordResetAction">
@@ -347,6 +344,19 @@
         <property name="servletClass" value="no.kantega.publishing.security.action.LogoutAction"/>
         <property name="servletName" value="LogoutAction"/>
     </bean>
+
+    <bean class="no.kantega.publishing.security.action.LoginTokenAction">
+        <property name="twofactorAuthView" value="${security.login.twofactorAuthView}"/>
+        <property name="userLoginRestrictor" ref="userLoginRestrictor"/>
+        <property name="ipLoginRestrictor" ref="ipLoginRestrictor"/>
+        <property name="loginTokenRestrictor">
+            <bean class="no.kantega.publishing.security.data.PauseLoginRestrictor">
+                <property name="maxAttempts" value="5"/>
+                <property name="timeoutInSeconds" value="900"/>
+            </bean>
+        </property>
+    </bean>
+
     <bean class="no.kantega.publishing.controls.sitemap.CrawlerSiteMapController" id="CrawlerSiteMapController"/>
     <bean class="no.kantega.publishing.controls.robots.RobotsController" id="RobotsController"/>
 
@@ -395,10 +405,6 @@
         <property name="formView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-form.jsp"/>
         <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/propertysearch-result.jsp"/>
     </bean>
-    <bean class="no.kantega.publishing.admin.mypage.plugins.GoogleAnalyticsAction" id="googleAnalyticsAction">
-        <property name="formView" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics-form.jsp"/>
-        <property name="resultsView" value="/WEB-INF/jsp/admin/mypage/plugins/googleanalytics-result.jsp"/>
-    </bean>
     <bean class="no.kantega.publishing.admin.mypage.plugins.ContentStatisticsAction" id="contentStatisticsAction">
         <property name="view" value="/WEB-INF/jsp/admin/mypage/plugins/contentstatistics.jsp"/>
     </bean>
@@ -428,6 +434,8 @@
     <bean id="contentClipboardHandler" class="no.kantega.publishing.admin.ajax.ContentClipboardHandler"/>
     <bean class="no.kantega.publishing.admin.ajax.UserPreferencesHandler"/>
     <bean id="contentPropertiesAction" class="no.kantega.publishing.admin.content.ajax.ContentPropertiesAction"/>
+
+    <bean class="no.kantega.publishing.admin.administration.action.ResetLinkChecker"/>
 
     <!-- Search content -->
     <bean id="adminContentSearchController" class="no.kantega.openaksess.search.controller.AdminContentSearchController">
@@ -776,6 +784,9 @@
     </bean>
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
+    <bean class="no.kantega.publishing.admin.administration.action.SqlToolController"/>
+
+
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteContentAction" id="AutocompleteContentAction">

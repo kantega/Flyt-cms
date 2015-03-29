@@ -27,6 +27,7 @@ public class SearchQuery {
     private int offset = 0;
     private boolean fuzzySearch = false;
     private boolean boostByPublishDate = false;
+    private boolean boostByLastModifiedDate = false;
     private IndexedLanguage indexedLanguage = IndexedLanguage.NO;
     private boolean appendFiltersToPageUrls = true;
     private QueryType queryType = QueryType.Default;
@@ -298,6 +299,22 @@ public class SearchQuery {
      */
     public void setBoostByPublishDate(boolean boostByPublishDate) {
         this.boostByPublishDate = boostByPublishDate;
+    }
+
+
+    /**
+     * If set, adds boost query that adds boost to recently edited documents
+     */
+    public boolean isBoostByLastModifiedDate() {
+        return boostByLastModifiedDate;
+    }
+
+     /**
+     * If set, adds boost query that adds boost to recently edited documents
+      * @param boostByLastModifiedDate enable boost for recently edited documents
+     */
+    public void setBoostByLastModifiedDate(boolean boostByLastModifiedDate) {
+        this.boostByLastModifiedDate = boostByLastModifiedDate;
     }
 
     /**

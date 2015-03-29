@@ -48,7 +48,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -88,6 +87,9 @@ public class EditContentHelper {
 
         // Set author
         content.setPublisher(securitySession.getUser().getName());
+
+        // Set creator
+        content.setCreator(securitySession.getUser().getId());
 
         inheritGroup = setContentAndDisplayTemplates(param, aksessService, inheritGroup, content);
         setAssociations(param, content);
@@ -388,7 +390,7 @@ public class EditContentHelper {
      * @throws InvalidTemplateException -
      */
     private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
-                                      @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
+                                      RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
                                       List<? extends Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
@@ -396,6 +398,8 @@ public class EditContentHelper {
             String type;
             if (xmlAttribute.getTagName().equalsIgnoreCase("repeater")) {
                 type = "repeater";
+            } else if(xmlAttribute.getTagName().equalsIgnoreCase("separator")) {
+                type = "separator";
             } else {
                 type = xmlAttribute.getAttribute("type");
             }

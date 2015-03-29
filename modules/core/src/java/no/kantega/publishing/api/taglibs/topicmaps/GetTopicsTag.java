@@ -69,51 +69,17 @@ public class GetTopicsTag extends LoopTagSupport {
         try {
             TopicMapService topicService = new TopicMapService(request);
             if (topicid != null) {
-                if (topicmapid == -1) {
-                    throw new JspTagException("topicmapid must be specified when topicid is specified");
-                }
-                Topic t = topicService.getTopic(topicmapid, topicid);
-                List<Topic> list = new ArrayList<>();
-                if(t != null) {
-                    list.add(t);
-                }
-                i = list.iterator();
+                handleTopicId(topicService);
 
             } else if (instance != null) {
-                if(topicmapid == -1) {
-                    throw new JspTagException("topicmapid must be specified when instance is specified");
-                }
-                List list = topicService.getTopicsByInstance(new Topic(instance, topicmapid));
-                i = list.iterator();
+                handleTopicInstance(topicService);
 
             } else if (associatedid != null) {
-                if(topicmapid == -1) {
-                    throw new JspTagException("topicmapid must be specified when associatedid is specified");
-                }
-                Topic topic = topicService.getTopic(topicmapid, associatedid);
-
-                List<TopicAssociation> associations = topicService.getTopicAssociations(topic);
-
-                i = clean(associations, ignoretopics).iterator();
+                handleAssociatedId(topicService);
             } else if (topiclist != null) {
-                if (topiclist.length() > 0) {
-                    String[] topics = topiclist.split(",");
-
-                    List<Topic> l = new ArrayList<>(topics.length);
-                    for (String topicStr : topics) {
-                        if (topicStr.contains(":")) {
-                            String topicMapId = topicStr.substring(0, topicStr.indexOf(":"));
-                            String topicId = topicStr.substring(topicStr.indexOf(":") + 1, topicStr.length());
-                            Topic t = topicService.getTopic(Integer.parseInt(topicMapId), topicId);
-                            if (t != null) {
-                                l.add(t);
-                            }
-                        }
-                    }
-                    i = l.iterator();
-                }
+                handleTopicList(topicService);
             } else {
-                List l;
+                List<Topic> l;
                 Content content = AttributeTagHelper.getContent(pageContext, collection, contentId);
                 if (content != null) {
                     l = content.getTopics();
@@ -121,7 +87,7 @@ public class GetTopicsTag extends LoopTagSupport {
                         l = topicService.getTopicsByContentId(content.getId());
                     }
                 } else {
-                    l = new ArrayList();
+                    l = new ArrayList<>();
                 }
                 i = l.iterator();
             }
@@ -138,6 +104,56 @@ public class GetTopicsTag extends LoopTagSupport {
             throw new JspTagException(e);
 
         }
+    }
+
+    private void handleTopicList(TopicMapService topicService) {
+        if (topiclist.length() > 0) {
+            String[] topics = topiclist.split(",");
+
+            List<Topic> l = new ArrayList<>();
+            for (String topicStr : topics) {
+                if (topicStr.contains(":")) {
+                    String topicMapId = topicStr.substring(0, topicStr.indexOf(":"));
+                    String topicId = topicStr.substring(topicStr.indexOf(":") + 1, topicStr.length());
+                    Topic t = topicService.getTopic(Integer.parseInt(topicMapId), topicId);
+                    if (t != null) {
+                        l.add(t);
+                    }
+                }
+            }
+            i = l.iterator();
+        }
+    }
+
+    private void handleAssociatedId(TopicMapService topicService) throws JspTagException {
+        if(topicmapid == -1) {
+            throw new JspTagException("topicmapid must be specified when associatedid is specified");
+        }
+        Topic topic = topicService.getTopic(topicmapid, associatedid);
+
+        List<TopicAssociation> associations = topicService.getTopicAssociations(topic);
+
+        i = clean(associations, ignoretopics).iterator();
+    }
+
+    private void handleTopicInstance(TopicMapService topicService) throws JspTagException {
+        if(topicmapid == -1) {
+            throw new JspTagException("topicmapid must be specified when instance is specified");
+        }
+        List<Topic> list = topicService.getTopicsByInstance(new Topic(instance, topicmapid));
+        i = list.iterator();
+    }
+
+    private void handleTopicId(TopicMapService topicService) throws JspTagException {
+        if (topicmapid == -1) {
+            throw new JspTagException("topicmapid must be specified when topicid is specified");
+        }
+        Topic t = topicService.getTopic(topicmapid, topicid);
+        List<Topic> list = new ArrayList<>();
+        if(t != null) {
+            list.add(t);
+        }
+        i = list.iterator();
     }
 
     public void setContentid(String contentId) {

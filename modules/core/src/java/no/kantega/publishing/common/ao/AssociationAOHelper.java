@@ -16,9 +16,11 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.base.Predicate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
+import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
@@ -27,33 +29,122 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
-public class AssociationAOHelper {
+import static com.google.common.collect.Collections2.filter;
+import static no.kantega.publishing.common.ao.AssociationAO.getAssociationById;
+import static no.kantega.publishing.common.ao.AssociationAO.getAssociationsByContentId;
+
+class AssociationAOHelper {
+
+    /**
+     * Object containing lists that represent the {@code Association}s that will be affected by a modification of a cross published {@code Content}.
+     * <ul>
+     *     <li><b>associationsToMove</b>: {@code Association}s we have found a new parent for, and have set parentId on.</li>
+     *     <li><b>associationsToDelete</b>: {@code Association}s we did not find a new parent for.</li>
+     *     <li><b>parentAssociationsNeedingNewChild</b>: Cross published versions of the new parent we do not have a existing
+     *     {@code Association} for, so a new {@code Association} will have to be created.</li>
+     * </ul>
+     */
+    static class MoveCrossPublishedResult {
+        final List<Association> associationsToMove;
+        final List<Association> associationsToDelete;
+        final List<Association> parentAssociationsNeedingNewChild;
+
+        MoveCrossPublishedResult(List<Association> associationsToMove, List<Association> associationsToDelete, List<Association> parentAssociationsNeedingNewChild) {
+            this.associationsToMove = associationsToMove;
+            this.associationsToDelete = associationsToDelete;
+            this.parentAssociationsNeedingNewChild = parentAssociationsNeedingNewChild;
+        }
+    }
+
+    /**
+     *
+     * @param oldAssociation - the current {@code Association} that is being modified.
+     * @param interestingAssociations - all other cross published {@code Association}s refering to {@code oldAssociation.contentId}
+     * @param newAssociation - the updated version that in the future will be saved.
+     * @return {@code MoveCrossPublishedResult} containing lists of objects that will be moved, deleted or created new {@code Association}s under.
+     */
+    static MoveCrossPublishedResult handleMoveCrossPublished(Association oldAssociation, List<Association> interestingAssociations, Association newAssociation){
+        List<Association> associationsToMove = new ArrayList<>();
+        List<Association> associationsToDelete = new ArrayList<>();
+        List<Association> parentAssociationsNeedingNewChild = new ArrayList<>();
+
+        Association firstSharedAnchestor = getFirstSharedAnchestor(oldAssociation, interestingAssociations.get(0));
+
+        if(firstSharedAnchestor != null){
+            final Association newParentForInitiatingAssociation = getAssociationById(newAssociation.getParentAssociationId());
+            List<Association> interestingNewParents = new ArrayList<>(filter(getAssociationsByContentId(newParentForInitiatingAssociation.getContentId()), new Predicate<Association>() {
+                @Override
+                public boolean apply(Association input) {
+                    return input.getId() != newParentForInitiatingAssociation.getId();
+                }
+            }));
+            for (Association interestingAssociation : interestingAssociations) {
+                Association newParent = findNewParent(interestingAssociation, interestingNewParents);
+                if (newParent != null) {
+                    interestingAssociation.setParentAssociationId(newParent.getAssociationId());
+                    associationsToMove.add(interestingAssociation);
+                } else {
+                    associationsToDelete.add(interestingAssociation);
+                }
+            }
+
+            parentAssociationsNeedingNewChild = interestingNewParents;
+        }
+        return new MoveCrossPublishedResult(associationsToMove, associationsToDelete, parentAssociationsNeedingNewChild);
+    }
+
+    /**
+     * @param interestingAssociation the {@code Association} we want to find new parent for.
+     * @param interestingNewParents the potential parents. The returned parent should be removed from the list.
+     * @return the new parent {@code Association}.
+     * Currently just selects the first of interestingNewParents and remove it from interestingNewParents
+     */
+    private static Association findNewParent(Association interestingAssociation, List<Association> interestingNewParents) {
+        if(interestingNewParents.size() > 0){
+            return interestingNewParents.remove(0);
+        }
+        return null;
+    }
+
+    /**
+     * @param oldAssociation the association that initiated the operation
+     * @param association the first sibling association that is not oldAssociation.
+     * @return the first shared anchestor of both associations. I.e. the parent of association
+     * if association.parent.contentId == oldAssociation.parent.contentId. null otherwise
+     *
+     */
+    private static Association getFirstSharedAnchestor(Association oldAssociation, Association association) {
+        Association parent = getAssociationById(oldAssociation.getParentAssociationId());
+        Association parentCopy = getAssociationById(association.getParentAssociationId());
+
+        return parent.getContentId() == parentCopy.getContentId() ? parentCopy : null;
+    }
 
     public static void fixDefaultPostings() throws SystemException {
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            List<Site> sites = RootContext.getInstance().getBean(SiteCache.class).getSites();
+        List<Site> sites = RootContext.getInstance().getBean(SiteCache.class).getSites();
+        // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
+        String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + " AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
+                " (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
+        String updateQuery = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid = ? AND (IsDeleted IS NULL OR IsDeleted = 0)";
 
-            // MySQL støtter ikke å oppdatere tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
-            String query = "SELECT min(uniqueid) from associations WHERE siteid = ? AND type = " + AssociationType.CROSS_POSTING + " AND (IsDeleted IS NULL OR IsDeleted = 0) AND contentid NOT IN " +
-                            " (SELECT contentid from associations WHERE siteid = ? AND type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " AND (IsDeleted IS NULL OR IsDeleted = 0)) GROUP BY contentid";
-            PreparedStatement st = c.prepareStatement(query);
-
-            String updateQuery = "UPDATE associations SET type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " WHERE uniqueid = ? AND (IsDeleted IS NULL OR IsDeleted = 0)";
-            PreparedStatement updateSt = c.prepareStatement(updateQuery);
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = c.prepareStatement(query);
+             PreparedStatement updateSt = c.prepareStatement(updateQuery)) {
 
             for (Site site : sites) {
                 st.setInt(1, site.getId());
                 st.setInt(2, site.getId());
-                ResultSet rs = st.executeQuery();
-                while (rs.next()) {
-                    int id = rs.getInt(1);
-                    updateSt.setInt(1, id);
-                    updateSt.executeUpdate();
+                try(ResultSet rs = st.executeQuery()) {
+                    while (rs.next()) {
+                        int id = rs.getInt(1);
+                        updateSt.setInt(1, id);
+                        updateSt.addBatch();
+                    }
+                    updateSt.executeBatch();
                 }
-                rs.close();
-                rs = null;
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
@@ -67,22 +158,22 @@ public class AssociationAOHelper {
             if (dbConnectionFactory.isMySQL()) {
                 // MySQL støtter ikke å slette tabeller som er med i subqueries, derfor denne tungvinte måten å gjøre det på
                 String query = "SELECT UniqueId FROM associations WHERE type = " + AssociationType.SHORTCUT + " AND AssociationId NOT IN (SELECT UniqueId FROM associations WHERE (IsDeleted IS NULL OR IsDeleted = 0)) AND (IsDeleted IS NULL OR IsDeleted = 0)";
-                PreparedStatement st = c.prepareStatement(query);
-
                 String updateQuery = "DELETE FROM associations WHERE UniqueId = ?";
-                PreparedStatement updateSt = c.prepareStatement(updateQuery);
+                try(PreparedStatement st = c.prepareStatement(query);
+                PreparedStatement updateSt = c.prepareStatement(updateQuery)) {
 
-                ResultSet rs = st.executeQuery();
-                while(rs.next()) {
-                    int id = rs.getInt(1);
-                    updateSt.setInt(1, id);
-                    updateSt.executeUpdate();
+                    ResultSet rs = st.executeQuery();
+                    while (rs.next()) {
+                        int id = rs.getInt(1);
+                        updateSt.setInt(1, id);
+                        updateSt.addBatch();
+                    }
+                    updateSt.executeBatch();
                 }
-                rs.close();
             } else {
-                PreparedStatement st = c.prepareStatement("DELETE FROM associations WHERE type = " + AssociationType.SHORTCUT + " AND AssociationId NOT IN (SELECT UniqueId FROM associations WHERE (IsDeleted IS NULL OR IsDeleted = 0)) AND (IsDeleted IS NULL OR IsDeleted = 0)");
-                st.executeUpdate();
-                st.close();
+                try(PreparedStatement st = c.prepareStatement("DELETE FROM associations WHERE type = " + AssociationType.SHORTCUT + " AND AssociationId NOT IN (SELECT UniqueId FROM associations WHERE (IsDeleted IS NULL OR IsDeleted = 0)) AND (IsDeleted IS NULL OR IsDeleted = 0)")) {
+                    st.executeUpdate();
+                }
             }
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);

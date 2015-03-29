@@ -21,37 +21,41 @@ import org.apache.commons.lang3.StringUtils;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Iterator;
 
 /**
  *
  */
 public class ParamEncodingFilter implements Filter {
+    public static final String POST_PARAM_ENCODING = "encoding";
+    public static final String GET_PARAM_ENCODING = "getencoding";
+
     private String encoding;
+    private String GETencoding;
 
     public ParamEncodingFilter() {}
 
     public void init(FilterConfig filterConfig) throws ServletException {
-        String encoding = filterConfig.getInitParameter("encoding");
+        String encoding = filterConfig.getInitParameter(POST_PARAM_ENCODING);
         this.encoding = StringUtils.defaultIfBlank(encoding, "utf-8");
+
+        String GETencoding = filterConfig.getInitParameter(GET_PARAM_ENCODING);
+        this.GETencoding = StringUtils.defaultIfBlank(GETencoding, "iso-8859-1");
     }
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         if(((HttpServletRequest)servletRequest).getMethod().equals("POST")) {
             servletRequest.setCharacterEncoding(encoding);
         } else {
-            servletRequest.setCharacterEncoding("iso-8859-1");
+            servletRequest.setCharacterEncoding(GETencoding);
         }
-        Iterator it = servletRequest.getParameterMap().keySet().iterator();
-        if (it.hasNext()) {
-            String key = (String) it.next();
-            servletRequest.getParameter(key);
+        for (String s : servletRequest.getParameterMap().keySet()) {
+            servletRequest.getParameter(s);
         }
 
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    public void destroy() {        
+    public void destroy() {
     }
 
 }

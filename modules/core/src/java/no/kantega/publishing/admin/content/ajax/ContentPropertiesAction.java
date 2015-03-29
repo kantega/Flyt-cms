@@ -27,6 +27,8 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.path.PathEntry;
+import no.kantega.publishing.api.service.lock.ContentLock;
+import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
@@ -36,8 +38,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.lock.ContentLock;
-import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
@@ -69,6 +69,7 @@ public class ContentPropertiesAction {
     @Autowired private ContentIdHelper contentIdHelper;
     @Autowired(required = false)
     private OrganizationManager<? extends OrgUnit> organizationManager;
+    @Autowired private LockManager lockManager;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -107,7 +108,7 @@ public class ContentPropertiesAction {
 
 
                 //Associations
-                List<List<PathEntry>> associations = new ArrayList<List<PathEntry>>();
+                List<List<PathEntry>> associations = new ArrayList<>();
                 for (Association association : content.getAssociations()) {
                     if (association.getAssociationtype() != AssociationType.SHORTCUT) {
                         //Retrieve the path down to this association
@@ -151,7 +152,7 @@ public class ContentPropertiesAction {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.changefromdate", Aksess.getDefaultAdminLocale()));
                 }
 
-                ContentLock lock = LockManager.peekAtLock(content.getId());
+                ContentLock lock = lockManager.peekAtLock(content.getId());
                 if(lock != null && !lock.getOwner().equals(securitySession.getUser().getId())) {
                     String lockedBy = lock.getOwner();
                     model.put(AdminRequestParameters.PERMISSONS_LOCKED_BY, lockedBy);
@@ -168,19 +169,7 @@ public class ContentPropertiesAction {
                 contentProperties.put("changeFromDate", formatDateTime(content.getChangeFromDate()));
                 contentProperties.put("expireDate", formatDateTime(content.getExpireDate()));
                 contentProperties.put("ownerperson", content.getOwnerPerson());
-                String owner = content.getOwner();
-                if (isNotBlank(owner)) {
-                    if (organizationManager != null ) {
-                        try {
-                            OrgUnit ownerUnit = organizationManager.getUnitByExternalId(owner);
-                            if (ownerUnit != null) {
-                                owner = ownerUnit.getName();
-                            }
-                        } catch (Exception e) {
-                            log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
-                        }
-                    }
-                }
+                String owner = trySetOrgunit(content);
                 contentProperties.put("owner", owner);
                 contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
                 contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
@@ -200,6 +189,21 @@ public class ContentPropertiesAction {
             log.error("", e);
             return null;
         }
+    }
+
+    private String trySetOrgunit(Content content) {
+        String owner = content.getOwner();
+        if (isNotBlank(owner) && organizationManager != null) {
+            try {
+                OrgUnit ownerUnit = organizationManager.getUnitByExternalId(owner);
+                if (ownerUnit != null) {
+                    owner = ownerUnit.getName();
+                }
+            } catch (Exception e) {
+                log.info( "Unable to resolve OrgUnit for orgUnitId: " + owner);
+            }
+        }
+        return owner;
     }
 
     private String formatDateTime(Date date) {

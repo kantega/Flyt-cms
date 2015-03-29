@@ -39,7 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
-public abstract class MultimediaRequestHandler {
+public class MultimediaRequestHandler {
     private static final Logger log = LoggerFactory.getLogger(MultimediaRequestHandler.class);
 
     private MultimediaRequestHandlerHelper helper;
@@ -68,7 +68,7 @@ public abstract class MultimediaRequestHandler {
         RequestParameters param = new RequestParameters(request, "utf-8");
 
         try {
-            MultimediaService mediaService = new MultimediaService(getSecuritySession());
+            MultimediaService mediaService = new MultimediaService(SecuritySession.getInstance(request));
 
             Multimedia mm = mediaService.getMultimediaCheckAuthorization(id);
             if (mm == null) {
@@ -130,12 +130,7 @@ public abstract class MultimediaRequestHandler {
     }
 
     private String getCacheKey(int mmId, Multimedia mm, ImageResizeParameters resizeParams) {
-        StringBuilder keyBuilder = new StringBuilder(Integer.toString(mmId));
-        keyBuilder.append("-");
-        keyBuilder.append(resizeParams.toString());
-        keyBuilder.append("-");
-        keyBuilder.append(mm.getLastModified().getTime());
-        return keyBuilder.toString();
+        return Integer.toString(mmId) + "-" + resizeParams.toString() + "-" + mm.getLastModified().getTime();
     }
 
     private boolean shouldResize(String mimetype, ImageResizeParameters resizeParams) {
@@ -146,8 +141,6 @@ public abstract class MultimediaRequestHandler {
     public void setMultimediaRequestHandlerHelper(MultimediaRequestHandlerHelper helper){
         this.helper = helper;
     }
-
-    protected abstract SecuritySession getSecuritySession();
 
     public void setAddPagetypeToResponseHeader(boolean addPagetypeToResponseHeader) {
         this.addPagetypeToResponseHeader = addPagetypeToResponseHeader;

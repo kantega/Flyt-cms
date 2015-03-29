@@ -17,6 +17,7 @@
 package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -27,12 +28,16 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.util.SecurityHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
 public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(DeleteIfExpiredListener.class);
+
+    @Autowired
+    private SystemConfiguration configuration;
 
     public void contentExpired(ContentEvent event) {
         Content content = event.getContent();
@@ -50,7 +55,8 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
                 for (int i = 0; i < tmpAssociations.length; i++) {
                     tmpAssociations[i] = associations.get(i).getAssociationId();
                 }
-                cms.deleteAssociationsById(tmpAssociations, false);
+                boolean deleteMultiple = configuration.getBoolean("expired.content.delete.multiple", false);
+                cms.deleteAssociationsById(tmpAssociations, deleteMultiple);
             } catch (SystemException e) {
                 log.error("Could not delete content", e);
             }

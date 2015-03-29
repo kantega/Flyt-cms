@@ -20,56 +20,42 @@ import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class GetOrgUnitTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetOrgUnitTag.class);
 
     private String name = "currentorgunit";
     private String orgUnitId = null;
-    private static List<OrganizationManager> organizationManagers;
+    private Collection<OrganizationManager> organizationManagers = emptyList();
 
-    @Override
-    public void setPageContext(PageContext pageContext) {
-        super.setPageContext(pageContext);
-        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
-        Collection<OrganizationManager> values = context.getBeansOfType(OrganizationManager.class).values();
-        organizationManagers = new ArrayList<>(values);
-
-    }
-
+    @SuppressWarnings("unchecked")
     public int doStartTag() throws JspException {
-        if (orgUnitId == null || orgUnitId.trim().length() == 0) {
+        if (isBlank(orgUnitId)) {
             return SKIP_BODY;
         }
 
         try {
-            HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
-
-            OrgUnit orgUnit = null;
-
-            if (organizationManagers != null && organizationManagers.size() > 0) {
-                for (OrganizationManager organizationManager : organizationManagers) {
-                    orgUnit = organizationManager.getUnitByExternalId(orgUnitId);
-                    if (orgUnit != null) {
-                        break;
-                    }
+            for (OrganizationManager organizationManager : organizationManagers) {
+                OrgUnit orgUnit = organizationManager.getUnitByExternalId(orgUnitId);
+                if (orgUnit != null) {
+                    ServletRequest request = pageContext.getRequest();
+                    request.setAttribute(name, orgUnit);
+                    break;
                 }
             }
 
-            if (orgUnit != null) {
-                request.setAttribute(name, orgUnit);
-            }
         } catch (Exception e) {
             log.error("", e);
             throw new JspTagException(e);
@@ -82,6 +68,13 @@ public class GetOrgUnitTag extends TagSupport {
         orgUnitId = null;
         name = "currentorgunit";
         return EVAL_PAGE;
+    }
+
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        Map<String, OrganizationManager> organizationManagerMap = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBeansOfType(OrganizationManager.class);
+        organizationManagers = organizationManagerMap.values();
     }
 
     public void setOrgunitid(String orgUnitId) {

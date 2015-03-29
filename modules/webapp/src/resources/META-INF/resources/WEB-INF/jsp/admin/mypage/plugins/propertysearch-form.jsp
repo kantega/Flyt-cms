@@ -114,7 +114,7 @@
             <select name="sort">
                 <option value="<%=ContentProperty.TITLE%>"><kantega:label key="aksess.propertysearch.sort.title"/></option>
                 <option value="<%=ContentProperty.LAST_MODIFIED%> desc"><kantega:label key="aksess.propertysearch.sort.lastmodified.desc"/></option>
-                <option value="<%=ContentProperty.LAST_MODIFIED%>"><kantega:label key="aksess.propertysearch.sort.lastmodified.desc"/></option>
+                <option value="<%=ContentProperty.LAST_MODIFIED%>"><kantega:label key="aksess.propertysearch.sort.lastmodified"/></option>
                 <option value="<%=ContentProperty.NUMBER_OF_VIEWS%> desc"><kantega:label key="aksess.propertysearch.sort.numberofviews.desc"/></option>
                 <option value="<%=ContentProperty.NUMBER_OF_VIEWS%>"><kantega:label key="aksess.propertysearch.sort.numberofviews"/></option>
             </select>

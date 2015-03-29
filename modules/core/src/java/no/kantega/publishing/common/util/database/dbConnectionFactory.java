@@ -41,6 +41,7 @@ import java.lang.reflect.Proxy;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -248,11 +249,10 @@ public class dbConnectionFactory {
         try (Connection c = dataSource.getConnection()){
             boolean hasTables = true;
 
-            try {
-                c.createStatement().execute("SELECT max(ContentId) from content");
+            try (Statement s = c.createStatement()) {
+                s.execute("SELECT max(ContentId) from content");
             } catch (SQLException e) {
                 hasTables = false;
-
             }
 
             if(!hasTables) {

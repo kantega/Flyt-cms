@@ -35,16 +35,20 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
     private EventLog eventLog;
 
 	public void process(List<LinkOccurrence> links) {
-		Map<String, Object> params = new HashMap<>();
-		params.put("linklist", links);
-        params.put("applicationurl", Aksess.getApplicationUrl());
-        params.put("failedpages", getFailedUrlEmitEvents());
-		
-		try {
-			mailLinksToEditor(params);
-		} catch (ConfigurationException e) {
-		   log.error("", e);
-		} 
+		if (links.isEmpty()) {
+			log.info("List of broken links is empty");
+		} else {
+			Map<String, Object> params = new HashMap<>();
+			params.put("linklist", links);
+			params.put("applicationurl", Aksess.getApplicationUrl());
+			params.put("failedpages", getFailedUrlEmitEvents());
+
+			try {
+				mailLinksToEditor(params);
+			} catch (ConfigurationException e) {
+				log.error("", e);
+			}
+		}
 	}
 
     private List<EventLogEntry> getFailedUrlEmitEvents() {
@@ -54,7 +58,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
         return eventLog.getQueryResult(eventLogQuery);
     }
 
-    private void mailLinksToEditor(Map params) throws ConfigurationException {
+    private void mailLinksToEditor(Map<String, Object> params) throws ConfigurationException {
 		Properties properties = new Properties(Aksess.getConfiguration().getProperties());
 		String mailFrom = properties.getProperty("mail.from");
 		String mailEditor = properties.getProperty("mail.editor");

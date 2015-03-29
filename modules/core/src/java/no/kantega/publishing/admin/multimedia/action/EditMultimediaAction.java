@@ -17,12 +17,12 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.configuration.Configuration;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -40,14 +40,16 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
     private String view;
     private String selectMediaView;
 
+    @Autowired
+    private SystemConfiguration configuration;
+
     protected ModelAndView handleGet(Multimedia mm, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        Configuration c = Aksess.getConfiguration();
 
         // Show image / media object
         Map<String, Object> model = new HashMap<>();
 
-        model.put("altNameRequired", c.getBoolean("multimedia.altname.required", false));
-        model.put("descriptionRequired", c.getBoolean("multimedia.description.required", false));
+        model.put("altNameRequired", configuration.getBoolean("multimedia.altname.required", false));
+        model.put("descriptionRequired", configuration.getBoolean("multimedia.description.required", false));
         model.put("media", mm);
 
         if (mm.getMimeType().userMustInputDimension()) {
@@ -100,18 +102,21 @@ public class EditMultimediaAction extends AbstractEditMultimediaAction {
             model.put("media", mm);
             model.put("maxWidth", param.getInt("maxWidth"));
             return new ModelAndView(selectMediaView, model);
-        } else if(param.getInts("ids") != null){
-            List<Integer> ids = new ArrayList<Integer>();
-            for(int i = 0; i < param.getInts("ids").length; i++){
-                ids.add(param.getInts("ids")[i]);
-            }
-            int id = ids.remove(0);
-            model.put("id", mm.getParentId());
-            model.put("ids", ids);
-            return new ModelAndView(new RedirectView("EditMultimedia.action?id="+id), model);
         } else {
-            model.put("id", mm.getParentId());
-            return new ModelAndView(new RedirectView("Navigate.action"), model);
+            int[] paramInts = param.getInts("ids");
+            if(paramInts != null){
+                List<Integer> ids = new ArrayList<>(paramInts.length);
+                for (int paramInt : paramInts) {
+                    ids.add(paramInt);
+                }
+                int id = ids.remove(0);
+                model.put("id", mm.getParentId());
+                model.put("ids", ids);
+                return new ModelAndView(new RedirectView("EditMultimedia.action?id="+id), model);
+            } else {
+                model.put("id", mm.getParentId());
+                return new ModelAndView(new RedirectView("Navigate.action"), model);
+            }
         }
 
     }

@@ -755,11 +755,16 @@ table.fullWidth {
 }
 
 .contentAttribute, .contentAttributeRepeater, .formElement {
-    margin-bottom: 14px;
+    margin-bottom: 15px;
 }
 
 .contentAttribute .heading, .contentAttributeRepeater .heading, .formElement .heading {
     font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.contentAttribute .heading, .contentAttributeRepeater .heading{
+    font-size: 14px;
 }
 
 .contentAttribute.error .heading {
@@ -811,6 +816,13 @@ table.fullWidth {
     width: 100%;
 }
 
+#EditContentPane{
+    margin: 50px;
+}
+#EditContentPane input[type=text]{
+    padding: 5px;
+}
+
 input.fullWidth, select.fullWidth {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -821,6 +833,28 @@ input.fullWidth, select.fullWidth {
     background: transparent;
     border: 0;
 }
+
+.separator{
+    margin-top: 50px;
+    border-top: 1px solid #E0E0E0;
+    margin-bottom: 20px;
+}
+
+.separator h2.separator_heading{
+    font-size: 200%;
+    padding-top: 0px;
+    margin-bottom: 5px;
+    color: #898A8B;
+    font-weight: normal;
+    margin-top: 15px;
+}
+
+.separator .seprator_description{
+    font-size: 120%;
+
+}
+
+
 
 
 /************** Boxes **************/
@@ -1250,4 +1284,6 @@ iframe #AjaxLoadingIllustration {
     text-align: left;
     padding-bottom: 10px;
 }
+
+
 

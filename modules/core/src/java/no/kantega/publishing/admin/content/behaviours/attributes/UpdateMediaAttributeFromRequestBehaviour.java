@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
-import no.kantega.commons.client.util.RequestParameters;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -34,6 +34,7 @@ public class UpdateMediaAttributeFromRequestBehaviour implements UpdateAttribute
         MultipartFile file = param.getFile(inputField + "_upload");
         if (file != null) {
             fattr.setImportFile(file);
+            if (fattr.getValue().trim().length() == 0) fattr.setValue("importfile");
         } else {
             String value = param.getString(inputField);
             if (value == null) {

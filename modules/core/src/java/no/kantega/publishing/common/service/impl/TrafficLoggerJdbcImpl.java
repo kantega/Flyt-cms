@@ -24,8 +24,6 @@ import no.kantega.publishing.common.traffic.TrafficLogger;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import org.springframework.scheduling.annotation.Async;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
@@ -44,7 +42,7 @@ public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implemen
     private boolean trafficlogEnabled = true;
 
     @Async
-    public void log(@Nonnull Content content, @Nonnull HttpServletRequest request) {
+    public void log(Content content,HttpServletRequest request) {
         if (shouldLog(request)) {
             final String remoteAddr = request.getRemoteAddr();
             HttpSession session = request.getSession(false);
@@ -179,7 +177,7 @@ public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implemen
     public void setSearchEngineStringPatterns(List<String> searchEnginePatterns){
         Function<String, Pattern> stringToPatternTransform = new Function<String, Pattern>() {
             @Override
-            public Pattern apply(@Nullable String pattern) {
+            public Pattern apply(String pattern) {
                 return Pattern.compile(pattern);
             }
         };

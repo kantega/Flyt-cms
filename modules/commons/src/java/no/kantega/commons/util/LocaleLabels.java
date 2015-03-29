@@ -18,6 +18,7 @@ package no.kantega.commons.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -30,12 +31,14 @@ public class LocaleLabels {
     static public String DEFAULT_BUNDLE = "TextLabels";
 
     private static Map<String, PropertyResourceBundle> bundles = new HashMap<>();
+    private static Set<String> absentBundles = new HashSet<>(1);//Remember the bundles we have tried to get but MissingResourceException was thrown.
 
     private static PropertyResourceBundle getBundle(String bundleName, String locale) {
         PropertyResourceBundle bundle;
         synchronized (bundles) {
-            bundle = bundles.get(bundleName + "_" + locale);
-            if (bundle == null) {
+            String key = bundleName + "_" + locale;
+            bundle = bundles.get(key);
+            if (bundle == null && !absentBundles.contains(key)) {
                 String[] locArr = locale.split("_");
                 try {
                     if (locArr.length > 2) {
@@ -43,9 +46,10 @@ public class LocaleLabels {
                     } else {
                         bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1]));
                     }
-                    bundles.put(bundleName + "_" + locale, bundle);
+                    bundles.put(key, bundle);
                 } catch (MissingResourceException e) {
-                    log.error("Could not find resource " + bundle, e);
+                    absentBundles.add(key);
+                    log.warn("Could not find resource bundle " + key);
                 }
             }
         }
@@ -70,7 +74,7 @@ public class LocaleLabels {
             for (Map.Entry<String, ?> o : parameters.entrySet()) {
                 Object value = o.getValue();
                 if (value != null) {
-                    msg = msg.replaceAll("\\$\\{" + o.getKey() + "\\}", value.toString());
+                    msg = StringUtils.replace(msg, "${" + o.getKey() + "}", value.toString());
                 }
             }
         }

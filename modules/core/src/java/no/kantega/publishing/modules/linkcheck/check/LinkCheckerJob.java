@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.modules.linkcheck.check;
 
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.LinkDao;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
@@ -47,12 +47,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.ConnectException;
+import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.Date;
+import java.util.regex.Pattern;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -82,29 +84,12 @@ public class LinkCheckerJob implements InitializingBean {
     private ContentIdHelper contentIdHelper;
 
     @Autowired
-    private MultimediaAO multimediaAO;
+    private MultimediaDao multimediaAO;
+
+    @Autowired
+    private SystemConfiguration configuration;
+
     private HttpClientBuilder httpClientBuilder;
-
-    @PostConstruct
-    public void init() {
-        if(isNotBlank(proxyHost)) {
-            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-
-            httpClientBuilder = HttpClients.custom()
-                    .setProxy(proxy);
-
-            if(isNotBlank(proxyUser)) {
-                CredentialsProvider credsProvider = new BasicCredentialsProvider();
-                credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyUser, proxyPassword));
-                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
-            }
-        } else {
-            httpClientBuilder = HttpClients.custom()
-                    .setDefaultRequestConfig(RequestConfig.custom()
-                            .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
-        }
-    }
 
     public void runLinkChecker() {
         if(!Aksess.isLinkCheckerEnabled()) {
@@ -113,7 +98,7 @@ public class LinkCheckerJob implements InitializingBean {
         Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
 
         int noLinks = linkDao.getNumberOfLinks();
-        int maxLinksPerDay = 1000;
+        int maxLinksPerDay = configuration.getInt("linkchecker.maxLinksPerDay", 1000);
         if (noLinks > 7*maxLinksPerDay) {
             maxLinksPerDay = (noLinks/7) + 100;
         }
@@ -126,11 +111,14 @@ public class LinkCheckerJob implements InitializingBean {
         long start = System.currentTimeMillis();
         try (CloseableHttpClient client = getHttpClient()){
             linkDao.doForEachLink(term, new LinkHandler() {
+
                 public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                    if(link.startsWith("http")) {
+                    if(link.contains(Aksess.VAR_WEB)) {
+                        // in case something has been saved with http://<@WEB@>
+                        String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
+                        checkInternalLink(substring, occurrence, client);
+                    } else if(link.startsWith("http")) {
                         checkRemoteUrl(link, occurrence, client);
-                    } else if(link.startsWith(Aksess.VAR_WEB)) {
-                        checkInternalLink(link, occurrence, client);
                     }
 
                     linkCounter.increment();
@@ -148,17 +136,20 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
-        log.debug("Checking internal url {}", link);
         if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
+            log.debug("Checking content path {}", link);
             checkContent(link, occurrence, client);
 
         } else if (link.startsWith(MULTIMEDIA_AP) || link.startsWith(MULTIMEDIA)) {
+            log.debug("Checking multimedia path {}", link);
             checkMultimedia(link, occurrence, client);
 
         } else if (link.startsWith(ATTACHMENT_AP) || link.startsWith(ATTACHMENT)) {
+            log.debug("Checking attachment path {}", link);
             checkAttachment(link, occurrence, client);
 
         } else if (link.startsWith(Aksess.VAR_WEB + "/") && link.endsWith("/")) {
+            log.debug("Checking alias path {}", link);
             checkAlias(link, occurrence, client);
 
         } else {
@@ -173,6 +164,9 @@ public class LinkCheckerJob implements InitializingBean {
             idPart = link.substring(CONTENT_AP.length());
             if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf('&'));
+            }
+            if (idPart.contains("#")) {
+                idPart = idPart.substring(0, idPart.indexOf('#'));
             }
         } else {
             idPart = link.substring(CONTENT.length());
@@ -195,6 +189,7 @@ public class LinkCheckerJob implements InitializingBean {
                 occurrence.setStatus(CheckStatus.CONTENT_AP_NOT_FOUND);
             }
         } catch (NumberFormatException e) {
+            log.error("Failed to resolve internal link" + link, e);
             checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
         }
     }
@@ -229,6 +224,7 @@ public class LinkCheckerJob implements InitializingBean {
             }
 
         } catch(NumberFormatException e) {
+            log.error("Failed to resolve internal link" + link, e);
             checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
         }
     }
@@ -263,6 +259,7 @@ public class LinkCheckerJob implements InitializingBean {
             }
 
         } catch (NumberFormatException e) {
+            log.error("Failed to resolve internal link" + link, e);
             checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
         }
     }
@@ -281,7 +278,7 @@ public class LinkCheckerJob implements InitializingBean {
 
         } catch (ContentNotFoundException e) {
             // Ikke et alias eller slettet alias
-            checkRemoteUrl(webroot + link.substring(Aksess.VAR_WEB.length()), occurrence, client);
+            checkRemoteUrl(webroot + alias, occurrence, client);
         } catch (SystemException e) {
             log.error("Error checking alias " + alias, e);
             occurrence.setStatus(CheckStatus.IO_EXCEPTION);
@@ -292,9 +289,11 @@ public class LinkCheckerJob implements InitializingBean {
         log.debug("Checking remote url {}", link);
         HttpGet get;
         try {
-            get = new HttpGet(link);
+            URI uri = UriComponentsBuilder.fromHttpUrl(clean(link)).build().toUri();
+            get = new HttpGet(uri);
         } catch (Exception e) {
             occurrence.setStatus(CheckStatus.INVALID_URL);
+            log.error("INVALID_URL " + link, e);
             return;
         }
 
@@ -319,10 +318,21 @@ public class LinkCheckerJob implements InitializingBean {
         } catch (IOException e) {
             status = CheckStatus.IO_EXCEPTION;
         }  catch (Exception e) {
+            log.error("Error getting " + link, e);
             status = CheckStatus.INVALID_URL;
         }
         occurrence.setStatus(status);
         occurrence.setHttpStatus(httpStatus);
+    }
+
+    /**
+     * Remove after #, replace space with encoded value, trim, and replace \ with /.
+     */
+    private Pattern spacePattern = Pattern.compile("\\s");
+    private String clean(String link) {
+        String s = link.contains("#") ? link.substring(0, link.indexOf('#')) : link;
+        s = spacePattern.matcher(s).replaceAll("%20");
+        return s.replace('\\', '/');
     }
 
     public void setWebroot(String webroot) {
@@ -351,7 +361,6 @@ public class LinkCheckerJob implements InitializingBean {
 
     public void afterPropertiesSet() throws Exception {
         setWebroot(Aksess.getApplicationUrl());
-        Configuration configuration = Aksess.getConfiguration();
         setProxyHost(configuration.getString("linkchecker.proxy.host"));
         String proxyPort = configuration.getString("linkchecker.proxy.port");
         if(proxyPort != null) {
@@ -362,6 +371,29 @@ public class LinkCheckerJob implements InitializingBean {
 
         String proxyPassword = configuration.getString("linkchecker.proxy.password");
         setProxyPassword(proxyPassword);
+        init();
     }
 
+    private void init() {
+        if(isNotBlank(proxyHost)) {
+            HttpHost proxy = new HttpHost(proxyHost, proxyPort);
+
+            httpClientBuilder = HttpClients.custom()
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setRedirectsEnabled(true)
+                            .setConnectTimeout(CONNECTION_TIMEOUT).build())
+                    .setProxy(proxy);
+
+            if(isNotBlank(proxyUser)) {
+                CredentialsProvider credsProvider = new BasicCredentialsProvider();
+                credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyUser, proxyPassword));
+                httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
+            }
+        } else {
+            httpClientBuilder = HttpClients.custom()
+                    .setDefaultRequestConfig(RequestConfig.custom()
+                            .setRedirectsEnabled(true)
+                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
+        }
+    }
 }

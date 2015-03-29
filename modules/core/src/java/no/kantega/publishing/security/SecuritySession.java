@@ -140,10 +140,8 @@ public class SecuritySession {
         final String fakeUsername = servletContext.getInitParameter("fakeUsername");
         final String fakeUserDomain = servletContext.getInitParameter("fakeUserDomain");
         if(fakeUsername != null && fakeUserDomain != null) {
-            DefaultIdentity id = new DefaultIdentity();
-            id.setUserId(fakeUsername);
-            id.setDomain(fakeUserDomain);
-            return id;
+
+            return DefaultIdentity.withDomainAndUserId(fakeUserDomain, fakeUsername);
         } else {
             return null;
         }
@@ -172,6 +170,11 @@ public class SecuritySession {
         } else {
             user.setId(userId);
             user.setGivenName(identity.getUserId());
+        }
+
+        List<Role> roles = session.realm.lookupRolesForUser(userId);
+        for (Role r : roles) {
+            user.addRole(r);
         }
 
         session.user = user;

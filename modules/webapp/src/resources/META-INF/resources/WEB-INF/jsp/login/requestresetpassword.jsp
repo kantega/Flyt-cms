@@ -40,7 +40,7 @@
                 <form method="post" action="" name="loginForm">
                     <input type="hidden" name="domain" value="<%=Aksess.getDefaultSecurityDomain()%>">
                     <div id="UserName">
-                        <label>Brukernavn...</label>
+                        <label><kantega:label key="aksess.login.username"/></label>
                         <input type="text" id="j_username" name="username" value="" size="25" maxlength="60" autocomplete="off">
                     </div>
                     <div id="Submit">
