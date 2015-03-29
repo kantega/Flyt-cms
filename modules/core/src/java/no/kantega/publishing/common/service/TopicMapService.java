@@ -231,7 +231,7 @@ public class TopicMapService {
     }
 
 
-    public List getTopicsByContentId(int contentId) throws SystemException {
+    public List<Topic> getTopicsByContentId(int contentId) throws SystemException {
         return topicDao.getTopicsByContentId(contentId);
     }
 
