@@ -58,6 +58,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
     @Autowired
     private ContentAO contentAO;
 
+    @Autowired
     private SystemConfiguration configuration;
 
     @Override

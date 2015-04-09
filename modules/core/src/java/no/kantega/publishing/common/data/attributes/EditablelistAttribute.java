@@ -23,6 +23,7 @@ import no.kantega.publishing.common.ao.EditableListAO;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.apache.commons.lang3.StringUtils;
 import org.w3c.dom.Element;
 
 import java.util.List;
@@ -30,9 +31,7 @@ import java.util.Map;
 
 public class EditablelistAttribute extends ListAttribute {
 
-    private String key;
     private String[] editableBy;
-    private boolean ignoreVariant;
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
@@ -40,8 +39,7 @@ public class EditablelistAttribute extends ListAttribute {
 
         if (config != null) {
 
-            key = config.getAttribute("key");
-            if(key == null || key.trim().length() == 0) {
+            if(StringUtils.isBlank(key)) {
                 key = getName();
             }
 
@@ -58,7 +56,6 @@ public class EditablelistAttribute extends ListAttribute {
             } else {
                 editableBy = new String[]{Aksess.getEveryoneRole()};                
             }
-            ignoreVariant = Boolean.valueOf(config.getAttribute("ignorevariant"));
         }
 
     }

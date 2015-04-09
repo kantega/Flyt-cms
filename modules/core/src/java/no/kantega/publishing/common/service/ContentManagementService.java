@@ -569,6 +569,7 @@ public class ContentManagementService {
         newContent.setNumberOfRatings(sourceContent.getNumberOfRatings());
         newContent.setPublishDate(sourceContent.getPublishDate());
         newContent.setPublisher(sourceContent.getPublisher());
+        newContent.setCreator(sourceContent.getCreator());
         newContent.setRatingScore(sourceContent.getRatingScore());
         newContent.setRevisionDate(sourceContent.getRevisionDate());
         newContent.setSearchable(sourceContent.isSearchable());

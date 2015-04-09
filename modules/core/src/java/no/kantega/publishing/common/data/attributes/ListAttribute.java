@@ -20,8 +20,10 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.api.content.Language;
+import no.kantega.publishing.common.ao.EditableListAO;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xpath.XPathAPI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +42,8 @@ public class ListAttribute extends Attribute {
     private static final Logger log = LoggerFactory.getLogger(ListAttribute.class);
     protected boolean multiple = false;
     protected List<ListOption> options = null;
+    protected String key;
+    protected boolean ignoreVariant;
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
@@ -50,6 +54,8 @@ public class ListAttribute extends Attribute {
             if ("true".equalsIgnoreCase(multiple)) {
                 this.multiple = true;
             }
+
+            key = StringUtils.defaultString(config.getAttribute("key"));
 
             options = new ArrayList<>();
 
@@ -72,6 +78,7 @@ public class ListAttribute extends Attribute {
             } catch (TransformerException e) {
                 log.error("Error getting list options", e);
             }
+            ignoreVariant = Boolean.valueOf(config.getAttribute("ignorevariant"));
         }
     }
 
@@ -88,10 +95,13 @@ public class ListAttribute extends Attribute {
     }
 
     public List<ListOption> getListOptions(int language) {
-        if (getOptions() == null) {
+        if (!getOptions().isEmpty()) {
+            return getOptions();
+        } else if (!getKey().isEmpty()) {
+            return EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant);
+        } else {
             return Collections.emptyList();
         }
-        return getOptions();
     }
 
     public UpdateAttributeFromRequestBehaviour getUpdateFromRequestBehaviour() {
@@ -110,5 +120,9 @@ public class ListAttribute extends Attribute {
         }
 
         return values;
-    }    
+    }
+
+    public String getKey() {
+        return key;
+    }
 }
