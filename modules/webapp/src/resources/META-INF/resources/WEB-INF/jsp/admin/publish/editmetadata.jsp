@@ -58,7 +58,7 @@
                 <div class="contentAttribute">
                     <div class="heading"><kantega:label key="aksess.contentproperty.doctypeforchildren"/></div>
                     <div class="inputs">
-                        <select name="documenttypeidforchildren" class="fullWidth" tabindex="10">
+                        <select name="documenttypeidforchildren" class="fullWidth" tabindex="11">
                             <option value="-1"><kantega:label key="aksess.list.ingen"/></option>
                             <c:forEach var="dt" items="${documentTypes}">
                                 <option value="${dt.id}" <c:if test="${dt.id == currentContent.documentTypeIdForChildren}">selected</c:if>>${dt.name}</option>
@@ -89,6 +89,7 @@
 
                     orgunit.setName(LocaleLabels.getLabel("aksess.contentproperty.owner", Aksess.getDefaultAdminLocale()));
                     orgunit.setValue(current.getOwner());
+                    orgunit.setTabIndex(40); //user
                     request.setAttribute("attribute", orgunit);
                     request.setAttribute("fieldName", "owner");
                     pageContext.include("/admin/publish/attributes/" +orgunit.getRenderer() + ".jsp");
@@ -102,6 +103,7 @@
 
                     user.setName(LocaleLabels.getLabel("aksess.contentproperty.ownerperson", Aksess.getDefaultAdminLocale()));
                     user.setValue(current.getOwnerPerson());
+                    user.setTabIndex(50);
                     request.setAttribute("attribute", user);
                     request.setAttribute("fieldName", "ownerperson");
                     pageContext.include("/admin/publish/attributes/" +user.getRenderer() + ".jsp");
@@ -110,13 +112,13 @@
             <div class="contentAttribute">
                 <div class="heading"><kantega:label key="aksess.contentproperty.keywords"/></div>
                 <div class="inputs">
-                    <textarea name="keywords" cols="72" rows="5"  class="fullWidth" wrap="soft" tabindex="50">${currentContent.keywords}</textarea>
+                    <textarea name="keywords" cols="72" rows="5"  class="fullWidth" wrap="soft" tabindex="60">${currentContent.keywords}</textarea>
                 </div>
             </div>
             <div class="contentAttribute">
                 <div class="heading"><kantega:label key="aksess.contentproperty.language"/></div>
                 <div class="inputs">
-                    <select name="language" class="fullWidth" tabindex="60">
+                    <select name="language" class="fullWidth" tabindex="70">
                         <%
                             int[] languages = Language.getLanguages();
                             for (int id : languages) {
