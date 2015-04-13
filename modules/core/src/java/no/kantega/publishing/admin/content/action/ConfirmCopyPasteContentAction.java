@@ -25,10 +25,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.AssociationCategory;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentIdHelper;
@@ -56,12 +53,15 @@ public class ConfirmCopyPasteContentAction implements Controller {
     private TemplateConfigurationCache templateConfigurationCache;
     private String errorView;
     private String view;
+    private String illegalParentTemplateView;
+
 
     @Autowired
     private ContentIdHelper contentIdHelper;
 
     @Resource(name = "contentListenerNotifier")
     private ContentEventListener contentEventListener;
+
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
@@ -74,6 +74,8 @@ public class ConfirmCopyPasteContentAction implements Controller {
         String url = request.getParameter("newParentUrl");
         ContentIdentifier newParentCid = contentIdHelper.fromRequestAndUrl(request, url);
 
+
+
         boolean forbidMoveCrossSite = false;
 
         Clipboard clipboard = (Clipboard)request.getSession(true).getAttribute(AdminSessionAttributes.CLIPBOARD_CONTENT);
@@ -85,9 +87,17 @@ public class ConfirmCopyPasteContentAction implements Controller {
         SecuritySession securitySession = SecuritySession.getInstance(request);
         ContentManagementService cms = new ContentManagementService(securitySession, request);
 
+
         Content selectedContent = (Content)clipboard.getItems().get(0);
         
         int selectedPageAssociationId = selectedContent.getAssociation().getId();
+
+        //check if new Parent page allows copied page template
+        if(!copyIsAllowed(selectedPageAssociationId, cms, newParentCid.getAssociationId())){
+            clipboard.empty();
+            return new ModelAndView(illegalParentTemplateView, Collections.<String,Object>emptyMap());
+        }
+
         String selectedContentTitle = selectedContent.getTitle();
         if (selectedContentTitle.length() > 30) selectedContentTitle = selectedContentTitle.substring(0, 27) + "...";
 
@@ -169,6 +179,30 @@ public class ConfirmCopyPasteContentAction implements Controller {
         }
     }
 
+    private boolean copyIsAllowed(int selectedPageAssociationId, ContentManagementService cms, int newParentAssociationId) throws Exception{
+        ContentIdentifier cidContentToBeCopied = ContentIdentifier.fromAssociationId(selectedPageAssociationId);
+        Content contentToBeCopied = cms.getContent(cidContentToBeCopied);
+        ContentIdentifier cidNewParent = ContentIdentifier.fromAssociationId(newParentAssociationId);
+        Content newParentContent = cms.getContent(cidNewParent);
+        Association parent = cms.getAssociationById(newParentAssociationId);
+
+        List allowedNewParentTemplates = cms.getAllowedChildTemplates(parent.getSiteId(), newParentContent.getContentTemplateId());
+
+        for (Object allowedNewParentTemplate : allowedNewParentTemplates) {
+            ContentTemplate allowedContentTemplate = null;
+            if (allowedNewParentTemplate instanceof ContentTemplate) {
+                allowedContentTemplate = (ContentTemplate) allowedNewParentTemplate;
+            } else if (allowedNewParentTemplate instanceof DisplayTemplate) {
+                allowedContentTemplate = ((DisplayTemplate) allowedNewParentTemplate).getContentTemplate();
+            }
+            if (allowedContentTemplate != null && allowedContentTemplate.getId() == contentToBeCopied.getContentTemplateId()) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
     private List<AssociationCategory> getAssociationCategories(ContentTemplate template) {
         List<AssociationCategory> tmpAllowedAssociations = template.getAssociationCategories();
         if (tmpAllowedAssociations.size() == 0 || template.getContentType() != ContentType.PAGE) {
@@ -199,5 +233,9 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
     public void setView(String view) {
         this.view = view;
+    }
+
+    public void setIllegalParentTemplateView(String illegalParentTemplateView) {
+        this.illegalParentTemplateView = illegalParentTemplateView;
     }
 }
