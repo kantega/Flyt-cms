@@ -97,7 +97,7 @@ public class SavePermissionsAction extends AbstractController {
     }
 
     private void setUpdatedPermissions(HttpServletRequest request, List<Permission> permissions, BaseObject object) {
-        eventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName());
+        eventLog.log(SecuritySession.getInstance(request), request, Event.SET_PERMISSIONS, object.getName(), object);
         SecurityService.setPermissions(object, permissions);
     }
 

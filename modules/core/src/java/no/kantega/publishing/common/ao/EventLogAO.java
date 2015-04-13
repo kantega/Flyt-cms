@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.gdata.util.common.base.Pair;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.eventlog.EventLog;
@@ -24,6 +23,9 @@ import no.kantega.publishing.eventlog.EventLogEntry;
 import no.kantega.publishing.eventlog.EventLogQuery;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
@@ -38,13 +40,14 @@ import java.util.List;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class EventLogAO extends JdbcDaoSupport implements EventLog {
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private SystemConfiguration configuration;
 
     public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery) {
         Pair<String, List<Object>> queryAndArguments = buildEventLogQueryString(eventLogQuery);
-        return getJdbcTemplate().query(queryAndArguments.first, new EventLogQueryMapper(), queryAndArguments.second.toArray());
+        return getJdbcTemplate().query(queryAndArguments.getLeft(), new EventLogQueryMapper(), queryAndArguments.getRight().toArray());
     }
 
     public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object) {
@@ -94,7 +97,12 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
                 subjectType = object.getObjectType();
                 subjectId = object.getId();
             }
-            getJdbcTemplate().update("insert into eventlog values(?,?,?,?,?,?,?)", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+            try {
+                getJdbcTemplate().update("insert into eventlog values(?,?,?,?,?,?,?)", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+            } catch (Exception e) {
+                log.error("Tried to insert {}, {}, {}, {}, {}, {}, {}", new Date(), username, event, subject, remoteAddr, subjectType, subjectId);
+                log.error("Error inserting ", e);
+            }
         }
     }
 
@@ -135,7 +143,7 @@ public class EventLogAO extends JdbcDaoSupport implements EventLog {
             arguments.add("%" + eventLogQuery.getEventName() + "%");
         }
         where.append(" order by Time desc");
-        return new Pair<>(where.toString(), arguments);
+        return  Pair.of(where.toString(), arguments);
     }
 
     private class EventLogQueryMapper implements RowMapper<EventLogEntry> {

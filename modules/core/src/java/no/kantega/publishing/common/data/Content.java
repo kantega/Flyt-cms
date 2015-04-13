@@ -49,6 +49,11 @@ public class Content extends BaseObject {
     private int groupId = 0;
 
     /**
+     * The creator of the content
+     */
+    private String creator = "";
+
+    /**
      * The department owning the content, or blank.
      */
     private String owner = "";
@@ -129,7 +134,7 @@ public class Content extends BaseObject {
 
     private Date lastMajorChange;
     private String lastMajorChangeBy;
-    
+
     // Rating
     private float ratingScore = 0f;
     private int numberOfRatings = 0;
@@ -493,6 +498,14 @@ public class Content extends BaseObject {
 
     public String getPublisher() {
         return publisher;
+    }
+
+    public String getCreator() {
+        return creator;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
     }
 
     public void setPublisher(String publisher) {
@@ -873,7 +886,7 @@ public class Content extends BaseObject {
     public void setNumberOfRatings(int numberOfRatings) {
         this.numberOfRatings = numberOfRatings;
     }
-    
+
     public boolean isSearchable() {
         return isSearchable;
     }

@@ -25,7 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath*:spring/testContext.xml")
@@ -49,5 +49,5 @@ public class JdbcHostnamesDaoTest {
         assertEquals(3, tmp.size());
         assertEquals("www.kantega.no", tmp.get(0));
 
-    }    
+    }
 }

@@ -33,9 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static junit.framework.Assert.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.jdbc.JdbcTestUtils.deleteFromTables;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -131,7 +129,7 @@ public class JdbcTopicDaoTest {
 
         SecurityIdentifier user = new User();
         user.setId("user");
-        
+
         topicDao.addTopicToSecurityIdentifierAssociation(topic, user);
         topicDao.addTopicToSecurityIdentifierAssociation(topic, role);
 

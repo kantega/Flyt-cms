@@ -31,6 +31,7 @@ import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -49,8 +50,9 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (multimediaAO == null) {
-            multimediaAO = RootContext.getInstance().getBean(MultimediaAO.class);
-            multimediaUploadHandler = RootContext.getInstance().getBean("aksessMultimediaUploadHandler", MultimediaUploadHandler.class);
+            ApplicationContext context = RootContext.getInstance();
+            multimediaAO = context.getBean(MultimediaAO.class);
+            multimediaUploadHandler = context.getBean("aksessMultimediaUploadHandler", MultimediaUploadHandler.class);
 
         }
 

@@ -18,13 +18,17 @@ package no.kantega.publishing.api.taglibs.topicmaps;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
+import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.Iterator;
 import java.util.List;
@@ -33,8 +37,9 @@ public class ForEachTopicInMapTag extends LoopTagSupport {
 
     private static final Logger log = LoggerFactory.getLogger(ForEachTopicInMapTag.class);
 
-    private Iterator i;
+    private Iterator<Topic> i;
     private int topicmapid =-1;
+    private static TopicMapDao topicMapDao;
 
     protected Object next() throws JspTagException {
         return i.next();
@@ -50,10 +55,10 @@ public class ForEachTopicInMapTag extends LoopTagSupport {
         try {
             TopicMapService topicService = new TopicMapService(request);
             if (topicmapid != -1) {
-                List l = topicService.getTopicsByTopicMapId(topicmapid);
+                List<Topic> l = topicService.getTopicsByTopicMapId(topicmapid);
                 i = l.iterator();
             } else {
-                List l = topicService.getAllTopics();
+                List<Topic> l = topicService.getAllTopics();
                 i = l.iterator();
             }
 
@@ -63,16 +68,17 @@ public class ForEachTopicInMapTag extends LoopTagSupport {
         }
     }
 
-    /**
-     * @deprecated use topicMap
-     */
-    @Deprecated
-    public void setTopicmapid(int topicmapid) {
-        this.topicmapid = topicmapid;
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        if (topicMapDao == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            topicMapDao = context.getBean(TopicMapDao.class);
+        }
     }
 
     public void setTopicmap(String topicmap) {
-        TopicMap tm = TopicMapAO.getTopicMapByName(topicmap);
+        TopicMap tm = topicMapDao.getTopicMapByName(topicmap);
         if (tm != null) {
             this.topicmapid = tm.getId();
         }

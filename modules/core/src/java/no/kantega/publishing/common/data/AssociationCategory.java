@@ -38,14 +38,6 @@ public class AssociationCategory implements PublicIdObject {
         this.id = id;
     }
 
-    /**
-     * @deprecated
-     */
-    public AssociationCategory(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public String getName() {
         return name;
     }

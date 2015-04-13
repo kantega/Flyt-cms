@@ -24,7 +24,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
-import no.kantega.publishing.spring.RootContext;
 
 public class MapSimpleAttributeValueToContentPropertyBehaviour implements MapAttributeValueToContentPropertyBehaviour {
     public void mapAttributeValue(RequestParameters param, Content content, Attribute attribute, String field, ValidationErrors errors) {
@@ -100,7 +99,6 @@ public class MapSimpleAttributeValueToContentPropertyBehaviour implements MapAtt
 
         content.setAlias(alias);
 
-        ContentAliasValidator aliasValidator = RootContext.getInstance().getBean(ContentAliasValidator.class);
-        aliasValidator.validateAlias(alias, content, errors);
+        ContentAliasValidator.validateAlias(alias, content, errors);
     }
 }

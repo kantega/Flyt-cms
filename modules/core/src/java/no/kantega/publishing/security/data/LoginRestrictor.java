@@ -17,11 +17,20 @@
 package no.kantega.publishing.security.data;
 
 /**
- * User: Anders Skar, Kantega AS
- * Date: May 11, 2009
- * Time: 3:30:05 PM
+ * Register login attempt by user and keep track of whether the attempt limit is reached.
  */
 public interface LoginRestrictor {
-    public void registerLoginAttempt(String id, boolean success);
-    public boolean isBlocked(String id);
+    /**
+     * Register login attempt.
+     * @param id - id of user making login attempt
+     * @param success - true if login attempt was successfull, false otherwise.
+     */
+    void registerLoginAttempt(String id, boolean success);
+
+    /**
+     * Check whether user with given id is temporarily blocked from login in.
+     * @param id- id of user making login attempt
+     * @return true if maximum number of login attemps has been reached.
+     */
+    boolean isBlocked(String id);
 }

@@ -25,17 +25,17 @@ import java.util.List;
  * A FormSubmission contains data posted in a form as well as metadata about the user who submitted the form and information about the form which was submitted
  */
 public interface FormSubmission {
-    public int getFormSubmissionId();
-    public Form getForm();
-    public void setForm(Form form);
-    public String getSubmittedByName();
-    public String getSubmittedByEmail();
-    public Identity getAuthenticatedIdentity();
-    public String getPassword();
-    public void setPassword();
-    public Date getSubmissionDate();
-    public List<FormValue> getValues();
-    public void setAuthenticatedIdentity(Identity identity);
-    public void setSubmittedByName(String submittedBy);
-    public void setSubmittedByEmail(String email);
+    int getFormSubmissionId();
+    Form getForm();
+    void setForm(Form form);
+    String getSubmittedByName();
+    String getSubmittedByEmail();
+    Identity getAuthenticatedIdentity();
+    String getPassword();
+    void setPassword(String password);
+    Date getSubmissionDate();
+    List<FormValue> getValues();
+    void setAuthenticatedIdentity(Identity identity);
+    void setSubmittedByName(String submittedBy);
+    void setSubmittedByEmail(String email);
 }

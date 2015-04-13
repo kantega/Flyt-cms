@@ -353,27 +353,34 @@ openaksess.content = {
                             '<tbody>';
                 for (var i = 0; i < links.length; i++) {
                     var statustxt = "";
-                    if (links[i].status === 2) {
-                        if (links[i].httpStatus == 401) {
+                    var link = links[i];
+                    if (link.status === 'HTTP_NOT_200') {
+                        if (link.httpStatus == 401) {
                             statustxt = properties.content.labels.httpStatus401;
-                        } else if (links[i].httpStatus == 404) {
+                        } else if (link.httpStatus == 404) {
                             statustxt = properties.content.labels.httpStatus404;
-                        } else if (links[i].httpStatus == 500) {
+                        } else if (link.httpStatus == 500) {
                             statustxt = properties.content.labels.httpStatus500;
                         } else {
-                            statustxt = "HTTP " + links[i].httpStatus;
+                            statustxt = "HTTP " + link.httpStatus;
                         }
                     } else {
-                        statustxt = eval("properties.content.labels.linkcheckStatus" + links[i].status);
+                        statustxt = eval("properties.content.labels.linkcheckStatus" + link.status);
                     }
 
-                    details += '<tr>' +
-                             '  <td>'+links[i].attributeName+'</td>' +
-                             '  <td>'+links[i].url+'</td>' +
-                             '  <td>'+statustxt+'</td>' +
-                             '  <td>'+links[i].lastChecked+'</td>' +
-                             '  <td>'+links[i].timesChecked+'</td>' +
-                             '</tr>';
+                    var lastCheckedStamp = link.lastChecked;
+                    if (lastCheckedStamp) {
+                        var lastChecked = new Date(lastCheckedStamp);
+                        var lastCheckedFormated = lastChecked.getDate() + '-' + (lastChecked.getMonth() + 1)
+                            + '-' + lastChecked.getFullYear();
+                        details += '<tr>' +
+                        '  <td>' + link.attributeName + '</td>' +
+                        '  <td>' + link.url + '</td>' +
+                        '  <td>' + statustxt + '</td>' +
+                        '  <td>' + lastCheckedFormated + '</td>' +
+                        '  <td>' + link.timesChecked + '</td>' +
+                        '</tr>';
+                    }
                 }
                 details +='   </tbody>' +
                         '</table>';

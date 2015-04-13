@@ -16,6 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 /**
  * ServletContainerInitializer that adds Flyt CMS' Filters such that they are run before the Filters
  * declared in the project.
@@ -44,10 +46,20 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         } else {
             log.warn("ResponseHeaderFilter defined in web.xml, please remove it!");
         }
-
         FilterRegistration.Dynamic paramEncodingFilter = ctx.addFilter("ParamEncodingFilter", ParamEncodingFilter.class);
         if (paramEncodingFilter != null) {
-            paramEncodingFilter.setInitParameter("encoding", "utf-8");
+            String paramEncodingFilterEncoding = ctx.getInitParameter("ParamEncodingFilter.encoding");
+            if (isNotBlank(paramEncodingFilterEncoding)) {
+                log.info("ParamEncodingFilter.encoding: " + paramEncodingFilterEncoding);
+                paramEncodingFilter.setInitParameter(ParamEncodingFilter.POST_PARAM_ENCODING, paramEncodingFilterEncoding);
+            }
+
+            String paramEncodingFilterGETEncoding = ctx.getInitParameter("ParamEncodingFilter.getencoding");
+            if(isNotBlank(paramEncodingFilterGETEncoding)){
+                log.info("ParamEncodingFilter.getencoding: " + paramEncodingFilterGETEncoding);
+                paramEncodingFilter.setInitParameter(ParamEncodingFilter.GET_PARAM_ENCODING, paramEncodingFilterGETEncoding);
+            }
+
             paramEncodingFilter
                     .addMappingForUrlPatterns(dispatchRequests, false, "/*");
         } else {

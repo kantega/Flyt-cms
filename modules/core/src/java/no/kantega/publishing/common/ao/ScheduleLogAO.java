@@ -31,15 +31,13 @@ public class ScheduleLogAO {
         Date lastRun = null;
 
         try (Connection c = dbConnectionFactory.getConnection();
-             PreparedStatement st = c.prepareStatement("select * from schedulelog where Service = ?")) {
-
+             PreparedStatement st = c.prepareStatement("select LastRun from schedulelog where Service = ?")) {
             st.setString(1, service);
             try(ResultSet rs = st.executeQuery()) {
                 if (rs.next()) {
                     lastRun = rs.getTimestamp("LastRun");
                 }
             }
-
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
         }
@@ -52,25 +50,22 @@ public class ScheduleLogAO {
 
         if (lastRun == null) lastRun = new Date();
 
-        try (Connection c = dbConnectionFactory.getConnection()) {
-            if (previous != null) {
-                // Oppdaterer basen med nåværende tidspunkt
-                try(PreparedStatement st = c.prepareStatement("update schedulelog set LastRun = ? where Service = ?")) {
-                    st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
-                    st.setString(2, service);
-                    st.execute();
-                }
-            } else {
-                // Oppdaterer basen med nåværende tidspunkt
-                try(PreparedStatement st = c.prepareStatement("insert into schedulelog values(?,?)")){
-                    st.setString(1, service);
-                    st.setTimestamp(2, new java.sql.Timestamp(lastRun.getTime()));
-                    st.execute();
-                }
-            }
+        try (Connection c = dbConnectionFactory.getConnection();
+             PreparedStatement st = getLastRunStatement(c, previous)) {
+            st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
+            st.setString(2, service);
+
+            st.executeUpdate();
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
         }
+    }
 
+    private static PreparedStatement getLastRunStatement(Connection c, Date lastRun) throws SQLException {
+        if (lastRun == null) {
+            return c.prepareStatement("insert into schedulelog(LastRun, Service) values(?,?)");
+        } else {
+            return c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
+        }
     }
 }

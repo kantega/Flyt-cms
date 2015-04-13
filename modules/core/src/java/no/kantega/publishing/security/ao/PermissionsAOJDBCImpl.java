@@ -90,8 +90,9 @@ public class PermissionsAOJDBCImpl extends NamedParameterJdbcDaoSupport implemen
                         st.setString(4, sid.getType());
                         st.setString(5, sid.getId());
                         st.setInt(6, permission.getNotificationPriority() != null ? permission.getNotificationPriority().getNotificationPriorityAsInt() : 0);
-                        st.execute();
+                        st.addBatch();
                     }
+                    st.executeBatch();
                 } else {
                     // Legger inn default rettigheter, alle har tilgang til alt
                     st.setInt(1, object.getId());

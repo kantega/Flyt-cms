@@ -69,8 +69,8 @@ public class StatusServlet extends HttpServlet {
 
     private boolean checkDatabase() {
         try(Connection c = dbConnectionFactory.getConnection();
-            PreparedStatement preparedStatement = c.prepareStatement("select 1")){
-            preparedStatement.execute();
+            PreparedStatement ps = c.prepareStatement("select 1")){
+            boolean execute = ps.execute();
             return true;
         } catch (SQLException e) {
             return false;

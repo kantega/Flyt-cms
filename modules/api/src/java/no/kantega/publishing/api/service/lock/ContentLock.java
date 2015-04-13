@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.service.lock;
+package no.kantega.publishing.api.service.lock;
 
 import java.util.Date;
 

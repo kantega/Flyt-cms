@@ -38,11 +38,11 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 HSSFSheet sheet = hssfWorkbook.createSheet(title);
                 HSSFRow row = sheet.createRow((short)0);
 
-                HSSFCell cell = row.createCell((short)0);
+                HSSFCell cell = row.createCell(0);
                 cell.setCellValue("Dato innsendt");
                 for (int i = 0; i < fieldNames.size(); i++) {
                     String header = fieldNames.get(i);
-                    cell = row.createCell((short)(i+1));
+                    cell = row.createCell((i+1));
                     cell.setCellValue(header);
                 }
 
@@ -63,12 +63,12 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                         rowNo++;
                         row = sheet.createRow((short) rowNo);
 
-                        Map<String, String> values = new HashMap<String, String>();
+                        Map<String, String> values = new HashMap<>();
                         for (FormValue value : formSubmission.getValues()) {
                             values.put(value.getName(), value.getValuesAsString());
                         }
 
-                        cell = row.createCell((short)0);
+                        cell = row.createCell(0);
                         cell.setCellValue(formSubmission.getSubmissionDate());
                         cell.setCellStyle(dateCellStyle);
 
@@ -78,7 +78,7 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                             if (value == null) {
                                 value = "";
                             }
-                            cell = row.createCell((short) (j+1));
+                            cell = row.createCell((j+1));
                             cell.setCellValue(value);
                         }
                     }
@@ -88,16 +88,16 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
         }
     }
 
+    Pattern illegalCharsPattern = Pattern.compile("[?/\\[\\]*\\\\]");
+
     /**
-     * Title for sheet cannot be blank, greater than 31 chars, or contain any ot these characters /\*?[].
-     * @param title
-     * @return,
+     * Title for sheet cannot be blank, greater than 31 chars, or contain any of these characters /\*?[].
+     * @param title to clean
+     * @return title cut to 31 chars and /\*?[]. removed.
      */
     private String cleanUpTitle(String title){
         if (title == null || title.trim().length() <  1) return "_";
-        String chars = "[?/\\[\\]*\\\\]";
-        Pattern pattern = Pattern.compile(chars);
-        Matcher m = pattern.matcher(title);
+        Matcher m = illegalCharsPattern.matcher(title);
         while (m.find()){
             title = title.replace(m.group(),"_");
         }

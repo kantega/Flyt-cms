@@ -17,13 +17,15 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.lock.LockManager;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +35,11 @@ import java.io.IOException;
 
 public class LogoutAction extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(LogoutAction.class);
-
+    private ServletContext context;
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
+        context = config.getServletContext();
+
     }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,7 +54,8 @@ public class LogoutAction extends HttpServlet {
                 ContentManagementService cms = new ContentManagementService(request);
                 SecuritySession securitySession = cms.getSecuritySession();
                 if (securitySession != null && securitySession.getUser() != null) {
-                    LockManager.releaseLocksForOwner(securitySession.getUser().getId());
+                    LockManager lockManager = WebApplicationContextUtils.getRequiredWebApplicationContext(context).getBean(LockManager.class);
+                    lockManager.releaseLocksForOwner(securitySession.getUser().getId());
                     securitySession.logout(request, response);
                 }
             } catch (SystemException e) {

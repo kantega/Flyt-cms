@@ -39,7 +39,7 @@ import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.spring.RootContext;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -59,6 +58,7 @@ public class EditContentHelper {
     private static ContentAO contentAO;
 
     private static ContentIdHelper contentIdHelper;
+    private static TopicDao topicDao;
 
     /**
      * Create a new Content object
@@ -87,6 +87,9 @@ public class EditContentHelper {
 
         // Set author
         content.setPublisher(securitySession.getUser().getName());
+
+        // Set creator
+        content.setCreator(securitySession.getUser().getId());
 
         inheritGroup = setContentAndDisplayTemplates(param, aksessService, inheritGroup, content);
         setAssociations(param, content);
@@ -214,17 +217,17 @@ public class EditContentHelper {
         }
     }
 
-    public static void addRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) throws InvalidTemplateException {
+    public static void addRepeaterRow(Content content, String rowPath, int attributeType) throws InvalidTemplateException {
         ContentTemplate template = null;
 
-        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
-                content.setAttributes(new ArrayList<Attribute>(), attributeDataType);
+                content.setAttributes(new ArrayList<Attribute>(), attributeType);
             }
         }
 
@@ -232,7 +235,7 @@ public class EditContentHelper {
             return;
         }
 
-        Attribute attr = getAttributeByName(content.getAttributes(attributeDataType), rowPath);
+        Attribute attr = getAttributeByName(content.getAttributes(attributeType), rowPath);
         if (attr != null &&  attr instanceof RepeaterAttribute) {
             RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attr;
 
@@ -241,7 +244,7 @@ public class EditContentHelper {
 
             List<Element> xmlElements = getXMLElementsForRepeater(rowPath, template);
 
-            addAttributes(template, attributeDataType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
+            addAttributes(template, attributeType, new HashMap<String, String>(), repeaterAttribute, newAttributes, new ArrayList<Attribute>(), xmlElements);
         }
     }
 
@@ -273,21 +276,21 @@ public class EditContentHelper {
         updateAttributesFromTemplate(content, AttributeDataType.META_DATA, defaultValues);
     }
 
-    private static void updateAttributesFromTemplate(Content content, AttributeDataType attributeDataType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
+    private static void updateAttributesFromTemplate(Content content, int attributeType, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
         ContentTemplate template = null;
 
         if (defaultValues == null) {
             defaultValues = new HashMap<>();
         }
 
-        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
             template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
             } else {
                 // Set to empty list if no template specified
-                content.setAttributes(new ArrayList<Attribute>(), attributeDataType);
+                content.setAttributes(new ArrayList<Attribute>(), attributeType);
             }
         }
 
@@ -297,14 +300,14 @@ public class EditContentHelper {
 
         List<Attribute> newAttributes = new ArrayList<>();
 
-        addAttributes(template, attributeDataType, defaultValues, null, newAttributes, content.getAttributes(attributeDataType), template.getAttributeElements());
+        addAttributes(template, attributeType, defaultValues, null, newAttributes, content.getAttributes(attributeType), template.getAttributeElements());
 
-        addDefaultFieldMapping(attributeDataType, template, template.getAttributeElements(), newAttributes);
+        addDefaultFieldMapping(attributeType, template, template.getAttributeElements(), newAttributes);
 
-        content.setAttributes(newAttributes, attributeDataType);
+        content.setAttributes(newAttributes, attributeType);
     }
 
-    private static void addDefaultFieldMapping(AttributeDataType attributeDataType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
+    private static void addDefaultFieldMapping(int attributeType, ContentTemplate template, List<Element> attributes, List<Attribute> newAttributes) throws InvalidTemplateException {
         // Some attributes are mapped to specific properties in the Content object, search for these
         // These are always located at root level, never inside a repeater
         String titleField = null;
@@ -337,7 +340,7 @@ public class EditContentHelper {
         }
 
 
-        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
+        if (attributeType == AttributeDataType.CONTENT_DATA) {
             /*
             * If mapping of attributes to Content properties are not specified
             * map them as follows:
@@ -377,7 +380,7 @@ public class EditContentHelper {
 
     /**
      * Create attributes recursively
-     * @param attributeDataType - type of attributes to create, content or metadata
+     * @param attributeType - type of attributes to create, content or metadata
      * @param defaultValues - used to initialize attributes with default values
      * @param newParentAttribute - parent of attributes
      * @param newAttributes - list with new attributes
@@ -386,8 +389,8 @@ public class EditContentHelper {
      * @throws SystemException -
      * @throws InvalidTemplateException -
      */
-    private static void addAttributes(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues,
-                                      @Nullable RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
+    private static void addAttributes(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
+                                      RepeaterAttribute newParentAttribute, List<Attribute> newAttributes,
                                       List<? extends Attribute> oldAttributes, List<Element> xmlAttributes) throws SystemException, InvalidTemplateException {
         for (Element xmlAttribute : xmlAttributes) {
 
@@ -395,13 +398,15 @@ public class EditContentHelper {
             String type;
             if (xmlAttribute.getTagName().equalsIgnoreCase("repeater")) {
                 type = "repeater";
+            } else if(xmlAttribute.getTagName().equalsIgnoreCase("separator")) {
+                type = "separator";
             } else {
                 type = xmlAttribute.getAttribute("type");
             }
 
-            Attribute attribute = createAttribute(template, attributeDataType, defaultValues, newParentAttribute, xmlAttribute, name, type);
+            Attribute attribute = createAttribute(template, attributeType, defaultValues, newParentAttribute, xmlAttribute, name, type);
 
-            addRepeaterAttribute(template, attributeDataType, defaultValues, oldAttributes, xmlAttribute, attribute);
+            addRepeaterAttribute(template, attributeType, defaultValues, oldAttributes, xmlAttribute, attribute);
 
             newAttributes.add(attribute);
 
@@ -415,7 +420,7 @@ public class EditContentHelper {
         }
     }
 
-    private static Attribute createAttribute(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues, RepeaterAttribute newParentAttribute, Element xmlAttribute, String name, String type) throws InvalidTemplateException {
+    private static Attribute createAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues, RepeaterAttribute newParentAttribute, Element xmlAttribute, String name, String type) throws InvalidTemplateException {
         AttributeFactory attributeFactory = new ClassNameAttributeFactory();
 
         Attribute attribute;
@@ -428,7 +433,7 @@ public class EditContentHelper {
         }
 
         attribute.setName(name);
-        attribute.setType(attributeDataType);
+        attribute.setType(attributeType);
 
         attribute.setConfig(xmlAttribute, defaultValues);
 
@@ -438,7 +443,7 @@ public class EditContentHelper {
         return attribute;
     }
 
-    private static void addRepeaterAttribute(ContentTemplate template, AttributeDataType attributeDataType, Map<String, String> defaultValues,
+    private static void addRepeaterAttribute(ContentTemplate template, int attributeType, Map<String, String> defaultValues,
                                              List<? extends Attribute> oldAttributes, Element xmlAttribute, Attribute attribute) throws InvalidTemplateException {
         if (attribute instanceof RepeaterAttribute) {
             /*
@@ -469,7 +474,7 @@ public class EditContentHelper {
                     }
                 }
 
-                addAttributes(template, attributeDataType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
+                addAttributes(template, attributeType, defaultValues, repeater, newRowAttributes, oldRowAttributes, getChildrenAsList(xmlAttribute));
                 repeater.addRow(newRowAttributes);
             }
         }
@@ -507,7 +512,7 @@ public class EditContentHelper {
         } else if (property.equalsIgnoreCase(ContentProperty.EXPIRE_DATE)) {
             dest.setExpireDate(from.getExpireDate());
         } else if (property.equalsIgnoreCase(ContentProperty.TOPICS)) {
-            List<Topic> topics1 = TopicAO.getTopicsByContentId(from.getId());
+            List<Topic> topics1 = topicDao.getTopicsByContentId(from.getId());
             if (topics1 != null) {
                 // Copy only topics which dont exists from before
                 for (Topic topic : topics1) {
@@ -531,6 +536,8 @@ public class EditContentHelper {
                         ApplicationContext context = RootContext.getInstance();
                         contentAO = context.getBean(ContentAO.class);
                         contentIdHelper = context.getBean(ContentIdHelper.class);
+                        topicDao = context.getBean(TopicDao.class);
+
                     }
                     ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
                     Content parent = contentAO.getContent(parentCid, true);
@@ -559,8 +566,8 @@ public class EditContentHelper {
         }
     }
 
-    public static void deleteRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) {
-        List<Attribute> attributes = content.getAttributes(attributeDataType);
+    public static void deleteRepeaterRow(Content content, String rowPath, int attributeType) {
+        List<Attribute> attributes = content.getAttributes(attributeType);
 
         if (rowPath.contains("[")) {
             String repeaterName = rowPath.substring(0, rowPath.indexOf('['));

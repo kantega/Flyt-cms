@@ -3,8 +3,8 @@
 <%@ page import="no.kantega.publishing.common.data.attributes.Attribute"%>
 <%@ page import="no.kantega.publishing.org.OrgUnit"%>
 <%@ page import="no.kantega.publishing.org.OrganizationManager"%>
-<%@ page import="no.kantega.publishing.spring.RootContext"%>
-<%@ page import="org.springframework.context.ApplicationContext"%>
+<%@ page import="org.springframework.web.context.WebApplicationContext"%>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils"%>
 <%@ page import="java.util.Iterator"%>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -31,10 +31,10 @@
     OrganizationManager manager = null;
 
     // Try to get the name by looking it up in the OrganizationManager
-    ApplicationContext context = RootContext.getInstance();
-    Iterator i = context.getBeansOfType(OrganizationManager.class).values().iterator();
+    WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(application);
+    Iterator<OrganizationManager> i = context.getBeansOfType(OrganizationManager.class).values().iterator();
     if(i.hasNext()) {
-        manager = (OrganizationManager) i.next();
+        manager = i.next();
         if (value != null && !value.trim().equals("")) {
             OrgUnit unit = manager.getUnitByExternalId(value);
             if (unit != null) {

@@ -23,6 +23,9 @@
 
     <context:annotation-config/>
 
+
+    <bean class="no.kantega.publishing.common.service.lock.LockManager"/>
+
     <bean class="no.kantega.publishing.admin.config.SecuritySessionConfiguration"/>
     <bean class="no.kantega.publishing.configuration.ServertypeConfig"/>
 

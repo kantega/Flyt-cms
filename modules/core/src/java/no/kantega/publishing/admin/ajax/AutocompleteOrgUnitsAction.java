@@ -18,29 +18,32 @@ package no.kantega.publishing.admin.ajax;
 
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
-import no.kantega.publishing.spring.RootContext;
-import org.springframework.context.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class AutocompleteOrgUnitsAction implements Controller {
+
+    @Autowired(required = false)
+    private OrganizationManager<? extends OrgUnit> manager;
+
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
 
-        List<OrgUnit> orgUnits = new ArrayList<OrgUnit>();
+        List<? extends OrgUnit> orgUnits;
 
         String name = request.getParameter("term");
-        if (name != null && name.length() >= 3) {
-            ApplicationContext context = RootContext.getInstance();
-            Iterator i = context.getBeansOfType(OrganizationManager.class).values().iterator();
-            if(i.hasNext()) {
-                OrganizationManager manager = (OrganizationManager) i.next();
-                orgUnits = manager.searchOrgUnits(name);
-            }
+        if (manager != null && name != null && name.length() >= 3) {
+            orgUnits = manager.searchOrgUnits(name);
+        } else {
+            orgUnits = Collections.emptyList();
         }
         model.put("organizations", orgUnits);
 

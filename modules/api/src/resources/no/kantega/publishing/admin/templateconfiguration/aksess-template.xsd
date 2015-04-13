@@ -30,6 +30,7 @@
             <xs:sequence>
                 <xs:element maxOccurs="unbounded" ref="attribute" minOccurs="1"/>
                 <xs:element maxOccurs="unbounded" ref="repeater" minOccurs="0"/>
+                <xs:element maxOccurs="unbounded" ref="separator" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -342,6 +343,16 @@
                     </xs:restriction>
                 </xs:simpleType>
             </xs:attribute>
+            <xs:attribute name="key" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>
+                        Only applicable for the types list and editablelist. For editablelist: defines a key used for
+                        saving and retrieving the list's options. For list: retrieve the options for the list from an
+                        editablelist with the same key. Manually added options overrides the key for list, but not for
+                        editablelist.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
             <xs:attribute name="startid" type="xs:string">
                 <xs:annotation>
                     <xs:documentation>
@@ -413,6 +424,37 @@
             <xs:attribute name="minoccurs" type="xs:integer"/>
             <xs:attribute name="maxoccurs" type="xs:integer"/>
             <xs:attribute name="title" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="separator">
+        <xs:annotation>
+            <xs:documentation>
+                 <![CDATA[
+
+                A separator is used to separate or group similar attributes or attributes that contextually belong together,
+                By creating a barrier in the Flyt content editor
+
+                Example:
+
+                <seaparator title="Dates for the event" >
+                    <helptext>In the following fields you must specify the dates for this event</hekptext>
+                </separator>
+                ]]>
+
+            </xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="helptext" maxOccurs="1" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>
+                            Helptext describing the section following the separator
+                        </xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="name" type="xs:string"/>
         </xs:complexType>
     </xs:element>
 

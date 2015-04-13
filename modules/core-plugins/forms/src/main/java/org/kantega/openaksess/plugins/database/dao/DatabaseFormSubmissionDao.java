@@ -22,7 +22,7 @@ import no.kantega.security.api.identity.Identity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.simple.ParameterizedRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
@@ -113,16 +113,18 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
         // Insert map values
 
-        List values = form.getValues();
+        List<FormValue> values = form.getValues();
         if (values != null) {
+            List<Object[]> batchvalues = new ArrayList<>(values.size());
             for (int i = 0; i < values.size(); i++) {
-                FormValue value = (FormValue)values.get(i);
+                FormValue value = values.get(i);
                 if (value.getValues() != null) {
                     for (String v : value.getValues()) {
-                        jdbcTemplate.update("INSERT INTO formsubmissionvalues (FormSubmissionId, FieldNumber, FieldName, FieldValue) VALUES (?,?,?,?)", id, i, value.getName(), v);
-                    }                    
+                        batchvalues.add(new Object[]{id, i, value.getName(), v});
+                    }
                 }
             }
+            jdbcTemplate.batchUpdate("INSERT INTO formsubmissionvalues (FormSubmissionId, FieldNumber, FieldName, FieldValue) VALUES (?,?,?,?)", batchvalues);
         }
 
         return id;
@@ -165,7 +167,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", formSubmissionId);
     }
 
-    private class FormSubmissionMapper implements ParameterizedRowMapper<DefaultFormSubmission> {
+    private class FormSubmissionMapper implements RowMapper<DefaultFormSubmission> {
         public DefaultFormSubmission mapRow(ResultSet rs, int i) throws SQLException {
             DefaultFormSubmission formSubmission = new DefaultFormSubmission();
             formSubmission.setFormSubmissionId(rs.getInt("FormSubmissionId"));
@@ -194,7 +196,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
             formSubmission.setSubmittedByEmail(rs.getString("Email"));
             formSubmission.setSubmissionDate(rs.getDate("SubmittedDate"));
             formSubmission.setValues(new ArrayList<FormValue>());
-            
+
             return formSubmission;
         }
     }

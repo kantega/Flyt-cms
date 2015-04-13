@@ -626,12 +626,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
             // Update contentid on multimedia saved in database before the page was saved
             List<Multimedia> multimedia = content.getMultimedia();
-            if (multimedia != null) {
-                for (Multimedia m : multimedia) {
-                    PreparedStatement st = c.prepareStatement("update multimedia set ContentId = ?  where Id = ?");
-                    st.setInt(1, content.getId());
-                    st.setInt(2, m.getId());
-                    st.executeUpdate();
+            if (multimedia != null && !multimedia.isEmpty()) {
+                try(PreparedStatement st = c.prepareStatement("update multimedia set ContentId = ?  where Id = ?")){
+                    for (Multimedia m : multimedia) {
+                        st.setInt(1, content.getId());
+                        st.setInt(2, m.getId());
+                        st.addBatch();
+                    }
+                    st.executeBatch();
                 }
             }
 
@@ -833,8 +835,11 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             contentSt.setInt(p++, content.getDocumentTypeIdForChildren());
             contentSt.setInt(p++, content.isLocked() ? 1 : 0);
             contentSt.setInt(p++, content.isSearchable() ? 1 : 0);
+            contentSt.setString(p++, content.getCreator());
+
+
             if (!isNew) {
-                contentSt.setInt(p, content.getId());
+                contentSt.setInt(p, content.getId());   // fetch correct content
             }
 
             contentSt.execute();
@@ -864,10 +869,10 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     private PreparedStatement getInsertOrUpdateStatement(Connection c, boolean isNew) throws SQLException {
         if (isNew) {
-            return c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0)",  new String[] {"CONTENTID"});
+            return c.prepareStatement("insert into content (ContentType, ContentTemplateId, MetadataTemplateId, DisplayTemplateId, DocumentTypeId, GroupId, Owner, OwnerPerson, Location, Alias, PublishDate, ExpireDate, RevisionDate, ExpireAction, VisibilityStatus, ForumId, NumberOfNotes, OpenInNewWindow, DocumentTypeIdForChildren, IsLocked, RatingScore, NumberOfRatings, IsSearchable, NumberOfComments, Creator) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?,0,0,?,0,?)",  new String[] {"CONTENTID"});
         } else {
             // Update
-            return c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ? where ContentId = ?");
+            return c.prepareStatement("update content set ContentType = ?, ContentTemplateId = ?, MetaDataTemplateId = ?, DisplayTemplateId = ?, DocumentTypeId = ?, GroupId = ?, Owner = ?, OwnerPerson=?, Location = ?, Alias = ?, PublishDate = ?, ExpireDate = ?, RevisionDate=?, ExpireAction = ?, VisibilityStatus = ?, ForumId=?, OpenInNewWindow=?, DocumentTypeIdForChildren = ?, IsLocked = ?, IsSearchable = ?, Creator = ? where ContentId = ?");
         }
     }
 

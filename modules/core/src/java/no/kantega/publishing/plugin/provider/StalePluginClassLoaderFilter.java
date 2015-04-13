@@ -31,6 +31,7 @@ public class StalePluginClassLoaderFilter implements Filter {
         doInit();
     }
 
+    @SuppressWarnings("unchecked")
     private void doInit() {
         ApplicationContext context = RootContext.getInstance();
         runtimeMode = context.getBean(RuntimeMode.class);

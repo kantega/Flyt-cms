@@ -69,10 +69,6 @@ public class DefaultFormSubmission implements FormSubmission {
         return password;
     }
 
-    public void setPassword() {
-        this.password = password;
-    }
-
     public void setPassword(String password) {
         this.password = password;
     }
@@ -95,7 +91,7 @@ public class DefaultFormSubmission implements FormSubmission {
 
     public List<FormValue> getValues() {
         if (values == null) {
-            values = new ArrayList<FormValue>();
+            values = new ArrayList<>();
         }
         return values;
     }
@@ -106,7 +102,7 @@ public class DefaultFormSubmission implements FormSubmission {
 
     public void addValue(FormValue value) {
         if (values == null) {
-            values = new ArrayList<FormValue>();
+            values = new ArrayList<>();
         }
         for (FormValue v : values) {
             if (v.getName().equals(value.getName())) {

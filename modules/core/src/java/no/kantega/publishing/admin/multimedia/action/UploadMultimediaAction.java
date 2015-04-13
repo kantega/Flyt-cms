@@ -24,9 +24,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.common.service.MultimediaService;
-import no.kantega.publishing.multimedia.ImageEditor;
 import no.kantega.publishing.multimedia.MultimediaUploadHandler;
-import no.kantega.publishing.multimedia.metadata.MultimediaMetadataExtractor;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,14 +36,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.zip.ZipException;
 
 public class UploadMultimediaAction extends AbstractController {
 
     private MultimediaUploadHandler multimediaUploadHandler;
-    private ImageEditor imageEditor;
-    private List<MultimediaMetadataExtractor> multimediaMetadataExtractors;
     private String insertMultimediaView;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -111,25 +109,22 @@ public class UploadMultimediaAction extends AbstractController {
                     currentContent.addMultimedia(uploadedFile);
                 }
             }
-            Map model = new HashMap();
-            model.put("media", uploadedFiles.get(0));
-            return new ModelAndView(insertMultimediaView, model);
+            return new ModelAndView(insertMultimediaView, Collections.singletonMap("media", uploadedFiles.get(0)));
         } else if (uploadedFiles.size() > 0) {
-            List<Integer> ids = new ArrayList<Integer>();
+            List<Integer> ids = new ArrayList<>();
             for (Multimedia uploadedFile : uploadedFiles) {
                 ids.add(uploadedFile.getId());
             }
             int id = ids.remove(0);
-            Map model = new HashMap();
-            model.put("ids", ids);
-            return new ModelAndView(new RedirectView("EditMultimedia.action?id="+id), model);
+
+            return new ModelAndView(new RedirectView("EditMultimedia.action?id="+id), Collections.singletonMap("ids", ids));
         } else {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
     }
 
     private List<Multimedia> getUploadedFiles(RequestParameters parameters, boolean preserveImageSize) throws IOException, InvalidImageFormatException {
-        List<Multimedia> multimediaList = new ArrayList<Multimedia>();
+        List<Multimedia> multimediaList = new ArrayList<>();
 
         List<MultipartFile> multipartFiles = parameters.getFiles("file");
 
@@ -177,7 +172,7 @@ public class UploadMultimediaAction extends AbstractController {
      * @throws IOException
      */
     private List<Multimedia> createMultimediaFromZipArchive(MultipartFile file, boolean preserveImageSize) throws IOException, InvalidImageFormatException {
-        List<Multimedia> files = new ArrayList<Multimedia>();
+        List<Multimedia> files = new ArrayList<>();
         File temp = File.createTempFile("multimedia", ".zip");
         file.transferTo(temp);
 
@@ -216,7 +211,7 @@ public class UploadMultimediaAction extends AbstractController {
                 }
             };
 
-            List<ZipEntry> entries = Collections.list(zipFile.getEntries());
+            List<ZipEntry> entries = Collections.<ZipEntry>list(zipFile.getEntries());
             for(ZipEntry entry : entries) {
                 if (isValidEntry(entry)) {
                     Multimedia multimedia = new Multimedia();

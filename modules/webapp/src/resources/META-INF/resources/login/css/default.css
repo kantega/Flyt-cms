@@ -164,7 +164,7 @@ input:focus{
 /******************
 Form elements, login page
 ******************/
-#UserName, #Password, #RepeatPassword{
+#UserName, #Password, #RepeatPassword, #LoginToken {
     background:url("../bitmaps/brukernavn.png") no-repeat left top;
     height:27px;
     padding: 0 0 0 35px;
@@ -180,7 +180,7 @@ body.login label{
     top:6px;
 }
 
-#Password, #RepeatPassword{
+#Password, #RepeatPassword, #LoginToken{
     background:url("../bitmaps/passord.png") no-repeat left top;
 }
 
@@ -368,7 +368,7 @@ body.error input[type=submit]{
         font-size: 1.1em;
         border-radius: 3px;
     }
-    #UserName, #Password, #RepeatPassword {
+    #UserName, #Password, #RepeatPassword, #LoginToken {
         background: none;
         height: auto;
         position: static;

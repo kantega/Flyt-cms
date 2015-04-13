@@ -14,9 +14,10 @@
 <%@ page import="no.kantega.publishing.common.data.attributes.HtmltextAttribute" %>
 <%@ page import="no.kantega.publishing.common.service.ContentManagementService" %>
 <%@ page import="no.kantega.publishing.security.SecuritySession" %>
-<%@ page import="no.kantega.publishing.spring.RootContext" %>
 <%@ page import="org.slf4j.Logger" %>
 <%@ page import="org.slf4j.LoggerFactory" %>
+<%@ page import="org.springframework.context.ApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
 <%@ page import="java.util.Locale" %>
 <%--
   ~ Copyright 2009 Kantega AS
@@ -42,6 +43,7 @@
     value = HTMLEditorHelper.preEditFilter(value, URLHelper.getRootURL(request));
 
     Configuration conf = Aksess.getConfiguration();
+    ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(application);
 
     boolean isMiniAdminMode = (request.getAttribute(AdminRequestParameters.MINI_ADMIN_MODE) != null);
     String confPrefix = "editor.";
@@ -52,7 +54,7 @@
     }
     confPrefix += ".";
 
-    Site site = RootContext.getInstance().getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
+    Site site = context.getBean(SiteCache.class).getSiteById(content.getAssociation().getSiteId());
 
     String plugins = conf.getString(confPrefix + "plugins");
     if (plugins == null) {
@@ -104,12 +106,12 @@
     request.setAttribute("cssPath", cssPath);
 
     int width = attribute.getWidth();
-    if (width == -1) width = Aksess.getConfiguration().getInt("editor.default.width", 600);
-    request.setAttribute("attributeWidth", width);
+    if (width == -1) width = conf.getInt("editor.default.width", -1);
+    request.setAttribute("attributeWidth", width == -1 ? "100%" : width + "px");
 
     int height = attribute.getHeight();
-    if (height == -1) height = Aksess.getConfiguration().getInt("editor.default.height", 350);
-    request.setAttribute("attributeHeight", height);
+    if (height == -1) height = conf.getInt("editor.default.height", 450);
+    request.setAttribute("attributeHeight", height + "px");
 
 %>
 <script type="text/javascript">
@@ -117,7 +119,7 @@
 </script>
 
 <div class="inputs">
-    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}px; height: ${attributeHeight}px"><%=value%></TEXTAREA><BR>
+    <TEXTAREA name="<%=fieldName%>" id="<%=fieldName%>" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}"><%=value%></TEXTAREA><BR>
 
     <script type="text/javascript">
         tinyMCE_GZ.init({
@@ -173,7 +175,7 @@
 
             // Plugin options
             <%
-                SpellcheckerService service = (SpellcheckerService)RootContext.getInstance().getBean("aksessSpellCheckerService");
+                SpellcheckerService service = context.getBean("aksessSpellCheckerService", SpellcheckerService.class);
                 Locale contentLocale = Language.getLanguageAsLocale(content.getLanguage());
                 if (service.supportsLocale(contentLocale)) {
             %>

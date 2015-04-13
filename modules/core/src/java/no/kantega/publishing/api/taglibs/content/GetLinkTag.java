@@ -28,15 +28,16 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
 import no.kantega.publishing.content.api.ContentIdHelper;
-import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.util.List;
 
@@ -111,7 +112,17 @@ public class GetLinkTag extends BodyTagSupport{
     }
 
     public int doStartTag()  throws JspException {
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
+    }
+
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        if (contentIdHelper == null) {
+            WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+            contentIdHelper = context.getBean(ContentIdHelper.class);
+            siteCache = context.getBean(SiteCache.class);
+        }
     }
 
     public int doAfterBody() throws JspException {
@@ -133,14 +144,10 @@ public class GetLinkTag extends BodyTagSupport{
                 url = contentObject.getUrl(isAdminMode);
 
                 try {
-                    setSiteCacheIfNull();
                     Site site = siteCache.getSiteById(contentObject.getAssociation().getSiteId());
                     if (url != null && isAdminMode) {
                         Content current = tryGetFromRequest(request);
                         if (current == null) {
-                            if(contentIdHelper == null){
-                                contentIdHelper = RootContext.getInstance().getBean(ContentIdHelper.class);
-                            }
                             ContentIdentifier contentIdentifier = contentIdHelper.fromRequest(request);
                             current = new ContentManagementService(request).getContent(contentIdentifier, true);
                             RequestHelper.setRequestAttributes(request, current);
@@ -243,11 +250,4 @@ public class GetLinkTag extends BodyTagSupport{
 
         return SKIP_BODY;
      }
-
-    private void setSiteCacheIfNull() {
-        if(siteCache == null){
-            siteCache = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext()).getBean(SiteCache.class);
-        }
-    }
-
 }

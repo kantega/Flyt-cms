@@ -20,11 +20,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.Cropping;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Mar 27, 2007
- * Time: 9:48:43 AM
- */
 public class GetAttributeCommand {
     String name = null;
     String property = AttributeProperty.HTML;

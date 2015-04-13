@@ -18,10 +18,11 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.service.lock.LockManager;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 import org.springframework.web.servlet.view.RedirectView;
@@ -31,7 +32,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 public class CancelEditAction implements Controller {
-
+    @Autowired private LockManager lockManager;
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession();
 
@@ -39,7 +40,7 @@ public class CancelEditAction implements Controller {
 
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
         if (content != null) {
-            LockManager.releaseLock(content.getId());
+            lockManager.releaseLock(content.getId());
             ContentIdentifier cid = new ContentIdentifier();
             if (content.isNew()) {
                 // New content, show parent

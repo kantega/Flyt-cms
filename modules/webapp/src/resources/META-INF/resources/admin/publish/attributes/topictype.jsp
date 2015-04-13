@@ -1,11 +1,13 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/commons" prefix="kantega" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.TopictypeAttribute,
-                 no.kantega.publishing.topicmaps.ao.TopicAO,
-                 no.kantega.publishing.topicmaps.ao.TopicMapAO,
-                 no.kantega.publishing.topicmaps.data.Topic"%>
-<%@ page import="no.kantega.publishing.topicmaps.data.TopicMap"%>
-<%@ page import="java.util.List"%>
+                 no.kantega.publishing.topicmaps.ao.TopicDao"%>
+<%@ page import="no.kantega.publishing.topicmaps.ao.TopicMapDao"%>
+<%@ page import="no.kantega.publishing.topicmaps.data.Topic"%>
+<%@ page import="no.kantega.publishing.topicmaps.data.TopicMap" %>
+<%@ page import="org.springframework.web.context.WebApplicationContext" %>
+<%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="java.util.List" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -23,6 +25,10 @@
   --%>
 
 <%
+    WebApplicationContext ctx = WebApplicationContextUtils.getRequiredWebApplicationContext(application);
+    TopicDao topicDao = ctx.getBean(TopicDao.class);
+    TopicMapDao topicMapDao = ctx.getBean(TopicMapDao.class);
+
     TopictypeAttribute attribute = (TopictypeAttribute) request.getAttribute("attribute");
 
     String fieldName = (String)request.getAttribute("fieldName");
@@ -31,30 +37,26 @@
 <%
     String value = attribute.getValue();
 
-    List topicMaps = TopicMapAO.getTopicMaps();
+    List<TopicMap> topicMaps = topicMapDao.getTopicMaps();
     out.write("<select class=\"fullWidth\"");
     out.write(" tabindex=\"" + attribute.getTabIndex() + "\"");
     out.write(" name=\"" + fieldName + "\">");
-    for (int i = 0; i < topicMaps.size(); i++) {
-        TopicMap map  = (TopicMap)topicMaps.get(i);
-        String optText  = map.getName();
-
+    for (TopicMap topicMap : topicMaps) {
         out.write("<optgroup");
-        out.write(" label=\"" +map.getName() +"\"");
+        out.write(" label=\"" + topicMap.getName() + "\"");
         out.write(">");
-        List types = TopicAO.getTopicTypes(map.getId());
-        for (int j = 0; j < types.size(); j++) {
-            Topic topic = (Topic) types.get(j);
-            String id = topic.getTopicMapId() +":" + topic.getId();
-            %>
-            <option value="<%=topic.getTopicMapId() +":" + topic.getId()%>" <%= (value != null && value.equals(id)) ? "selected" : "" %>>    <%=topic.getBaseName()%></option>
-            <%
+        List<Topic> types = topicDao.getTopicTypesForTopicMapId(topicMap.getId());
+        for (Topic topic : types) {
+            String id = topic.getTopicMapId() + ":" + topic.getId();
+%>
+    <option value="<%=topic.getTopicMapId() +":" + topic.getId()%>" <%= (value != null && value.equals(id)) ? "selected" : "" %>><%=topic.getBaseName()%></option>
+    <%
+
+            }
+            out.write("</optgroup>");
+
 
         }
-                    out.write("</optgroup>");
-
-
-    }
 
     out.write("</select>");
 %>

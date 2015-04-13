@@ -222,7 +222,8 @@ public class MultimediaTagCreator {
 
         int width  = mm.getWidth();
         int height = mm.getHeight();
-        if ((resizeWidth != -1 && resizeWidth < width) || (resizeHeight != -1 && resizeHeight < height)) {
+
+        if (resizeWidth != -1 || resizeHeight != -1){
             StringBuilder urlBuilder = new StringBuilder(url);
             boolean containsq = url.contains("?");
 

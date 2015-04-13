@@ -35,8 +35,6 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     public void provideDocuments(BlockingQueue<IndexableDocument> indexableDocumentQueue) {
         try {
-
-            progressReporter.setStarted();
             while (!progressReporter.isFinished()){
                 try {
                     provideAttachments(indexableDocumentQueue);
@@ -54,7 +52,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         try (Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id " + FROM_CLAUSE);
             ResultSet resultSet = preparedStatement.executeQuery()){
-            while (resultSet.next()){
+            while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()){
                 int id = resultSet.getInt("Id");
                 provideDocument(indexableDocumentQueue, id);
             }

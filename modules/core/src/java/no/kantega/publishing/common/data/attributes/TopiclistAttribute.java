@@ -26,11 +26,13 @@ import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.data.attributes.util.TopicAttributeValueParser;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
+import no.kantega.publishing.spring.RootContext;
+import no.kantega.publishing.topicmaps.ao.TopicDao;
+import no.kantega.publishing.topicmaps.ao.TopicMapDao;
 import no.kantega.publishing.topicmaps.data.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Element;
 
 import java.util.ArrayList;
@@ -42,20 +44,29 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class TopiclistAttribute extends ListAttribute {
     private static final Logger log = LoggerFactory.getLogger(TopiclistAttribute.class);
+    private static TopicMapDao topicMapDao;
+    private static TopicDao topicDao;
+
     private int topicMapId = -1;
     private String instanceOf = null;
+
+    private void setDaos(){
+        ApplicationContext context = RootContext.getInstance();
+        topicDao = context.getBean(TopicDao.class);
+        topicMapDao = context.getBean(TopicMapDao.class);
+    }
 
     @Override
     public void setConfig(Element config, Map<String, String> model) throws InvalidTemplateException, SystemException {
         super.setConfig(config, model);
-
+        setDaos();
         if (config != null) {
             String topicmapid = config.getAttribute("topicmapid");
             if (topicmapid != null && topicmapid.length() > 0) {
                 if (StringHelper.isNumeric(topicmapid)) {
                     this.topicMapId = Integer.parseInt(topicmapid, 10);
                 } else {
-                    this.topicMapId = TopicMapAO.getTopicMapByName(topicmapid).getId();
+                    this.topicMapId = topicMapDao.getTopicMapByName(topicmapid).getId();
                 }
 
             }
@@ -68,7 +79,7 @@ public class TopiclistAttribute extends ListAttribute {
     }
 
     public List<ListOption> getListOptions(int language) {
-        List<ListOption> options = new ArrayList<>();
+        setDaos();
 
         List<Topic> topics = Collections.emptyList();
 
@@ -77,15 +88,17 @@ public class TopiclistAttribute extends ListAttribute {
                 Topic instance = new Topic();
                 instance.setTopicMapId(topicMapId);
                 instance.setId(instanceOf);
-                topics = TopicAO.getTopicsByInstance(instance);
+                topics = topicDao.getTopicsByTopicInstance(instance);
             } else if (topicMapId != -1) {
-                topics = TopicAO.getTopicsByTopicMapId(topicMapId);
+                topics = topicDao.getTopicsByTopicMapId(topicMapId);
             } else {
-                topics = TopicAO.getAllTopics();
+                topics = topicDao.getAllTopics();
             }
         } catch (Exception e) {
             log.error("", e);
         }
+
+        List<ListOption> options = new ArrayList<>(topics.size());
 
         for (Topic topic : topics) {
             ListOption option = new ListOption();

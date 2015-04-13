@@ -16,7 +16,7 @@ public class JdbcMultimediaUsageDao extends JdbcDaoSupport implements Multimedia
 
         // Update usage count ("noUsages") on Multimedia objects belonging to the Content object
         for (int multimediaId : multimediaIds) {
-            int noUsages = template.queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
+            int noUsages = template.queryForObject("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", Integer.class, multimediaId);
             template.update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
         }
     }
@@ -35,12 +35,12 @@ public class JdbcMultimediaUsageDao extends JdbcDaoSupport implements Multimedia
 
     public void addUsageForContentId(int contentId, int multimediaId) {
         JdbcTemplate template = getJdbcTemplate();
-        if (template.queryForInt("select count(*) from multimediausage where ContentId = ? and MultimediaId = ?", contentId, multimediaId) == 0) {
+        if (template.queryForObject("select count(*) from multimediausage where ContentId = ? and MultimediaId = ?", Integer.class, contentId, multimediaId) == 0) {
             template.update("insert into multimediausage values (?,?)", contentId, multimediaId);
         }
 
         // Update usage count ("noUsages") on the Multimedia object itself
-        int noUsages = template.queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
+        int noUsages = template.queryForObject("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", Integer.class, multimediaId);
         template.update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
     }
 }

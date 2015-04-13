@@ -65,10 +65,10 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
 
         topic.setBaseNames(baseNames);
 
-        String sql = "";
-        sql += " SELECT tmbasename.Basename, tmoccurence.ResourceData, tmoccurence.InstanceOf FROM tmoccurence";
-        sql += "   INNER JOIN tmbasename ON (tmoccurence.InstanceOf = tmbasename.TopicId) AND (tmoccurence.TopicMapId = tmbasename.TopicMapId)";
-        sql += " WHERE tmoccurence.TopicId = ? AND tmoccurence.TopicMapId = ?";
+        String sql =
+                " SELECT tmbasename.Basename, tmoccurence.ResourceData, tmoccurence.InstanceOf FROM tmoccurence"
+                        + "   INNER JOIN tmbasename ON (tmoccurence.InstanceOf = tmbasename.TopicId) AND (tmoccurence.TopicMapId = tmbasename.TopicMapId)"
+               + " WHERE tmoccurence.TopicId = ? AND tmoccurence.TopicMapId = ?";
 
         List<TopicOccurence> occurences = getJdbcTemplate().query(sql,
                 topicOccurenceRowMapper, topic.getId(), topic.getTopicMapId());
@@ -174,8 +174,8 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
             return;
         }
 
-        int noExisting = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
-                topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
+        int noExisting = getJdbcTemplate().queryForObject("SELECT COUNT(*) FROM role2topic WHERE TopicMapId = ? AND TopicId = ? AND RoleType = ? AND Role = ?",
+                Integer.class, topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
         if (noExisting == 0) {
             getJdbcTemplate().update("INSERT INTO role2topic VALUES (?, ?, ?, ?)", topic.getTopicMapId(), topic.getId(), securityIdentifier.getType(), securityIdentifier.getId());
         }
@@ -191,7 +191,7 @@ public class JdbcTopicDao extends JdbcDaoSupport implements TopicDao {
             return;
         }
 
-        int noExisting = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?",
+        int noExisting = getJdbcTemplate().queryForObject("SELECT COUNT(*) FROM ct2topic WHERE TopicMapId = ? AND TopicId = ? AND ContentId = ?", Integer.class,
                 topic.getTopicMapId(), topic.getId(), contentId);
         if (noExisting == 0) {
             getJdbcTemplate().update("INSERT INTO ct2topic VALUES (?, ?, ?)", contentId, topic.getTopicMapId(), topic.getId());

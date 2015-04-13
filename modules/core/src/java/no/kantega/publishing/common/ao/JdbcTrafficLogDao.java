@@ -67,15 +67,15 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             if (sessions) {
                 sessionsClause = "count(distinct SessionId)";
             }
-            PreparedStatement st = c.prepareStatement("select " + sessionsClause + "  as Hits from trafficlog where Time >= ? and Time <= ?" + originClause + contentIdClause);
-            st.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
-            st.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                visits = rs.getInt("Hits");
+            try(PreparedStatement st = c.prepareStatement("select " + sessionsClause + "  as Hits from trafficlog where Time >= ? and Time <= ?" + originClause + contentIdClause)) {
+                st.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+                st.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
+                try(ResultSet rs = st.executeQuery()) {
+                    if (rs.next()) {
+                        visits = rs.getInt("Hits");
+                    }
+                }
             }
-            rs.close();
-            st.close();
         } catch (SQLException e) {
             throw new SystemException("SQL Feil", e);
         }
@@ -143,7 +143,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
 
 
     public List<ContentViewStatistics> getMostVisitedContentStatistics(TrafficLogQuery trafficQuery, int limit) throws SystemException {
-        List<ContentViewStatistics> stats = new ArrayList<ContentViewStatistics>();
+        List<ContentViewStatistics> stats = new ArrayList<>();
 
         Calendar calendar = new GregorianCalendar();
         Date end = calendar.getTime();
@@ -154,25 +154,27 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
             String query = "select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?";
             query += createOriginClause(trafficQuery.getTrafficOrigin());
             query += createContentIdClause(trafficQuery);
-            PreparedStatement p = c.prepareStatement(query + "  group by associations.associationid, contentversion.title order by count desc");
-            p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
-            p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
-            p.setMaxRows(limit);
-            ResultSet rs = p.executeQuery();
-            int i = 0;
-            while(rs.next() && ++i < limit) {
-                ContentViewStatistics stat = new ContentViewStatistics(rs.getInt(1), rs.getString(2));
-                stat.setNoPageViews(rs.getInt(3));
-                stats.add(stat);
+            try(PreparedStatement p = c.prepareStatement(query + "  group by associations.associationid, contentversion.title order by count desc")) {
+                p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+                p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
+                p.setMaxRows(limit);
+                try(ResultSet rs = p.executeQuery()) {
+                    int i = 0;
+                    while (rs.next() && ++i < limit) {
+                        ContentViewStatistics stat = new ContentViewStatistics(rs.getInt(1), rs.getString(2));
+                        stat.setNoPageViews(rs.getInt(3));
+                        stats.add(stat);
+                    }
+                }
+                return stats;
             }
-            return stats;
         } catch (SQLException e) {
             throw new SystemException("SQL error", e);
         }
     }
 
     public List<PeriodViewStatistics> getPeriodViewStatistics(TrafficLogQuery trafficQuery, int period) throws SystemException {
-        List<PeriodViewStatistics> stats = new ArrayList<PeriodViewStatistics>();
+        List<PeriodViewStatistics> stats = new ArrayList<>();
 
         Calendar calendar = new GregorianCalendar();
         Date end = calendar.getTime();
@@ -210,17 +212,19 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
                 query = "select datepart(" + dp + ", time) as period, count(*) as count from trafficlog where SiteId = " + siteId + " and Time >= ? and Time <= ? " + originClause  + contentIdClause +  " group by datepart(" + dp + ", time) order by period";
             }
 
-            PreparedStatement p = c.prepareStatement(query);
-            p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
-            p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
-            ResultSet rs = p.executeQuery();
-            while(rs.next()) {
-                PeriodViewStatistics stat = new PeriodViewStatistics();
-                stat.setPeriod(rs.getString(1));
-                stat.setNoPageViews(rs.getInt(2));
-                stats.add(stat);
+            try(PreparedStatement p = c.prepareStatement(query)) {
+                p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
+                p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
+                try(ResultSet rs = p.executeQuery()) {
+                    while (rs.next()) {
+                        PeriodViewStatistics stat = new PeriodViewStatistics();
+                        stat.setPeriod(rs.getString(1));
+                        stat.setNoPageViews(rs.getInt(2));
+                        stats.add(stat);
+                    }
+                }
+                return stats;
             }
-            return stats;
         } catch (SQLException e) {
             throw new SystemException("SQL error", e);
         }
@@ -230,7 +234,6 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         return internalGetReferer("referer, count(referer) as refcount", "referer", query.getCid(), query.getStart(), query.getEnd(), query.getTrafficOrigin());
     }
 
-    @SuppressWarnings("unchecked")
     private List<RefererOccurrence> internalGetReferer(String select, String groupby, final ContentIdentifier cid, final Date start, final Date end, int origin) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
         final StringBuffer query = new StringBuffer();
@@ -259,9 +262,9 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
                 preparedStatement.setMaxRows(25);
                 return preparedStatement;
             }
-        }, new RowMapper() {
+        }, new RowMapper<RefererOccurrence>() {
 
-            public Object mapRow(ResultSet resultSet, int i) throws SQLException {
+            public RefererOccurrence mapRow(ResultSet resultSet, int i) throws SQLException {
                 return new RefererOccurrence(resultSet.getString(1), resultSet.getInt(2));
             }
         });

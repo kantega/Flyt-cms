@@ -1,5 +1,5 @@
 /*
- * Copyright 2009 Kantega AS
+ * Copyright 2015 Kantega AS
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package no.kantega.publishing.admin.content.behaviours.attributes;
 
-package no.kantega.publishing.common.data.enums;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Oct 24, 2007
- * Time: 9:49:34 AM
- */
-public class HTMLVersion {
-    public static final String HTML_401_STRICT = "401-strict";
-    public static final String HTML_401_TRANS = "401-transitional";
+import java.sql.Connection;
+import java.sql.SQLException;
+
+public class SkipPersistAttributeBehaviour implements PersistAttributeBehaviour {
+    public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException {
+        // Do not persist
+        return;
+    }
 }

@@ -34,8 +34,7 @@ public interface MultimediaAO {
      * @return
      * @throws SystemException
      */
-    @Deprecated
-    public Multimedia getMultimedia(int id) throws SystemException;
+    Multimedia getMultimedia(int id) throws SystemException;
 
     /**
      * Henter multimedia objekt fra basen (unntatt data)
@@ -46,7 +45,7 @@ public interface MultimediaAO {
      * @throws SystemException
      */
     @Deprecated
-    public Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException;
+    Multimedia getMultimediaByParentIdAndName(int parentId, String name) throws SystemException;
 
     /**
      * Sender multimedia til klienten
@@ -55,7 +54,7 @@ public interface MultimediaAO {
      * @param ish - Inputhandler som håndterer stream
      * @throws SystemException
      */
-    public void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException;
+    void streamMultimediaData(int id, InputStreamHandler ish) throws SystemException;
 
 
     /**
@@ -65,7 +64,7 @@ public interface MultimediaAO {
      * @return
      * @throws SystemException
      */
-    public List<Multimedia> getMultimediaList(int parentId) throws SystemException;
+    List<Multimedia> getMultimediaList(int parentId) throws SystemException;
 
     /**
      * Henter antall objekter i multimediaarkiv.
@@ -73,7 +72,7 @@ public interface MultimediaAO {
      * @return antall objekter i multimediaarkiv.
      * @throws SystemException
      */
-    public int getMultimediaCount() throws SystemException;
+    int getMultimediaCount() throws SystemException;
 
     /**
      * Flytter et multimediaobjekt
@@ -82,7 +81,7 @@ public interface MultimediaAO {
      * @param newParentId - Ny plassering for objekt
      * @throws SystemException
      */
-    public void moveMultimedia(int mmId, int newParentId) throws SystemException;
+    void moveMultimedia(int mmId, int newParentId) throws SystemException;
 
     /**
      * Lagre multimedia objekt i basen
@@ -91,7 +90,7 @@ public interface MultimediaAO {
      * @return
      * @throws SystemException
      */
-    public int setMultimedia(Multimedia mm) throws SystemException;
+    int setMultimedia(Multimedia mm) throws SystemException;
 
     /**
      * TODO: These methods should be moved to a new non static MultimediaPermissionsDao class
@@ -101,5 +100,5 @@ public interface MultimediaAO {
      * @param object - objekt som det skal settes ny securityid for
      * @throws SQLException -
      */
-    public void setSecurityId(Connection c, BaseObject object, boolean setFromParent) throws SQLException;
+    void setSecurityId(Connection c, BaseObject object, boolean setFromParent) throws SQLException;
 }

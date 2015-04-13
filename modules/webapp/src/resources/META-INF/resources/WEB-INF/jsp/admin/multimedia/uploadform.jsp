@@ -58,13 +58,48 @@
                     }
                 }
             }
+
+            var validateText = function validateText(string) {
+
+                // This pattern ensures that the text consists of at least 3 characters
+                var atLeastThree = /.{3}.*/;
+
+                // This pattern ensures that there exists at least one character that is not whitespace
+                var notAllWhitespace = /[^\s]+/;
+
+                return atLeastThree.test(string) && notAllWhitespace.test(string);
+            };
+
             <c:if test="${id == -1}">
+            var mediaNameRequired = ${mediaNameRequired};
+            if (mediaNameRequired) {
+                var $mediaName = $(document.uploadForm.elements.name);
+                var mediaNameText = $mediaName.val();
+                if (!mediaNameText || !validateText(mediaNameText)) {
+                    alert('<kantega:label key="aksess.multimedia.medianame.missing" escapeJavascript="true"/>');
+                    $mediaName.focus();
+                    return false;
+                }
+            }
             <c:if test="${altNameRequired}">
-            if (document.uploadForm.elements['altname'].value == "") {
+            var $altName = $(document.uploadForm.elements.altname);
+            var altNameText = $altName.val();
+            if (!altNameText || !validateText(altNameText)) {
                 alert('<kantega:label key="aksess.multimedia.altname.missing" escapeJavascript="true"/>');
+                $altName.focus();
                 return false;
             }
             </c:if>
+            var authorRequired = ${authorRequired};
+            if (authorRequired) {
+                var $author = $(document.uploadForm.elements.author);
+                var authorText = $author.val();
+                if (!authorText || !validateText(authorText)) {
+                    alert('<kantega:label key="aksess.multimedia.author.missing" escapeJavascript="true"/>');
+                    $author.focus();
+                    return false;
+                }
+            }
             <c:if test="${fileUploadedFromEditor}">
             if ($("#MultimediaAddToArchive").is(":checked") && document.uploadForm.elements['parentId'].value == "") {
                 alert('<kantega:label key="aksess.multimedia.selectfolder.missing" escapeJavascript="true"/>');
@@ -162,6 +197,14 @@
                             <label><kantega:label key="aksess.multimedia.medianame"/></label>
                         </div>
                         <div class="inputs">
+                            <c:set var="medianameInfo"><kantega:label key="aksess.multimedia.medianame.info"/></c:set>
+                            <c:if test="${not empty medianameInfo}">
+                                <div class="ui-state-highlight">
+                                    <label>
+                                            ${medianameInfo}
+                                    </label>
+                                </div>
+                            </c:if>
                             <input type="text" class="fullWidth" name="name" id="MultimediaName" value="" maxlength="255">
                         </div>
                     </div>
@@ -170,10 +213,10 @@
                             <label><kantega:label key="aksess.multimedia.altname"/></label>
                         </div>
                         <div class="inputs">
-                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
                             <div class="ui-state-highlight">
                                 <kantega:label key="aksess.multimedia.altinfo"/>
                             </div>
+                            <input type="text" class="fullWidth" name="altname" id="MultimediaAltName" value="" maxlength="255">
                         </div>
                     </div>
                     <div class="formElement">
@@ -181,7 +224,15 @@
                             <label><kantega:label key="aksess.multimedia.author"/></label>
                         </div>
                         <div class="inputs">
-                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="" maxlength="255">
+                            <c:set var="authorInfo"><kantega:label key="aksess.multimedia.author.info"/></c:set>
+                            <c:if test="${not empty authorInfo}">
+                                <div class="ui-state-highlight">
+                                    <label>
+                                            ${authorInfo}
+                                    </label>
+                                </div>
+                            </c:if>
+                            <input type="text" class="fullWidth" name="author" id="MultimediaAuthor" value="<kantega:label key="aksess.multimedia.author.default"/>" maxlength="255">
                         </div>
                     </div>
                 </div>

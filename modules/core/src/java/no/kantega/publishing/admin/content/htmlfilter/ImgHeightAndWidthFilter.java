@@ -27,6 +27,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
@@ -46,8 +47,9 @@ public class ImgHeightAndWidthFilter implements Filter {
     @Override
     public Document runFilter(Document document) {
         if(multimediaDao == null){
-            multimediaDao = RootContext.getInstance().getBean(MultimediaDao.class);
-            imageEditor = RootContext.getInstance().getBean(ImageEditor.class);
+            ApplicationContext context = RootContext.getInstance();
+            multimediaDao = context.getBean(MultimediaDao.class);
+            imageEditor = context.getBean(ImageEditor.class);
         }
 
         for (Element img : document.getElementsByTag("img")) {

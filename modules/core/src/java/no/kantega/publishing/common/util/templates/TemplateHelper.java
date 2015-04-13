@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TemplateHelper {
-    private final static String SOURCE = "aksess.TemplateHelper";
-
 
     /**
      * Get a list of templates which can be used based on site and parenttemplate
@@ -110,7 +108,7 @@ public class TemplateHelper {
         ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
 
         // Find all allowed contenttemplates
-        List<ContentTemplate> allowedContentTemplates = new ArrayList<ContentTemplate>();
+        List<ContentTemplate> allowedContentTemplates = new ArrayList<>();
 
         List<ContentTemplate> contentTemplates = ContentTemplateCache.getTemplates();
         for (ContentTemplate ct : contentTemplates) {
@@ -120,7 +118,7 @@ public class TemplateHelper {
         }
 
         // Find displaytemplates
-        List<DisplayTemplate> allowedDisplayTemplates = new ArrayList<DisplayTemplate>();
+        List<DisplayTemplate> allowedDisplayTemplates = new ArrayList<>();
 
         List<DisplayTemplate> displayTemplates = DisplayTemplateCache.getTemplates();
         for (DisplayTemplate dt : displayTemplates) {
@@ -136,7 +134,6 @@ public class TemplateHelper {
         return allowedDisplayTemplates;
     }
 
-    
     private static boolean isAllowed(Content content, DisplayTemplate dt) {
         if (dt.getId() != content.getDisplayTemplateId()) {
             if (dt.getSites().size() > 0) {
@@ -177,7 +174,7 @@ public class TemplateHelper {
     private static boolean isTemplateInUse(int displayTemplateId) {
         JdbcTemplate jdbctemplate = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        int count = jdbctemplate.queryForInt("select count(ContentId) from content where DisplayTemplateId = ? and ContentId in (select ContentId from associations where IsDeleted = 0 or IsDeleted is null)", new Object[] {displayTemplateId});
+        int count = jdbctemplate.queryForObject("select count(ContentId) from content where DisplayTemplateId = ? and ContentId in (select ContentId from associations where IsDeleted = 0 or IsDeleted is null)", Integer.class, displayTemplateId);
         return count > 0;
     }
 

@@ -19,6 +19,7 @@ package no.kantega.publishing.common.service.lock;
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import no.kantega.publishing.api.service.lock.ContentLock;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class LockManager {
+public class LockManager implements no.kantega.publishing.api.service.lock.LockManager {
     private static final Logger log = LoggerFactory.getLogger(LockManager.class);
 
     private static Map<Integer, ContentLock> locks = new ConcurrentHashMap<>();
@@ -39,7 +40,7 @@ public class LockManager {
      * @param contentId to get lock for.
      * @return the ContentLock for the Content with contentId if it exists. Null if not locked or lock is expired.
      */
-    public static ContentLock peekAtLock(int contentId) {
+    public ContentLock peekAtLock(int contentId) {
         log.info( "Peeking at lock for content " + contentId);
         ContentLock lock = locks.get(contentId);
         // No lock
@@ -68,7 +69,7 @@ public class LockManager {
      * @param contentId of the Content to lock.
      * @return true if a new lock is created. false if a lock for the Content with contentId already exists.
      */
-    public static boolean lockContent(String owner, int contentId) {
+    public boolean lockContent(String owner, int contentId) {
         log.info( "Locking content " + contentId + " for owner " + owner);
         ContentLock contentLock = peekAtLock(contentId);
         if(contentLock != null) {
@@ -88,7 +89,7 @@ public class LockManager {
      * Release lock on Content with the given contentId
      * @param contentId of the Content to release locks for
      */
-    public static void releaseLock(int contentId) {
+    public void releaseLock(int contentId) {
         log.info( "Releasing lock for content " + contentId);
         locks.remove(contentId);
     }
@@ -97,7 +98,7 @@ public class LockManager {
      * Release locks owned by owner
      * @param owner - user owning the locks.
      */
-    public static void releaseLocksForOwner(final String owner) {
+    public void releaseLocksForOwner(final String owner) {
         log.info( "Releasing lock for owner " + owner);
         Map<Integer, ContentLock> locks = getLocks();
         Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
@@ -121,14 +122,14 @@ public class LockManager {
     /**
      * Go though all locks and remove expired locks
      */
-    public static void cleanup() {
+    public void cleanup() {
         log.info( "Cleaning locks");
-        for (Integer id : LockManager.getLocks().keySet()) {
-            LockManager.peekAtLock(id);
+        for (Integer id : getLocks().keySet()) {
+            peekAtLock(id);
         }
     }
 
-    public static Map<Integer, ContentLock> getLocks() {
+    public Map<Integer, ContentLock> getLocks() {
         return locks;
     }
 }

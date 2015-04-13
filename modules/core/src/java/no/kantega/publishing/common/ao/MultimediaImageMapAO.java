@@ -64,6 +64,7 @@ public class MultimediaImageMapAO {
             try(PreparedStatement st = c.prepareStatement("delete from multimediaimagemap where MultimediaId=?")) {
                 // Delete old mappings
                 st.setInt(1, mim.getMultimediaId());
+                st.executeUpdate();
             }
 
             MultimediaImageMap.CoordUrlMap[] coordUrlMapArray = mim.getCoordUrlMap();
@@ -74,14 +75,15 @@ public class MultimediaImageMapAO {
                     ps.setString(3, aCoordUrlMapArray.getUrl());
                     ps.setString(4, aCoordUrlMapArray.getAltName());
                     ps.setInt(5, aCoordUrlMapArray.isOpenInNewWindow() ? 1 : 0);
-                    ps.execute();
+                    ps.addBatch();
                 }
+                ps.executeBatch();
             }
 
             try(PreparedStatement hasImageMapSt = c.prepareStatement("UPDATE multimedia SET hasImageMap=? WHERE Id=?")) {
                 hasImageMapSt.setInt(1, coordUrlMapArray.length > 0 ? 1 : 0);
                 hasImageMapSt.setInt(2, mim.getMultimediaId());
-                hasImageMapSt.execute();
+                hasImageMapSt.executeUpdate();
             }
         } catch (SQLException e) {
             StringBuilder errormessage = new StringBuilder("Error saving. mmid: ");

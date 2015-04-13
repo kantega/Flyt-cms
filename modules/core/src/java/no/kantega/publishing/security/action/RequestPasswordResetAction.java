@@ -1,7 +1,6 @@
 package no.kantega.publishing.security.action;
 
 import no.kantega.commons.util.URLHelper;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.security.api.common.SystemException;
 import no.kantega.security.api.identity.Identity;
@@ -18,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.singletonMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 
@@ -33,9 +33,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         if (identity != null) {
             return sendPasswordRequest(request);
         } else {
-            Map<String, Object> model = new HashMap<>();
-            model.put("loginLayout", getLoginLayout());
-            return new ModelAndView(requestResetPasswordView, model);
+            return new ModelAndView(requestResetPasswordView, singletonMap("loginLayout", getLoginLayout()));
         }
     }
 
@@ -46,7 +44,7 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
 
         Map<String, Object> model = new HashMap<>();
         model.put("loginLayout", getLoginLayout());
-        
+
         if (userProfile == null) {
             log.warn("Could not find userprofile for " + identity.getUserId());
             model.put("error", "aksess.resetpassword.no-profile");
@@ -65,17 +63,16 @@ public class RequestPasswordResetAction extends AbstractLoginAction  {
         ResetPasswordToken token = tokenManager.generateResetPasswordToken(identity, expireDate);
 
         Map<String, Object> mailParam = new HashMap<>();
-        String url = URLHelper.getServerURL(request) + request.getContextPath();
-        url += "/ResetPassword.action";
-        url += "?token=" + token.getToken();
-        url += "&amp;username=" + identity.getUserId();
-        url += "&amp;domain=" + identity.getDomain();
+        String url = URLHelper.getServerURL(request) + request.getContextPath()
+            + "/ResetPassword.action?token=" + token.getToken()
+            + "&amp;username=" + identity.getUserId()
+            + "&amp;domain=" + identity.getDomain();
         mailParam.put("url", url);
         mailParam.put("expireDate", expireDate);
         mailParam.put("profile", userProfile);
 
         if (isBlank(mailFrom)) {
-            mailFrom = Aksess.getConfiguration().getString("mail.from");
+            mailFrom = configuration.getString("mail.from");
         }
 
         try {

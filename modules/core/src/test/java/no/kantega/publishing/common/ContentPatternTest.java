@@ -1,7 +1,8 @@
 package no.kantega.publishing.common;
 
-import com.google.gdata.util.common.base.Pair;
+
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
 
 import java.util.Collections;
@@ -15,22 +16,22 @@ import static java.util.Arrays.asList;
 import static org.junit.Assert.*;
 
 public class ContentPatternTest {
-    private static final Pair<String, String> https = new Pair<>("protocol", "https");
-    private static final Pair<String, String> http = new Pair<>("protocol", "http");
-    private static final Pair<String, String> noProtocol = new Pair<>("protocol", (String) null);
-    private static final Pair<String, String> subDomain = new Pair<>("hostname", "sub.domain.no");
-    private static final Pair<String, String> wwwSubDomain = new Pair<>("hostname", "www.sub.domain.no");
-    private static final Pair<String, String> domain = new Pair<>("hostname", "domain.no");
-    private static final Pair<String, String> wwwDomain = new Pair<>("hostname", "www.domain.no");
-    private static final Pair<String, String> noPort = new Pair<>("port", (String) null);
-    private static final Pair<String, String> port8080 = new Pair<>("port", "8080");
-    private static final Pair<String, String> thisId = new Pair<>("thisId", "1");
-    private static final Pair<String, String> prettyThisId = new Pair<>("prettythisId", "1234");
-    private static final Pair<String, String> contentId = new Pair<>("contentId", "1");
-    private static final Pair<String, String> language = new Pair<>("language", "1");
-    private static final Pair<String, String> version = new Pair<>("version", "1");
-    private static final Pair<String, String> siteId = new Pair<>("siteId", "1");
-    private static final Pair<String, String> restContentId = new Pair<>("rest", "?contentId=1");
+    private static final Pair<String, String> https = Pair.of("protocol", "https");
+    private static final Pair<String, String> http = Pair.of("protocol", "http");
+    private static final Pair<String, String> noProtocol = Pair.of("protocol", (String) null);
+    private static final Pair<String, String> subDomain = Pair.of("hostname", "sub.domain.no");
+    private static final Pair<String, String> wwwSubDomain = Pair.of("hostname", "www.sub.domain.no");
+    private static final Pair<String, String> domain = Pair.of("hostname", "domain.no");
+    private static final Pair<String, String> wwwDomain = Pair.of("hostname", "www.domain.no");
+    private static final Pair<String, String> noPort = Pair.of("port", (String) null);
+    private static final Pair<String, String> port8080 = Pair.of("port", "8080");
+    private static final Pair<String, String> thisId = Pair.of("thisId", "1");
+    private static final Pair<String, String> prettyThisId = Pair.of("prettythisId", "1234");
+    private static final Pair<String, String> contentId = Pair.of("contentId", "1");
+    private static final Pair<String, String> language = Pair.of("language", "1");
+    private static final Pair<String, String> version = Pair.of("version", "1");
+    private static final Pair<String, String> siteId = Pair.of("siteId", "1");
+    private static final Pair<String, String> restContentId = Pair.of("rest", "?contentId=1");
 
     @Test
     public void contentApPatternShouldExtractAllTheValues() throws ContentNotFoundException {
@@ -103,14 +104,14 @@ public class ContentPatternTest {
         Pattern pattern = Pattern.compile(ContentPatterns.ALIAS_PATTERN, Pattern.UNICODE_CHARACTER_CLASS);
         Map<String, List<Pair<String, String>>> values = new LinkedHashMap<>();
 
-        values.put("/aliasæ/", asList(new Pair<>("alias", "/aliasæ/")));
-        values.put("/alias/", asList(new Pair<>("alias", "/alias/")));
-        values.put("/alias", asList(new Pair<>("alias", "/alias")));
-        values.put("/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("/alias/aliaspart2", asList(new Pair<>("alias", "/alias/aliaspart2")));
-        values.put("/alias/mypage.dk", asList(new Pair<>("alias", "/alias/mypage.dk")));
+        values.put("/aliasæ/", asList(Pair.of("alias", "/aliasæ/")));
+        values.put("/alias/", asList(Pair.of("alias", "/alias/")));
+        values.put("/alias", asList(Pair.of("alias", "/alias")));
+        values.put("/alias/aliaspart2/", asList(Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("/alias/aliaspart2", asList(Pair.of("alias", "/alias/aliaspart2")));
+        values.put("/alias/mypage.dk", asList(Pair.of("alias", "/alias/mypage.dk")));
 
-        values.put("/content/1234/TittelHer", asList(new Pair<>("alias", "/content/1234/TittelHer")));
+        values.put("/content/1234/TittelHer", asList(Pair.of("alias", "/content/1234/TittelHer")));
 
         testPatternWithValues(pattern, values);
         assertFalse("Pattern should not have matched", pattern.matcher("/alias/pattern,png").matches());
@@ -140,24 +141,24 @@ public class ContentPatternTest {
         values.put("https://www.sub.domain.no/content/1234/Adas", asList(https, wwwSubDomain, prettyThisId));
         values.put("http://domain.no/content/1234/Adas?contentId=1", asList(http, domain, prettyThisId, restContentId));
         values.put("/content/1234/Adas?contentId=1", asList(prettyThisId, restContentId));
-        values.put("http://www.domain.no/content/1234/Adas?contentId=1", asList(http, wwwDomain, prettyThisId, new Pair<>("rest", "?contentId=1")));
-        values.put("http://sub.domain.no/content/1234/Adas?contentId=1", asList(http, subDomain, prettyThisId, new Pair<>("rest", "?contentId=1")));
+        values.put("http://www.domain.no/content/1234/Adas?contentId=1", asList(http, wwwDomain, prettyThisId, Pair.of("rest", "?contentId=1")));
+        values.put("http://sub.domain.no/content/1234/Adas?contentId=1", asList(http, subDomain, prettyThisId, Pair.of("rest", "?contentId=1")));
 
-        values.put("http://domain.no/alias/", asList(http, domain, new Pair<>("alias", "/alias/")));
-        values.put("/alias/", asList(new Pair<>("alias", "/alias/")));
-        values.put("http://domain.no/alias", asList(http, domain, new Pair<>("alias", "/alias")));
-        values.put("/alias", asList(new Pair<>("alias", "/alias")));
-        values.put("http://domain.no/alias/aliaspart2/", asList(http, domain, new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("http://domain.no/alias/aliaspart2", asList(http, domain, new Pair<>("alias", "/alias/aliaspart2")));
-        values.put("/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("/alias/aliaspart2", asList(new Pair<>("alias", "/alias/aliaspart2")));
+        values.put("http://domain.no/alias/", asList(http, domain, Pair.of("alias", "/alias/")));
+        values.put("/alias/", asList(Pair.of("alias", "/alias/")));
+        values.put("http://domain.no/alias", asList(http, domain, Pair.of("alias", "/alias")));
+        values.put("/alias", asList(Pair.of("alias", "/alias")));
+        values.put("http://domain.no/alias/aliaspart2/", asList(http, domain, Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("http://domain.no/alias/aliaspart2", asList(http, domain, Pair.of("alias", "/alias/aliaspart2")));
+        values.put("/alias/aliaspart2/", asList(Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("/alias/aliaspart2", asList(Pair.of("alias", "/alias/aliaspart2")));
 
-        values.put("https://www.sub.domain.no/alias/", asList(https, wwwSubDomain, new Pair<>("alias", "/alias/")));
-        values.put("https://www2.sub.domain.no/alias/", asList(https, new Pair<>("hostname", "www2.sub.domain.no"), new Pair<>("alias", "/alias/")));
-        values.put("http://www.sub.domain.no/alias/", asList(http, wwwSubDomain, new Pair<>("alias", "/alias/")));
-        values.put("http://domain.no:8080/alias", asList(http, domain, port8080, new Pair<>("alias", "/alias")));
-        values.put("http://domain.no:8080/alias/aliaspart2/", asList(http, port8080, domain, new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("http://domain.no:8080/alias/aliaspart2", asList(http, domain, port8080, new Pair<>("alias", "/alias/aliaspart2")));
+        values.put("https://www.sub.domain.no/alias/", asList(https, wwwSubDomain, Pair.of("alias", "/alias/")));
+        values.put("https://www2.sub.domain.no/alias/", asList(https, Pair.of("hostname", "www2.sub.domain.no"), Pair.of("alias", "/alias/")));
+        values.put("http://www.sub.domain.no/alias/", asList(http, wwwSubDomain, Pair.of("alias", "/alias/")));
+        values.put("http://domain.no:8080/alias", asList(http, domain, port8080, Pair.of("alias", "/alias")));
+        values.put("http://domain.no:8080/alias/aliaspart2/", asList(http, port8080, domain, Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("http://domain.no:8080/alias/aliaspart2", asList(http, domain, port8080, Pair.of("alias", "/alias/aliaspart2")));
 
 
         testPatternWithValues(pattern, values);
@@ -189,22 +190,22 @@ public class ContentPatternTest {
         values.put("https://www.sub.domain.no/contextpath/content/1234/Adas", asList(https, wwwSubDomain, prettyThisId));
         values.put("http://domain.no/contextpath/content/1234/Adas?contentId=1", asList(http, domain, prettyThisId, restContentId));
         values.put("/contextpath/content/1234/Adas?contentId=1", asList(prettyThisId, restContentId));
-        values.put("http://www.domain.no/contextpath/content/1234/Adas?contentId=1", asList(http, wwwDomain, prettyThisId, new Pair<>("rest", "?contentId=1")));
-        values.put("http://sub.domain.no/contextpath/content/1234/Adas?contentId=1", asList(http, subDomain, prettyThisId, new Pair<>("rest", "?contentId=1")));
+        values.put("http://www.domain.no/contextpath/content/1234/Adas?contentId=1", asList(http, wwwDomain, prettyThisId, Pair.of("rest", "?contentId=1")));
+        values.put("http://sub.domain.no/contextpath/content/1234/Adas?contentId=1", asList(http, subDomain, prettyThisId, Pair.of("rest", "?contentId=1")));
 
-        values.put("http://domain.no/contextpath/alias/", asList(http, domain, new Pair<>("alias", "/alias/")));
-        values.put("http://domain.no/contextpath/alias", asList(http, domain, new Pair<>("alias", "/alias")));
-        values.put("/contextpath/alias", asList(new Pair<>("alias", "/alias")));
-        values.put("http://domain.no/contextpath/alias/aliaspart2/", asList(http, domain, new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("/contextpath/alias/aliaspart2/", asList(new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("http://domain.no/contextpath/alias/aliaspart2", asList(http, domain, new Pair<>("alias", "/alias/aliaspart2")));
+        values.put("http://domain.no/contextpath/alias/", asList(http, domain, Pair.of("alias", "/alias/")));
+        values.put("http://domain.no/contextpath/alias", asList(http, domain, Pair.of("alias", "/alias")));
+        values.put("/contextpath/alias", asList(Pair.of("alias", "/alias")));
+        values.put("http://domain.no/contextpath/alias/aliaspart2/", asList(http, domain, Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("/contextpath/alias/aliaspart2/", asList(Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("http://domain.no/contextpath/alias/aliaspart2", asList(http, domain, Pair.of("alias", "/alias/aliaspart2")));
 
-        values.put("https://www.sub.domain.no/contextpath/alias/", asList(https, wwwSubDomain, new Pair<>("alias", "/alias/")));
-        values.put("https://www2.sub.domain.no/contextpath/alias/", asList(https, new Pair<>("hostname", "www2.sub.domain.no"), new Pair<>("alias", "/alias/")));
-        values.put("http://www.sub.domain.no/contextpath/alias/", asList(http, wwwSubDomain, new Pair<>("alias", "/alias/")));
-        values.put("http://domain.no:8080/contextpath/alias", asList(http, domain, port8080, new Pair<>("alias", "/alias")));
-        values.put("http://domain.no:8080/contextpath/alias/aliaspart2/", asList(http, port8080, domain, new Pair<>("alias", "/alias/aliaspart2/")));
-        values.put("http://domain.no:8080/contextpath/alias/aliaspart2", asList(http, domain, port8080, new Pair<>("alias", "/alias/aliaspart2")));
+        values.put("https://www.sub.domain.no/contextpath/alias/", asList(https, wwwSubDomain, Pair.of("alias", "/alias/")));
+        values.put("https://www2.sub.domain.no/contextpath/alias/", asList(https, Pair.of("hostname", "www2.sub.domain.no"), Pair.of("alias", "/alias/")));
+        values.put("http://www.sub.domain.no/contextpath/alias/", asList(http, wwwSubDomain, Pair.of("alias", "/alias/")));
+        values.put("http://domain.no:8080/contextpath/alias", asList(http, domain, port8080, Pair.of("alias", "/alias")));
+        values.put("http://domain.no:8080/contextpath/alias/aliaspart2/", asList(http, port8080, domain, Pair.of("alias", "/alias/aliaspart2/")));
+        values.put("http://domain.no:8080/contextpath/alias/aliaspart2", asList(http, domain, port8080, Pair.of("alias", "/alias/aliaspart2")));
 
         values.put("/", Collections.<Pair<String,String>>emptyList());
 
@@ -218,7 +219,7 @@ public class ContentPatternTest {
             assertTrue("Pattern does not match " + url, matcher.matches());
             List<Pair<String, String>> testValues = entry.getValue();
             for (Pair<String, String> testValue : testValues) {
-                assertEquals("Could not get " + testValue.first + " from " + url, testValue.second, matcher.group(testValue.first));
+                assertEquals("Could not get " + testValue.getLeft() + " from " + url, testValue.getRight(), matcher.group(testValue.getLeft()));
             }
         }
     }
