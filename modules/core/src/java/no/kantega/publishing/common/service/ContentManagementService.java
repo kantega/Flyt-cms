@@ -526,7 +526,7 @@ public class ContentManagementService {
         if(copyChildren){
             log.info( "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
-            //These parameters are set to copy children which are archived, expired and to include drafts and content waiting for approval
+            //These parameters are set to true to copy children which are archived, expired and to include drafts and content waiting for approval
             query.setShowArchived(true);
             query.setShowExpired(true);
             query.setIncludeDrafts(true);
