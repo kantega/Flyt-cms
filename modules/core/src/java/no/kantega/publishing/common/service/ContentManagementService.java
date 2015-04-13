@@ -526,6 +526,7 @@ public class ContentManagementService {
         if(copyChildren){
             log.info( "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
+            //These parameters are set to copy children which are archived, expired and to include drafts and content waiting for approval
             query.setShowArchived(true);
             query.setShowExpired(true);
             query.setIncludeDrafts(true);
@@ -745,7 +746,6 @@ public class ContentManagementService {
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
-        log.info("numbers of elements from getContentListFromCache " + list.size());
         List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
