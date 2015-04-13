@@ -214,6 +214,7 @@ public class EditContentHelper {
         }
     }
 
+    //merge this
     public static void addRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) throws InvalidTemplateException {
         ContentTemplate template = null;
 
