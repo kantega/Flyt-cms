@@ -526,6 +526,10 @@ public class ContentManagementService {
         if(copyChildren){
             log.info( "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
+            query.setShowArchived(true);
+            query.setShowExpired(true);
+            query.setIncludeDrafts(true);
+            query.setIncludeWaitingForApproval(true);
             query.setAssociatedId(origialContentIdentifier);
 
             for (Content child : getContentList(query, -1, null)) {
@@ -741,7 +745,7 @@ public class ContentManagementService {
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
-
+        log.info("numbers of elements from getContentListFromCache " + list.size());
         List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
@@ -753,7 +757,6 @@ public class ContentManagementService {
                 break;
             }
         }
-
         return approved;
     }
 
@@ -766,7 +769,6 @@ public class ContentManagementService {
             if (sort != null){
                 query.setSortOrder(sort);
             }
-
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
             String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
