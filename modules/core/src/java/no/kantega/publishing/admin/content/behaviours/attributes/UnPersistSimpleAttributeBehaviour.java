@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
-import no.kantega.commons.exception.SystemException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

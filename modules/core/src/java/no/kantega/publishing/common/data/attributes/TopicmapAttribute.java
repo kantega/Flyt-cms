@@ -16,15 +16,9 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.publishing.common.data.enums.AttributeProperty;
-import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.topicmaps.data.Topic;
-import no.kantega.publishing.topicmaps.data.TopicMap;
-import no.kantega.publishing.topicmaps.ao.TopicAO;
-import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.topicmaps.ao.TopicMapAO;
 
-import java.text.ParseException;
 import java.util.List;
 
 public class TopicmapAttribute  extends Attribute {

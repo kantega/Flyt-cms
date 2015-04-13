@@ -16,9 +16,9 @@
 
 package no.kantega.useradmin.model;
 
+import no.kantega.security.api.password.PasswordManager;
 import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.profile.ProfileUpdateManager;
-import no.kantega.security.api.password.PasswordManager;
 
 /**
  * User: Anders Skar, Kantega AS

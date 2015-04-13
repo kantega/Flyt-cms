@@ -114,7 +114,7 @@ public class ContentTemplateValidator {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.xmlerror", null));
             }
 
-            if (contentTemplateType == AttributeDataType.CONTENT_DATA) {
+            if (contentTemplateType == AttributeDataType.CONTENT_DATA.getDataTypeAsId()) {
                 if ((contentTemplate.getContentType() == ContentType.FILE || contentTemplate.getContentType() == ContentType.LINK) && !foundUrl) {
                     errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingurlattribute", null));
                 }

@@ -60,12 +60,12 @@ public class ReloadTemplateConfigurationAction extends AbstractController {
 
             // Validate content templates
             for (ContentTemplate ct : config.getContentTemplates()) {
-                errors.addAll(templateValidator.validate(ct, AttributeDataType.CONTENT_DATA));
+                errors.addAll(templateValidator.validate(ct, AttributeDataType.CONTENT_DATA.getDataTypeAsId()));
             }
 
             // Validate metadata templates
             for (ContentTemplate ct : config.getMetadataTemplates()) {
-                errors.addAll(templateValidator.validate(ct, AttributeDataType.META_DATA));
+                errors.addAll(templateValidator.validate(ct, AttributeDataType.META_DATA.getDataTypeAsId()));
             }
 
             if (errors.size() == 0) {

@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.TrafficLogQuery;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.ContentViewStatistics;
 import no.kantega.publishing.common.data.PeriodViewStatistics;
 import no.kantega.publishing.common.data.RefererOccurrence;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.TrafficLogQuery;
 
 import java.util.List;
 

@@ -16,9 +16,9 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
+import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.commons.client.util.RequestParameters;
 
 public interface UpdateAttributeFromRequestBehaviour {
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute);

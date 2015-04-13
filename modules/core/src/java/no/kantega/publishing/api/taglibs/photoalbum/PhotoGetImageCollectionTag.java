@@ -16,16 +16,16 @@
 
 package no.kantega.publishing.api.taglibs.photoalbum;
 
-import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;
+import no.kantega.publishing.common.service.MultimediaService;
 
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
-import javax.servlet.jsp.JspTagException;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ArrayList;
 
 /**
  *

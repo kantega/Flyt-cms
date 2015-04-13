@@ -16,12 +16,11 @@
 
 package no.kantega.publishing.spring;
 
+import no.kantega.commons.configuration.Configuration;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.io.FileSystemResource;
 
 import java.util.Properties;
-
-import no.kantega.commons.configuration.Configuration;
 
 
 public class ConfigurationPropertiesFactory implements FactoryBean {

@@ -16,28 +16,22 @@
 
 package no.kantega.publishing.velocity;
 
+import no.kantega.commons.filter.AksessRequestFilter;
+import no.kantega.publishing.common.util.CharResponseWrapper;
+import org.apache.velocity.context.InternalContextAdapter;
+import org.apache.velocity.exception.MethodInvocationException;
+import org.apache.velocity.exception.ParseErrorException;
+import org.apache.velocity.exception.ResourceNotFoundException;
 import org.apache.velocity.runtime.directive.Directive;
-import org.apache.velocity.runtime.parser.node.Node;
 import org.apache.velocity.runtime.parser.node.ASTReference;
 import org.apache.velocity.runtime.parser.node.ASTStringLiteral;
-import org.apache.velocity.context.InternalContextAdapter;
-import org.apache.velocity.exception.ResourceNotFoundException;
-import org.apache.velocity.exception.ParseErrorException;
-import org.apache.velocity.exception.MethodInvocationException;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.apache.velocity.runtime.parser.node.Node;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.ServletException;
-import java.io.Writer;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.StringWriter;
-
-import no.kantega.publishing.common.util.CharResponseWrapper;
-import no.kantega.commons.filter.AksessRequestFilter;
+import java.io.Writer;
 
 /**
  */

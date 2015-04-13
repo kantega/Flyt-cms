@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.topicmaps.ao;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicAssociation;
-import no.kantega.commons.exception.SystemException;
 
 import java.util.List;
 

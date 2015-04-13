@@ -38,6 +38,7 @@ public enum ContentStatus {
      */
     PUBLISHED_WAITING(25),
     /**
+     *
      * Content is published.
      */
     PUBLISHED(30),

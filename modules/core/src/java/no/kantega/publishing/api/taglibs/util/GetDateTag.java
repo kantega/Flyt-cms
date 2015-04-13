@@ -16,19 +16,15 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.commons.exception.SystemException;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  *

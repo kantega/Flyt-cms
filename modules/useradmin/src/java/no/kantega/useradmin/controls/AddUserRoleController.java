@@ -16,18 +16,17 @@
 
 package no.kantega.useradmin.controls;
 
-import org.springframework.web.servlet.mvc.Controller;
+import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.role.DefaultRoleId;
+import no.kantega.security.api.role.RoleManager;
+import no.kantega.security.api.role.RoleUpdateManager;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import no.kantega.security.api.role.*;
-import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.commons.client.util.RequestParameters;
-
 import java.util.Date;
 
 /**

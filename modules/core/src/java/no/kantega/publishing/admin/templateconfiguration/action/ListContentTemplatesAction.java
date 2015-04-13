@@ -38,15 +38,15 @@ public class ListContentTemplatesAction extends AbstractController {
         Map<String, Object> model = new HashMap<>();
 
         RequestParameters param = new RequestParameters(request);
-        int type = AttributeDataType.CONTENT_DATA;
+        AttributeDataType attributeDataType = AttributeDataType.CONTENT_DATA;
         if (param.getInt("type") != -1) {
-            type = param.getInt("type");
+            attributeDataType = AttributeDataType.getDataTypeAsEnum(param.getInt("type"));
         }
 
         boolean isContentTemplates = true;
 
         List templates;
-        if (type == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             templates = templateConfigurationCache.getTemplateConfiguration().getContentTemplates();
         } else {
             isContentTemplates = false;

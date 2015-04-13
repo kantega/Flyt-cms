@@ -16,11 +16,12 @@
 
 package no.kantega.publishing.client.filter;
 
-import org.junit.Test;
 import org.junit.Before;
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 import javax.servlet.http.HttpServletRequest;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  */

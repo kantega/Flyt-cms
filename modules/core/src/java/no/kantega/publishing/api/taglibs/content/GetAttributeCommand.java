@@ -16,9 +16,8 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.Cropping;
 
 /**
@@ -30,7 +29,7 @@ public class GetAttributeCommand {
     String name = null;
     String property = AttributeProperty.HTML;
     int maxLength = -1;
-    int attributeType = AttributeDataType.ANY;
+    AttributeDataType attributeDataType = AttributeDataType.ANY;
     String cssClass = null;
     String format = null;
     int width = -1;
@@ -62,12 +61,12 @@ public class GetAttributeCommand {
         this.maxLength = maxLength;
     }
 
-    public int getAttributeType() {
-        return attributeType;
+    public AttributeDataType getAttributeType() {
+        return attributeDataType;
     }
 
-    public void setAttributeType(int attributeType) {
-        this.attributeType = attributeType;
+    public void setAttributeType(AttributeDataType attributeDataType) {
+        this.attributeDataType = attributeDataType;
     }
 
     public String getCssClass() {

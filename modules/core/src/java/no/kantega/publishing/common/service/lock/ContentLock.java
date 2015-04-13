@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.common.service.lock;
 
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Date;
 
 public class ContentLock {

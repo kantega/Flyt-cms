@@ -18,7 +18,8 @@ package no.kantega.publishing.api.forms.model;
 
 import no.kantega.security.api.identity.Identity;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * A FormSubmission contains data posted in a form as well as metadata about the user who submitted the form and information about the form which was submitted
