@@ -18,6 +18,11 @@ package no.kantega.commons.util;
 
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.xml.serialize.OutputFormat;
 import org.apache.xml.serialize.XMLSerializer;
 import org.slf4j.Logger;
@@ -104,19 +109,26 @@ public class XMLHelper {
 
     public static Document openDocument(URL url) throws SystemException {
         Document doc = null;
-        try {
+        CloseableHttpClient httpClient = getHttpClient();
+        try (CloseableHttpResponse execute = httpClient.execute(new HttpGet(url.toURI()))) {
+
             DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = docFactory.newDocumentBuilder();
 
-            try (InputStream is = url.openStream()){
-                doc = builder.parse(is);
-            }
+            doc = builder.parse(execute.getEntity().getContent());
         } catch (Exception e) {
             log.error("Error opening XML document from URL", e);
             throw new SystemException("Error opening XML document from URL", e);
         }
 
         return doc;
+    }
+
+    private static CloseableHttpClient getHttpClient() {
+        return HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setRedirectsEnabled(true)
+                        .setConnectTimeout(10000).build()).build();
     }
 
     public static Document openDocument(Resource resource) throws InvalidFileException {
