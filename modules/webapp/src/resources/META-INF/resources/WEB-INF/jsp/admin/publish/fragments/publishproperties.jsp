@@ -105,7 +105,6 @@
         openaksess.editcontext.updateTopics(params);
         openaksess.editcontext.addTopicAutocomplete();
     });
-
 </script>
 
 <c:if test="${!isStartPage}">
@@ -115,15 +114,15 @@
             <table class="noborder" id="DisplayPeriod">
                 <tr>
                     <td><label for="from_date"><kantega:label key="aksess.publishinfo.period.from"/></label></td>
-                    <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="500" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()">
+                    <td><input type="text" id="from_date" name="from_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.publishDate}"/>" tabindex="${maxTabindex+10}" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()">
                     <td><label for="from_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
-                    <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="501" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
+                    <td><input type="text" id="from_time" name="from_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.publishDate}"/>" tabindex="${maxTabindex+11}" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
                 <tr>
                     <td><label for="end_date"><kantega:label key="aksess.publishinfo.period.until"/></label></td>
-                    <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="502" onFocus="openaksess.editcontext.setFocusField(this)" onchange="displayExpireAction()" onBlur="openaksess.editcontext.blurField()"></td>
+                    <td><input type="text" id="end_date" name="end_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.expireDate}"/>" tabindex="${maxTabindex+12}" onFocus="openaksess.editcontext.setFocusField(this)" onchange="displayExpireAction()" onBlur="openaksess.editcontext.blurField()"></td>
                     <td><label for="end_time"><kantega:label key="aksess.publishinfo.period.time"/></label></td>
-                    <td><input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="503" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
+                    <td><input type="text" id="end_time" name="end_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.expireDate}"/>" tabindex="${maxTabindex+13}" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
             </table>
             <div id="EndDateAction" <c:if test="${currentContent.expireDate == null}">style="display:none;"</c:if> >
@@ -160,9 +159,9 @@
             <legend><kantega:label key="aksess.publishinfo.change"/></legend>
             <table class="noborder" id="ChangeDate">
                 <tr>
-                    <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="500" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
+                    <td><input type="text" id="change_date" name="change_date" size="10" maxlength="10" value="<admin:formatdate date="${currentContent.changeFromDate}"/>" tabindex="${maxTabindex+20}" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                     <td><label for="change_time"><kantega:label key="aksess.publishinfo.change.time"/></label></td>
-                    <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="501" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
+                    <td><input type="text" id="change_time" name="change_time" size="5" maxlength="5" value="<admin:formattime date="${currentContent.changeFromDate}"/>" tabindex="${maxTabindex+21}" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()"></td>
                 </tr>
             </table>
             <div class="ui-state-highlight">
@@ -175,7 +174,7 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.alias"/></legend>
-            <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="510" <c:if test="${currentContent.locked || !canEditContentAlias}">readonly</c:if>>
+            <input type="text" name="alias" id="Alias" size="30" maxlength="128" value="${currentContent.alias}" tabindex="${maxTabindex+30}" <c:if test="${currentContent.locked || !canEditContentAlias}">readonly</c:if>>
             <div id="LockedHelp" class="ui-state-highlight" style="clear:both; <c:if test="${!currentContent.locked && canEditContentAlias}">display:none</c:if>">
                 <ul>
                     <c:if test="${currentContent.locked}">
@@ -198,10 +197,10 @@
                 <c:if test="${canEditContentTopics}">
                     <div id="SelectTopics">
                         <div id="TopicInputContainer">
-                            <input type="text" id="TopicInput" size="20" maxlength="128" accesskey="E">
+                            <input type="text" id="TopicInput" size="20" maxlength="128" tabindex="${maxTabindex+40}" accesskey="E">
                         </div>
                         <div id="ChooseTopicButton">
-                            <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
+                            <span class="button"><input type="button" class="select" tabindex="${maxTabindex+41}" value="<kantega:label key="aksess.publishinfo.topics.choose"/>"></span>
                         </div>
                     </div>
                 </c:if>
@@ -223,7 +222,7 @@
     <div class="sidebarFieldset">
         <fieldset>
             <legend><kantega:label key="aksess.publishinfo.displaytemplate"/></legend>
-            <select name="displaytemplate" tabindex="60" onchange="openaksess.editcontext.setIsModified()">
+            <select name="displaytemplate" tabindex="${maxTabindex+50}" onchange="openaksess.editcontext.setIsModified()">
                 <c:forEach var="template" items="${allowedTemplates}">
                     <c:set var="templateName" value="${template.name}"/>
                     <c:if test="template.contentTemplate.id == current.contentTemplateId">
@@ -245,7 +244,7 @@
         <c:choose>
             <c:when test="${toggleSearchableEnabled}">
                 <div class="row">
-                    <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="520"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
+                    <input type="checkbox" class="checkbox" name="searchable" id="Searchable" value="true"<c:if test="${currentContent.searchable}"> checked="checked"</c:if> tabindex="${maxTabindex+60}"><label for="Searchable" class="checkbox"><kantega:label key="aksess.publishinfo.searchable"/></label>
                     <div class="clearing"></div>
                 </div>
             </c:when>
@@ -255,7 +254,7 @@
         </c:choose>
         <c:if test="${isDeveloper}">
             <div class="row">
-                <input type="checkbox" class="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="Locked"><label for="Locked" class="checkbox"><kantega:label key="aksess.publishinfo.locked"/></label>
+                <input type="checkbox" class="checkbox" name="locked" value="true" <c:if test="${currentContent.locked}">checked</c:if> id="Locked" tabindex="${maxTabindex+61}"><label for="Locked" class="checkbox"><kantega:label key="aksess.publishinfo.locked"/></label>
                 <div class="clearing"></div>
             </div>
         </c:if>
