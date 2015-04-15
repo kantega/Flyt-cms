@@ -17,6 +17,7 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.api.content.Language;
@@ -33,6 +34,7 @@ import org.w3c.dom.NodeList;
 import javax.xml.transform.TransformerException;
 import java.util.*;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -98,7 +100,14 @@ public class ListAttribute extends Attribute {
         if (!getOptions().isEmpty()) {
             return getOptions();
         } else if (!getKey().isEmpty()) {
-            return EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant);
+            List<ListOption> listOptions = EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant);
+            if (!isSomeSelected(listOptions)) {
+                Locale locale = Language.getLanguageAsLocale(language);
+                ListOption listOption = new ListOption();
+                listOption.setText(LocaleLabels.getLabel("aksess.list.ingen", locale));
+                listOptions.add(0, listOption);
+            }
+            return listOptions;
         } else {
             return Collections.emptyList();
         }
@@ -124,5 +133,41 @@ public class ListAttribute extends Attribute {
 
     public String getKey() {
         return key;
+    }
+
+    private boolean isSomeSelected(List<ListOption> listOptions) {
+        String value = this.getValue();
+        boolean someSelected = false;
+        for (ListOption option : listOptions) {
+            if (isSelected(option, value)) {
+                someSelected = true;
+            }
+        }
+        return someSelected;
+    }
+
+    private boolean isSelected(ListOption option, String value) {
+        String optText = option.getText();
+        String optVal  = option.getValue();
+        if (isBlank(optVal)) {
+            optVal = optText;
+        }
+
+        boolean selected = false;
+        if ((isBlank(value)) && (option.isDefaultSelected())) {
+            selected = true;
+        } else {
+            if (value != null) {
+                String[] values = value.split(",");
+                for (String v : values) {
+                    if (v.equalsIgnoreCase(optVal)) {
+                        selected = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return selected;
     }
 }
