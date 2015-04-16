@@ -46,20 +46,7 @@ public class LogJSErrorAction {
             userName = user.getName();
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("Message:");
-        sb.append(message);
-        sb.append("\n");
-        sb.append("Javascript URL:");
-        sb.append(url);
-        sb.append("\n");
-        sb.append("Line:");
-        sb.append(line);
-        sb.append("\n");
-        sb.append("User:");
-        sb.append(userName);
-
-        log.error( sb.toString() );
+        log.error("Message:" + message + "\n" + "Javascript URL:" + url + "\n" + "Line:" + line + "\n" + "User:" + userName);
 
         return new ResponseEntity(HttpStatus.OK);
     }
