@@ -50,7 +50,7 @@ public class ContentStateUpdater {
                     if (content.getExpireAction() == ExpireAction.ARCHIVE) {
                         newVisibilityStatus = ContentVisibilityStatus.ARCHIVED;
                     }
-                    log.info("VisibilityStatus of " + content.getTitle() + " was set to " + newVisibilityStatus);
+                    log.info("VisibilityStatus of " + content.getTitle() + "(" + content.getId() + ") was set to " + newVisibilityStatus);
                     cms.setContentVisibilityStatus(content, newVisibilityStatus);
 
                 }
@@ -61,13 +61,14 @@ public class ContentStateUpdater {
                 ContentIdentifier cid =  ContentIdentifier.fromContentId(i);
                 Content content = contentAO.getContent(cid, false);
                 if (content != null) {
-                    log.info("VisibilityStatus of " + content.getTitle() + " was set to WAITING");
+                    log.info("VisibilityStatus of " + content.getTitle() + "(" + content.getId() + ") was set to WAITING");
                     cms.setContentVisibilityStatus(content, ContentVisibilityStatus.WAITING);
                 }
             }
         } catch (SystemException e) {
             log.error("", e);
         }
+        log.info( "Done looking for content that has expired");
     }
 
     public void publishContent() {
@@ -81,10 +82,10 @@ public class ContentStateUpdater {
                 Content content = contentAO.getContent(cid, true);
                 if (content != null) {
                     if (content.getVisibilityStatus() != ContentVisibilityStatus.ACTIVE) {
-                        log.info(content.getTitle() + " page was made visible due to publish date");
+                        log.info(content.getTitle() + "(" + content.getId() + ") was made visible due to publish date");
                         cms.setContentVisibilityStatus(content, ContentVisibilityStatus.ACTIVE);
                     } else if (content.getStatus() == ContentStatus.PUBLISHED_WAITING) {
-                        log.info(content.getTitle() + " new version was activated due to change from date");
+                        log.info(content.getTitle() + "(" + content.getId() + ") new version was activated due to change from date");
                         cms.setContentStatus(cid, ContentStatus.PUBLISHED, "");
                     }
                 }
@@ -93,5 +94,6 @@ public class ContentStateUpdater {
         } catch (SystemException | NotAuthorizedException e) {
             log.error("", e);
         }
+        log.info( "Done looking for content that needs activation");
     }
 }
