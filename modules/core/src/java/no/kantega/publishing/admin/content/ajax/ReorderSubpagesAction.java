@@ -1,16 +1,18 @@
 package no.kantega.publishing.admin.content.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
+import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.cache.AssociationCategoryCache;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Called with ajax when the user has reordered subpages in the Organize sub pages view.
@@ -25,19 +27,19 @@ public class ReorderSubpagesAction implements Controller {
      * Example:
      * ?associationCategory1=39,54,3465&associationCategory4=545,274,23423,673,324
      *
-     * @see Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse) 
+     * @see Controller#handleRequest(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    @SuppressWarnings("unchecked")
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, String[]> parameters = request.getParameterMap();
         if (parameters != null && parameters.size() > 0) {
-            for (String param : parameters.keySet()) {
+            for (Map.Entry<String, String[]> paramEntry : parameters.entrySet()) {
+                String param = paramEntry.getKey();
                 if (param.startsWith("associationCategory")) {
                     int categoryId = Integer.parseInt(param.substring("associationCategory".length(), param.length()));
                     AssociationCategory category = AssociationCategoryCache.getAssociationCategoryById(categoryId);
-                    String associationIds = parameters.get(param)[0];
+                    String associationIds = paramEntry.getValue()[0];
 
-                    List<Association> associations = new ArrayList<Association>();
+                    List<Association> associations = new ArrayList<>();
                     StringTokenizer tokens = new StringTokenizer(associationIds, ",");
                     int i = 0;
                     while (tokens.hasMoreTokens()) {

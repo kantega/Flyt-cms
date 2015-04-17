@@ -157,12 +157,12 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
             }
         }
 
-        for (String email : subscribers.keySet()) {
+        for (Map.Entry<String, List<Content>> email : subscribers.entrySet()) {
             // Send email to this user
-            List<Content> subscriberContent = subscribers.get(email);
+            List<Content> subscriberContent = email.getValue();
             if (subscriberContent != null && subscriberContent.size() > 0) {
                 try {
-                    mailSubscriptionDeliveryService.sendEmail(email, subscriberContent, site);
+                    mailSubscriptionDeliveryService.sendEmail(email.getKey(), subscriberContent, site);
                 } catch (Exception e) {
                     log.error("", e);
                 }

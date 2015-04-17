@@ -177,16 +177,16 @@ public abstract class Attribute implements Serializable {
                     }
                 } else {
                     if (model != null && model.size() > 0) {
-                        for (String key : model.keySet()) {
-                            String value = model.get(key);
+                        for (Map.Entry<String, String> entry : model.entrySet()) {
+                            String value = entry.getValue();
                             if (value == null) {
                                 value = "";
                             }
-                            String keyToken = "\\$\\{" + key + "\\}";
+                            String keyToken = "\\$\\{" + entry + "\\}";
 
                             String tmp = defaultValue.replaceAll(keyToken, value);
                             if (tmp.equals(defaultValue)) {
-                                defaultValue = defaultValue.replaceAll(key, value);
+                                defaultValue = defaultValue.replaceAll(entry.getKey(), value);
                             } else {
                                 defaultValue = tmp;
                             }
