@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -69,7 +70,7 @@ public class SolrSearcher implements Searcher {
             resultFilter.filterSearchResponse(searchReponse);
 
             return searchReponse;
-        } catch (SolrServerException e) {
+        } catch (SolrServerException | IOException e) {
             throw new IllegalStateException("Error when searching", e);
         }
     }
@@ -278,7 +279,7 @@ public class SolrSearcher implements Searcher {
         try {
             QueryResponse queryResponse = solrServer.query(params);
             return  getSpellSuggestions(queryResponse.getSpellCheckResponse());
-        } catch (SolrServerException e) {
+        } catch (SolrServerException | IOException  e) {
             throw new IllegalStateException("Error when searching", e);
         }
     }
