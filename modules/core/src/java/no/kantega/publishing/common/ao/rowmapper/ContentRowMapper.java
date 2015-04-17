@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ContentRowMapper implements RowMapper<Content> {
-    private static AssociationRowMapper associationRowMapper = new AssociationRowMapper();
+    private final AssociationRowMapper associationRowMapper = new AssociationRowMapper();
     private boolean getAssociationInfo = false;
 
     public ContentRowMapper(boolean getAssociationInfo) {
@@ -85,5 +85,9 @@ public class ContentRowMapper implements RowMapper<Content> {
             content.addAssociation(associationRowMapper.mapRow(rs, 0));
         }
         return content;
+    }
+
+    public Content mapRow(ResultSet rs) throws SQLException {
+        return mapRow(rs, 0);
     }
 }

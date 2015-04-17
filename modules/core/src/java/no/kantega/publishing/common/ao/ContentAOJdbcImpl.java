@@ -66,6 +66,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     @Autowired
     private TopicDao topicDao;
 
+    private final ContentRowMapper contentRowMapper = new ContentRowMapper(true);
+
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
@@ -341,7 +343,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 st.setInt(5, AssociationType.DEFAULT_POSTING_FOR_SITE);
                 try(ResultSet rs = st.executeQuery()) {
                     while (rs.next()) {
-                        Content content = ContentAOHelper.getContentFromRS(rs, true);
+                        Content content = contentRowMapper.mapRow(rs);
                         if (content.getId() != prevContentId) {
                             prevContentId = content.getId();
                             if (content.getStatus() == ContentStatus.DRAFT) {
@@ -367,7 +369,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 try(ResultSet rs = st.executeQuery()){
                 prevContentId = -1;
                 while (rs.next()) {
-                    Content content = ContentAOHelper.getContentFromRS(rs, true);
+                    Content content = contentRowMapper.mapRow(rs);
                     if (content.getId() != prevContentId) {
                         prevContentId = content.getId();
                         remind.add(content);
@@ -385,7 +387,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                     int i = 0;
                     prevContentId = -1;
                     while (rs.next() && i < 10) {
-                        Content content = ContentAOHelper.getContentFromRS(rs, true);
+                        Content content = contentRowMapper.mapRow(rs);
                         if (content.getId() != prevContentId) {
                             prevContentId = content.getId();
                             lastpublished.add(content);
@@ -434,7 +436,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             try(ResultSet rs = st.executeQuery()) {
                 int prevContentId = -1;
                 while (rs.next()) {
-                    Content content = ContentAOHelper.getContentFromRS(rs, true);
+                    Content content = contentRowMapper.mapRow(rs);
                     if (content.getId() != prevContentId) {
                         prevContentId = content.getId();
                         contentList.add(content);
