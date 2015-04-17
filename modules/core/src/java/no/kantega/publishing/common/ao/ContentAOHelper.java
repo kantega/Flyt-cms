@@ -23,6 +23,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -119,7 +120,7 @@ public class ContentAOHelper {
 
         String attributeType = StringUtils.defaultIfEmpty(rs.getString("AttributeType"), "Text");
 
-        int attributeDataType = rs.getInt("DataType");
+        AttributeDataType attributeDataType = AttributeDataType.getDataTypeAsEnum(rs.getInt("DataType"));
 
         String attributeNameIncludingPath = rs.getString("Name");
         String value = rs.getString("Value");
@@ -191,7 +192,7 @@ public class ContentAOHelper {
         return value;
     }
 
-    private static RepeaterAttribute createOrGetExistingRepeaterAttributeByName(List<Attribute> attributes, String pathElement, int attributeDataType) {
+    private static RepeaterAttribute createOrGetExistingRepeaterAttributeByName(List<Attribute> attributes, String pathElement, AttributeDataType attributeDataType) {
         for (Attribute attribute : attributes) {
             if (attribute.getName().equals(pathElement) && attribute instanceof RepeaterAttribute) {
                 return (RepeaterAttribute)attribute;

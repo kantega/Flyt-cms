@@ -17,17 +17,14 @@
 package no.kantega.publishing.common.data;
 
 import org.junit.Test;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.core.io.ResourceLoader;
-
-import java.io.InputStream;
-import java.io.ByteArrayInputStream;
 
 /**
  * User: Anders Skar, Kantega AS

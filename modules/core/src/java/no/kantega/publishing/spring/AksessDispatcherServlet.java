@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.spring;
 
-import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
+import org.springframework.web.servlet.DispatcherServlet;
 
 /**
  * Created by IntelliJ IDEA.

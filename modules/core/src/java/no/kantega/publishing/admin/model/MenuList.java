@@ -18,8 +18,8 @@ package no.kantega.publishing.admin.model;
 
 import no.kantega.publishing.common.data.Content;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *

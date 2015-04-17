@@ -16,18 +16,17 @@
 
 package no.kantega.publishing.admin.content.action;
 
+import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.client.ContentRequestDispatcher;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.client.ContentRequestDispatcher;
-import no.kantega.publishing.admin.AdminSessionAttributes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
-import org.springframework.web.servlet.mvc.AbstractController;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class ViewContentPreviewFrameAction extends AbstractController {
     private ContentRequestDispatcher contentRequestDispatcher;

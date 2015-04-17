@@ -16,10 +16,9 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.forum.ForumProvider;
+import no.kantega.publishing.spring.RootContext;
 
-import java.util.List;
 import java.util.Map;
 
 /**

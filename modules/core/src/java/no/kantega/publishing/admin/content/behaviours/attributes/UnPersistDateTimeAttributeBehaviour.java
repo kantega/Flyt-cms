@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.DatetimeAttribute;
-import no.kantega.commons.exception.SystemException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class UnPersistDateTimeAttributeBehaviour implements UnPersistAttributeBehaviour{
     public void unpersistAttribute(ResultSet rs, Attribute attribute) throws SQLException, SystemException {

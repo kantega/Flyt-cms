@@ -1,16 +1,18 @@
 package no.kantega.publishing.admin.content.ajax;
 
-import org.springframework.web.servlet.mvc.Controller;
-import org.springframework.web.servlet.ModelAndView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.*;
-
+import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.common.cache.AssociationCategoryCache;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.Controller;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.StringTokenizer;
 
 /**
  * Called with ajax when the user has reordered subpages in the Organize sub pages view.

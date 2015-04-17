@@ -1,11 +1,11 @@
 package no.kantega.publishing.common;
 
-import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.topicmaps.data.Topic;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

@@ -21,7 +21,7 @@ public abstract class AbstractAttributeConditionTag extends ConditionalTagSuppor
     private String contentId = null;
     private String collection = null;
     private boolean negate = false;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
+    private AttributeDataType attributeType = AttributeDataType.CONTENT_DATA;
     private Content contentObject = null;
     private String repeater;
     private boolean inheritFromAncestors = false;

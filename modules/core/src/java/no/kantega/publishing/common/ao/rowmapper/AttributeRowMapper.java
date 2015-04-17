@@ -4,6 +4,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -35,7 +36,7 @@ public class AttributeRowMapper implements RowMapper<Attribute> {
         UnPersistAttributeBehaviour behaviour = attribute.getFetchBehaviour();
         behaviour.unpersistAttribute(rs, attribute);
 
-        content.addAttribute(attribute, rs.getInt("DataType"));
+        content.addAttribute(attribute, AttributeDataType.getDataTypeAsEnum(rs.getInt("DataType")));
 
         return attribute;
     }

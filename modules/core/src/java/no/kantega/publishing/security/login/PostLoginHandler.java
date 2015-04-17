@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.security.login;
 
-import no.kantega.publishing.security.data.User;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.security.data.User;
 
 import javax.servlet.http.HttpServletRequest;
 

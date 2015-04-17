@@ -23,7 +23,7 @@ public class RepeatAttributesTag extends BodyTagSupport {
     private String name = null;
     private String contentId = null;
     private String collection = null;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
+    private AttributeDataType attributeDataType= AttributeDataType.CONTENT_DATA;
     private Content contentObject = null;
 
     private int offset = 0;
@@ -51,7 +51,7 @@ public class RepeatAttributesTag extends BodyTagSupport {
                 if (contentObject != null) {
                     pageContext.setAttribute(AttributeTagHelper.REPEATER_CONTENT_OBJ_PAGE_VAR + name, contentObject);
 
-                    Attribute attribute = contentObject.getAttribute(name, attributeType);
+                    Attribute attribute = contentObject.getAttribute(name, attributeDataType);
                     if (attribute instanceof RepeaterAttribute) {
                         RepeaterAttribute repeater = (RepeaterAttribute)attribute;
                         numberOfRows = repeater.getNumberOfRows();
@@ -137,9 +137,9 @@ public class RepeatAttributesTag extends BodyTagSupport {
 
     public void setAttributetype(String attr) {
         if (attr.equalsIgnoreCase("metadata")) {
-            attributeType = AttributeDataType.META_DATA;
+            attributeDataType = AttributeDataType.META_DATA;
         } else {
-            attributeType = AttributeDataType.CONTENT_DATA;
+            attributeDataType = AttributeDataType.CONTENT_DATA;
         }
     }
 }

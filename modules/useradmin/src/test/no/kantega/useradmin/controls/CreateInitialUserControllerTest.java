@@ -1,14 +1,8 @@
 package no.kantega.useradmin.controls;
 
-import org.junit.Test;
-import org.junit.Before;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertNotNull;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.servlet.ModelAndView;
-import no.kantega.useradmin.model.RoleManagementConfiguration;
-import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
+import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.impl.dbuser.password.DbUserPasswordManager;
 import no.kantega.security.api.impl.dbuser.password.MD5Crypt;
 import no.kantega.security.api.impl.dbuser.profile.DbUserProfileManager;
@@ -16,13 +10,18 @@ import no.kantega.security.api.impl.dbuser.profile.DbUserProfileUpdateManager;
 import no.kantega.security.api.impl.dbuser.role.DbUserRoleManager;
 import no.kantega.security.api.impl.dbuser.role.DbUserRoleUpdateManager;
 import no.kantega.security.api.role.DefaultRoleId;
-import no.kantega.security.api.identity.DefaultIdentity;
-import no.kantega.publishing.test.database.HSQLDBDatabaseCreator;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.useradmin.model.ProfileManagementConfiguration;
+import no.kantega.useradmin.model.RoleManagementConfiguration;
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  *

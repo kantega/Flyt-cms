@@ -48,7 +48,7 @@ public class SetVariableTag extends TagSupport {
     private int width  = -1;
     private int maxlen = -1;
     private Content contentObject = null;
-    private int attributeType = AttributeDataType.CONTENT_DATA;
+    private AttributeDataType attributeDataType= AttributeDataType.CONTENT_DATA;
 
     private boolean inheritFromAncestors = false;
 
@@ -107,9 +107,9 @@ public class SetVariableTag extends TagSupport {
 
     public void setAttributetype(String attr) {
         if (attr.equalsIgnoreCase("metadata")) {
-            attributeType = AttributeDataType.META_DATA;
+            attributeDataType = AttributeDataType.META_DATA;
         } else {
-            attributeType = AttributeDataType.CONTENT_DATA;
+            attributeDataType = AttributeDataType.CONTENT_DATA;
         }
     }
 
@@ -122,7 +122,7 @@ public class SetVariableTag extends TagSupport {
             cmd.setName(AttributeTagHelper.getAttributeName(pageContext, attribute, repeater));
             cmd.setProperty(property);
             cmd.setMaxLength(maxlen);
-            cmd.setAttributeType(attributeType);
+            cmd.setAttributeType(attributeDataType);
             cmd.setFormat(format);
             cmd.setWidth(width);
             cmd.setHeight(height);
@@ -157,7 +157,7 @@ public class SetVariableTag extends TagSupport {
         maxlen = -1;
         inheritFromAncestors = false;
         contentObject = null;
-        attributeType = AttributeDataType.CONTENT_DATA;
+        attributeDataType = AttributeDataType.CONTENT_DATA;
 
         return EVAL_PAGE;
     }

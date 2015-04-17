@@ -62,7 +62,7 @@ public abstract class Attribute implements Serializable {
     protected String helpText = null; // Hjelpetekst som vises for brukeren i skjermbilder
     protected String script = null; // Hook for script in editpage
 
-    protected int type = AttributeDataType.CONTENT_DATA;
+    protected AttributeDataType attributeDataType = AttributeDataType.CONTENT_DATA;
 
     protected String value = null;
     protected String regexp = null;
@@ -280,12 +280,12 @@ public abstract class Attribute implements Serializable {
         this.value = value;
     }
 
-    public int getType() {
-        return type;
+    public AttributeDataType getType() {
+        return attributeDataType;
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setType(AttributeDataType attributeDataType) {
+        this.attributeDataType = attributeDataType;
     }
 
     public boolean isCData() {

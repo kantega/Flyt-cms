@@ -31,6 +31,7 @@ import no.kantega.publishing.topicmaps.data.Topic;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+import static no.kantega.publishing.common.data.enums.AttributeDataType.CONTENT_DATA;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -579,11 +580,11 @@ public class Content extends BaseObject {
     }
 
     /**
-     * @param type AttributeDataType.CONTENT_DATA, AttributeDataType.ANY or AttributeDataType.META_DATA
+     * @param attributeDataType AttributeDataType.CONTENT_DATA, AttributeDataType.ANY or AttributeDataType.META_DATA
      * @return Attributes of given type.
      */
-    public List<Attribute> getAttributes(int type) {
-        if (type == AttributeDataType.CONTENT_DATA) {
+    public List<Attribute> getAttributes(AttributeDataType attributeDataType) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             return contentAttributes;
         } else {
             return metaAttributes;
@@ -611,8 +612,8 @@ public class Content extends BaseObject {
     }
 
 
-    public void setAttributes(List<Attribute> attr, int type) {
-        if (type == AttributeDataType.CONTENT_DATA) {
+    public void setAttributes(List<Attribute> attr, AttributeDataType attributeDataType) {
+        if (attributeDataType == CONTENT_DATA) {
             contentAttributes = attr;
         } else {
             metaAttributes = attr;
@@ -624,7 +625,7 @@ public class Content extends BaseObject {
      * @return the String value of the attribute or empty string.
      */
     public String getAttributeValue(String name) {
-        Attribute attr = getAttribute(name, AttributeDataType.CONTENT_DATA);
+        Attribute attr = getAttribute(name, CONTENT_DATA);
         if (attr != null) {
             String value = attr.getValue();
             if (value == null) {
@@ -648,15 +649,15 @@ public class Content extends BaseObject {
 
     /**
      * @param name the attribute name as specified in the content template xml.
-     * @param type type, either <code>AttributeDataType.CONTENT_DATA</code> or <code>AttributeDataType.META_DATA</code>
+     * @param attributeDataType type, either <code>AttributeDataType.CONTENT_DATA</code> or <code>AttributeDataType.META_DATA</code>
      *             or <code>AttributeDataType.ANY</code>
      * @return the Attribute or null.
      */
-    public Attribute getAttribute(String name, int type) {
+    public Attribute getAttribute(String name, AttributeDataType attributeDataType) {
         if (isBlank(name)) {
             throw new IllegalArgumentException("Name was blank");
         }
-        List<Attribute> list = getAttributeList(name, type);
+        List<Attribute> list = getAttributeList(name, attributeDataType);
 
         if (name.contains("[") && name.contains("].")) {
             name = name.substring(name.indexOf("].") + 2, name.length());
@@ -670,8 +671,8 @@ public class Content extends BaseObject {
         return null;
     }
 
-    private List<Attribute> getAttributeList(String name, int type) {
-        List<Attribute> list = getAttributesByType(type);
+    private List<Attribute> getAttributeList(String name, AttributeDataType attributeDataType) {
+        List<Attribute> list = getAttributesByType(attributeDataType);
 
         if (name.contains("[") && name.contains("].")) {
             String rowStr = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
@@ -694,13 +695,13 @@ public class Content extends BaseObject {
         return list;
     }
 
-    private List<Attribute> getAttributesByType(int type) {
+    private List<Attribute> getAttributesByType(AttributeDataType attributeDataType) {
         List<Attribute> list;
-        switch (type) {
-            case AttributeDataType.CONTENT_DATA:
+        switch (attributeDataType) {
+            case CONTENT_DATA:
                 list = contentAttributes;
                 break;
-            case AttributeDataType.META_DATA:
+            case META_DATA:
                 list = metaAttributes;
                 break;
             default:
@@ -712,22 +713,22 @@ public class Content extends BaseObject {
         return list;
     }
 
-    public void addAttribute(Attribute attr, int type) {
-        Attribute a = getAttribute(attr.getName(), type);
+    public void addAttribute(Attribute attr, AttributeDataType attributeDataType) {
+        Attribute a = getAttribute(attr.getName(), attributeDataType);
         if (a != null) {
             throw new IllegalArgumentException("Attribute " + attr.getName() + " already exists for content with id: " + getId());
         }
 
-        if (type == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             contentAttributes.add(attr);
         } else {
             metaAttributes.add(attr);
         }
     }
 
-    public void removeAttribute(String name, int type) {
+    public void removeAttribute(String name, AttributeDataType attributeDataType) {
         List list;
-        if (type == AttributeDataType.CONTENT_DATA) {
+        if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             list = contentAttributes;
         } else {
             list = metaAttributes;
@@ -945,8 +946,8 @@ public class Content extends BaseObject {
         this.hearing = hearing;
     }
 
-    public void doForEachAttribute(int attributeType, AttributeHandler handler) {
-        List<Attribute> attributes = getAttributes(attributeType);
+    public void doForEachAttribute(AttributeDataType attributeDataType, AttributeHandler handler) {
+        List<Attribute> attributes = getAttributes(attributeDataType);
         for (Attribute attribute : attributes) {
             doForAttribute(handler, attribute);
         }

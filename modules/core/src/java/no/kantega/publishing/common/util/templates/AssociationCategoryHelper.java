@@ -16,11 +16,10 @@
 
 package no.kantega.publishing.common.util.templates;
 
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.exception.ChildContentNotAllowedException;
-import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 
 import java.util.ArrayList;
 import java.util.List;

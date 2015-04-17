@@ -18,7 +18,9 @@ package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.client.util.ValidationErrors;
 
-import java.text.*;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.Collections;
 import java.util.Locale;
 

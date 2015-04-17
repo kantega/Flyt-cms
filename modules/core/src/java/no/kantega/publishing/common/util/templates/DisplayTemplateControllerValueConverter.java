@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.common.util.templates;
 
-import no.kantega.publishing.common.data.DisplayTemplateControllerId;
 import com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;
+import no.kantega.publishing.common.data.DisplayTemplateControllerId;
 
 /**
  * User: Anders Skar, Kantega AS

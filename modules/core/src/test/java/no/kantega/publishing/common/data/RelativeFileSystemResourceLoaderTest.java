@@ -16,15 +16,15 @@
 
 package no.kantega.publishing.common.data;
 
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 import org.springframework.core.io.Resource;
 
 import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 
 /**

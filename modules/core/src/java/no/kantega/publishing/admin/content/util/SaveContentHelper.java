@@ -25,6 +25,7 @@ import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttribute
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
@@ -38,19 +39,19 @@ public class SaveContentHelper {
 
     private HttpServletRequest request = null;
     private Content content = null;
-    private int attributeType = -1;
+    private AttributeDataType attributeDataType= AttributeDataType.getDataTypeAsEnum(-1);
 
-    public SaveContentHelper(HttpServletRequest request, Content content, int attributeType) throws SystemException, InvalidTemplateException, InvalidFileException {
+    public SaveContentHelper(HttpServletRequest request, Content content, AttributeDataType attributeDataType) throws SystemException, InvalidTemplateException, InvalidFileException {
         this.request = request;
         this.content = content;
-        this.attributeType = attributeType;
+        this.attributeDataType= attributeDataType;
     }
 
 
     public ValidationErrors getHttpParameters(final ValidationErrors errors){
         final RequestParameters param = new RequestParameters(request, "utf-8");
 
-        content.doForEachAttribute(attributeType, new AttributeHandler() {
+        content.doForEachAttribute(attributeDataType, new AttributeHandler() {
 
             public void handleAttribute(Attribute attr) {
                 if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {

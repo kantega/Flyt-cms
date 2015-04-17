@@ -16,12 +16,6 @@
 
 package no.kantega.publishing.common.data;
 
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.ContentType;
-
-import java.util.List;
-import java.util.Date;
-
 public class HearingInvitee {
 
     private int id = -1;
