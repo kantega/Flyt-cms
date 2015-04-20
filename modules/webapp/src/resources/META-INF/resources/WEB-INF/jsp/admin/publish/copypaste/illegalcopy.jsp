@@ -31,7 +31,7 @@
 </kantega:section>
 <kantega:section id="body">
     <p>
-        <kantega:label key="aksess.copypaste.illegalparenttemplate"/>
+        <kantega:label key="${message}"/>
     </p>
 
 

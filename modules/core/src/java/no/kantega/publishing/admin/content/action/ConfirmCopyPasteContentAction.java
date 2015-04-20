@@ -47,13 +47,30 @@ import java.util.*;
 /**
  * Action Controller for confirming a copy paste operation
  */
+
+
 public class ConfirmCopyPasteContentAction implements Controller {
+    private enum CopyLegal{
+        OK("ok"),
+        MULTIPLENOTALLOWED("aksess.copypaste.multipleusagenotallowed"),
+        ILLEGALPARENT("aksess.copypaste.illegalparenttemplate");
+        private final String description;
+        private CopyLegal(String description){
+            this.description = description;
+        }
+        public boolean equalsDescription(String otherDescription){
+            return(description == null) ? false:description.equals(otherDescription);
+        }
+        public String toString(){
+            return description;
+        }
+    }
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private TemplateConfigurationCache templateConfigurationCache;
     private String errorView;
     private String view;
-    private String illegalParentTemplateView;
+    private String illegalCopyView;
 
 
     @Autowired
@@ -91,11 +108,12 @@ public class ConfirmCopyPasteContentAction implements Controller {
         Content selectedContent = (Content)clipboard.getItems().get(0);
         
         int selectedPageAssociationId = selectedContent.getAssociation().getId();
-
-        //check if new Parent page allows copied page template
-        if(!copyIsAllowed(selectedPageAssociationId, cms, newParentCid.getAssociationId())){
+        //method returns an empty string if copy is allowed, otherwise it returns a message explaining what is wrong.
+        CopyLegal copyIsAllowedResult = copyIsAllowed(selectedContent, cms, newParentCid.getAssociationId());
+        if(copyIsAllowedResult != CopyLegal.OK){
             clipboard.empty();
-            return new ModelAndView(illegalParentTemplateView, Collections.<String,Object>emptyMap());
+            model.put("message",copyIsAllowedResult.toString());
+            return new ModelAndView(illegalCopyView, model);
         }
 
         String selectedContentTitle = selectedContent.getTitle();
@@ -179,13 +197,17 @@ public class ConfirmCopyPasteContentAction implements Controller {
         }
     }
 
-    private boolean copyIsAllowed(int selectedPageAssociationId, ContentManagementService cms, int newParentAssociationId) throws Exception{
-        ContentIdentifier cidContentToBeCopied = ContentIdentifier.fromAssociationId(selectedPageAssociationId);
-        Content contentToBeCopied = cms.getContent(cidContentToBeCopied);
+
+    private CopyLegal copyIsAllowed(Content selectedContent, ContentManagementService cms, int newParentAssociationId) throws Exception{
         ContentIdentifier cidNewParent = ContentIdentifier.fromAssociationId(newParentAssociationId);
         Content newParentContent = cms.getContent(cidNewParent);
         Association parent = cms.getAssociationById(newParentAssociationId);
 
+        DisplayTemplate selectedContentDisplayTemplate =  cms.getDisplayTemplate(selectedContent.getDisplayTemplateId());
+        if(!selectedContentDisplayTemplate.allowMultipleUsages()){
+            return CopyLegal.MULTIPLENOTALLOWED;
+        }
+            //check if new Parent page allows copied page template
         List allowedNewParentTemplates = cms.getAllowedChildTemplates(parent.getSiteId(), newParentContent.getContentTemplateId());
 
         for (Object allowedNewParentTemplate : allowedNewParentTemplates) {
@@ -195,11 +217,11 @@ public class ConfirmCopyPasteContentAction implements Controller {
             } else if (allowedNewParentTemplate instanceof DisplayTemplate) {
                 allowedContentTemplate = ((DisplayTemplate) allowedNewParentTemplate).getContentTemplate();
             }
-            if (allowedContentTemplate != null && allowedContentTemplate.getId() == contentToBeCopied.getContentTemplateId()) {
-                return true;
+            if (allowedContentTemplate != null && allowedContentTemplate.getId() == selectedContent.getContentTemplateId()) {
+                return CopyLegal.OK;
             }
         }
-        return false;
+        return CopyLegal.ILLEGALPARENT;
 
     }
 
@@ -235,7 +257,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
         this.view = view;
     }
 
-    public void setIllegalParentTemplateView(String illegalParentTemplateView) {
-        this.illegalParentTemplateView = illegalParentTemplateView;
+    public void setIllegalCopyView(String illegalCopyView) {
+        this.illegalCopyView = illegalCopyView;
     }
 }
