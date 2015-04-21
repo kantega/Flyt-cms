@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.cache;
 
+import com.google.common.collect.Maps;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import org.slf4j.Logger;
@@ -29,26 +30,23 @@ import java.util.Map;
 public class DisplayTemplateCache {
     private static final Logger log = LoggerFactory.getLogger(DisplayTemplateCache.class);
 
-    private static final HashMap<Integer, DisplayTemplate> displaytemplates = new HashMap<Integer, DisplayTemplate>();
+    private static Map<Integer, DisplayTemplate> displaytemplates = new HashMap<>();
     private static Date lastUpdate = null;
 
     public static DisplayTemplate getTemplateById(int id) throws SystemException {
-        if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
+        if (shouldUpdate()) {
             reloadCache();
         }
-        synchronized (displaytemplates) {
-            return displaytemplates.get(id);
-        }
+        return displaytemplates.get(id);
     }
 
     public static DisplayTemplate getTemplateByPublicId(String id) {
-        if (lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime()) {
+        if (shouldUpdate()) {
             reloadCache();
         }
-        
-        for (Object o : displaytemplates.entrySet()) {
-            Map.Entry entry = (Map.Entry) o;
-            DisplayTemplate template = (DisplayTemplate) entry.getValue();
+
+        for (Map.Entry<Integer, DisplayTemplate> entry : displaytemplates.entrySet()) {
+            DisplayTemplate template = entry.getValue();
             if (id != null && id.equalsIgnoreCase(template.getPublicId())) {
                 return template;
             }
@@ -56,19 +54,20 @@ public class DisplayTemplateCache {
         return null;
     }
 
+    private static boolean shouldUpdate() {
+        return lastUpdate == null || TemplateConfigurationCache.getInstance().getLastUpdate().getTime() > lastUpdate.getTime();
+    }
+
     public static synchronized void reloadCache() throws SystemException {
         log.debug( "Loading cache");
 
-        List dtlist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates();
-
-        synchronized (displaytemplates) {
-            lastUpdate  = new Date();
-            displaytemplates.clear();
-            for (int i = 0; i < dtlist.size(); i++) {
-                DisplayTemplate template = (DisplayTemplate)dtlist.get(i);
-                displaytemplates.put(template.getId(), template);
-            }
+        List<DisplayTemplate> dtlist = TemplateConfigurationCache.getInstance().getTemplateConfiguration().getDisplayTemplates();
+        Map<Integer, DisplayTemplate> newdisplaytemplates = Maps.newHashMapWithExpectedSize(dtlist.size());
+        lastUpdate  = new Date();
+        for (DisplayTemplate template : dtlist) {
+            newdisplaytemplates.put(template.getId(), template);
         }
+        displaytemplates = newdisplaytemplates;
     }
 
     public static List<DisplayTemplate> getTemplates() throws SystemException {
