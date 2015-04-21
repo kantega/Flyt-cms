@@ -22,7 +22,6 @@ import no.kantega.publishing.api.model.Site;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  *
