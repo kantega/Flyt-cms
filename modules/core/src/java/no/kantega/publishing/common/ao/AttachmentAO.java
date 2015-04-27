@@ -34,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class AttachmentAO {
+public class AttachmentAO{
 
     private static final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
     private static ContentIdHelper contentIdHelper;
