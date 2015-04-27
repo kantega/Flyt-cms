@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateListAttributeFromRequestBehaviour;
 import no.kantega.publishing.api.content.Language;
@@ -100,13 +99,12 @@ public class ListAttribute extends Attribute {
         if (!getOptions().isEmpty()) {
             return getOptions();
         } else if (!getKey().isEmpty()) {
-            List<ListOption> listOptions = EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant);
-            if (!isSomeSelected(listOptions)) {
-                Locale locale = Language.getLanguageAsLocale(language);
-                ListOption listOption = new ListOption();
-                listOption.setText(LocaleLabels.getLabel("aksess.list.ingen", locale));
-                listOptions.add(0, listOption);
+            List<ListOption> listOptions = new ArrayList<>();
+            if (!multiple) {
+                ListOption emptyOption = new ListOption();
+                listOptions.add(emptyOption);
             }
+            listOptions.addAll(EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant));
             return listOptions;
         } else {
             return Collections.emptyList();
