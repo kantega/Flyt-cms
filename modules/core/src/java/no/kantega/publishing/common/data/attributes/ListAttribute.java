@@ -33,7 +33,6 @@ import org.w3c.dom.NodeList;
 import javax.xml.transform.TransformerException;
 import java.util.*;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
@@ -133,39 +132,4 @@ public class ListAttribute extends Attribute {
         return key;
     }
 
-    private boolean isSomeSelected(List<ListOption> listOptions) {
-        String value = this.getValue();
-        boolean someSelected = false;
-        for (ListOption option : listOptions) {
-            if (isSelected(option, value)) {
-                someSelected = true;
-            }
-        }
-        return someSelected;
-    }
-
-    private boolean isSelected(ListOption option, String value) {
-        String optText = option.getText();
-        String optVal  = option.getValue();
-        if (isBlank(optVal)) {
-            optVal = optText;
-        }
-
-        boolean selected = false;
-        if ((isBlank(value)) && (option.isDefaultSelected())) {
-            selected = true;
-        } else {
-            if (value != null) {
-                String[] values = value.split(",");
-                for (String v : values) {
-                    if (v.equalsIgnoreCase(optVal)) {
-                        selected = true;
-                        break;
-                    }
-                }
-            }
-        }
-
-        return selected;
-    }
 }
