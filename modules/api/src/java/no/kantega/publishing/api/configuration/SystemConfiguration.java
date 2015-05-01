@@ -20,24 +20,24 @@ import java.util.Locale;
 
 public interface SystemConfiguration {
 
-    public String getString(String name);
+    String getString(String name);
 
-    public String getString(String name, String defaultValue);
+    String getString(String name, String defaultValue);
 
-    public String[] getStrings(String name);
+    String[] getStrings(String name);
 
-    public String[] getStrings(String name, String defaultValue);
+    String[] getStrings(String name, String defaultValue);
 
-    public boolean getBoolean(String name, boolean defaultValue);
+    boolean getBoolean(String name, boolean defaultValue);
 
-    public long getLong(String name, long defaultValue);
+    long getLong(String name, long defaultValue);
 
-    public int getInt(String name, int defaultValue);
+    int getInt(String name, int defaultValue);
 
-    public Locale getDefaultAdminLocale();
+    Locale getDefaultAdminLocale();
 
-    public String getDefaultDateFormat();
+    String getDefaultDateFormat();
 
-    public String getDefaultDatetimeFormat();
+    String getDefaultDatetimeFormat();
 
 }

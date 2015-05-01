@@ -303,6 +303,7 @@
 
     <bean class="no.kantega.publishing.jobs.contentstate.ContentStateUpdater"/>
 
+    <bean class="no.kantega.publishing.modules.mailsender.MailSenderLegacyImpl"/>
 
 
     <beans profile="useCaching">

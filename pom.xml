@@ -129,6 +129,19 @@
             </dependency>
 
             <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>javax.mail-api</artifactId>
+                <version>${javax.mail-api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.mail</groupId>
+                <artifactId>mail</artifactId>
+                <version>${mail.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
                 <version>${springframework.version}</version>
@@ -284,7 +297,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.28</version>
+                    <version>1.29</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -344,6 +357,8 @@
         <velocity.version>1.7</velocity.version>
         <velocity-tools.version>2.0</velocity-tools.version>
         <junit.version>4.12</junit.version>
+        <javax.mail-api.version>1.5.2</javax.mail-api.version>
+        <mail.version>1.4.7</mail.version>
     </properties>
 
     <profiles>
