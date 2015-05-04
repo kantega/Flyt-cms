@@ -21,19 +21,6 @@
   ~ limitations under the License.
   --%>
 
-<kantega:section id="head">
-    <script src="<kantega:expireurl url="/admin/js/linkcheck.js"/>"></script>
-    <script>
-        $(document).ready(function () {
-            var btn = $('#thisPageBtn');
-            btn.click(function (event) {
-                openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
-                openaksess.linkcheck.updateLinkList("title", {thisPageOnly: true});
-            });
-        });
-    </script>
-</kantega:section>
-
 <admin:box>
     <h1>
         <c:choose>
@@ -48,7 +35,10 @@
     <c:if test='${lastChecked != ""}'>
         <p><kantega:label key="aksess.linkcheck.lastChecked"/>: ${lastChecked}</p>
     </c:if>
+    <input id="updatePageBtn" type="button" class="ui-button" value="<kantega:label key="aksess.linkcheck.updateList"/>">
+
     <input id="thisPageBtn" type="button" class="ui-button" value="<kantega:label key="aksess.linkcheck.onlyThisPage"/>">
+
     <c:choose>
         <c:when test="${not empty brokenLinks}">
             <table class="fullWidth">
@@ -144,4 +134,20 @@
             </div>
         </c:otherwise>
     </c:choose>
+    <script>
+        $(document).ready(function () {
+            var btn = $('#thisPageBtn');
+            btn.click(function (event) {
+                openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
+                openaksess.linkcheck.updateLinkList("title", {thisPageOnly: true});
+            });
+        });
+        $(document).ready(function () {
+            var btn = $('#updatePageBtn');
+            btn.click(function (event) {
+                openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
+                openaksess.linkcheck.updateLinkList("title", {thisPageOnly: false});
+            });
+        });
+    </script>
 </admin:box>

@@ -4,7 +4,7 @@ import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import java.util.Date;
 
-public class NotCheckedSinceTerm {
+public class NotCheckedSinceTerm implements LinkQueryGenerator {
     private final Date notCheckedSince;
     private final int maxLinksPerDay;
     private final String driver;
@@ -15,7 +15,7 @@ public class NotCheckedSinceTerm {
         driver = dbConnectionFactory.getDriverName();
 
     }
-
+    @Override
     public Date getNotCheckedSince() {
         return notCheckedSince;
     }
@@ -24,6 +24,7 @@ public class NotCheckedSinceTerm {
         return maxLinksPerDay;
     }
 
+    @Override
     public String getQuery() {
         StringBuilder query = new StringBuilder();
         if (driver.contains("jtds")) {

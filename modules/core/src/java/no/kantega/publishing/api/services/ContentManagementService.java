@@ -1,3 +1,4 @@
+
 package no.kantega.publishing.api.services;
 
 import no.kantega.commons.exception.NotAuthorizedException;

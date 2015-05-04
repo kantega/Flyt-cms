@@ -15,8 +15,10 @@
  */
 
 package no.kantega.publishing.admin.content.action;
+
 /**
  *
  */
 public class LinkCheckAction extends NavigateController {
+
 }
