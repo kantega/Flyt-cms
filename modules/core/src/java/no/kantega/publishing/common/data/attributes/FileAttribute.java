@@ -50,7 +50,7 @@ public class FileAttribute extends Attribute {
                 || AttributeProperty.HTML.equalsIgnoreCase(property)
                 || AttributeProperty.URL.equalsIgnoreCase(property)) {
             try {
-                Attachment attachment = RootContext.getInstance().getBean("attachmentAOImpl", AttachmentAOImpl.class).getAttachment(Integer.parseInt(value));
+                Attachment attachment = RootContext.getInstance().getBean(AttachmentAOImpl.class).getAttachment(Integer.parseInt(value));
 
                 if (attachment == null) {
                     return "";

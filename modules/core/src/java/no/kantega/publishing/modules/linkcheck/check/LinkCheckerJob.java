@@ -255,7 +255,7 @@ public class LinkCheckerJob implements InitializingBean {
         try {
             int i = Integer.parseInt(idPart);
             try {
-                Attachment attachment = RootContext.getInstance().getBean("attachmentAOImpl", AttachmentAOImpl.class).getAttachment(i);
+                Attachment attachment = RootContext.getInstance().getBean(AttachmentAOImpl.class).getAttachment(i);
 
                 if(attachment != null) {
                     occurrence.setStatus(CheckStatus.OK);
