@@ -93,7 +93,6 @@ public class LinkEmitter {
             log.error("Excteption getting  content for link checking", e);
         }
     }
-    //TESTING
     public void emittLinksForContent(final LinkHandler handler, Content content){
         ContentHandler contentHandler = new ContentHandler() {
             @Override

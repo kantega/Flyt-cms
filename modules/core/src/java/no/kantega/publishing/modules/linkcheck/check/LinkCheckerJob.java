@@ -138,7 +138,7 @@ public class LinkCheckerJob implements InitializingBean {
         log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
 
     }
-    public void executeForCurrentURL(int contentId){
+    public void executeForContent(int contentId){
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
@@ -149,12 +149,9 @@ public class LinkCheckerJob implements InitializingBean {
         if(!Aksess.isLinkCheckerEnabled()) {
             return;
         }
-        Date week = new Date(System.currentTimeMillis() - 1000*60*60*24*7);
-
-
-        CurrentURLLinkQueryGenerator currentURLLinkQueryGenerator = new CurrentURLLinkQueryGenerator(week, contentId);
+        ContentLinkQueryGenerator contentLinkQueryGenerator = new ContentLinkQueryGenerator(contentId);
         try (CloseableHttpClient client = getHttpClient()){
-            linkDao.doForEachLink(currentURLLinkQueryGenerator , new LinkHandler() {
+            linkDao.doForEachLink(contentLinkQueryGenerator, new LinkHandler() {
 
                 public void handleLink(int id, String link, LinkOccurrence occurrence) {
                     if(link.contains(Aksess.VAR_WEB)) {

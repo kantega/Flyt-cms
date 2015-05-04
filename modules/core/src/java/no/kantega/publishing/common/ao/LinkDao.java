@@ -43,7 +43,7 @@ public interface LinkDao {
      * @param emitter
      * @param content
      */
-    public void saveLink(LinkEmitter emitter,Content content);
+    public void saveLinksForContent(LinkEmitter emitter, Content content);
 
     /**
      *

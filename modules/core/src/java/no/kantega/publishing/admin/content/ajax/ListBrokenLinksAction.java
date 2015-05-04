@@ -73,8 +73,8 @@ public class ListBrokenLinksAction extends SimpleAdminController {
 
                 if (thisPageOnly) {
                     no.kantega.publishing.common.service.ContentManagementService cms = new no.kantega.publishing.common.service.ContentManagementService(request);
-                    linkDao.saveLink(emitter,cms.getContent(cid,false));
-                    checker.executeForCurrentURL(cid.getContentId());
+                    linkDao.saveLinksForContent(emitter, cms.getContent(cid, false));
+                    checker.executeForContent(cid.getContentId());
                     brokenLinks = linkDao.getBrokenLinksforContentId(cid.getContentId());
                 } else {
                     brokenLinks = linkDao.getBrokenLinksUnderParent(cid, sort);

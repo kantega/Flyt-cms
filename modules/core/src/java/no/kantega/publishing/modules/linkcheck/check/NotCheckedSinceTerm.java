@@ -15,7 +15,6 @@ public class NotCheckedSinceTerm implements LinkQueryGenerator {
         driver = dbConnectionFactory.getDriverName();
 
     }
-    @Override
     public Date getNotCheckedSince() {
         return notCheckedSince;
     }

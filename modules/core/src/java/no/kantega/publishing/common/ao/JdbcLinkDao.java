@@ -105,8 +105,8 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         });
     }
     @Override
-    public void saveLink(final LinkEmitter emitter,final Content content) {
-        log.debug("Saving one link");
+    public void saveLinksForContent(final LinkEmitter emitter, final Content content) {
+        log.debug("Saving link for content" + content.getId());
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
 
@@ -156,18 +156,14 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     @Override
     public void doForEachLink(final LinkQueryGenerator linkQueryGenerator, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
         final String query = linkQueryGenerator.getQuery();
-
         log.debug( "query={}", query);
-
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
                 try(PreparedStatement p = connection.prepareStatement(query);
                 PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?")) {
-
                     if(linkQueryGenerator instanceof NotCheckedSinceTerm){
-                        p.setDate(1, new java.sql.Date(linkQueryGenerator.getNotCheckedSince().getTime()));
+                        p.setDate(1, new java.sql.Date(((NotCheckedSinceTerm)linkQueryGenerator).getNotCheckedSince().getTime()));
                     }
-
                     try(ResultSet rs = p.executeQuery()) {
                         while (rs.next()) {
                             int id = rs.getInt("Id");
@@ -175,7 +171,6 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                             log.debug("Checking url {}", url);
                             LinkOccurrence occurrence = new LinkOccurrence();
                             handler.handleLink(id, url, occurrence);
-
                             if (occurrence.getStatus() != null) {
                                 updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
                                 updateStatement.setInt(2, occurrence.getStatus().intValue);
