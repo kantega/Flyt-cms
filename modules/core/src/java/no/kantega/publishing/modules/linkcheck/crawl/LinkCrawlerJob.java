@@ -48,7 +48,6 @@ public class LinkCrawlerJob {
         linkDao.saveAllLinks(emitter);
         log.info("Saved all links");
         checker.execute();
-
         log.info("Execution of LinkCrawlerJob finished");
     }
 

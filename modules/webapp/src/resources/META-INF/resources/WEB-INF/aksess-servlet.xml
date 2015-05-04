@@ -483,6 +483,7 @@
     </bean>
     <bean id="ListBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.ListBrokenLinksAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/listbrokenlinks.jsp"/>
+        <property name="checker" ref="linkCheckJob"/>
     </bean>
     <bean id="CountBrokenLinksAction" class="no.kantega.publishing.admin.content.ajax.CountBrokenLinksAction"/>
 

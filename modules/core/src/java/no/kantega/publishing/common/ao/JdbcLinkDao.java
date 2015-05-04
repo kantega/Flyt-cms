@@ -21,6 +21,7 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.modules.linkcheck.check.CheckStatus;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
 import no.kantega.publishing.modules.linkcheck.check.NotCheckedSinceTerm;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 import org.slf4j.Logger;
@@ -103,22 +104,66 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
             }
         });
     }
+    @Override
+    public void saveLinksForContent(final LinkEmitter emitter, final Content content) {
+        log.debug("Saving link for content" + content.getId());
+        getJdbcTemplate().execute(new ConnectionCallback() {
+            public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
+
+                try (final PreparedStatement checkLinkStatement = connection.prepareStatement("SELECT Id from link where url=?");
+
+                     final PreparedStatement checkOccurrenceStatementAttribute = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName=?");
+
+                     final PreparedStatement checkOccurrenceStatement = connection.prepareStatement("SELECT Id from linkoccurrence where linkId=? AND ContentId=? AND AttributeName IS NULL");
+
+                     final PreparedStatement insLinkStatement = connection.prepareStatement("INSERT INTO link (url, firstfound, timeschecked) VALUES (?,?,0)", new String[]{"Id"});
+
+                     final PreparedStatement insOccurrenceStatement = connection.prepareStatement("INSERT into linkoccurrence (LinkId, ContentId, AttributeName) VALUES (?, ?, ?) ")) {
 
 
+                    emitter.emittLinksForContent(new no.kantega.publishing.modules.linkcheck.crawl.LinkHandler() {
+                        public void contentLinkFound(Content content, String link) {
+                            log.debug("Contentlink found {}", link);
+                            try {
+                                int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
+
+                                checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatement, insOccurrenceStatement, null);
+
+                            } catch (SQLException e) {
+                                log.error("Error inserting link occurrence", e);
+                            }
+                        }
+
+                        public void attributeLinkFound(Content content, String link, String attributeName) {
+                            log.debug("Attributelink for {} found {}", attributeName, link);
+                            try {
+                                int linkId = checkLinkInserted(link, checkLinkStatement, insLinkStatement);
+                                checkLinkOccurrenceInserted(linkId, content, checkOccurrenceStatementAttribute, insOccurrenceStatement, attributeName);
+
+                            } catch (SQLException e) {
+                                log.error("Error inserting link occurrence", e);
+                            }
+                        }
+                    }, content);
+                    log.info("Done emitting links");
+                    return null;
+                }
+            }
+        });
+    }
     /**
-     * @see no.kantega.publishing.common.ao.LinkDao#doForEachLink(NotCheckedSinceTerm, no.kantega.publishing.modules.linkcheck.check.LinkHandler)
      */
     @Override
-    public void doForEachLink(final NotCheckedSinceTerm term, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
-        final String query = term.getQuery();
-
+    public void doForEachLink(final LinkQueryGenerator linkQueryGenerator, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
+        final String query = linkQueryGenerator.getQuery();
         log.debug( "query={}", query);
-
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
                 try(PreparedStatement p = connection.prepareStatement(query);
                 PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?")) {
-                    p.setDate(1, new java.sql.Date(term.getNotCheckedSince().getTime()));
+                    if(linkQueryGenerator instanceof NotCheckedSinceTerm){
+                        p.setDate(1, new java.sql.Date(((NotCheckedSinceTerm)linkQueryGenerator).getNotCheckedSince().getTime()));
+                    }
                     try(ResultSet rs = p.executeQuery()) {
                         while (rs.next()) {
                             int id = rs.getInt("Id");
@@ -126,7 +171,6 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
                             log.debug("Checking url {}", url);
                             LinkOccurrence occurrence = new LinkOccurrence();
                             handler.handleLink(id, url, occurrence);
-
                             if (occurrence.getStatus() != null) {
                                 updateStatement.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
                                 updateStatement.setInt(2, occurrence.getStatus().intValue);

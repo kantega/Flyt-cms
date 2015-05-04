@@ -51,7 +51,6 @@ public class LinkEmitter {
     }
 
     public void emittLinks(final LinkHandler handler) {
-
         try {
             final Counter contentCount = new Counter();
             final Counter contentLinkCount = new Counter();
@@ -93,7 +92,36 @@ public class LinkEmitter {
         } catch (SystemException e) {
             log.error("Excteption getting  content for link checking", e);
         }
+    }
+    public void emittLinksForContent(final LinkHandler handler, Content content){
+        ContentHandler contentHandler = new ContentHandler() {
+            @Override
+            public void handleContent(Content content) {
+                linkDao.deleteLinksForContentId(content.getId());
 
+                try{
+                    linkExtractor.extractLinks(content, new LinkHandler() {
+                        public void contentLinkFound(Content content, String link) {
+                            if(isValidLink(link)) {
+                                log.debug("Extracted {} from content with id {}", link, content.getId());
+                                handler.contentLinkFound(content, link);
+                            }
+                        }
+
+                        public void attributeLinkFound(Content content, String link, String attributeName) {
+                            if(isValidLink(link)) {
+                                log.debug("Extracted {} from attribute {}", link, attributeName);
+                                handler.attributeLinkFound(content,  link, attributeName);
+                            }
+                        }
+
+                    });
+                }catch (SystemException e){
+                    log.error("Error extracting links from content "+content.getId() + " [" + content.getTitle() + "].",e);
+                }
+            }
+        };
+        contentHandler.handleContent(content);
     }
     private boolean isValidLink(String link) {
         return link.startsWith("http") || link.startsWith(Aksess.VAR_WEB);

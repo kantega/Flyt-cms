@@ -22,6 +22,7 @@
     <kantega:label key="aksess.linkcheck.title" pageTitle="${currentNavigateContent.title}"/>
 </kantega:section>
 
+
 <kantega:section id="contentclass">linkCheck</kantega:section>
 
 <kantega:section id="head extras">

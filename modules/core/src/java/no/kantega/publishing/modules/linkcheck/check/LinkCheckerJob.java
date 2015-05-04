@@ -121,11 +121,11 @@ public class LinkCheckerJob implements InitializingBean {
             linkDao.doForEachLink(term, new LinkHandler() {
 
                 public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                    if(link.contains(Aksess.VAR_WEB)) {
+                    if (link.contains(Aksess.VAR_WEB)) {
                         // in case something has been saved with http://<@WEB@>
                         String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
                         checkInternalLink(substring, occurrence, client);
-                    } else if(link.startsWith("http")) {
+                    } else if (link.startsWith("http")) {
                         checkRemoteUrl(link, occurrence, client);
                     }
 
@@ -137,6 +137,35 @@ public class LinkCheckerJob implements InitializingBean {
         }
         log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
 
+    }
+    public void executeForContent(int contentId){
+        if (Aksess.getServerType() == ServerType.SLAVE) {
+            log.info( "Job is disabled for server type slave");
+            return;
+        } else {
+            log.info("Started LinkCheckerJob");
+        }
+
+        if(!Aksess.isLinkCheckerEnabled()) {
+            return;
+        }
+        ContentLinkQueryGenerator contentLinkQueryGenerator = new ContentLinkQueryGenerator(contentId);
+        try (CloseableHttpClient client = getHttpClient()){
+            linkDao.doForEachLink(contentLinkQueryGenerator, new LinkHandler() {
+
+                public void handleLink(int id, String link, LinkOccurrence occurrence) {
+                    if(link.contains(Aksess.VAR_WEB)) {
+                        // in case something has been saved with http://<@WEB@>
+                        String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
+                        checkInternalLink(substring, occurrence, client);
+                    } else if(link.startsWith("http")) {
+                        checkRemoteUrl(link, occurrence, client);
+                    }
+                }
+            });
+        } catch (IOException e) {
+            log.error("Error with HttpClient", e);
+        }
     }
 
     private CloseableHttpClient getHttpClient() {
