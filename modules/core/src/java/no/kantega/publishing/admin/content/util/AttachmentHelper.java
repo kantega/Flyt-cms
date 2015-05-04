@@ -16,16 +16,20 @@ package no.kantega.publishing.admin.content.util;
  * limitations under the License.
  */
 
-import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.api.attachment.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.FileAttribute;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public class AttachmentHelper {
+    private static AttachmentAO attachmentAO;
     public static void saveFileAsContentAttachment(Content content, FileAttribute fileAttribute, MultipartFile importFile) throws IOException {
+        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         int oldId = -1;
         try {
             oldId = Integer.parseInt(fileAttribute.getValue());
@@ -50,7 +54,7 @@ public class AttachmentHelper {
         attachment.setData(data);
         attachment.setSize(data.length);
 
-        fileAttribute.setValue(String.valueOf(AttachmentAO.setAttachment(attachment)));
+        fileAttribute.setValue(String.valueOf(attachmentAO.setAttachment(attachment)));
 
         attachment.setData(null);
 

@@ -297,6 +297,11 @@
         <property name="multimediaDao" ref="aksessMultimediaDao"/>
     </bean>
 
+    <bean class="no.kantega.publishing.api.attachment.ao.AttachmentAOImpl">
+        <property name="contentIdHelper" ref="contentIdHelper"/>
+        <property name="contentNotifier" ref="contentListenerNotifier"/>
+    </bean>
+
     <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>

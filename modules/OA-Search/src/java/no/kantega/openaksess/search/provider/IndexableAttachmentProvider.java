@@ -1,7 +1,7 @@
 package no.kantega.openaksess.search.provider;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
-import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.ProgressReporter;
@@ -30,6 +30,9 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     @Autowired
     private AttachmentTransformer transformer;
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     private ProgressReporter progressReporter;
 
@@ -63,7 +66,7 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
 
     private void provideDocument(BlockingQueue<IndexableDocument> indexableDocumentQueue, int id) throws InterruptedException {
         try {
-            Attachment attachment = AttachmentAO.getAttachment(id);
+            Attachment attachment = attachmentAO.getAttachment(id);
             if (attachment != null) {
                 IndexableDocument indexableDocument = transformer.transform(attachment);
                 log.info("Transformed Attachment {}", attachment.getFilename());

@@ -2,9 +2,9 @@ package no.kantega.openaksess.search.index.update;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.AssociationAO;
-import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
@@ -30,6 +30,9 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
     @Autowired
     private ContentAO contentAO;
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     @Autowired
     private DocumentIndexer documentIndexer;
@@ -62,6 +65,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
 
     @Override
     public void contentDeleted(ContentEvent event) {
+
         try {
             Content content = event.getContent();
             List<String> uids = new ArrayList<>();
@@ -72,7 +76,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
                 }
             }
 
-            for (Attachment attachment : AttachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
+            for (Attachment attachment : attachmentAO.getAttachmentList(event.getContent().getContentIdentifier())) {
                 uids.add(attachmentTransformer.generateUniqueID(attachment));
             }
 

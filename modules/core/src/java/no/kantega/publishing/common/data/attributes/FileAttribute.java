@@ -23,10 +23,11 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistFileAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateFileAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.api.attachment.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
+import no.kantega.publishing.spring.RootContext;
 import org.w3c.dom.Element;
 
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class FileAttribute extends Attribute {
                 || AttributeProperty.HTML.equalsIgnoreCase(property)
                 || AttributeProperty.URL.equalsIgnoreCase(property)) {
             try {
-                Attachment attachment = AttachmentAO.getAttachment(Integer.parseInt(value));
+                Attachment attachment = RootContext.getInstance().getBean("attachmentAOImpl", AttachmentAOImpl.class).getAttachment(Integer.parseInt(value));
 
                 if (attachment == null) {
                     return "";

@@ -18,6 +18,7 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.AssociationIdListComparator;
@@ -65,6 +66,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Autowired
     private TopicDao topicDao;
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) {
@@ -567,7 +571,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Override
     public Content checkInContent(Content content, ContentStatus newStatus) throws SystemException {
-
         Connection c = null;
 
         try {
@@ -627,7 +630,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 for (Attachment a : attachments) {
                     if (a.getContentId() == -1) {
                         a.setContentId(content.getId());
-                        AttachmentAO.setAttachment(a);
+                        attachmentAO.setAttachment(a);
                     }
                 }
             }
