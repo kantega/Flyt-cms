@@ -20,83 +20,144 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.XMLFilterImpl;
 
+import java.util.Arrays;
 import java.util.Stack;
 
+import static java.util.Objects.nonNull;
+
 public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
-    private Stack<Boolean> spanTagsStack = new Stack<Boolean>();
 
-    private String parentTag = null;
-    private String parentStyle = null;
-    private String parentClz = null;
+    private Stack<Element> elements = new Stack<Element>();
 
     @Override
-    public void startElement(String string, String tagName, String name, Attributes attributes) throws SAXException {
-        boolean hasRemovedElement = false;
-
-        if (tagName.equalsIgnoreCase("span") && isSameAsParent(tagName, attributes)) {
-            hasRemovedElement = true;
+    public void startElement(String uri, String localName, String qualifiedName, Attributes attributes) throws SAXException {
+        Element startElement = new Element(uri, localName, qualifiedName, attributes);
+        Element parentElement = elements.isEmpty() ? null : elements.peek();
+        elements.push(startElement);
+        if ("span".equalsIgnoreCase(startElement.getLocalName())) {
+            if (nonNull(parentElement) && "span".equalsIgnoreCase(parentElement.getLocalName())) {
+                if (    parentElement.getClassAttribute().equals(startElement.getClassAttribute()) &&
+                        parentElement.getStyleAttribute().equals(startElement.getStyleAttribute())) {
+                    startElement.setIgonore(true);
+                }
+            }
+            if (!startElement.isIgonore()) {
+                startElement(startElement);
+            }
         } else {
-            super.startElement(string, tagName, name, attributes);
+            startElement(startElement);
         }
+    }
 
-        parentTag = tagName;
-        parentClz = attributes.getValue("class");
-        parentStyle = attributes.getValue("style");
-
-        if (tagName.equalsIgnoreCase("span")) {
-            spanTagsStack.push(hasRemovedElement);
-        }
+    private void startElement(Element startElement) throws SAXException {
+        super.startElement(startElement.getUri(), startElement.getLocalName(), startElement.getQualifiedName(), startElement.getAttributes());
     }
 
     @Override
-    public void endElement(String string, String tagName, String name) throws SAXException {
-        boolean hasRemovedElement = false;
+    public void endElement(String uri, String localName, String qualifiedName) throws SAXException {
+        Element endElement = new Element(uri, localName, qualifiedName);
+        if (!elements.isEmpty()) {
+            Element startElement = elements.pop();
+            if ("span".equalsIgnoreCase(endElement.getLocalName())) {
+                if (nonNull(startElement)) {
+                    if (!startElement.isIgonore()) {
+                        endElement(endElement);
+                    }
+                } else {
+                    endElement(endElement);
+                }
 
-        if (tagName.equalsIgnoreCase("span")) {
-            hasRemovedElement = spanTagsStack.pop();
+            } else {
+                endElement(endElement);
+            }
         }
 
-        if(!hasRemovedElement) {
-            super.endElement(string, tagName, name);
-        }
     }
 
-    private boolean isSameAsParent(String tagName, Attributes attributes) {
-        if (!tagName.equalsIgnoreCase(parentTag)) {
-            return false;
-        }
-
-        String clz = attributes.getValue("class");
-        if ((clz == null && parentClz != null) || clz != null && !clz.equalsIgnoreCase(parentClz)) {
-            return false;
-        }
-
-        String style = attributes.getValue("style");
-        if ((style == null && parentStyle != null) || style != null && !style.equalsIgnoreCase(parentStyle)) {
-            return false;
-        }
-
-        return true;
+    private void endElement(Element endElement) throws SAXException {
+        super.endElement(endElement.getUri(), endElement.getLocalName(), endElement.getQualifiedName());
     }
 
-    /*
+    private String join(String[] classes, String separator) {
+        StringBuffer stringBuffer = new StringBuffer();
+        for (int index = 0; index < classes.length; index++) {
+            if (index > 0) {
+                stringBuffer.append(separator);
+            }
+            stringBuffer.append(classes[index]);
+        }
+        return stringBuffer.toString();
+    }
 
-      <p>
-      </p>
+    private class Element {
 
-      <span>
-      <span> - remove
-      <p>
-      <span> - not remove
-      </span> - note remove
-      </p>
-      </span> - remove
-      </span>
+        private String uri;
+        private String localName;
+        private String qualifiedName;
+        private Attributes attributes;
+        private String classAttribute = "";
+        private String styleAttribute = "";
+        private boolean igonore = false;
 
+        public Element(String uri, String localName, String qualifiedName) {
+            this(uri, localName, qualifiedName, null);
+        }
 
+        public Element(String uri, String localName, String qualifiedName, Attributes attributes) {
+            this.uri = uri;
+            this.localName = localName;
+            this.qualifiedName = qualifiedName;
+            this.attributes = attributes;
+            if (nonNull(attributes)) {
+                String value = attributes.getValue("class");
+                if (nonNull(value)) {
+                    value = value.replace("\\s+", " ");
+                    String[] split = value.split(" ");
+                    Arrays.sort(split);
+                    classAttribute = join(split, " ");
+                }
+                value = attributes.getValue("style");
+                if (nonNull(value)) {
+                    value = value.replace("\\s+", " ");
+                    String[] split = value.split(";");
+                    Arrays.sort(split);
+                    styleAttribute = join(split, ";");
+                }
+            }
+        }
 
+        public String getUri() {
+            return uri;
+        }
 
-     */
+        public String getLocalName() {
+            return localName;
+        }
+
+        public String getQualifiedName() {
+            return qualifiedName;
+        }
+
+        public Attributes getAttributes() {
+            return attributes;
+        }
+
+        public String getClassAttribute() {
+            return classAttribute;
+        }
+
+        public String getStyleAttribute() {
+            return styleAttribute;
+        }
+
+        public boolean isIgonore() {
+            return igonore;
+        }
+
+        public void setIgonore(boolean igonore) {
+            this.igonore = igonore;
+        }
+    }
 }
 
 
