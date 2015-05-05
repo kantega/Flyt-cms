@@ -23,8 +23,6 @@ import org.xml.sax.helpers.XMLFilterImpl;
 import java.util.Arrays;
 import java.util.Stack;
 
-import static java.util.Objects.nonNull;
-
 public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
 
     private Stack<Element> elements = new Stack<Element>();
@@ -87,6 +85,10 @@ public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
             stringBuffer.append(classes[index]);
         }
         return stringBuffer.toString();
+    }
+
+    public static boolean nonNull(Object obj) {
+        return obj != null;
     }
 
     private class Element {
