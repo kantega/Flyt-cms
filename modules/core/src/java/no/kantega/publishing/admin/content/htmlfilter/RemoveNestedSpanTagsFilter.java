@@ -22,6 +22,7 @@ import org.xml.sax.helpers.XMLFilterImpl;
 
 import java.util.Arrays;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
 
@@ -77,7 +78,7 @@ public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
     }
 
     private String join(String[] classes, String separator) {
-        StringBuffer stringBuffer = new StringBuffer();
+        StringBuilder stringBuffer = new StringBuilder();
         for (int index = 0; index < classes.length; index++) {
             if (index > 0) {
                 stringBuffer.append(separator);
@@ -91,8 +92,9 @@ public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
         return obj != null;
     }
 
-    private class Element {
+    private final Pattern whiteSpace = Pattern.compile("\\s+");
 
+    private class Element {
         private String uri;
         private String localName;
         private String qualifiedName;
@@ -113,14 +115,14 @@ public class RemoveNestedSpanTagsFilter extends XMLFilterImpl {
             if (nonNull(attributes)) {
                 String value = attributes.getValue("class");
                 if (nonNull(value)) {
-                    value = value.replace("\\s+", " ");
+                    value = whiteSpace.matcher(value).replaceAll(" ");
                     String[] split = value.split(" ");
                     Arrays.sort(split);
                     classAttribute = join(split, " ");
                 }
                 value = attributes.getValue("style");
                 if (nonNull(value)) {
-                    value = value.replace("\\s+", " ");
+                    value = whiteSpace.matcher(value).replaceAll(" ");
                     String[] split = value.split(";");
                     Arrays.sort(split);
                     styleAttribute = join(split, ";");
