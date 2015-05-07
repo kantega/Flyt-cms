@@ -25,8 +25,12 @@
 <kantega:section id="content">
     <script type="text/javascript">
         $(function() {
-            $("#from_date").datepicker();
-            $("#end_date").datepicker();
+            $("#from_date").datepicker({
+                dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+            });
+            $("#end_date").datepicker({
+                dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+            });
         });
     </script>
     <form name="eventlog" action="SearchEventLog.action" method="post" class="inline">

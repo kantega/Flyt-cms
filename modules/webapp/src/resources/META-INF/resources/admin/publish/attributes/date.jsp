@@ -32,7 +32,9 @@
 %>
 <script type="text/javascript">
     $(function() {
-        $("#${fieldName}").datepicker();
+        $("#${fieldName}").datepicker({
+            dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+        });
     });
 </script>
 <div class="inputs">

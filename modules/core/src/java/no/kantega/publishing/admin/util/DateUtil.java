@@ -24,9 +24,6 @@ import java.util.Locale;
 /**
  * Formatterer en dato med SimpleDateFormat pattern til gjeldende språk.
  *
- * Author: Kristian Lier Selnæs, Kantega AS
- * Date: 25.jan.2008
- * Time: 13:48:26
  */
 public class DateUtil {
     private final static long minute = 1000*60;
@@ -56,7 +53,7 @@ public class DateUtil {
         char minute = LocaleLabels.getLabel("aksess.dateformat.character.minute", locale).charAt(0);
         char second = LocaleLabels.getLabel("aksess.dateformat.character.second", locale).charAt(0);
 
-        StringBuffer formatted = new StringBuffer();
+        StringBuilder formatted = new StringBuilder();
         for(int i=0; i < dateFormat.length(); i++ ) {
             char current = dateFormat.charAt(i);
             if (current == 'y') {
@@ -71,7 +68,7 @@ public class DateUtil {
                 formatted.append(minute);
             }else if (current == 's') {
                 formatted.append(second);
-            } else { 
+            } else {
                 formatted.append(current);
             }
         }
@@ -80,7 +77,7 @@ public class DateUtil {
 
     }
 
-    
+
     public static String getAgeAsString(Date date, Locale locale) {
         Date now = new Date();
 
@@ -114,7 +111,7 @@ public class DateUtil {
             return "1 "  + LocaleLabels.getLabel("aksess.dateformat.day", locale);
         } else {
             return days + " "  + LocaleLabels.getLabel("aksess.dateformat.days", locale);
-        }                    
+        }
     }
 
 }
