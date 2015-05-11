@@ -27,9 +27,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 public class AttachmentHelper {
-    private static AttachmentAO attachmentAO;
     public static void saveFileAsContentAttachment(Content content, FileAttribute fileAttribute, MultipartFile importFile) throws IOException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
+        AttachmentAO attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         int oldId = -1;
         try {
             oldId = Integer.parseInt(fileAttribute.getValue());
