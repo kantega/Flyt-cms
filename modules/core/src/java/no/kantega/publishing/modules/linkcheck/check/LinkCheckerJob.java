@@ -20,7 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Attachment;
@@ -30,6 +30,7 @@ import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
 import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.spring.RootContext;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -246,7 +247,7 @@ public class LinkCheckerJob implements InitializingBean {
         try {
             int i = Integer.parseInt(idPart);
             try {
-                Attachment attachment = AttachmentAO.getAttachment(i);
+                Attachment attachment = RootContext.getInstance().getBean(AttachmentAOImpl.class).getAttachment(i);
 
                 if(attachment != null) {
                     occurrence.setStatus(CheckStatus.OK);

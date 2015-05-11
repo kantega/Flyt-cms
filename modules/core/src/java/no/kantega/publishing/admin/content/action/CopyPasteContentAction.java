@@ -59,10 +59,10 @@ public class CopyPasteContentAction implements Controller {
         AssociationCategory category = new AssociationCategory(categoryId);
 
         Association parent = aksessService.getAssociationById(newParentId);
+
         Association source = aksessService.getAssociationById(uniqueId);
 
         Map<String, Object> model = new HashMap<>();
-
         if (isCopy) {
             copyContent(aksessService, isTextCopy, pasteShortCut, uniqueId, newParentId, category, parent, source);
             model.put("message", "aksess.copypaste.copy.ok");
@@ -100,11 +100,11 @@ public class CopyPasteContentAction implements Controller {
     }
 
     private void copyContent(ContentManagementService aksessService, boolean textCopy, boolean pasteShortCut, int uniqueId, int newParentId, AssociationCategory category, Association parent, Association source) throws NotAuthorizedException {
+
         if (textCopy) {
             // Copy text from one page to a new page
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(source.getAssociationId());
             Content content = aksessService.getContent(cid);
-
             aksessService.copyContent(content, parent, category, true);
 
         } else if (pasteShortCut) {
@@ -130,4 +130,5 @@ public class CopyPasteContentAction implements Controller {
     public void setDuplicateAliasesView(String duplicateAliasesView) {
         this.duplicateAliasesView = duplicateAliasesView;
     }
+
 }

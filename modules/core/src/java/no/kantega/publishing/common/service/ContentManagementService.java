@@ -25,6 +25,7 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
@@ -35,7 +36,10 @@ import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.*;
+import no.kantega.publishing.common.ao.AssociationAO;
+import no.kantega.publishing.common.ao.DeletedItemsAO;
+import no.kantega.publishing.common.ao.HearingAO;
+import no.kantega.publishing.common.ao.NotesDao;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -93,6 +97,7 @@ public class ContentManagementService {
     private TrafficLogger trafficLogger;
     private SiteCache siteCache;
     private ContentAO contentAO;
+    private AttachmentAO attachmentAO;
     private ContentIdHelper contentIdHelper;
     private ContentEventListener contentNotifier;
     private LockManager lockManager;
@@ -115,6 +120,7 @@ public class ContentManagementService {
         contentNotifier = context.getBean("contentListenerNotifier", ContentEventListener.class);
         lockManager = context.getBean(LockManager.class);
 
+        attachmentAO = context.getBean(AttachmentAO.class);
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
@@ -521,11 +527,16 @@ public class ContentManagementService {
                 .setUser(securitySession.getUser()));
 
         Content content = checkInContent(newContent, sourceContent.getStatus());
-        AttachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
+        attachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
 
         if(copyChildren){
             log.info( "Copying children of Content " + sourceContent.getAssociation().getId());
             ContentQuery query = new ContentQuery();
+            //These parameters are set to true to copy children which are archived, expired and to include drafts and content waiting for approval
+            query.setShowArchived(true);
+            query.setShowExpired(true);
+            query.setIncludeDrafts(true);
+            query.setIncludeWaitingForApproval(true);
             query.setAssociatedId(origialContentIdentifier);
 
             for (Content child : getContentList(query, -1, null)) {
@@ -741,7 +752,6 @@ public class ContentManagementService {
      */
     public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
         List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
-
         List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
@@ -753,7 +763,6 @@ public class ContentManagementService {
                 break;
             }
         }
-
         return approved;
     }
 
@@ -766,7 +775,6 @@ public class ContentManagementService {
             if (sort != null){
                 query.setSortOrder(sort);
             }
-
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
             String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
@@ -1326,7 +1334,7 @@ public class ContentManagementService {
      * @throws NotAuthorizedException - Brukeren har ikke rettighet til å lese vedlegg
      */
     public Attachment getAttachment(int id, int siteId) throws SystemException, NotAuthorizedException {
-        Attachment attachment = AttachmentAO.getAttachment(id);
+        Attachment attachment = attachmentAO.getAttachment(id);
         if (attachment != null) {
             int contentId = attachment.getContentId();
             // Må hente ut tilhørende contentobject for å vite om bruker er autorisert og at ikke vedlegget er slettet
@@ -1352,7 +1360,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        AttachmentAO.streamAttachmentData(id, ish);
+        attachmentAO.streamAttachmentData(id, ish);
     }
 
 
@@ -1379,7 +1387,7 @@ public class ContentManagementService {
 
         eventLog.log(securitySession, request, Event.SAVE_ATTACHMENT, attachment.getFilename(), EventlogHelper.toDummyBaseObject(attachment));
 
-        int id = AttachmentAO.setAttachment(attachment);
+        int id = attachmentAO.setAttachment(attachment);
         attachment.setId(id);
 
         contentNotifier.attachmentUpdated(new ContentEvent()
@@ -1400,7 +1408,7 @@ public class ContentManagementService {
         if (id == -1) {
             return;
         }
-        Attachment attachment = AttachmentAO.getAttachment(id);
+        Attachment attachment = attachmentAO.getAttachment(id);
         if (attachment == null) {
             return;
         }
@@ -1414,7 +1422,7 @@ public class ContentManagementService {
             }
         }
 
-        AttachmentAO.deleteAttachment(id);
+        attachmentAO.deleteAttachment(id);
         eventLog.log(securitySession, request, Event.DELETE_ATTACHMENT, attachment.getFilename(), EventlogHelper.toDummyBaseObject(attachment));
     }
 
@@ -1426,7 +1434,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<Attachment> getAttachmentList(ContentIdentifier id) throws SystemException {
-        return AttachmentAO.getAttachmentList(id);
+        return attachmentAO.getAttachmentList(id);
     }
 
 

@@ -1,7 +1,7 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
@@ -29,6 +29,9 @@ public class AttachmentTransformer extends DocumentTransformerAdapter<Attachment
 
     @Autowired
     private ContentAO contentAO;
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     public AttachmentTransformer() {
         super(Attachment.class);
@@ -64,7 +67,7 @@ public class AttachmentTransformer extends DocumentTransformerAdapter<Attachment
             try {
                 File attachmentFile = File.createTempFile(attachment.getFilename(), "indexer");
                 try (FileOutputStream out = new FileOutputStream(attachmentFile)){
-                    AttachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(out));
+                    attachmentAO.streamAttachmentData(attachment.getId(), new InputStreamHandler(out));
                     indexableDocument.setFileContent(attachmentFile);
                 }
             } catch (IOException e) {

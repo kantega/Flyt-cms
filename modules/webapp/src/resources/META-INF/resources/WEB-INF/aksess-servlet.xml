@@ -506,6 +506,7 @@
         <property name="templateConfigurationCache" ref="aksessTemplateConfigurationCache"/>
         <property name="view" value="/WEB-INF/jsp/admin/publish/copypaste/confirmcopypaste.jsp"/>
         <property name="errorView" value="/WEB-INF/jsp/admin/generic/popup-error.jsp"/>
+        <property name="illegalParentTemplateView" value="/WEB-INF/jsp/admin/publish/copypaste/illegalparenttemplate.jsp"/>
     </bean>
     <bean class="no.kantega.publishing.admin.content.action.CopyPasteContentAction" id="CopyPasteContentAction">
         <property name="confirmCopyPasteView" value="/WEB-INF/jsp/admin/publish/reloadparent.jsp"/>

@@ -115,6 +115,11 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.common.ao.AttachmentAOImpl">
+        <property name="contentIdHelper" ref="contentIdHelper"/>
+        <property name="contentNotifier" ref="contentListenerNotifier"/>
+    </bean>
+
     <bean class="no.kantega.publishing.common.ao.MultimediaAOImpl">
         <property name="permissionAO" ref="permissionAO"/>
         <property name="multimediaDao" ref="multimediaDao"/>
@@ -123,10 +128,11 @@
     <bean id="contentIdHelper" class="no.kantega.publishing.common.ContentIdHelperImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
+    <bean id="contentListenerNotifier" class="no.kantega.publishing.event.ContentEventListenerAdapter"/>
 
     <bean name="permissionAO" class="no.kantega.publishing.security.ao.PermissionsAOJDBCImpl">
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean id="contentListenerNotifier" class="no.kantega.publishing.event.ContentEventListenerAdapter"/>
+
 </beans>

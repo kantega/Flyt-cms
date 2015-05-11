@@ -67,6 +67,6 @@
     </script>
 </div>
 <div class="buttonGroup">
-    <a href="#" onclick="openaksess.editcontext.selectUser(document.myform.${fieldName})" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
-    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.selectUser(document.myform.${fieldName})" class="button" tabindex="<%=attribute.getTabIndex()+1%>"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.${fieldName})" class="button" tabindex="<%=attribute.getTabIndex()+2%>"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

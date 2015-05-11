@@ -108,6 +108,7 @@ public class InputScreenRenderer {
         for (Attribute attribute : attributes) {
             tabIndex = renderAttribute(out, request, fieldErrors, attribute, tabIndex);
         }
+        request.setAttribute("maxTabindex", Math.max(tabIndex,500) );
     }
 
     private int renderAttribute(JspWriter out, ServletRequest request, Map<String, List<ValidationError>> fieldErrors, Attribute attribute, int tabIndex) throws IOException {

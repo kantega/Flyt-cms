@@ -1,5 +1,6 @@
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.content.Language;
@@ -30,6 +31,9 @@ public class ContentAOJdbcImplTest {
 
     @Autowired
     private ContentAO contentAO;
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     @Test
     public void shouldGetContent(){
@@ -148,7 +152,7 @@ public class ContentAOJdbcImplTest {
         assertEquals(content.getAssociation().getParentAssociationId(), saved.getAssociation().getParentAssociationId());
 
 
-        List<Attachment> attachmentList = AttachmentAO.getAttachmentList(saved.getContentIdentifier());
+        List<Attachment> attachmentList = attachmentAO.getAttachmentList(saved.getContentIdentifier());
         assertFalse(attachmentList.isEmpty());
         assertNotNull(attachmentList.get(0).getId());
         assertEquals(saved.getId(), attachmentList.get(0).getContentId());
