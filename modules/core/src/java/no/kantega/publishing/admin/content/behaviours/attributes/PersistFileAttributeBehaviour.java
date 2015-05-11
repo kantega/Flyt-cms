@@ -24,7 +24,7 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.FileAttribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.spring.RootContext;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
