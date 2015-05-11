@@ -108,7 +108,7 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
 
-    <bean class="no.kantega.publishing.api.attachment.ao.AttachmentAOImpl">
+    <bean class="no.kantega.publishing.common.ao.AttachmentAOImpl">
         <property name="contentIdHelper" ref="contentIdHelper"/>
         <property name="contentNotifier" ref="contentListenerNotifier"/>
     </bean>

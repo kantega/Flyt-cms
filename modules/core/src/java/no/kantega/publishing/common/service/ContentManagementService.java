@@ -26,7 +26,6 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
-import no.kantega.publishing.api.attachment.ao.AttachmentAOImpl;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
@@ -121,6 +120,7 @@ public class ContentManagementService {
         contentNotifier = context.getBean("contentListenerNotifier", ContentEventListener.class);
         lockManager = context.getBean(LockManager.class);
 
+        attachmentAO = context.getBean(AttachmentAO.class);
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
@@ -527,7 +527,6 @@ public class ContentManagementService {
                 .setUser(securitySession.getUser()));
 
         Content content = checkInContent(newContent, sourceContent.getStatus());
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         attachmentAO.copyAttachment(origialContentIdentifier.getContentId(), content.getId());
 
         if(copyChildren){
@@ -1348,7 +1347,6 @@ public class ContentManagementService {
      * @throws NotAuthorizedException - Brukeren har ikke rettighet til å lese vedlegg
      */
     public Attachment getAttachment(int id, int siteId) throws SystemException, NotAuthorizedException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         Attachment attachment = attachmentAO.getAttachment(id);
         if (attachment != null) {
             int contentId = attachment.getContentId();
@@ -1375,7 +1373,6 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public void streamAttachmentData(int id, InputStreamHandler ish) throws SystemException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         attachmentAO.streamAttachmentData(id, ish);
     }
 
@@ -1389,7 +1386,6 @@ public class ContentManagementService {
      * @throws NotAuthorizedException
      */
     public int setAttachment(Attachment attachment) throws SystemException, SQLException, NotAuthorizedException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         if (!securitySession.isLoggedIn()) {
             throw new NotAuthorizedException("Not logged in");
         }
@@ -1425,7 +1421,6 @@ public class ContentManagementService {
         if (id == -1) {
             return;
         }
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         Attachment attachment = attachmentAO.getAttachment(id);
         if (attachment == null) {
             return;
@@ -1452,7 +1447,6 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public List<Attachment> getAttachmentList(ContentIdentifier id) throws SystemException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         return attachmentAO.getAttachmentList(id);
     }
 

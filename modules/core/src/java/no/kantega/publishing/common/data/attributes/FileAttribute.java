@@ -23,7 +23,7 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistFileAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateFileAttributeFromRequestBehaviour;
-import no.kantega.publishing.api.attachment.ao.AttachmentAOImpl;
+import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;

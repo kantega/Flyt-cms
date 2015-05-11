@@ -18,26 +18,26 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
-import no.kantega.publishing.api.attachment.ao.AttachmentAOImpl;
+import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.FileAttribute;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.spring.RootContext;
+import org.apache.commons.lang.StringUtils;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour {
-    private AttachmentAO attachmentAO;
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
-        attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
+        AttachmentAO attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         if (attribute instanceof FileAttribute) {
             FileAttribute fattr = (FileAttribute)attribute;
             if (fattr.getDeleteAttachment()) {
                 String value = fattr.getValue();
-                if (value != null && value.length() > 0) {
+                if (StringUtils.isNotBlank(value)) {
                     attachmentAO.deleteAttachment(Integer.parseInt(value));
                 }
                 attribute.setValue("");
