@@ -65,7 +65,11 @@ public class LabelTag extends TagSupport implements DynamicAttributes {
                 Locale locale;
                 if (isNotBlank(this.locale)){
                     String[] localePair = this.locale.split("_");
-                    locale = new Locale(localePair[0], localePair[1]);
+                    if (localePair.length == 2) {
+                        locale = new Locale(localePair[0], localePair[1]);
+                    } else {
+                        locale = new Locale(localePair[0]);
+                    }
                 } else {
                     locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
                 }
