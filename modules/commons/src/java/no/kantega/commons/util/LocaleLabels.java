@@ -35,16 +35,18 @@ public class LocaleLabels {
 
     private static PropertyResourceBundle getBundle(String bundleName, String locale) {
         PropertyResourceBundle bundle;
+        String key = bundleName + "_" + locale;
+        bundle = bundles.get(key);
         synchronized (bundles) {
-            String key = bundleName + "_" + locale;
-            bundle = bundles.get(key);
             if (bundle == null && !absentBundles.contains(key)) {
                 String[] locArr = locale.split("_");
                 try {
                     if (locArr.length > 2) {
                         bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1], locArr[2]));
-                    } else {
+                    } else if(locArr.length == 2) {
                         bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0], locArr[1]));
+                    } else {
+                        bundle = (PropertyResourceBundle)ResourceBundle.getBundle(bundleName, new Locale(locArr[0]));
                     }
                     bundles.put(key, bundle);
                 } catch (MissingResourceException e) {
@@ -89,10 +91,7 @@ public class LocaleLabels {
      * @return - localized string
      */
     public static String getLabel(String key, String bundleName, Locale locale) {
-        String loc = locale.getLanguage() + "_" + locale.getCountry();
-        if (isNotBlank(locale.getVariant())) {
-            loc += "_" + locale.getVariant();
-        }
+        String loc = getLocaleName(locale);
         return getLabel(key, bundleName, loc, null);
     }
 
@@ -106,11 +105,19 @@ public class LocaleLabels {
      * @return - localized string
      */
     public static String getLabel(String key, String bundleName, Locale locale, Map<String, Object> parameters) {
-        String loc = locale.getLanguage() + "_" + locale.getCountry();
-        if (locale.getVariant() != null) {
-            loc += "_" + locale.getVariant();
-        }
+        String loc = getLocaleName(locale);
         return getLabel(key, bundleName, loc, parameters);
+    }
+
+    private static String getLocaleName(Locale locale) {
+        StringBuilder loc = new StringBuilder(locale.getLanguage());
+        if(isNotBlank(locale.getCountry())){
+            loc.append("_").append(locale.getCountry());
+        }
+        if (isNotBlank(locale.getVariant())) {
+            loc.append("_").append(locale.getVariant());
+        }
+        return loc.toString();
     }
 
     /**
@@ -138,7 +145,7 @@ public class LocaleLabels {
 
     public static Enumeration getKeys(String bundleName, Locale locale) {
         String loc = locale.getLanguage() + "_" + locale.getCountry();
-        if (locale.getVariant() != null) {
+        if (isNotBlank(locale.getVariant())) {
             loc += "_" + locale.getVariant();
         }
 
