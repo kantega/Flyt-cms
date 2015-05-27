@@ -86,7 +86,7 @@ public class OaSearchResultFilter implements SearchResultFilter {
         }
     }
 
-    private class SearchBaseObject extends BaseObject {
+    private static class SearchBaseObject extends BaseObject {
 
         private final int objectType;
 
