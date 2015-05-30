@@ -110,17 +110,18 @@
     </cache>
 
     <cache name="ImageCache"
-           maxElementsInMemory="100"
+           maxElementsInMemory="1000"
            eternal="true"
            overflowToDisk="true"
            memoryStoreEvictionPolicy="LFU"
+           maxElementsOnDisk="10000"
            diskPersistent="true"
            statistics="true" >
         <cacheDecoratorFactory properties="metric-registry-name=oa-metric-registry" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
     </cache>
 
     <cache name="MultimediaCache"
-           maxElementsInMemory="100"
+           maxElementsInMemory="1000"
            eternal="true"
            overflowToDisk="true"
            memoryStoreEvictionPolicy="LFU"
