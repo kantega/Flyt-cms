@@ -16,30 +16,26 @@
 
 package no.kantega.publishing.common.data.attributes;
 
-import no.kantega.publishing.spring.RootContext;
 import no.kantega.publishing.forum.ForumProvider;
+import no.kantega.publishing.spring.RootContext;
 
-import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Feb 19, 2007
- * Time: 3:44:20 PM
- */
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class ForumlistAttribute extends Attribute {
     public String getRenderer() {
         return "forumlist";
     }
 
     public String getForumListAsString() {
-        String list = "";
-        Map forumProviders = RootContext.getInstance().getBeansOfType(ForumProvider.class);
+        String list;
+        Map<String, ForumProvider> forumProviders = RootContext.getInstance().getBeansOfType(ForumProvider.class);
 
         if(forumProviders.size() > 0) {
-            ForumProvider forumProvider = (ForumProvider) forumProviders.values().iterator().next();
+            ForumProvider forumProvider = forumProviders.values().iterator().next();
             long forumId = -1;
-            if (value != null && value.length() > 0) {
+            if (isNotBlank(value)) {
                 forumId = Long.parseLong(value, 10);
             }
             list = forumProvider.getForumsAsOptionList(forumId);

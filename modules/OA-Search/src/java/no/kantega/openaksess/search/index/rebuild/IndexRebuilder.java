@@ -93,7 +93,7 @@ public class IndexRebuilder {
                 try {
                     int pollMistakes = 0;
                     while (hasNotReachedMaxRetries(pollMistakes) && notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
-                        IndexableDocument poll = indexableDocuments.poll(6, TimeUnit.SECONDS); //60
+                        IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
                             log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
@@ -114,11 +114,11 @@ public class IndexRebuilder {
             }
 
             private boolean hasNotReachedMaxRetries(int pollMistakes) {
-                boolean hasNotReachedMaxRetries = pollMistakes < maxPolling;
-                if (!hasNotReachedMaxRetries){
+                boolean hasReachedMaxRetries = pollMistakes >= maxPolling;
+                if (hasReachedMaxRetries){
                     log.error("Polling IndexableDocumentQueue used "+maxPolling+" attempts and is terminated!");
                 }
-                return hasNotReachedMaxRetries;
+                return !hasReachedMaxRetries;
             }
         });
     }

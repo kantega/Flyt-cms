@@ -77,9 +77,6 @@
     </bean>
 
     <!-- Mail subscription -->
-    <bean id="aksessMailSubscriptionService" class="no.kantega.publishing.modules.mailsubscription.MailSubscriptionServiceJdbcImpl">
-        <property name="dataSource" ref="aksessDataSource"/>
-    </bean>
 
     <bean id="aksessMailSubscriptionDeliveryService" class="no.kantega.publishing.modules.mailsubscription.agent.DefaultMailSubscriptionService"/>
 
