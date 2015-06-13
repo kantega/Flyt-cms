@@ -19,13 +19,13 @@ package no.kantega.publishing.jobs.alerts;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.security.realm.SecurityRealm;
 import no.kantega.publishing.security.realm.SecurityRealmFactory;
@@ -34,7 +34,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.hostname.HostnamesDao;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,8 +2,8 @@ package no.kantega.publishing.comments;
 
 import no.kantega.publishing.api.comments.CommentNotification;
 import no.kantega.publishing.api.comments.CommentNotificationListener;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.common.ao.ContentAOJdbcImpl;
-import no.kantega.publishing.content.api.ContentAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.api.taglibs.util;
 
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;

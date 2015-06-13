@@ -1,9 +1,9 @@
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

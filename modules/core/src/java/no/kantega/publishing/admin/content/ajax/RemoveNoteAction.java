@@ -18,7 +18,7 @@ package no.kantega.publishing.admin.content.ajax;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
-import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.api.notes.NotesDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;

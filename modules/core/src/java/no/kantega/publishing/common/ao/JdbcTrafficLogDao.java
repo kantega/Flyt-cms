@@ -17,7 +17,9 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.trafficlog.TrafficLogDao;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.ContentViewStatistics;
 import no.kantega.publishing.common.data.PeriodViewStatistics;
@@ -26,7 +28,6 @@ import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

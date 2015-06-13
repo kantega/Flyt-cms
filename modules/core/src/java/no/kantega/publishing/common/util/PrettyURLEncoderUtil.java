@@ -1,7 +1,7 @@
 package no.kantega.publishing.common.util;
 
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentAO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

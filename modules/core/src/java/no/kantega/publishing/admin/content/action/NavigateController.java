@@ -22,12 +22,12 @@ import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.administration.action.CreateRootAction;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ public class NavigateController extends AbstractContentAction {
         String currentUrl = current.getUrl();
         Map<String, Object> model = new HashMap<>();
         if (editedContent != null && editedContent.isModified()) {
-            // User is editing a page and has modified it, show preview 
+            // User is editing a page and has modified it, show preview
             currentUrl = request.getContextPath() + "/admin/publish/ViewContentPreviewFrame.action?thisId=";
             if (editedContent.isNew()) {
                 // New page
@@ -114,7 +114,7 @@ public class NavigateController extends AbstractContentAction {
         }
 
         model.put("sites", siteCache.getSites());
-        model.put("currentUrl", currentUrl);        
+        model.put("currentUrl", currentUrl);
 
         return new ModelAndView(view, model);
     }

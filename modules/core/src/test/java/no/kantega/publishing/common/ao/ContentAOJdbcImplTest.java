@@ -1,10 +1,16 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.content.Language;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
@@ -12,7 +18,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentAO;
 import org.apache.commons.collections.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +25,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
 import static org.apache.commons.collections.CollectionUtils.select;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations= "classpath*:spring/testContext.xml")

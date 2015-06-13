@@ -18,8 +18,8 @@ package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.hostname.HostnamesDao;
 import no.kantega.publishing.api.model.Site;
-import no.kantega.publishing.common.ao.HostnamesDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;

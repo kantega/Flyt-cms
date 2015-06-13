@@ -21,14 +21,18 @@ import no.kantega.commons.configuration.Configuration;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.model.ClipboardStatus;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.AssociationCategory;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
@@ -42,7 +46,11 @@ import org.springframework.web.servlet.mvc.Controller;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Action Controller for confirming a copy paste operation
@@ -106,7 +114,7 @@ public class ConfirmCopyPasteContentAction implements Controller {
 
 
         Content selectedContent = (Content)clipboard.getItems().get(0);
-        
+
         int selectedPageAssociationId = selectedContent.getAssociation().getId();
         //method returns an empty string if copy is allowed, otherwise it returns a message explaining what is wrong.
         CopyLegal copyIsAllowedResult = copyIsAllowed(selectedContent, cms, newParentCid.getAssociationId());

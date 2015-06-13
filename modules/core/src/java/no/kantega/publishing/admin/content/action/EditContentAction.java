@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
@@ -26,7 +27,6 @@ import no.kantega.publishing.common.exception.MissingTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.SQLHelper;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;

@@ -21,7 +21,7 @@ import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttribut
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistMediaAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.UpdateMediaAttributeFromRequestBehaviour;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.api.multimedia.MultimediaAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;

@@ -1,12 +1,12 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
 import no.kantega.publishing.common.data.attributes.UrlAttribute;
 import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.EventLog;
 import org.junit.Before;
 import org.junit.Test;

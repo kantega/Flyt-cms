@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.admin.templateconfiguration.action;
 
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfiguration;
@@ -24,7 +25,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.util.templates.ContentTemplateValidator;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationFactory;
 import no.kantega.publishing.common.util.templates.TemplateConfigurationValidator;
-import no.kantega.publishing.content.api.ContentAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;

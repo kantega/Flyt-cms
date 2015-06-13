@@ -1,10 +1,10 @@
 package no.kantega.openaksess.search.taglib.label.resolver;
 
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.content.api.ContentAO;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

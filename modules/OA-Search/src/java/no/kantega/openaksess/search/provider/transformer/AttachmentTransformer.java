@@ -1,12 +1,12 @@
 package no.kantega.openaksess.search.provider.transformer;
 
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.util.InputStreamHandler;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.IndexableDocumentCustomizer;
 import no.kantega.search.api.provider.DocumentTransformerAdapter;

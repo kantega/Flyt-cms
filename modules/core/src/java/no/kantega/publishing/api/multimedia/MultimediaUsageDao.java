@@ -1,4 +1,4 @@
-package no.kantega.publishing.common.ao;
+package no.kantega.publishing.api.multimedia;
 
 import java.util.List;
 

@@ -3,9 +3,9 @@ package no.kantega.publishing.plugin.config;
 import no.kantega.commons.configuration.ConfigurationLoader;
 import no.kantega.commons.configuration.DefaultConfigurationLoader;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.api.plugin.PluginConfigurationAO;
 import no.kantega.publishing.api.plugin.config.PluginConfig;
 import no.kantega.publishing.api.plugin.config.PluginConfigProvider;
-import no.kantega.publishing.common.ao.PluginConfigurationAO;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.ResourceLoader;
 

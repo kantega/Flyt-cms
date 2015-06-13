@@ -1,13 +1,13 @@
 package no.kantega.publishing.client;
 
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.content.api.ContentAO;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -3,12 +3,17 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.*;
+import no.kantega.commons.exception.ConfigurationException;
+import no.kantega.commons.exception.InvalidFileException;
+import no.kantega.commons.exception.InvalidParameterException;
+import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
@@ -22,7 +27,6 @@ import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.exception.ObjectLockedException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.RequestHelper;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +61,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
      * @return - SecuritySession
      */
     protected SecuritySession getSecuritySession(HttpServletRequest request) {
-        return SecuritySession.getInstance(request);        
+        return SecuritySession.getInstance(request);
     }
 
     /**
@@ -87,7 +91,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         if (securitySession == null || !securitySession.isLoggedIn()) {
             throw new NotAuthorizedException("Not logged in");
         }
-        
+
         if (request.getMethod().equalsIgnoreCase("POST")) {
             // Save page
             return handleSubmit(request, response);

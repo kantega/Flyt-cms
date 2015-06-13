@@ -2,12 +2,12 @@ package no.kantega.openaksess.search.solr;
 
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.search.api.IndexableDocument;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,9 @@ import java.sql.SQLException;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

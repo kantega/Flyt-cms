@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package no.kantega.publishing.common.ao;
 
-import no.kantega.publishing.common.data.Note;
+package no.kantega.publishing.api.hostname;
 
 import java.util.List;
 
-public interface NotesDao {
-    public List getNotesByContentId(int contentId);
-    public void addNote(Note note);
-    public void removeNote(int nid);
+/**
+ * User: Anders Skar, Kantega AS
+ * Date: Jan 15, 2009
+ * Time: 1:43:10 PM
+ */
+public interface HostnamesDao {
+    List<String> getHostnamesForSiteId(int siteId);
+    void setHostnamesForSiteId(int siteId, List<String> hostnames);
 }

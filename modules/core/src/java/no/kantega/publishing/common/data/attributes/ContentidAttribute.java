@@ -17,11 +17,11 @@
 package no.kantega.publishing.common.data.attributes;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

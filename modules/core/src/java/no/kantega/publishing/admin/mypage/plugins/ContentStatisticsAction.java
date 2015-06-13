@@ -16,8 +16,8 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
-import no.kantega.publishing.common.ao.MultimediaAO;
-import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.api.content.ContentAO;
+import no.kantega.publishing.api.multimedia.MultimediaAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;

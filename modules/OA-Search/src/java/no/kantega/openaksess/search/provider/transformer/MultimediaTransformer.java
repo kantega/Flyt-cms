@@ -1,7 +1,7 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.api.path.PathEntry;
-import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.service.impl.PathWorker;
 import no.kantega.publishing.common.util.InputStreamHandler;

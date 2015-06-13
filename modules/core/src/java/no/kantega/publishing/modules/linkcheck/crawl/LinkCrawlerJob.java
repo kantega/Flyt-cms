@@ -16,10 +16,10 @@
 
 package no.kantega.publishing.modules.linkcheck.crawl;
 
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.api.scheduling.DisableOnServertype;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

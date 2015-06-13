@@ -18,9 +18,9 @@ package no.kantega.publishing.api.taglibs.util;
 
 import no.kantega.commons.urlplaceholder.UrlPlaceholderResolver;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;

@@ -2,6 +2,8 @@ package no.kantega.publishing.common.ao;
 
 import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.multimedia.MultimediaDao;
+import no.kantega.publishing.api.multimedia.MultimediaUsageDao;
 import no.kantega.publishing.common.ao.rowmapper.ExifMetadataToMultimediaRowMapper;
 import no.kantega.publishing.common.data.ExifMetadata;
 import no.kantega.publishing.common.data.Multimedia;
@@ -20,7 +22,11 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
 

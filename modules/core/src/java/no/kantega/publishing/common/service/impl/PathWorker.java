@@ -18,12 +18,12 @@ package no.kantega.publishing.common.service.impl;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.StringHelper;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;

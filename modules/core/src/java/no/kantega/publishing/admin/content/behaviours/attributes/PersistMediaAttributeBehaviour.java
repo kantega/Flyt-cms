@@ -19,8 +19,8 @@ package no.kantega.publishing.admin.content.behaviours.attributes;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
@@ -32,7 +32,6 @@ import no.kantega.publishing.multimedia.MultimediaUploadHandler;
 import no.kantega.publishing.spring.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

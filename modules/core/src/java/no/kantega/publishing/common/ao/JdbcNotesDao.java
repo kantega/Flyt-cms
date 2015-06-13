@@ -15,6 +15,7 @@
  */
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.notes.NotesDao;
 import no.kantega.publishing.common.data.Note;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;

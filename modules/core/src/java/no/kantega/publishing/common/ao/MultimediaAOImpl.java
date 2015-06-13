@@ -18,6 +18,8 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.BaseObject;
+import no.kantega.publishing.api.multimedia.MultimediaAO;
+import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.enums.MultimediaType;

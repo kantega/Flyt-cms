@@ -1,5 +1,6 @@
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.plugin.PluginConfigurationAO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class JdbcPluginConfigurationAOTest {
 
         assertEquals("valueA", dao.getProperty("pluginA", "nameA"));
         assertEquals("valueB", dao.getProperty("pluginB", "nameB"));
-        
+
         dao.setProperty("pluginA", "nameA", "valueA2");
 
         assertEquals("valueA2", dao.getProperty("pluginA", "nameA"));

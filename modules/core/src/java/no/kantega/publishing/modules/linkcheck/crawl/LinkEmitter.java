@@ -17,13 +17,13 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.content.ContentAO;
+import no.kantega.publishing.api.content.ContentHandler;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.eventlog.EventLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

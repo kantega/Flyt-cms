@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.ao;
+package no.kantega.publishing.api.content;
 
 import no.kantega.publishing.common.data.Content;
 

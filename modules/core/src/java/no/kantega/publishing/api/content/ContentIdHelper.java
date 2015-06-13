@@ -1,7 +1,6 @@
-package no.kantega.publishing.content.api;
+package no.kantega.publishing.api.content;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 

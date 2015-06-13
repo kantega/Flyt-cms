@@ -20,6 +20,7 @@ import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.mailsubscription.MailSubscription;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionAgent;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
@@ -31,7 +32,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.security.data.Role;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.publishing.security.service.SecurityService;
@@ -39,7 +39,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class for sending mail subscriptions notifying users about new content (for newsletters etc)

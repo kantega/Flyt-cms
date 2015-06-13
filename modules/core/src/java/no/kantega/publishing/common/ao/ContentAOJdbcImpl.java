@@ -19,23 +19,41 @@ package no.kantega.publishing.common.ao;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.api.content.ContentAO;
+import no.kantega.publishing.api.content.ContentHandler;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentAttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Association;
+import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.DisplayTemplate;
+import no.kantega.publishing.common.data.Multimedia;
+import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.data.TemplateConfiguration;
+import no.kantega.publishing.common.data.UserContentChanges;
+import no.kantega.publishing.common.data.WorkList;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
-import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.common.data.enums.ContentProperty;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
-import no.kantega.publishing.content.api.ContentAO;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.data.User;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
@@ -49,9 +67,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.join;
 
@@ -71,6 +102,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     @Autowired
     private AttachmentAO attachmentAO;
+
+    @Autowired
+    private ContentTemplateAO contentTemplateAO;
 
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) {

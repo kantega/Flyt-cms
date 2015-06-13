@@ -24,13 +24,14 @@ import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.preferences.UserPreferencesManager;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.service.lock.ContentLock;
 import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
@@ -38,7 +39,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.org.OrganizationManager;
 import no.kantega.publishing.security.SecuritySession;
@@ -52,7 +52,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 

@@ -17,6 +17,7 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.Content;
@@ -24,7 +25,6 @@ import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;

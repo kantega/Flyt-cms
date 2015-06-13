@@ -19,10 +19,10 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
@@ -32,7 +32,12 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *

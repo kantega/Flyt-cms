@@ -18,6 +18,7 @@ package no.kantega.publishing.api.taglibs.sitemap;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
@@ -25,7 +26,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SiteMapEntry;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;

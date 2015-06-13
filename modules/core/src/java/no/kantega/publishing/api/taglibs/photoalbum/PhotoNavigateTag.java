@@ -17,9 +17,9 @@
 package no.kantega.publishing.api.taglibs.photoalbum;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;

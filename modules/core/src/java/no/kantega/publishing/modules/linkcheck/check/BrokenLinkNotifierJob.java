@@ -15,7 +15,7 @@
  */
 package no.kantega.publishing.modules.linkcheck.check;
 
-import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.api.link.LinkDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 

@@ -16,9 +16,10 @@
 
 package no.kantega.publishing.jobs.multimedia;
 
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.MultimediaDao;
-import no.kantega.publishing.common.ao.MultimediaUsageDao;
+import no.kantega.publishing.api.multimedia.MultimediaDao;
+import no.kantega.publishing.api.multimedia.MultimediaUsageDao;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
@@ -27,7 +28,6 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.MultimediaHelper;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.event.ContentEvent;
 import no.kantega.publishing.event.ContentEventListenerAdapter;
 import org.slf4j.Logger;
@@ -49,7 +49,7 @@ public class MultimediaUsageListener extends ContentEventListenerAdapter {
     public void contentSaved(ContentEvent event) {
         // Delete all usages for this content
         multimediaUsageDao.removeUsageForContentId(event.getContent().getId());
-        
+
         // Add all contentattributes
         addAttributes(event.getContent().getId(), event.getContent().getAttributes(AttributeDataType.CONTENT_DATA));
 

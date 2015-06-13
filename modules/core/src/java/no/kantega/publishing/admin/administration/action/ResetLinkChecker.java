@@ -1,7 +1,7 @@
 package no.kantega.publishing.admin.administration.action;
 
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,7 +3,7 @@ package no.kantega.openaksess.search.solr;
 import no.kantega.openaksess.search.provider.transformer.AttachmentTransformer;
 import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
-import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -16,9 +16,10 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.modules.linkcheck.check.CheckStatus;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
@@ -32,7 +33,11 @@ import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -45,7 +50,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     private String brokenLinkBasisQuery = "SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion  WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND content.ContentId in (select ContentId from associations where IsDeleted = 0) AND linkoccurrence.linkid=link.id)";
 
     /**
-     * @see no.kantega.publishing.common.ao.LinkDao#deleteAllLinks()
+     * @see LinkDao#deleteAllLinks()
      */
     @Override
     public void deleteAllLinks() {
@@ -231,7 +236,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
 
     /**
-     * @see no.kantega.publishing.common.ao.LinkDao#getNumberOfLinks()
+     * @see LinkDao#getNumberOfLinks()
      */
     @Override
     public int getNumberOfLinks() {

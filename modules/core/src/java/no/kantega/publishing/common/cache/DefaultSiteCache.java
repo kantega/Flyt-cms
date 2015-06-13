@@ -19,9 +19,9 @@ package no.kantega.publishing.common.cache;
 import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.hostname.HostnamesDao;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.HostnamesDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

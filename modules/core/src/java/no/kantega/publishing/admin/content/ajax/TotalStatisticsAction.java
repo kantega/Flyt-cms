@@ -19,20 +19,24 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.TrafficLogDao;
+import no.kantega.publishing.api.trafficlog.TrafficLogDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *

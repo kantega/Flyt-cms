@@ -18,11 +18,11 @@ package no.kantega.publishing.admin.content.ajax;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.viewcontroller.SimpleAdminController;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.NotesDao;
+import no.kantega.publishing.api.notes.NotesDao;
 import no.kantega.publishing.common.data.Note;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 

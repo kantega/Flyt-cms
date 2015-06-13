@@ -18,11 +18,11 @@ package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class DeleteAssociationAction implements Controller {
             List<Association> associations = content.getAssociations();
             if (associations != null) {
                 if (associations.size() > 1) {
-                    isCrossPublished = true;                    
+                    isCrossPublished = true;
                 }
                 model.put("associationId", cid.getAssociationId());
             }

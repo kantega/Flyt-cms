@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package no.kantega.publishing.common.ao;
+package no.kantega.publishing.api.trafficlog;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.ContentViewStatistics;
@@ -33,5 +33,5 @@ public interface TrafficLogDao {
     public List<PeriodViewStatistics> getPeriodViewStatistics(TrafficLogQuery trafficQuery, int period) throws SystemException;
     public List<RefererOccurrence> getReferersInPeriod(TrafficLogQuery query);
     public List<RefererOccurrence> getReferingHostsInPeriod(TrafficLogQuery query);
-    public List<RefererOccurrence> getReferingQueriesInPeriod(TrafficLogQuery query);    
+    public List<RefererOccurrence> getReferingQueriesInPeriod(TrafficLogQuery query);
 }

@@ -16,11 +16,11 @@
 
 package no.kantega.publishing.admin.mypage.plugins;
 
-import no.kantega.publishing.common.ao.TrafficLogDao;
+import no.kantega.publishing.api.content.ContentAO;
+import no.kantega.publishing.api.trafficlog.TrafficLogDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.TrafficLogQuery;
 import no.kantega.publishing.common.data.enums.TrafficOrigin;
-import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.org.OrgUnit;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.User;
@@ -32,7 +32,12 @@ import org.springframework.web.servlet.mvc.Controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class OrgUnitStatisticsAction implements Controller {
     private static final Logger log = LoggerFactory.getLogger(OrgUnitStatisticsAction.class);

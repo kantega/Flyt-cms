@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.admin.content.htmlfilter;
 
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.api.multimedia.MultimediaAO;
 import no.kantega.publishing.spring.RootContext;
 import org.junit.BeforeClass;
 import org.junit.Test;

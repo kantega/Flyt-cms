@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.publishing.api.hostname.HostnamesDao;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;

@@ -1,7 +1,7 @@
 package no.kantega.publishing.admin.content.htmlfilter;
 
 import no.kantega.commons.xmlfilter.FilterPipeline;
-import no.kantega.publishing.common.ao.MultimediaDao;
+import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.MultimediaDimensions;
 import no.kantega.publishing.multimedia.ImageEditor;

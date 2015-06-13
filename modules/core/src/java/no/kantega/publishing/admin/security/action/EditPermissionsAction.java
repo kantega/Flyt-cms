@@ -17,6 +17,7 @@
 package no.kantega.publishing.admin.security.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.data.Content;
@@ -25,7 +26,6 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.MultimediaService;
 import no.kantega.publishing.common.service.TopicMapService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.Permission;
 import no.kantega.publishing.security.data.Role;
@@ -209,7 +209,7 @@ public class EditPermissionsAction extends AbstractController {
         }
         privileges.add(Privilege.FULL_CONTROL);
         model.put("privileges", privileges);
-        
+
         // Notification
         if (object.getObjectType() == ObjectType.CONTENT) {
             model.put("priorities", NotificationPriority.values());

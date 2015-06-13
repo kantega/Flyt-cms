@@ -1,10 +1,11 @@
-package no.kantega.publishing.content.api;
+package no.kantega.publishing.api.content;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentStatus;
-import no.kantega.publishing.common.ao.ContentHandler;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.TemplateConfiguration;
+import no.kantega.publishing.common.data.UserContentChanges;
+import no.kantega.publishing.common.data.WorkList;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.org.OrgUnit;

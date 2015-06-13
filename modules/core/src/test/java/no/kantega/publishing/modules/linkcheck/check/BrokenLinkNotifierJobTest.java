@@ -15,14 +15,16 @@
  */
 package no.kantega.publishing.modules.linkcheck.check;
 
-import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.api.link.LinkDao;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BrokenLinkNotifierJobTest {
 
