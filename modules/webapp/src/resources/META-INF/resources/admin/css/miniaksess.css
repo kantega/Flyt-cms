@@ -179,3 +179,10 @@ iframe#externalSite {
     border: 1px solid #DAD6C0;
     border-radius: 5px;
 }
+
+.inpSelectList {
+    background: #fff;
+    border: 1px solid #999;
+    max-height: 200px;
+    overflow: auto;
+}

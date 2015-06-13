@@ -42,6 +42,9 @@ public class IndexRebuilder {
     @Value("${IndexRebuilder.queueLength:1}")
     private int queueLength = 1;
 
+    @Value("${IndexRebuilder.maxPolling:5}")
+    private int maxPolling;
+
     private List<ProgressReporter> progressReporters;
 
     public synchronized void stopIndexing(){
@@ -73,6 +76,8 @@ public class IndexRebuilder {
         });
     }
 
+
+
     private void startConsumer(final BlockingQueue<IndexableDocument> indexableDocuments, final List<ProgressReporter> progressReporters) {
         executorService.execute(new Runnable() {
             @Override
@@ -86,12 +91,14 @@ public class IndexRebuilder {
                 }
                 documentIndexer.commit();
                 try {
-                    while (notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                    int pollMistakes = 0;
+                    while (hasNotReachedMaxRetries(pollMistakes) && notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
                             log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                             documentIndexer.indexDocument(poll);
                         } else {
+                            pollMistakes++;
                             log.error("Polling IndexableDocumentQueue resulted in null!");
                         }
                     }
@@ -104,6 +111,14 @@ public class IndexRebuilder {
                     double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
                     log.info("Finished reindex. Used {} seconds ", totalTimeSeconds);
                 }
+            }
+
+            private boolean hasNotReachedMaxRetries(int pollMistakes) {
+                boolean hasReachedMaxRetries = pollMistakes >= maxPolling;
+                if (hasReachedMaxRetries){
+                    log.error("Polling IndexableDocumentQueue used "+maxPolling+" attempts and is terminated!");
+                }
+                return !hasReachedMaxRetries;
             }
         });
     }

@@ -101,7 +101,13 @@ public class ListAttribute extends Attribute {
         if (!getOptions().isEmpty()) {
             return getOptions();
         } else if (!getKey().isEmpty()) {
-            return EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant);
+            List<ListOption> listOptions = new ArrayList<>();
+            if (!multiple) {
+                ListOption emptyOption = new ListOption();
+                listOptions.add(emptyOption);
+            }
+            listOptions.addAll(EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant));
+            return listOptions;
         } else {
             return Collections.emptyList();
         }
@@ -128,4 +134,5 @@ public class ListAttribute extends Attribute {
     public String getKey() {
         return key;
     }
+
 }

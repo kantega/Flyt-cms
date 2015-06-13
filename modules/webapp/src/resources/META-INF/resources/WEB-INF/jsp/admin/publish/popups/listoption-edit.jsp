@@ -28,7 +28,7 @@
 
             var optionValue = document.myform.optionValue.value;
             var attributeKey = '${param.attributeKey}';
-            var defaultSelected = document.myform.defaultSelected.value;
+            var defaultSelected = document.myform.defaultSelected.checked;
             var language = ${param.language};
 
             if (optionValue == "") {

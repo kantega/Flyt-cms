@@ -17,8 +17,9 @@
 package no.kantega.publishing.common.ao;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
-import no.kantega.publishing.modules.linkcheck.check.NotCheckedSinceTerm;
+import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 
 import java.util.List;
@@ -37,14 +38,19 @@ public interface LinkDao {
      */
     public void saveAllLinks(LinkEmitter emitter);
 
+    /**
+     *
+     * @param emitter
+     * @param content
+     */
+    public void saveLinksForContent(LinkEmitter emitter, Content content);
 
     /**
      *
-     * @param term
+     * @param linkQueryGenerator
      * @param handler
      */
-    public void doForEachLink(NotCheckedSinceTerm term, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
-
+    public void doForEachLink(LinkQueryGenerator linkQueryGenerator, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
 
     /**
      * Find all broken links under given parent

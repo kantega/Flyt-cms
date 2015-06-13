@@ -154,17 +154,18 @@ public class NavigatorUtil {
         if (openFoldersList == null) {
             openFoldersList = "";
         }
-           
+
+        StringBuilder openFolderBuilder = new StringBuilder(openFoldersList);
         if (expand && currentId != -1) {
             if (openFoldersList.endsWith(",")) {
-                openFoldersList += currentId;
+                openFolderBuilder.append(currentId);
             } else {
-                openFoldersList += ","+currentId;
+                openFolderBuilder.append(",").append(currentId);
             }
         }
 
         // List of open folders
-        int[] openFolders = StringHelper.getInts(openFoldersList, ",");
+        int[] openFolders = StringHelper.getInts(openFolderBuilder.toString(), ",");
 
         if (expand && path != null) {
             // Add all elements in path to expand tree
@@ -180,13 +181,13 @@ public class NavigatorUtil {
                             }
                         }
                         if (!exists) {
-                            openFoldersList += "," + pId;
+                            openFolderBuilder.append(",").append(pId);
                         }
                     }
                 }
             }
         }
 
-        return openFoldersList;
+        return openFolderBuilder.toString();
     }
 }

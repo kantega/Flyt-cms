@@ -18,6 +18,12 @@ public class ImageResizeParameters {
         cropping   = Cropping.getCroppingAsEnum(StringUtils.isBlank(croppingString) ? "contain" : croppingString);
     }
 
+    public ImageResizeParameters(int maxHeight, int maxWidth, Cropping cropping) {
+        this.maxHeight = maxHeight;
+        this.maxWidth = maxWidth;
+        this.cropping = cropping;
+    }
+
     @Override
     public String toString() {
         return maxHeight + "-" + maxWidth + "-" + cropping;

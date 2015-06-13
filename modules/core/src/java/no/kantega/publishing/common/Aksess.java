@@ -58,6 +58,8 @@ public class Aksess {
     private static String contextPath = "";
     private static String baseUrl;
     private static String dateFormat = "";
+    private static String defaultDateFormatJS;
+
     private static String[] internalIpSegment = null;
 
     private static String flashPluginVersion;
@@ -144,6 +146,7 @@ public class Aksess {
         }
 
         dateFormat = c.getString("default.dateformat", "dd.MM.yyyy");
+        defaultDateFormatJS = c.getString("default.dateformat.js", "dd.mm.yy");
 
         defaultMediaWidth = c.getInt("multimedia.defaultwidth", 500);
         defaultMediaHeight = c.getInt("multimedia.defaultheight", 305);
@@ -587,5 +590,9 @@ public class Aksess {
 
     public static int getXmlCacheMaxAge() {
         return xmlCacheMaxAge;
+    }
+
+    public static String getDefaultDateFormatJS() {
+        return defaultDateFormatJS;
     }
 }

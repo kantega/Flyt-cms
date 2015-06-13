@@ -20,11 +20,12 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.MultimediaAO;
+import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
+import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.MultimediaType;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import no.kantega.publishing.multimedia.MultimediaUploadHandler;
@@ -36,8 +37,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
  *
@@ -45,14 +49,13 @@ import java.util.List;
 public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
     private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
 
-    private static MultimediaAO multimediaAO;
+    private static MultimediaDao multimediaAO;
     private static MultimediaUploadHandler multimediaUploadHandler;
 
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (multimediaAO == null) {
-            ApplicationContext context = RootContext.getInstance();
-            multimediaAO = context.getBean(MultimediaAO.class);
-            multimediaUploadHandler = context.getBean("aksessMultimediaUploadHandler", MultimediaUploadHandler.class);
+            multimediaAO = RootContext.getInstance().getBean(MultimediaDao.class);
+            multimediaUploadHandler = RootContext.getInstance().getBean("aksessMultimediaUploadHandler", MultimediaUploadHandler.class);
 
         }
 
@@ -103,6 +106,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
                     multimediaUploadHandler.updateMultimediaWithData(multimedia, importFile.getBytes(), filename, true);
                     multimedia.setOwnerPerson(content.getOwnerPerson());
                     int id = multimediaAO.setMultimedia(multimedia);
+                    updateContentProperty(c, content, attribute, id);
                     mediaAttr.setValue(String.valueOf(id));
                     mediaAttr.setImportFile(null);
                 }
@@ -117,10 +121,23 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
         saveSimple.persistAttribute(c, content, attribute);
     }
 
+    //Update content.image
+    private void updateContentProperty(Connection c, Content content, Attribute attribute, int id) throws SQLException {
+        if(attribute.getField().equals(ContentProperty.IMAGE)){
+            String imageId = String.valueOf(id);
+            content.setImage(imageId);
+            attribute.setValue(imageId);
+            try(PreparedStatement ps = c.prepareStatement("UPDATE contentversion set image = ? where ContentVersionId = ?")){
+                ps.setString(1, imageId);
+                ps.setInt(2, content.getVersionId());
+                ps.execute();
+            }
+        }
+    }
+
     private int createMediaFolder(int mediaFolderId, String mediaFolder) {
-        String defaultFolderName = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
-        if (mediaFolder == null || mediaFolder.length() == 0) {
-            mediaFolder = defaultFolderName;
+        if (isBlank(mediaFolder)) {
+            mediaFolder = LocaleLabels.getLabel("aksess.multimedia.uploadfolder", Aksess.getDefaultAdminLocale());
         }
         // Find folder with this name
         List<Multimedia> folders = multimediaAO.getMultimediaList(0);

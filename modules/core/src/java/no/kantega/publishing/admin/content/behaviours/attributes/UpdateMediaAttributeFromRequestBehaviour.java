@@ -23,6 +23,8 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 /**
  *
  */
@@ -34,7 +36,7 @@ public class UpdateMediaAttributeFromRequestBehaviour implements UpdateAttribute
         MultipartFile file = param.getFile(inputField + "_upload");
         if (file != null) {
             fattr.setImportFile(file);
-            if (fattr.getValue().trim().length() == 0) fattr.setValue("importfile");
+            if (isBlank(fattr.getValue())) fattr.setValue("importfile");
         } else {
             String value = param.getString(inputField);
             if (value == null) {

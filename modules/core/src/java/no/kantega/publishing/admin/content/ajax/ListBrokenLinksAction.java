@@ -23,7 +23,9 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.content.api.ContentIdHelper;
+import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -42,8 +44,13 @@ public class ListBrokenLinksAction extends SimpleAdminController {
             return o1.getLastChecked().compareTo(o2.getLastChecked());
         }
     };
+    private LinkCheckerJob checker;
+
     @Autowired
     LinkDao linkDao;
+
+    @Autowired
+    private LinkEmitter emitter;
 
     @Autowired
     private ContentIdHelper contentIdHelper;
@@ -63,7 +70,11 @@ public class ListBrokenLinksAction extends SimpleAdminController {
             try {
                 List<LinkOccurrence> brokenLinks;
                 ContentIdentifier cid = contentIdHelper.fromRequestAndUrl(request, url);
+
                 if (thisPageOnly) {
+                    no.kantega.publishing.common.service.ContentManagementService cms = new no.kantega.publishing.common.service.ContentManagementService(request);
+                    linkDao.saveLinksForContent(emitter, cms.getContent(cid, false));
+                    checker.executeForContent(cid.getContentId());
                     brokenLinks = linkDao.getBrokenLinksforContentId(cid.getContentId());
                 } else {
                     brokenLinks = linkDao.getBrokenLinksUnderParent(cid, sort);
@@ -80,5 +91,9 @@ public class ListBrokenLinksAction extends SimpleAdminController {
             }
         }
         return new ModelAndView(getView(), model);
+    }
+
+    public void setChecker(LinkCheckerJob checker) {
+        this.checker = checker;
     }
 }

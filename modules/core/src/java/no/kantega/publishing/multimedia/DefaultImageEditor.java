@@ -84,7 +84,7 @@ public class DefaultImageEditor implements ImageEditor {
      */
     public BufferedImage cropImage(BufferedImage image, int cropX, int cropY, int cropWidth, int cropHeight){
         if (cropWidth > 0 && cropHeight > 0){
-            BufferedImage cropImage = new BufferedImage(cropWidth, cropHeight, BufferedImage.TYPE_INT_RGB);
+            BufferedImage cropImage = new BufferedImage(cropWidth, cropHeight, image.getType());
             Graphics2D graphics2D = cropImage.createGraphics();
             graphics2D.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
             graphics2D.drawImage(image, -cropX, -cropY, image.getWidth(), image.getHeight(), null);

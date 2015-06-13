@@ -77,12 +77,12 @@ public class UrlContentRewriter implements ContentRewriter {
 
             if (index == 0 || prev == '"' || prev == ' ') {
                 // Do replace
-                String id = "";
+                StringBuilder id = new StringBuilder();
 
                 int endOfIdIndex = index + key.length();
                 char next = html.charAt(endOfIdIndex);
                 while (endOfIdIndex < html.length() && next >= '0' && next <= '9') {
-                    id += next;
+                    id.append(next);
                     endOfIdIndex++;
                     if (endOfIdIndex < html.length()) {
                         next = html.charAt(endOfIdIndex);
@@ -91,7 +91,7 @@ public class UrlContentRewriter implements ContentRewriter {
 
                 if (id.length() > 0) {
                     try {
-                        int thisId = Integer.parseInt(id);
+                        int thisId = Integer.parseInt(id.toString());
                         // Lookup id and replace with alias
                         int siteId = -1;
 

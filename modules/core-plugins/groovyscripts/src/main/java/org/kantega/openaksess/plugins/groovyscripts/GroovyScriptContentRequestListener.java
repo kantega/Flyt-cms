@@ -109,8 +109,8 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                     final Object result = ex.getMethod().invoke(ex.getScript(), parameters);
                     if (result != null && Map.class.isAssignableFrom(result.getClass())) {
                         Map<String, Object> attributes = (Map<String, Object>) result;
-                        for (String name : attributes.keySet()) {
-                            context.getRequest().setAttribute(name, attributes.get(name));
+                        for (Map.Entry<String, Object> attribute : attributes.entrySet()) {
+                            context.getRequest().setAttribute(attribute.getKey(), attribute.getValue());
                         }
                     }
                     return;

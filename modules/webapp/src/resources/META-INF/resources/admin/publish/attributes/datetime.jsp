@@ -3,6 +3,7 @@
 <%@ page import="no.kantega.publishing.admin.util.DateUtil"%>
 <%@ page import="no.kantega.publishing.common.Aksess" %>
 <%@ page import="no.kantega.publishing.common.data.attributes.DatetimeAttribute" %>
+<%@ page import="static org.apache.commons.lang3.StringUtils.isNotBlank" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -28,15 +29,19 @@
 
     DatetimeAttribute attribute = (DatetimeAttribute)request.getAttribute("attribute");
 
-    String dateValue = (attribute.getDateValue() != null && attribute.getDateValue().trim().length() > 0)? attribute.getDateValue() : DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale());
-    String timeValue = (attribute.getTimeValue() != null && attribute.getTimeValue().trim().length() > 0)? attribute.getTimeValue() : DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale());
+    String dateValue = (isNotBlank(attribute.getDateValue()))? attribute.getDateValue() : DateUtil.format(df, Aksess.getDefaultAdminLocale());
+    String timeValue = (isNotBlank(attribute.getTimeValue()))? attribute.getTimeValue() : DateUtil.format(tf, Aksess.getDefaultAdminLocale());
+    String formattedDefaultTime = DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale());
+    String formattedDefaultDate = DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale());
 %>
 <script type="text/javascript">
     $(function() {
-        $("#date_${fieldName}").datepicker();
+        $("#date_${fieldName}").datepicker({
+            dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+        });
     });
 </script>
 <div class="inputs">
-    <kantega:label key="aksess.attribute.datetime.date"/>&nbsp;<input type="text" id="date_${fieldName}" size="<%=dateLen%>" maxlength="<%=dateLen%>" name="date_${fieldName}" value="<%=dateValue%>" tabindex="<%=attribute.getTabIndex()%>" onfocus="openaksess.editcontext.clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="openaksess.editcontext.setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultDateFormat(), Aksess.getDefaultAdminLocale())%>')">
-    <kantega:label key="aksess.attribute.datetime.time"/>&nbsp;<input type="text" id="time_${fieldName}" size="<%=timeLen%>" maxlength="<%=timeLen%>" name="time_${fieldName}" value="<%=timeValue%>" tabindex="<%=attribute.getTabIndex()+1%>" onfocus="openaksess.editcontext.clearDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')" onblur="openaksess.editcontext.setDefaultValue(this,'<%=DateUtil.format(Aksess.getDefaultTimeFormat(), Aksess.getDefaultAdminLocale())%>')"><br>
+    <kantega:label key="aksess.attribute.datetime.date"/>&nbsp;<input type="text" id="date_${fieldName}" size="<%=dateLen%>" maxlength="<%=dateLen%>" name="date_${fieldName}" value="<%=dateValue%>" tabindex="<%=attribute.getTabIndex()%>" onfocus="openaksess.editcontext.clearDefaultValue(this,'<%=formattedDefaultDate%>')" onblur="openaksess.editcontext.setDefaultValue(this,'<%=formattedDefaultDate%>')">
+    <kantega:label key="aksess.attribute.datetime.time"/>&nbsp;<input type="text" id="time_${fieldName}" size="<%=timeLen%>" maxlength="<%=timeLen%>" name="time_${fieldName}" value="<%=timeValue%>" tabindex="<%=attribute.getTabIndex()+1%>" onfocus="openaksess.editcontext.clearDefaultValue(this,'<%=formattedDefaultTime%>')" onblur="openaksess.editcontext.setDefaultValue(this,'<%=formattedDefaultTime%>')"><br>
 </div>

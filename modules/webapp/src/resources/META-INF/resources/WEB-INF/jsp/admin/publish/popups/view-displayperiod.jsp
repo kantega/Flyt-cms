@@ -78,8 +78,12 @@
         }
 
         $(function() {
-            $("#from_date").datepicker();
-            $("#end_date").datepicker();
+            $("#from_date").datepicker({
+                dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+            });
+            $("#end_date").datepicker({
+                dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+            });
         });
 
         function validatePublishProperties() {

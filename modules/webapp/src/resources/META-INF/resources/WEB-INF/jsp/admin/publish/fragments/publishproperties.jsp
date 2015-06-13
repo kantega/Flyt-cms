@@ -69,9 +69,15 @@
     }
 
     $(function() {
-        $("#from_date").datepicker();
-        $("#end_date").datepicker();
-        $("#change_date").datepicker();
+        $("#from_date").datepicker({
+            dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+        });
+        $("#end_date").datepicker({
+            dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+        });
+        $("#change_date").datepicker({
+            dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+        });
     });
 
     $(document).ready(function() {

@@ -77,8 +77,8 @@ public class GroovyConsole implements ApplicationContextAware, ServletContextAwa
 
         GroovyShell shell = new GroovyShell(binding);
 
-        for(String key : inVariables.keySet()) {
-            binding.setVariable(key, inVariables.get(key));
+        for (Map.Entry<String, Object> attribute : inVariables.entrySet()) {
+            binding.setVariable(attribute.getKey(), attribute.getValue());
         }
 
         try {

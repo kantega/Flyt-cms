@@ -54,7 +54,7 @@ public class EditablelistAttribute extends ListAttribute {
                     editableBy[i] = editableBy[i].trim();
                 }
             } else {
-                editableBy = new String[]{Aksess.getEveryoneRole()};                
+                editableBy = new String[]{Aksess.getEveryoneRole()};
             }
         }
 

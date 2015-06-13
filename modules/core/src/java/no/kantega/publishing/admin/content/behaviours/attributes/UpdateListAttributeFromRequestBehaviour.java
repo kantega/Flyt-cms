@@ -25,16 +25,16 @@ public class UpdateListAttributeFromRequestBehaviour implements UpdateAttributeF
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
-        String value = "";
+        StringBuilder value = new StringBuilder();
         String values[] = param.getStrings(inputField);
         if (values != null) {
             for (int j = 0; j < values.length; j++) {
                 if (j > 0) {
-                    value += ",";
+                    value.append(",");
                 }
-                value += values[j];
+                value.append(values[j]);
             }
         }
-        attribute.setValue(value);
+        attribute.setValue(value.toString());
     }
 }

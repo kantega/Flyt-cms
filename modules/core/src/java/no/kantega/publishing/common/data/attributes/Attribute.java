@@ -38,12 +38,12 @@ import org.springframework.core.io.ResourceLoader;
 import org.w3c.dom.Element;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Map;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Representing a single attribute in a Content object.
@@ -170,23 +170,21 @@ public abstract class Attribute implements Serializable {
                     ResourceLoader source = RootContext.getInstance().getBean("contentTemplateResourceLoader", ResourceLoader.class);
                     Resource resource = source.getResource("defaults/" + file);
 
-                    try {
-                        value = IOUtils.toString(resource.getInputStream());
+                    try (InputStream is = resource.getInputStream()){
+                        value = IOUtils.toString(is);
                     } catch (IOException e) {
                         throw new SystemException("Feil ved lesing av default fil:" + file, e);
                     }
                 } else {
                     if (model != null && model.size() > 0) {
-                        for (String key : model.keySet()) {
-                            String value = model.get(key);
-                            if (value == null) {
-                                value = "";
-                            }
-                            String keyToken = "\\$\\{" + key + "\\}";
+                        for (Map.Entry<String, String> entry : model.entrySet()) {
+                            String value = defaultString(entry.getValue());
+
+                            String keyToken = "\\$\\{" + entry + "\\}";
 
                             String tmp = defaultValue.replaceAll(keyToken, value);
                             if (tmp.equals(defaultValue)) {
-                                defaultValue = defaultValue.replaceAll(key, value);
+                                defaultValue = defaultValue.replaceAll(entry.getKey(), value);
                             } else {
                                 defaultValue = tmp;
                             }

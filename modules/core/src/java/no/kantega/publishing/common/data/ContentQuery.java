@@ -620,7 +620,7 @@ public class ContentQuery {
     }
 
     public void setDisplayTemplate(int displayTemplate) {
-        this.displayTemplate = asList(displayTemplate);
+        this.displayTemplate = Collections.singletonList(displayTemplate);
     }
 
     public void setDisplayTemplate(String displayTemplate) throws SystemException {

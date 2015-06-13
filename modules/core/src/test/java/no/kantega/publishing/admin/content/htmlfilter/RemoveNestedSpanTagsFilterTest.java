@@ -34,6 +34,17 @@ public class RemoveNestedSpanTagsFilterTest {
     }
 
     @Test
+    public void shouldNotRemoveSiblings() throws SystemException {
+        String htmlBefore = "<p><span>abc</span><span>123</span></p>";
+        String expectedHtmlAfter = "<p><span>abc</span><span>123</span></p>";
+
+        StringWriter sw = new StringWriter();
+        pipeline.filter(new StringReader(htmlBefore), sw);
+
+        assertEquals(expectedHtmlAfter, sw.toString());
+    }
+
+    @Test
     public void shouldRemoveSimpleNestedTag() throws SystemException {
         String htmlBefore = "<span><span>test</span></span>";
         String expectedHtmlAfter = "<span>test</span>";
@@ -81,15 +92,8 @@ public class RemoveNestedSpanTagsFilterTest {
         assertEquals(expectedHtmlAfter, pipeline.filter(htmlBefore));
     }
 
-
-    /**
-     * The other tests used to use FilterPipeline pipeline = SharedPipeline.getFilterPipeline();
-     * Thus each test added a new RemoveNestedSpanTagsFilter to the pipeline.
-     * This made shouldRemoveNestedTagWithoutRemovingInnerTags fail randomly.
-     * This test confirms that the result is «<p><span>test</span></p>» when RemoveNestedSpanTagsFilter is run three times.
-     */
     @Test
-    public void confirmThatMultipleRemoveNestedSpanTagsFilterRemovesMuch(){
+    public void sameResultWithMultipleRemoveNestedSpanTagsFilterInPipeline(){
         FilterPipeline pipeline = new FilterPipeline();
         pipeline.addFilter(new RemoveNestedSpanTagsFilter());
 
@@ -110,7 +114,7 @@ public class RemoveNestedSpanTagsFilterTest {
         pipeline.addFilter(new RemoveNestedSpanTagsFilter());
 
         htmlBefore = "<span><span><p><span>test</span></p></span></span>";
-        expectedHtmlAfter = "<p><span>test</span></p>";
+        expectedHtmlAfter = "<span><p><span>test</span></p></span>";
 
         assertEquals(expectedHtmlAfter, pipeline.filter(htmlBefore));*/
     }

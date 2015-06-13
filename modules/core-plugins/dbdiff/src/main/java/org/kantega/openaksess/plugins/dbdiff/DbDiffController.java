@@ -41,7 +41,6 @@ public class DbDiffController {
     @Autowired
     private PluginManager<OpenAksessPlugin> pluginManager;
 
-    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public String view(ModelMap model) throws IOException {
 
@@ -70,43 +69,45 @@ public class DbDiffController {
         Database actual = platform.readModelFromDatabase(name, catalog, schema, tableTypes);
 
         Map<String, URL> schemaResourcePaths = getSchemaResourcePaths();
-        for (String  path : schemaResourcePaths.keySet()) {
+        for (Map.Entry<String, URL> path : schemaResourcePaths.entrySet()) {
 
-            URL resourcePath = schemaResourcePaths.get(path);
+            URL resourcePath = path.getValue();
 
-            InputStream stream = resourcePath.openStream();
+            try(InputStream stream = resourcePath.openStream()) {
 
-            if (stream != null) {
-                Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
-                Set<String> wantedTablesNames = new HashSet<String>();
-                for (Table table : wanted.getTables()) {
-                    wantedTablesNames.add(table.getName());
-                }
-                knownTableNames.addAll(wantedTablesNames);
-
-
-                final Database actualCopy = new CloneHelper().clone(actual);
-
-                transform(actualCopy, wanted, platform);
-
-                for (Table table : actualCopy.getTables()) {
-                    allTableNames.add(table.getName());
-                    if (!wantedTablesNames.contains(table.getName())) {
-                        actualCopy.removeTable(table);
+                if (stream != null) {
+                    Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
+                    Set<String> wantedTablesNames = new HashSet<String>();
+                    for (Table table : wanted.getTables()) {
+                        wantedTablesNames.add(table.getName());
                     }
+                    knownTableNames.addAll(wantedTablesNames);
+
+
+                    final Database actualCopy = new CloneHelper().clone(actual);
+
+                    transform(actualCopy, wanted, platform);
+
+                    for (Table table : actualCopy.getTables()) {
+                        allTableNames.add(table.getName());
+                        if (!wantedTablesNames.contains(table.getName())) {
+                            actualCopy.removeTable(table);
+                        }
+                    }
+
+                    final List<ModelChange> changes = platform.getChanges(actualCopy, wanted);
+
+                    String sql = null;
+
+                    try {
+                        sql = platform.getAlterModelSql(actualCopy, wanted);
+                        schemas.add(new OaDatabaseSchema(path.getKey(), actualCopy, wanted, sql, changes, platform, null));
+                    } catch (DdlUtilsException e) {
+                        schemas.add(new OaDatabaseSchema(path.getKey(), actualCopy, wanted, sql, changes, platform, e));
+                    }
+
+
                 }
-
-                final List<ModelChange> changes = platform.getChanges(actualCopy, wanted);
-
-                String sql = null;
-
-                try {
-                    sql = platform.getAlterModelSql(actualCopy, wanted);
-                    schemas.add(new OaDatabaseSchema(path, actualCopy, wanted, sql, changes, platform, null));
-                } catch (DdlUtilsException e) {
-                    schemas.add(new OaDatabaseSchema(path, actualCopy, wanted, sql, changes, platform, e));
-                }
-
             }
         }
 
@@ -181,8 +182,6 @@ public class DbDiffController {
                             resourcePaths.put(line, resource);
                         }
                     }
-
-                }
             }
         }
         return resourcePaths;
