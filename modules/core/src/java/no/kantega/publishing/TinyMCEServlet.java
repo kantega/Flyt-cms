@@ -9,7 +9,13 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -110,86 +116,80 @@ public class TinyMCEServlet extends HttpServlet {
             }
         }
 
-        String content = "";
+        StringBuilder content = new StringBuilder();
         // Add core
         if (core) {
-            content += getFileContents(coreUrl);
+            content.append(getFileContents(coreUrl));
 
             // Patch loading functions
-            content += "tinyMCE_GZ.start();";
+            content.append("tinyMCE_GZ.start();");
         }
 
         for (URL url : urls) {
-            content += getFileContents(url);
+            content.append(getFileContents(url));
         }
 
         // Restore loading functions
         if (core) {
-            content += "tinyMCE_GZ.end();";
+            content.append("tinyMCE_GZ.end();");
         }
 
         // Generate GZIP'd content
         if (supportsGzip) {
             if (diskCache && isNotBlank(cacheKey)) {
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-
-                // Gzip compress
-                if (compress) {
-                    GZIPOutputStream gzipStream = new GZIPOutputStream(bos);
-                    gzipStream.write(content.getBytes("iso-8859-1"));
-                    gzipStream.close();
-                } else {
-                    OutputStreamWriter bow = new OutputStreamWriter(bos);
-                    bow.write(content);
-                    bow.close();
-                }
-
-                // Write to file
-                try {
-                    log.info( "Creating diskcache:" + cacheFile);
-
-                    FileOutputStream fout = new FileOutputStream(cacheFile);
-                    fout.write(bos.toByteArray());
-                    fout.close();
-                } catch (IOException e) {
-                    log.error( "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", e);
-                }
-
-                // Write to stream
-                outputStream.write(bos.toByteArray());
-                outputStream.close();
-
-                shouldRecreateDiskCache = false;
+                writeToCacheAndOutput(cacheFile, outputStream, compress, content);
             } else {
                 log.info( "Sending content without using diskcache");
                 GZIPOutputStream gzipStream = new GZIPOutputStream(outputStream);
-                gzipStream.write(content.getBytes("iso-8859-1"));
+                gzipStream.write(content.toString().getBytes("iso-8859-1"));
                 gzipStream.close();
             }
         } else {
             log.info( "Sending content without using diskcache and without zip compression");
-            outputStream.write(content.getBytes());
+            outputStream.write(content.toString().getBytes());
         }
+    }
+
+    private void writeToCacheAndOutput(String cacheFile, ServletOutputStream outputStream, boolean compress, StringBuilder content) throws IOException {
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        // Gzip compress
+        if (compress) {
+            GZIPOutputStream gzipStream = new GZIPOutputStream(bos);
+            gzipStream.write(content.toString().getBytes("iso-8859-1"));
+            gzipStream.close();
+        } else {
+            OutputStreamWriter bow = new OutputStreamWriter(bos);
+            bow.write(content.toString());
+            bow.close();
+        }
+
+        // Write to file
+        try (FileOutputStream fout = new FileOutputStream(cacheFile);){
+            log.info( "Creating diskcache:" + cacheFile);
+            fout.write(bos.toByteArray());
+        } catch (IOException e) {
+            log.error( "IOException while trying to write to cache file: " + cacheFile + ". This does not affect functionality.", e);
+        }
+
+        // Write to stream
+        outputStream.write(bos.toByteArray());
+        outputStream.close();
+
+        shouldRecreateDiskCache = false;
     }
 
     private void writeContentFromCacheFile(String cacheFile, ServletOutputStream outputStream) throws IOException {
-        FileInputStream fin;
-        byte[] buffer;
-        int bytes;
         log.info( "Writing content from cache:" + cacheFile);
 
-        fin = new FileInputStream(cacheFile);
-        buffer = new byte[1024];
-
-        while ((bytes = fin.read(buffer, 0, buffer.length)) != -1) {
-            outputStream.write(buffer, 0, bytes);
+        try(FileInputStream fin = new FileInputStream(cacheFile)) {
+            IOUtils.copy(fin, outputStream);
         }
 
-        fin.close();
     }
 
     private List<URL> getUrlList(HttpServletRequest request, String[] languages, String[] themes, String[] plugins, String suffix) {
-        List<URL> urls = new ArrayList<URL>();
+        List<URL> urls = new ArrayList<>();
 
         addLanguages(request, languages, urls);
 

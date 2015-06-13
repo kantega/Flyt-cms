@@ -17,24 +17,24 @@
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.admin.content.util.AttributeHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.admin.content.util.AttributeHelper;
 
 public class UpdateListAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
 
-        String value = "";
+        StringBuilder value = new StringBuilder();
         String values[] = param.getStrings(inputField);
         if (values != null) {
             for (int j = 0; j < values.length; j++) {
                 if (j > 0) {
-                    value += ",";
+                    value.append(",");
                 }
-                value += values[j];
+                value.append(values[j]);
             }
         }
-        attribute.setValue(value);
+        attribute.setValue(value.toString());
     }
 }

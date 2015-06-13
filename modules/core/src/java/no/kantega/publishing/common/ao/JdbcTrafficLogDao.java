@@ -34,9 +34,16 @@ import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
     private static final Logger log = LoggerFactory.getLogger(JdbcTrafficLogDao.class);
@@ -84,61 +91,60 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
     }
 
     private String createContentIdClause(TrafficLogQuery query) {
-        String clause = "";
+        StringBuilder clause = new StringBuilder();
         ContentIdentifier cid = query.getCid();
         if (cid != null) {
             contentIdHelper.assureContentIdAndAssociationIdSet(cid);
             int contentId = cid.getContentId();
             int siteId = cid.getSiteId();
             if (siteId != -1) {
-                clause = " and trafficlog.SiteId = " + siteId;
+                clause.append(" and trafficlog.SiteId = ").append(siteId);
             }
             if (query.isIncludeSubPages()) {
                 int associationId = cid.getAssociationId();
-                clause += " and (trafficlog.ContentId in (select ContentId from associations where path like '%/" + associationId + "/%') OR trafficlog.ContentId = " + contentId + ") ";
+                clause.append(" and (trafficlog.ContentId in (select ContentId from associations where path like '%/").append(associationId).append("/%') OR trafficlog.ContentId = ").append(contentId).append(") ");
             } else {
-                clause += " and trafficlog.ContentId = " + contentId + " ";
+                clause.append(" and trafficlog.ContentId = ").append(contentId).append(" ");
             }
         }
-        return clause;
+        return clause.toString();
     }
 
     private String createOriginClause(int trafficOrigin) {
-        String originClause = "";
+        StringBuilder originClause = new StringBuilder();
 
-        if (trafficOrigin == TrafficOrigin.INTERNAL && Aksess.getInternalIpSegment() != null) {
-            String[] segments = Aksess.getInternalIpSegment();
-            originClause = " and (";
-            for (int i = 0; i < segments.length; i++) {
+        String[] internalIpSegment = Aksess.getInternalIpSegment();
+        if (trafficOrigin == TrafficOrigin.INTERNAL && internalIpSegment != null) {
+            originClause.append(" and (");
+            for (int i = 0; i < internalIpSegment.length; i++) {
                 if (i > 0) {
-                    originClause += " or ";
+                    originClause.append(" or ");
                 }
-                originClause += "RemoteAddress like '" + segments[i] + "%'";
+                originClause.append("RemoteAddress like '").append(internalIpSegment[i]).append("%'");
             }
-            originClause += ") ";
+            originClause.append(") ");
         }
 
-        if (trafficOrigin == TrafficOrigin.EXTERNAL && Aksess.getInternalIpSegment() != null)  {
-            String[] segments = Aksess.getInternalIpSegment();
-            originClause = " and (";
-            for (int i = 0; i < segments.length; i++) {
+        if (trafficOrigin == TrafficOrigin.EXTERNAL && internalIpSegment != null)  {
+            originClause.append(" and (");
+            for (int i = 0; i < internalIpSegment.length; i++) {
                 if (i > 0) {
-                    originClause += " and ";
+                    originClause.append(" and ");
                 }
-                originClause += "RemoteAddress not like '" + segments[i] + "%'";
+                originClause.append("RemoteAddress not like '").append(internalIpSegment[i]).append("%'");
             }
-            originClause += ") ";
+            originClause.append(") ");
         }
 
         if (trafficOrigin != TrafficOrigin.ALL && trafficOrigin != TrafficOrigin.SEARCH_ENGINES) {
-            originClause += " and IsSpider = 0 ";
+            originClause.append(" and IsSpider = 0 ");
         }
 
         if (trafficOrigin == TrafficOrigin.SEARCH_ENGINES) {
-            originClause += " and IsSpider = 1 ";
+            originClause.append(" and IsSpider = 1 ");
         }
 
-        return originClause;
+        return originClause.toString();
     }
 
 
@@ -151,10 +157,7 @@ public class JdbcTrafficLogDao extends JdbcDaoSupport implements TrafficLogDao {
         Date start = calendar.getTime();
 
         try (Connection c = dbConnectionFactory.getConnection()) {
-            String query = "select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?";
-            query += createOriginClause(trafficQuery.getTrafficOrigin());
-            query += createContentIdClause(trafficQuery);
-            try(PreparedStatement p = c.prepareStatement(query + "  group by associations.associationid, contentversion.title order by count desc")) {
+            try(PreparedStatement p = c.prepareStatement("select associations.associationid, contentversion.title, count(trafficlog.contentid) as count FROM associations, content, contentversion, trafficlog WHERE content.contentid = trafficlog.contentid AND content.contentid = associations.contentid and content.contentid = contentversion.contentid and contentversion.isactive = 1 AND associations.SiteId = trafficlog.SiteId AND associations.type = " + AssociationType.DEFAULT_POSTING_FOR_SITE + " and Time >= ? and Time <= ?" + createOriginClause(trafficQuery.getTrafficOrigin()) + createContentIdClause(trafficQuery) + "  group by associations.associationid, contentversion.title order by count desc")) {
                 p.setTimestamp(1, new java.sql.Timestamp(start.getTime()));
                 p.setTimestamp(2, new java.sql.Timestamp(end.getTime()));
                 p.setMaxRows(limit);

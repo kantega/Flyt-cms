@@ -58,18 +58,19 @@ public class AksessContentForm extends DefaultForm {
     }
 
     private String getEmailFromRepeater(RepeaterAttribute repeaterAttribute, String email) {
+        StringBuilder emailBuilder = new StringBuilder();
         Iterator<List<Attribute>> it =  repeaterAttribute.getIterator();
         while(it.hasNext()) {
             for (Attribute a : it.next()) {
                 if (a instanceof EmailAttribute) {
                     if (!isBlank(email)) {
-                        email += ",";
+                        emailBuilder.append(",");
                     }
-                    email += a.getValue();
+                    emailBuilder.append(a.getValue());
                 }
             }
         }
-        return email;
+        return emailBuilder.toString();
     }
 
     private List<String> getFieldNamesFromDefinition(String formDefinition) {

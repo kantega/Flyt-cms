@@ -42,7 +42,11 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -185,7 +189,7 @@ public class dbConnectionFactory {
     private static void verifyCompleteDatabaseConfiguration() throws ConfigurationException {
         if (dbUrl == null || ((dbUsername == null || dbPassword == null) && !dbNTMLAuthentication)) {
 
-            String message = "Database configuration is not complete. The following settings are missing: ";
+            StringBuilder message = new StringBuilder("Database configuration is not complete. The following settings are missing: ");
 
             List<String> props = new ArrayList<>();
             if(dbUrl == null) {
@@ -199,14 +203,14 @@ public class dbConnectionFactory {
             }
 
             for(int i = 0; i < props.size(); i++) {
-                message +=props.get(i);
+                message.append(props.get(i));
                 if(i != props.size()-1) {
-                    message +=", ";
+                    message.append(", ");
                 } else {
-                    message +=".";
+                    message.append(".");
                 }
             }
-            throw new ConfigurationException(message);
+            throw new ConfigurationException(message.toString());
         }
     }
 
@@ -293,14 +297,15 @@ public class dbConnectionFactory {
                 JdbcTemplate template = new JdbcTemplate(dataSource);
                 for(String statement : statements) {
                     String[] lines = statement.split("\n");
-                    String stripped = "";
+                    StringBuilder stripped = new StringBuilder();
                     for(String line : lines) {
                         if(line.trim().length()!=0 && !line.trim().startsWith("#") && !line.trim().startsWith("--")) {
-                            stripped += line +"\n";
+                            stripped.append(line).append('\n');
                         }
                     }
-                    if(stripped.trim().length() > 0) {
-                        template.execute(stripped);
+                    String query = stripped.toString();
+                    if(query.length() > 0) {
+                        template.execute(query);
                     }
                 }
 
