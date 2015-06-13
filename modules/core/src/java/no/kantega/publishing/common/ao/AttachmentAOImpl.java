@@ -29,14 +29,16 @@ import no.kantega.publishing.spring.RootContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Blob;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class AttachmentAOImpl implements AttachmentAO {
-
-public class AttachmentAO {
 
     private final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
     private ContentIdHelper contentIdHelper;

@@ -22,11 +22,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.sql.DataSource;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.sql.Types;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  *
@@ -58,10 +73,10 @@ public class DbDiffController {
 
 
         Platform platform = PlatformFactory.createNewPlatformInstance(aksessDataSource);
-        if(platform instanceof MSSqlPlatform) {
+        if (platform instanceof MSSqlPlatform) {
             platform.getPlatformInfo().addNativeTypeMapping(Types.CLOB, "TEXT", Types.CLOB);
             platform.getPlatformInfo().addNativeTypeMapping(Types.BLOB, "IMAGE", Types.BLOB);
-            schema ="dbo";
+            schema = "dbo";
         }
         platform.setSqlCommentsOn(false);
         platform.setScriptModeOn(true);
@@ -73,7 +88,7 @@ public class DbDiffController {
 
             URL resourcePath = path.getValue();
 
-            try(InputStream stream = resourcePath.openStream()) {
+            try (InputStream stream = resourcePath.openStream()) {
 
                 if (stream != null) {
                     Database wanted = new DatabaseIO().read(new InputStreamReader(stream, Charset.forName("utf-8")));
@@ -121,8 +136,8 @@ public class DbDiffController {
         unknownTables.removeAll(knownTableNames);
 
         Database unknown = new CloneHelper().clone(actual);
-        for(Table table : unknown.getTables()) {
-            if(knownTableNames.contains(table.getName())) {
+        for (Table table : unknown.getTables()) {
+            if (knownTableNames.contains(table.getName())) {
                 unknown.removeTable(table);
             }
         }
@@ -144,7 +159,7 @@ public class DbDiffController {
     }
 
     private void transform(Database database, Database wanted, Platform platform) {
-        for(ModelTransformer transformer : Arrays.asList(new MyISAMForeginKeyTransformer(), new MsSqlDoubleAsFloatTransformer())) {
+        for (ModelTransformer transformer : Arrays.asList(new MyISAMForeginKeyTransformer(), new MsSqlDoubleAsFloatTransformer())) {
             transformer.transform(database, wanted, platform);
         }
     }
@@ -154,7 +169,7 @@ public class DbDiffController {
 
         Map<ClassLoader, ClassLoader> classLoaders = new IdentityHashMap<ClassLoader, ClassLoader>();
 
-        for(OpenAksessPlugin plugin : pluginManager.getPlugins()) {
+        for (OpenAksessPlugin plugin : pluginManager.getPlugins()) {
             ClassLoader classLoader = pluginManager.getClassLoader(plugin);
             classLoaders.put(classLoader, classLoader);
         }
@@ -162,15 +177,15 @@ public class DbDiffController {
         classLoaders.put(getClass().getClassLoader(), getClass().getClassLoader());
 
 
-        Map<String, URL> resourcePaths = new LinkedHashMap<String, URL>();
+        Map<String, URL> resourcePaths = new LinkedHashMap<>();
 
 
-        for(ClassLoader classLoader : classLoaders.keySet()) {
+        for (ClassLoader classLoader : classLoaders.keySet()) {
 
             final Enumeration<URL> schemaListResources = classLoader.getResources("META-INF/services/openaksess-dbschemas.txt");
 
             for (URL listUrl : Collections.list(schemaListResources)) {
-                try(BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")))) {
+                try (BufferedReader br = new BufferedReader(new InputStreamReader(listUrl.openStream(), Charset.forName("utf-8")))) {
                     String line = null;
                     while ((line = br.readLine()) != null) {
                         line = line.trim();
@@ -182,10 +197,9 @@ public class DbDiffController {
                             resourcePaths.put(line, resource);
                         }
                     }
+                }
             }
         }
         return resourcePaths;
     }
-
-
 }

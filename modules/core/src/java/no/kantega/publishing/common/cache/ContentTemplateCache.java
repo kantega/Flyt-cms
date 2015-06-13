@@ -18,6 +18,7 @@ package no.kantega.publishing.common.cache;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.data.ContentTemplate;
+import no.kantega.publishing.common.data.TemplateConfiguration;
 
 import java.util.Date;
 import java.util.List;
@@ -69,7 +70,9 @@ public class ContentTemplateCache  {
     }
 
     public static List<ContentTemplate> getTemplates() throws SystemException {
-        return TemplateConfigurationCache.getInstance().getTemplateConfiguration().getContentTemplates();
+        TemplateConfigurationCache instance = TemplateConfigurationCache.getInstance();
+        TemplateConfiguration templateConfiguration = instance.getTemplateConfiguration();
+        return templateConfiguration.getContentTemplates();
     }
 
 }

@@ -38,10 +38,9 @@ public class RemoveNestedSpanTagsFilterTest {
         String htmlBefore = "<p><span>abc</span><span>123</span></p>";
         String expectedHtmlAfter = "<p><span>abc</span><span>123</span></p>";
 
-        StringWriter sw = new StringWriter();
-        pipeline.filter(new StringReader(htmlBefore), sw);
+        String after = pipeline.filter(htmlBefore);
 
-        assertEquals(expectedHtmlAfter, sw.toString());
+        assertEquals(expectedHtmlAfter, after);
     }
 
     @Test

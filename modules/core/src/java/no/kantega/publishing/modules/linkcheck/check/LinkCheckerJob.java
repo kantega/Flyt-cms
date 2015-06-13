@@ -19,6 +19,7 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.ao.LinkDao;
