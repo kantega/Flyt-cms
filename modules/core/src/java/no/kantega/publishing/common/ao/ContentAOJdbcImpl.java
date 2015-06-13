@@ -30,7 +30,6 @@ import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentAttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
@@ -755,7 +754,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
 
         // Delete old versions (only keep last n versions)
-        ContentTemplate ct = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
+        ContentTemplate ct = contentTemplateAO.getTemplateById(content.getContentTemplateId());
 
         int keepVersions = ct.computeKeepVersions();
         // -1 = keep all versions

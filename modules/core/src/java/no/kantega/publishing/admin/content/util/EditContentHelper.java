@@ -22,8 +22,8 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.AssociationHelper;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
@@ -69,7 +69,7 @@ public class EditContentHelper {
 
     private static ContentIdHelper contentIdHelper;
     private static TopicDao topicDao;
-
+    private static ContentTemplateAO contentTemplateAO;
     /**
      * Create a new Content object
      * @param securitySession - SecuritySession
@@ -231,7 +231,7 @@ public class EditContentHelper {
         ContentTemplate template = null;
 
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
-            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+            template = contentTemplateAO.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
@@ -294,7 +294,7 @@ public class EditContentHelper {
         }
 
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
-            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+            template = contentTemplateAO.getTemplateById(content.getContentTemplateId(), true);
         } else {
             if (content.getMetaDataTemplateId() != -1) {
                 template = MetadataTemplateCache.getTemplateById(content.getMetaDataTemplateId(), true);
@@ -547,6 +547,7 @@ public class EditContentHelper {
                         contentAO = context.getBean(ContentAO.class);
                         contentIdHelper = context.getBean(ContentIdHelper.class);
                         topicDao = context.getBean(TopicDao.class);
+                        contentTemplateAO = context.getBean(ContentTemplateAO.class);
 
                     }
                     ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
@@ -569,7 +570,7 @@ public class EditContentHelper {
             }
         }
         if (content.getContentTemplateId() > 0) {
-            ContentTemplate template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+            ContentTemplate template = contentTemplateAO.getTemplateById(content.getContentTemplateId(), true);
             if (template != null) {
                 inheritPropertiesByTemplate(content, template);
             }

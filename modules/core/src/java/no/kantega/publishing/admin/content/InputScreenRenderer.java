@@ -21,8 +21,8 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.MetadataTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
@@ -34,6 +34,8 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -50,6 +52,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class InputScreenRenderer {
     private static final Logger log = LoggerFactory.getLogger(InputScreenRenderer.class);
+    private final ContentTemplateAO contentTemplateAO;
 
     private PageContext pageContext = null;
     private Content content = null;
@@ -60,6 +63,8 @@ public class InputScreenRenderer {
         this.pageContext = pageContext;
         this.content  = content;
         this.attributeType = attributeDataType;
+        WebApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(pageContext.getServletContext());
+        contentTemplateAO = context.getBean(ContentTemplateAO.class);
     }
 
 
@@ -87,7 +92,7 @@ public class InputScreenRenderer {
 
         ContentTemplate template = null;
         if (attributeType == AttributeDataType.CONTENT_DATA) {
-            template = ContentTemplateCache.getTemplateById(content.getContentTemplateId(), true);
+            template = contentTemplateAO.getTemplateById(content.getContentTemplateId(), true);
         } else if (attributeType == AttributeDataType.META_DATA && content.getMetaDataTemplateId() > 0) {
             template = MetadataTemplateCache.getTemplateById(content.getContentTemplateId(), true);
         }

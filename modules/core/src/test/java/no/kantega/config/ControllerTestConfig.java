@@ -8,6 +8,7 @@ import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentAliasDao;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.api.xmlcache.XmlCache;
@@ -180,5 +181,10 @@ public class ControllerTestConfig {
             }
         });
         return postLoginHandlerFactory;
+    }
+
+    @Bean
+    public ContentTemplateAO contentTemplateAO(){
+        return mock(ContentTemplateAO.class);
     }
 }

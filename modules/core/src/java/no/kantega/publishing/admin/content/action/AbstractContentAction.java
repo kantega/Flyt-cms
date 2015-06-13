@@ -17,14 +17,15 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,6 +35,10 @@ import java.util.Map;
  *
  */
 public abstract class AbstractContentAction extends AbstractController {
+
+    @Autowired
+    private ContentTemplateAO contentTemplateAO;
+
     protected void setRequestVariables(HttpServletRequest request, Content current, ContentManagementService aksessService, Map<String, Object> model) {
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
@@ -41,7 +46,7 @@ public abstract class AbstractContentAction extends AbstractController {
 
         model.put("isAdmin", securitySession.isUserInRole(Aksess.getAdminRole()));
 
-        ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(current.getContentTemplateId());
+        ContentTemplate contentTemplate = contentTemplateAO.getTemplateById(current.getContentTemplateId());
         model.put("hearingEnabled", contentTemplate.isHearingEnabled() && current.getStatus() != ContentStatus.HEARING);
 
         model.put("toggleSearchableEnabled", contentTemplate.isSearchable());

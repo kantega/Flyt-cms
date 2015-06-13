@@ -27,12 +27,12 @@ import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.service.lock.ContentLock;
 import no.kantega.publishing.api.service.lock.LockManager;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
@@ -74,6 +74,8 @@ public class ContentPropertiesAction {
     @Autowired(required = false)
     private OrganizationManager<? extends OrgUnit> organizationManager;
     @Autowired private LockManager lockManager;
+    @Autowired
+    private ContentTemplateAO contentTemplateAO;
 
     @RequestMapping("/admin/publish/ContentProperties.action")
     public @ResponseBody Map<String, Object> handleRequest(HttpServletRequest request) throws Exception {
@@ -176,7 +178,7 @@ public class ContentPropertiesAction {
                 String owner = trySetOrgunit(content);
                 contentProperties.put("owner", owner);
                 contentProperties.put("displayTemplate", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()));
-                contentProperties.put("contentTemplate", ContentTemplateCache.getTemplateById(content.getContentTemplateId()));
+                contentProperties.put("contentTemplate", contentTemplateAO.getTemplateById(content.getContentTemplateId()));
 
                 model.put("showApproveButtons", showApproveButtons);
                 model.put("enabledButtons", enabledButtons);

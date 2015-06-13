@@ -31,6 +31,7 @@ import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.notes.NotesDao;
 import no.kantega.publishing.api.path.PathEntry;
@@ -43,7 +44,6 @@ import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.DeletedItemsAO;
 import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Association;
@@ -125,6 +125,7 @@ public class ContentManagementService {
     private ContentIdHelper contentIdHelper;
     private ContentEventListener contentNotifier;
     private LockManager lockManager;
+    private ContentTemplateAO contentTemplateAO;
 
     private ContentManagementService() {
         ApplicationContext context = RootContext.getInstance();
@@ -145,6 +146,7 @@ public class ContentManagementService {
         lockManager = context.getBean(LockManager.class);
 
         attachmentAO = context.getBean(AttachmentAO.class);
+        contentTemplateAO = context.getBean(ContentTemplateAO.class);
     }
 
     public ContentManagementService(HttpServletRequest request) throws SystemException {
@@ -1100,7 +1102,7 @@ public class ContentManagementService {
      * @throws SystemException
      */
     public ContentTemplate getContentTemplate(int id) throws SystemException {
-        return ContentTemplateCache.getTemplateById(id);
+        return contentTemplateAO.getTemplateById(id);
     }
 
 

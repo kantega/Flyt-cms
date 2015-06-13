@@ -16,8 +16,8 @@ import no.kantega.publishing.admin.content.util.SaveContentHelper;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentCreateParameters;
 import no.kantega.publishing.common.data.ContentTemplate;
@@ -46,6 +46,9 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
     @Autowired
     private ContentIdHelper contentIdHelper;
+
+    @Autowired
+    private ContentTemplateAO contentTemplateAO;
 
     /**
      * Implement this method to decide if user is allowed to edit this page.
@@ -142,7 +145,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
         Boolean allowArchive = Boolean.valueOf(config.getString("miniaksess.mediaarchive", "false"));
         request.setAttribute("miniAksessMediaArchive", allowArchive);
 
-        ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
+        ContentTemplate contentTemplate = contentTemplateAO.getTemplateById(content.getContentTemplateId());
         if (contentTemplate.isHearingEnabled() && content.getStatus() != ContentStatus.HEARING) {
             request.setAttribute("hearingEnabled", Boolean.TRUE);
         }

@@ -293,6 +293,8 @@
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
 
+    <bean class="no.kantega.publishing.common.ao.ContentTemplateAOImpl"/>
+
     <bean class="no.kantega.publishing.common.ao.MultimediaAOImpl">
         <property name="permissionAO" ref="permissionsAO"/>
         <property name="multimediaDao" ref="aksessMultimediaDao"/>

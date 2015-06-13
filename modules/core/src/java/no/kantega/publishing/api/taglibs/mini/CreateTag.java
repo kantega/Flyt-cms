@@ -19,8 +19,8 @@ package no.kantega.publishing.api.taglibs.mini;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.URLHelper;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.DisplayTemplate;
@@ -29,11 +29,13 @@ import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 import java.io.IOException;
 
 public class CreateTag extends AbstractSimpleEditTag {
@@ -136,6 +138,12 @@ public class CreateTag extends AbstractSimpleEditTag {
         return SKIP_BODY;
     }
 
+    @Override
+    public void setPageContext(PageContext pageContext) {
+        super.setPageContext(pageContext);
+        webApplicationContext = WebApplicationContextUtils.getWebApplicationContext(pageContext.getServletContext());
+    }
+
     public void setDisplaytemplateid(int displaytemplateid) {
         this.displayTemplateId = displaytemplateid;
     }
@@ -150,7 +158,7 @@ public class CreateTag extends AbstractSimpleEditTag {
     }
 
     public void setContenttemplatename(String contenttemplatename) {
-        ContentTemplate template = ContentTemplateCache.getTemplateByPublicId(contenttemplatename);
+        ContentTemplate template = webApplicationContext.getBean(ContentTemplateAO.class).getTemplateByPublicId(contenttemplatename);
         this.contentTemplateId = template.getId();
     }
 

@@ -21,12 +21,13 @@ import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentTemplateAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.cache.ContentTemplateCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -38,6 +39,9 @@ import java.util.Map;
  */
 public class SaveVersionAction extends AbstractSaveContentAction {
     private String view;
+
+    @Autowired
+    private ContentTemplateAO contentTemplateAO;
 
     public ValidationErrors saveRequestParameters(Content content, RequestParameters param, ContentManagementService aksessService) throws SystemException, InvalidFileException, InvalidTemplateException{
         return new ValidationErrors();
@@ -56,7 +60,7 @@ public class SaveVersionAction extends AbstractSaveContentAction {
         ContentManagementService cms = new ContentManagementService(request);
 
         List allVersions = cms.getAllContentVersions(cid);
-        ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
+        ContentTemplate contentTemplate = contentTemplateAO.getTemplateById(content.getContentTemplateId());
 
         model.put("allVersions", allVersions);
         if (contentTemplate.computeKeepVersions() != -1) {
