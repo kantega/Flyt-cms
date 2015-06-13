@@ -13,14 +13,14 @@ public interface MultimediaDao {
      * @param id - id of object to be deleted
      * @throws ObjectInUseException - Thrown if there exists children for this object
      */
-    public void deleteMultimedia(int id) throws ObjectInUseException;
+    void deleteMultimedia(int id) throws ObjectInUseException;
 
     /**
      * Get Multimedia object from database (only metadata is fetched, data is not fetched)
      * @param id - Id of object to retrieve
      * @return - Multimedia
      */
-    public Multimedia getMultimedia(int id);
+    Multimedia getMultimedia(int id);
 
     /**
      * Get Multimedia object from database (only metadata is fetched, data is not fetched)
@@ -28,7 +28,7 @@ public interface MultimediaDao {
      * @param name - name of object to retrieve
      * @return - Multimedia
      */
-    public Multimedia getMultimediaByParentIdAndName(int parentId, String name);
+    Multimedia getMultimediaByParentIdAndName(int parentId, String name);
 
 
     /**
@@ -37,14 +37,14 @@ public interface MultimediaDao {
      * @return - Multimedia
      * @throws SystemException
      */
-    public Multimedia getProfileImageForUser(String userId);
+    Multimedia getProfileImageForUser(String userId);
 
     /**
      * Stream multimedia data
      * @param id - Id of object to stream data for
      * @param ish - InputStreamHandler to receive data
      */
-    public void streamMultimediaData(int id, InputStreamHandler ish);
+    void streamMultimediaData(int id, InputStreamHandler ish);
 
 
     /**
@@ -52,7 +52,7 @@ public interface MultimediaDao {
      * @param parentId - parentId
      * @return - List<Multimedia>
      */
-    public List<Multimedia> getMultimediaList(int parentId);
+    List<Multimedia> getMultimediaList(int parentId);
 
 
     /**
@@ -60,14 +60,14 @@ public interface MultimediaDao {
      * @param contentId - contentId
      * @return - List<Multimedia>
      */
-    public List<Multimedia> getMultimediaWithContentId(int contentId);
+    List<Multimedia> getMultimediaWithContentId(int contentId);
 
     /**
      * Get number of objects in mediaarchive
      *
      * @return number of objects in mediaarchive
      */
-    public int getMultimediaCount();
+    int getMultimediaCount();
 
 
     /**
@@ -75,9 +75,9 @@ public interface MultimediaDao {
      * @param multimediaId - Id of object to be moved
      * @param newParentId - Ny plassering for objekt
      */
-    public void moveMultimedia(int multimediaId, int newParentId);
+    void moveMultimedia(int multimediaId, int newParentId);
 
 
 
-    public int setMultimedia(Multimedia multimedia) throws SystemException;
+    int setMultimedia(Multimedia multimedia) throws SystemException;
 }
