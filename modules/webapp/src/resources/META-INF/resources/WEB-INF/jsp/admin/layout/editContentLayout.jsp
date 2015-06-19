@@ -31,7 +31,12 @@
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.js"/>"></script>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_gzip.js"/>"></script>
+    <!--TinyMCE script Fetch-->
+    <!--script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_gzip.js"/>"></script-->
+    <!--script type="text/javascript" src="/webjars/tinymce/4.1.9/tinymce.min.js"></script-->
+    <%--<script type="text/javascript" src="<kantega:expireurl url="/webjars/tinymce/4.1.9/tinymce.min.js"/>"></script>--%>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tinymce_NEW/tinymce.min.js"/>"></script>
+    <%--<!--script src="//tinymce.cachefly.net/4.1/tinymce.min.js"></script-->--%>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 
@@ -108,6 +113,8 @@
                     $("#ContentStatus").val(status);
                     document.myform.submit();
                 }
+            } else {
+                console.log("Invalid propertieeeeeeeeeeeeeees!") //TODO remove
             }
         }
 

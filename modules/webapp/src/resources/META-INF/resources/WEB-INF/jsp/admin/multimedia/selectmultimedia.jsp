@@ -34,61 +34,80 @@
     if (maxWidth > mm.getWidth() && mm.getWidth() > 0) {
         maxWidth = mm.getWidth();
     }
+    String imageTag = MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null);
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 
 <html>
-<head>
-    <title>...</title>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>
-</head>
-<script language="Javascript">
-    function insertMMObject() {
-        var p;
-        if (window.opener) {
-            p = window.opener;
-        } else {
-            p = window.parent;
-        }
+    <head>
+        <title>...</title>
+        <%--<!--script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script-->--%>
+        <script language="Javascript">
+            function insertMMObject() {
+                var p;
+                if (window.opener) {
+                    p = window.opener;
+                } else {
+                    p = window.parent;
+                }
+                console.log("hei ONE");
+                if (p && <%=(!mm.isNew())%>) {
+                    var metadata = {};
+                    metadata.id = <%=mm.getId()%>;
+                    metadata.name = '<%=mm.getName()%>';
+                    metadata.url = '<%=mm.getUrl()%>';
+                    metadata.mimeType = '<%=mm.getMimeType().getType()%>';
+                    metadata.fileExtension = '<%=mm.getMimeType().getFileExtension()%>';
+                    console.log("insertTag? : "+ p.openaksess.editcontext.doInsertTag);
+                    if (p.openaksess.editcontext.doInsertTag) {
+                        console.log("hei TWO");
+                        // Insert IMG or other tag
+                        var str = document.mediaform.tag.value;
+                        var editor = p.tinymce.EditorManager.activeEditor;
+                        // IE 7 & 8 looses selection. Must be restored manually.
+                        editor.selection.moveToBookmark(editor.windowManager.bookmark);
+//                        tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
+                        insertHtml(editor, str);
+                    } else {
+                        console.log("hei THREE");
 
-        if (p && <%=(!mm.isNew())%>) {
-            var metadata = {};
-            metadata.id = <%=mm.getId()%>;
-            metadata.name = '<%=mm.getName()%>';
-            metadata.url = '<%=mm.getUrl()%>';
-            metadata.mimeType = '<%=mm.getMimeType().getType()%>';
-            metadata.fileExtension = '<%=mm.getMimeType().getFileExtension()%>';
-            if (p.openaksess.editcontext.doInsertTag) {
-                // Insert IMG or other tag
-                var str = document.mediaform.tag.value;
-                var editor = p.tinymce.EditorManager.activeEditor;
-                // IE 7 & 8 looses selection. Must be restored manually.
-                tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
-                insertHtml(editor, str);
-            } else {
-                p.openaksess.editcontext.insertMultimedia(metadata);
+                        var editor = p.tinymce.EditorManager.activeEditor;
+                        insertHtml(editor, "");
+                        p.openaksess.editcontext.insertMultimedia(metadata);
+                    }
+                }
+
+                console.log("hei FIRE");
+                console.log(window);
+                console.log(window.opener);
+                if (window.opener) {
+                    console.log("hei FEM");
+                    window.close();
+                } else {
+                    console.log(window.parent);
+//                    window.close();
+                    console.log(p.openaksess.common.modalWindow);
+                    console.log(window.closed);
+                    p.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
+//                    window.setTimeout(p.openaksess.common.modalWindow.close, 300);
+                }
             }
 
-        }
-        if (window.opener) {
-            window.close();
-        } else {
-            window.setTimeout(p.openaksess.common.modalWindow.close, 300);
-        }
-
-    }
-
-    function insertHtml(editor, html) {
-        editor.execCommand("mceBeginUndoLevel");
-        editor.execCommand("mceInsertRawHTML", false, html, {skip_undo : 1});
-        editor.execCommand("mceEndUndoLevel");
-    }
-</script>
-<body onLoad="insertMMObject()">
-<form name="mediaform" style="display:none;">
-    <textarea name="tag" rows="2" cols="30"><%=MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
-</form>
-</body>
+            function insertHtml(editor, html) {
+                console.log('Insert html <%=imageTag%> '+html);
+//                editor.execCommand("mceBeginUndoLevel");
+                editor.execCommand("mceInsertRawHTML", false, '<%=imageTag%>');//html, {skip_undo : 1});
+//                editor.execCommand("mceEndUndoLevel");
+                //var parentWin = (!window.frameElement && window.dialogArguments) || opener || parent || top;
+                //parentWin.my_namespace_tulleparam = '<%=imageTag%>';
+            }
+        </script>
+    </head>
+    <body onLoad="insertMMObject()">
+    <form name="mediaform" style="display:none;">
+        <textarea name="tag" rows="2" cols="30"><%=MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
+    </form>
+    </body>
 </html>
 
 

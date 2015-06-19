@@ -55,9 +55,24 @@ public class InsertLinkAction extends AbstractController {
         Map<String, Object> model = new HashMap<>();
         RequestParameters param = new RequestParameters(request);
         String url = param.getString("url");
+        String subjectTitle = param.getString("subjectTitle"); //kommer fra url uansett?
         if (url != null) {
             if (url.contains("@")) {
                 linkType = LINKTYPE_EMAIL;
+                if(url.startsWith("mailto:")){
+                    url = url.substring(7); // Remove 'mailto:'
+                }
+                if (subjectTitle.equals("")){
+//                    String subjTit = "";
+                    // Find and separate subject parameter
+                    if(url.contains("?")){
+                        int indexQ = url.indexOf("?");
+                        subjectTitle = url.substring( indexQ+9 );
+                        url = url.substring( 0, indexQ );
+                    }
+                }
+
+                model.put("subjectTitle", subjectTitle);
             }
             if (url.contains(Aksess.ATTACHMENT_REQUEST_HANDLER) || url.contains("/attachment/")) {
                 linkType = LINKTYPE_ATTACHMENT;
@@ -66,9 +81,10 @@ public class InsertLinkAction extends AbstractController {
         model.put("linkType", linkType);
 
         if (url == null || url.length() == 0) {
-            if (linkType.equals("external")) {
+            if (linkType.equals(LINKTYPE_EXTERNAL)) {
                 url = "http://";
             }
+
         }
 
 

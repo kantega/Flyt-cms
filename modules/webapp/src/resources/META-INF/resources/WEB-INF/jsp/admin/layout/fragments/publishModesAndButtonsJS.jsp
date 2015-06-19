@@ -74,6 +74,8 @@
         // These buttons are only displayed when user is editing a page or previewing with a changed page
         $("#EditContentButtons input.publish").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.publish");
+            console.log(" HEIIIIIII! ");
+            console.log("<%=ContentStatus.PUBLISHED.getTypeAsInt()%>");
             saveContent(<%=ContentStatus.PUBLISHED.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.save").click(function(){

@@ -208,6 +208,12 @@
             <artifactId>metrics-ehcache</artifactId>
             <version>${metrics.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>tinymce</artifactId>
+            <version>4.1.9</version>
+        </dependency>
     </dependencies>
 
 </project>

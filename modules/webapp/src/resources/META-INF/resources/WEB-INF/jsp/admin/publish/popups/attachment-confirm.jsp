@@ -38,7 +38,7 @@
     </script>
     <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>
     <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>
+    <%--<script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>--%>
 
     <script language="Javascript" type="text/javascript">
 

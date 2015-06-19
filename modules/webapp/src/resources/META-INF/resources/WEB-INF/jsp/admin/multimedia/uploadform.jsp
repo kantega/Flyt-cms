@@ -33,8 +33,15 @@
             mmwin.focus();
         }
         function buttonOkPressed() {
-            if (validateUpload()) {
+            var val = validateUpload();
+            console.log("Validate Upload: "+val);
+            if (val){//validateUpload()) {
+//                addToEditor(formToString());
+//            tinymce.execCommand('mceInsertRawHTML', false, formToString());
+//                var parentWin = (!window.frameElement && window.dialogArguments) || opener || parent || top;
+//                parentWin.my_namespace_tullepaparm = document.uploadForm.file;
                 document.uploadForm.submit();
+//                window.close();
             }
             return false;
         }
