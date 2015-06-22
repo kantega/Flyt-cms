@@ -84,6 +84,8 @@
         });
         $("#EditContentButtons input.savedraft").click(function(){
             openaksess.common.debug("publishModesAndButtonsJS.savedraft");
+            console.log(" Save draft! ");
+            console.log("<%=ContentStatus.DRAFT.getTypeAsInt()%>");
             saveContent(<%=ContentStatus.DRAFT.getTypeAsInt()%>);
         });
         $("#EditContentButtons input.hearing").click(function(){

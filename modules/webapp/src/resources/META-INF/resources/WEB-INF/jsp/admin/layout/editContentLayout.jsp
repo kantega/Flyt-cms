@@ -33,7 +33,7 @@
     <script type="text/javascript" src="<kantega:expireurl url="/wro-oa/admin-editcontentlayout.js"/>"></script>
     <!--TinyMCE script Fetch-->
     <%--<script type="text/javascript" src="<kantega:expireurl url="/webjars/tinymce/4.1.9/tinymce.min.js"/>"></script>--%>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tinymce_NEW/tinymce.min.js"/>"></script>
+    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tinymce/tinymce.min.js"/>"></script>
 
     <%@include file="fragments/publishModesAndButtonsJS.jsp"%>
 
@@ -108,6 +108,9 @@
                         $contentIsModified.val(openaksess.editcontext.isModified());
                     }
                     $("#ContentStatus").val(status);
+                    console.log("Saving Content");
+                    console.log( $("#EditContentForm") );
+                    console.log( $("#EditContentForm").attr("action") );
                     document.myform.submit();
                 }
             }
