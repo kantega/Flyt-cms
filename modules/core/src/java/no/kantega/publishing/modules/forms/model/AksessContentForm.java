@@ -58,7 +58,7 @@ public class AksessContentForm extends DefaultForm {
     }
 
     private String getEmailFromRepeater(RepeaterAttribute repeaterAttribute, String email) {
-        StringBuilder emailBuilder = new StringBuilder();
+        StringBuilder emailBuilder = new StringBuilder(email);
         Iterator<List<Attribute>> it =  repeaterAttribute.getIterator();
         while(it.hasNext()) {
             for (Attribute a : it.next()) {
