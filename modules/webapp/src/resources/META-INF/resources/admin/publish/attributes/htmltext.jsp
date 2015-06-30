@@ -213,15 +213,13 @@
             selector: "textarea#<%=fieldName%>", //dekker dette alle? NEI bruk name/id/class
             theme: "modern",
 
-            plugins: ["advlist autolink bbcode image lists charmap print preview hr anchor pagebreak spellchecker",
+            plugins: ["advlist autolink bbcode image lists charmap print preview hr anchor pagebreak",
                     "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
-                    "save table contextmenu directionality emoticons template paste textcolor",
+                    "save table directionality emoticons template paste textcolor",
                     "aksess_uploadpic aksess_insertmedia aksess_insertlink aksess_lixscore",
-                    "aksess_inserttable autosave aksess_spellchecker"
-                ], //contextmenu
-            toolbar: ["aksess_lixscore spellchecker | styleselect | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent | aksess_insertlink aksess_unlink link unlink anchor | aksess_insertmedia aksess_uploadpic media template | undo redo | cut copy paste pastetext removeformat cleanup | find searchreplace |",
-//            "cell row column | tableprops deletetable | rowprops cellprops | rowbefore rowafter deleterow | colbefore colafter deletecol | splitcells mergecells |",
-                " aksess_inserttable | table | preview fullscreen fullpage | subscript superscript charmap | code restoredraft aksess_spellchecker"
+                    "aksess_inserttable autosave aksess_spellchecker aksess_contextmenu aksess_template"
+                ], //paste
+            toolbar: ["aksess_lixscore aksess_spellchecker | styleselect | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent | aksess_insertlink aksess_unlink link unlink anchor | aksess_insertmedia aksess_uploadpic media template | undo redo | cut copy paste pastetext removeformat cleanup | find searchreplace | aksess_inserttable | table | preview fullscreen fullpage | subscript superscript charmap | code restoredraft aksess_template"
                 ],
             contextmenu: "aksess_insertmedia aksess_insertlink aksess_inserttable | inserttable tableprops cell row column deletetable",
 //            spellchecker_rpc_url: 'spellchecker.php',
@@ -229,6 +227,13 @@
             autosave_interval: "5s", //reminder
             autosave_retention: "30m", //stored local incase of crash
             browser_spellcheck: true,
+            <%--template_external_list_url : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",--%>
+            <%--templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",--%>
+            templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",
+//            templates : [
+//                    {title: 'Some title 1', description: 'Some desc 1', url: 'http://dagbladet.no'},
+//                    {title: 'Some title 2', description: 'Some desc to', content: 'My other content'},
+//                ],
             style_formats: [
                 {title: 'Bold text', inline: 'b'},
                 {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
