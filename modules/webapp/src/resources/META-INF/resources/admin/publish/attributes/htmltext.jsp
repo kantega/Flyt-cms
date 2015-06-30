@@ -207,9 +207,7 @@
 </script>
 
 <div class="inputs">
-    <textarea name="<%=fieldName%>" id="<%=fieldName%>" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}">
-        <%=value%>
-    </textarea><br>
+    <textarea name="<%=fieldName%>" id="<%=fieldName%>" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}"><%=value%></textarea><br>
     <script type="text/javascript">
         tinymce.init({
             selector: "textarea#<%=fieldName%>", //dekker dette alle? NEI bruk name/id/class
@@ -219,18 +217,18 @@
                     "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
                     "save table contextmenu directionality emoticons template paste textcolor",
                     "aksess_uploadpic aksess_insertmedia aksess_insertlink aksess_lixscore",
-                    "aksess_inserttable aksess_autosave"
-                ],
+                    "aksess_inserttable autosave aksess_spellchecker"
+                ], //contextmenu
             toolbar: ["aksess_lixscore spellchecker | styleselect | formatselect | bold italic | alignleft aligncenter alignright | bullist numlist | outdent indent | aksess_insertlink aksess_unlink link unlink anchor | aksess_insertmedia aksess_uploadpic media template | undo redo | cut copy paste pastetext removeformat cleanup | find searchreplace |",
 //            "cell row column | tableprops deletetable | rowprops cellprops | rowbefore rowafter deleterow | colbefore colafter deletecol | splitcells mergecells |",
-                " aksess_inserttable | table | preview fullscreen fullpage | subscript superscript charmap | code aksess_restoredraft"
+                " aksess_inserttable | table | preview fullscreen fullpage | subscript superscript charmap | code restoredraft aksess_spellchecker"
                 ],
             contextmenu: "aksess_insertmedia aksess_insertlink aksess_inserttable | inserttable tableprops cell row column deletetable",
 //            spellchecker_rpc_url: 'spellchecker.php',
             menubar: true,
             autosave_interval: "5s", //reminder
-            autosave_restore_when_empty: false, //todo remove!!!!
             autosave_retention: "30m", //stored local incase of crash
+            browser_spellcheck: true,
             style_formats: [
                 {title: 'Bold text', inline: 'b'},
                 {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
@@ -239,7 +237,12 @@
                 {title: 'Example 2', inline: 'span', classes: 'example2'},
                 {title: 'Table styles'},
                 {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
-            ]
+            ]/*,
+            setup : function(editor) {
+                editor.onInit.add(function(editor, evt) { //since tinymce4 use ed.on('init', function(evt){...
+                    editor.getBody().setAttribute('spellcheck', true);
+                });
+            }*/
         });
     </script>
 </div>

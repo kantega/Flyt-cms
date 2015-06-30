@@ -39,7 +39,7 @@
 
     <script type="text/javascript">
         var hasSubmitted = false;
-
+        var lastSavedForm;
         $(document).ready(function(){
             bindToolbarButtons();
             <c:choose>
@@ -57,6 +57,7 @@
             </c:choose>
 
             openaksess.editcontext.init();
+            initShadowdraft();
         });
 
         function scrollTo() {
@@ -92,15 +93,56 @@
             </c:if>
         }
 
+        function initShadowdraft(){
+            console.log( "val:'"+ $("#attributeValue_tekst").val()+"'" );
+            openaksess.editcontext.saveAll();
+            lastSavedForm = $("#EditContentForm").serializeArray();
+        }
+
+        function submitShadowdraft(){
+            var form = $("#EditContentForm");
+            console.log("Saving Content SPØKELSESKLADD");
+            //submit her
+            form.submit(function( event ) {
+                lastSavedForm = $( this ).serializeArray();
+                //console.log( lastSavedForm );
+                $.post( form.attr("action"), lastSavedForm );
+                event.preventDefault();
+            });
+            form.submit();
+            form.unbind("submit");
+        }
+
+        function displaySaveTimestamp(){
+            var date = new Date;
+            var timeString = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+            $("#lastAutosaveTime").text(timeString);
+            $("#lastAutosaveSpan").show();
+            $("#minorChangeSpan").addClass("barButton");
+        }
+
+        function saveContentBackgroundDraft(){
+            var status ="<%=ContentStatus.GHOSTDRAFT.getTypeAsInt()%>"; //21
+            openaksess.common.debug("publishLayout.saveContentBackgroundDraft(): status: " + status);
+            if (validatePublishProperties()) {
+                window.onbeforeunload = null;
+                openaksess.editcontext.saveAll();
+                var $contentIsModified = $("#ContentIsModified");
+                if ($contentIsModified.val() == "false") {
+                    $contentIsModified.val(openaksess.editcontext.isModified());
+                }
+//                $("#MinorChange").val("true");
+                $("#ContentStatus").val(status);
+                submitShadowdraft();
+                displaySaveTimestamp();
+            }
+        }
+
         function saveContent(status) {
             openaksess.common.debug("publishLayout.saveContent(): status: " + status);
-
-
             if (validatePublishProperties()) {
                 if (!hasSubmitted) {
-
                     window.onbeforeunload = null;
-
                     hasSubmitted = true;
                     openaksess.editcontext.saveAll();
                     var $contentIsModified = $("#ContentIsModified");
@@ -108,9 +150,6 @@
                         $contentIsModified.val(openaksess.editcontext.isModified());
                     }
                     $("#ContentStatus").val(status);
-                    console.log("Saving Content");
-                    console.log( $("#EditContentForm") );
-                    console.log( $("#EditContentForm").attr("action") );
                     document.myform.submit();
                 }
             }
@@ -124,7 +163,28 @@
             }
         }
 
+        function formIsChanged(form){
+            // Satse på at samme type og length
+            for(var i=0; i< form.length; i++){
+                if( JSON.stringify(form[i]) != JSON.stringify(lastSavedForm[i]) ){
+                    console.log("form changed to ", form[i]);
+                    console.log("form changed from ", lastSavedForm[i]);
+                    return true;
+                }
+            }
+            return false;
+        }
+        function autosaveMethod(){
+            openaksess.editcontext.saveAll(); // Saves tinyMCE data to textareas
+            var currentForm = $("#EditContentForm").serializeArray();
+            if( formIsChanged(currentForm) ){
+                openaksess.common.debug("editContentLayout.saveBackgroundDraft");
+                saveContentBackgroundDraft();
+            }
+        }
+
         window.onbeforeunload = confirmBeforeUnload;
+        window.setInterval( autosaveMethod, (5 *1000));
     </script>
 </kantega:section>
 

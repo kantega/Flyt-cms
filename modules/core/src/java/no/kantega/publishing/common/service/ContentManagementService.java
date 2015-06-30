@@ -417,7 +417,7 @@ public class ContentManagementService {
                 .setContent(content)
                 .setUser(securitySession.getUser()));
 
-        Content c = contentAO.checkInContent(content, newStatus);
+        Content c = contentAO.checkInContent(content, newStatus); //Lagres til DB
 
         if (c.getStatus() == ContentStatus.HEARING) {
             saveHearing(content);
@@ -437,7 +437,7 @@ public class ContentManagementService {
         }
 
         String eventName;
-        switch (c.getStatus()) {
+        switch (c.getStatus()) { //TODO Possibly add GHOSTDRAFT to log each save
             case DRAFT:
                 eventName = Event.SAVE_DRAFT;
                 break;
