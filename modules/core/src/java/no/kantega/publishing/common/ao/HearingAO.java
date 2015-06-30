@@ -249,8 +249,8 @@ public class HearingAO {
 
     public static boolean isHearingInstance(int contentVersionId, String user) {
         JdbcTemplate template = dbConnectionFactory.getJdbcTemplate();
-        String query = "select count(HearingInvitee.HearingInviteeId) FROM HearingInvitee, Hearing WHERE InviteeType=" + HearingInvitee.TYPE_PERSON + " AND InviteeRef='" + user + "' AND Hearing.HearingId=HearingInvitee.HearingId AND Hearing.ContentVersionId=" + contentVersionId;
-        int count = template.queryForInt(query);
+        String query = "select count(HearingInvitee.HearingInviteeId) FROM HearingInvitee, Hearing WHERE InviteeType=" + HearingInvitee.TYPE_PERSON + " AND InviteeRef=? AND Hearing.HearingId=HearingInvitee.HearingId AND Hearing.ContentVersionId=?";
+        int count = template.queryForObject(query, Integer.class, user, contentVersionId);
         if(count > 0) {
             return true;
         } else {
@@ -272,7 +272,7 @@ public class HearingAO {
                 }
                 buffer.append(")");
 
-                count = template.queryForInt(buffer.toString());
+                count = template.queryForObject(buffer.toString(), Integer.class);
                 if(count > 0) {
                     return true;
                 }

@@ -225,7 +225,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             } else {
 
                 try {
-                    contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by Version desc", contentId, requestedVersion);
+                    contentVersionId = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by Version desc", Integer.class, contentId, requestedVersion);
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
@@ -1260,7 +1260,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (contentId == -1) {
             return false;
         }
-        int cnt = getJdbcTemplate().queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
+        int cnt = getJdbcTemplate().queryForObject("select count(*) from contentversion where ContentId = ? and status IN (?,?)", Integer.class, contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
         return cnt > 0;
     }
 
