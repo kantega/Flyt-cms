@@ -28,7 +28,6 @@ import no.kantega.security.api.role.DefaultRole;
 import no.kantega.security.api.role.RoleUpdateManager;
 import no.kantega.useradmin.model.ProfileManagementConfiguration;
 import no.kantega.useradmin.model.RoleManagementConfiguration;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,10 +41,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CreateInitialUserController extends AbstractController {
     public final static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
@@ -177,7 +173,7 @@ public class CreateInitialUserController extends AbstractController {
 
             try (FileOutputStream out = new FileOutputStream(tokenFile)) {
                 tokenFile.getParentFile().mkdirs();
-                IOUtils.write(Base64.encodeBase64(bytes), out);
+                IOUtils.write(Base64.getEncoder().encode(bytes), out);
             } catch (IOException e) {
                 throw new RuntimeException("Error writing token to file", e);
             }

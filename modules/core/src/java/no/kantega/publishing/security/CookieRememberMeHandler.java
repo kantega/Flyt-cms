@@ -14,11 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static org.apache.commons.codec.binary.Base64.decodeBase64;
-import static org.apache.commons.codec.binary.Base64.encodeBase64;
 
 public class CookieRememberMeHandler implements RememberMeHandler, InitializingBean {
 
@@ -50,7 +48,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
         String messageDigestHex = getMessageDigestHex(username, domain, hashKey);
 
         String s = username + ":" + domain + ":" + messageDigestHex;
-        String cookieValue = new String(encodeBase64(s.getBytes()));
+        String cookieValue = Base64.getEncoder().encodeToString((s.getBytes()));
 
         Cookie rememberMeCookie = createRememberMeCookie(cookieValue, cookieMaxAge);
 
@@ -67,7 +65,7 @@ public class CookieRememberMeHandler implements RememberMeHandler, InitializingB
             return null;
         }
 
-        String s = new String(decodeBase64(rememberMeCookie.getValue().getBytes()));
+        String s = new String(Base64.getDecoder().decode(rememberMeCookie.getValue().getBytes()));
         Matcher matcher = COOKIE_PATTERN.matcher(s);
         if (!matcher.matches()) {
             return null;

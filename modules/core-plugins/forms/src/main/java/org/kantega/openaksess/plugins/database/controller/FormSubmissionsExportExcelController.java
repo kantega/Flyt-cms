@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 public class FormSubmissionsExportExcelController extends AbstractController {
     private View view;
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.setHeader("Content-Disposition", "attachment; filename=\"OpenAksess_export.xls\"");
+        response.setHeader("Content-Disposition", "attachment; filename=\"OpenAksess_export.xlsx\"");
         return new ModelAndView(view);
     }
 
