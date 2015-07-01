@@ -347,7 +347,7 @@
         <dbcp.version>2.1</dbcp.version>
         <httpclient.version>4.4</httpclient.version>
         <fileupload.version>1.3.1</fileupload.version>
-        <springframework.version>4.2.0.RC1</springframework.version>
+        <springframework.version>4.2.0.RC2</springframework.version>
 
         <xalan.version>2.7.1</xalan.version>
         <xml-apis.version>1.4.01</xml-apis.version>
