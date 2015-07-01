@@ -16,17 +16,20 @@
 
 package org.kantega.openaksess.plugins.database.controller;
 
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 
 public class FormSubmissionsExportExcelController extends AbstractController {
     private View view;
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        response.setHeader("Content-Disposition", "attachment; filename=\"OpenAksess_export.xlsx\"");
+        int formIds[] = ServletRequestUtils.getIntParameters(request, "formId");
+        response.setHeader("Content-Disposition", "attachment; filename=\"OpenAksess_export" + Arrays.toString(formIds) + ".xlsx\"");
         return new ModelAndView(view);
     }
 
