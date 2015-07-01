@@ -107,7 +107,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
                     if (p.getId() == endId) break;
                 }
 
-                if (includeCurrent && content != null) {
+                if (includeCurrent) {
                     // Vis dersom root skal vises
                     if (includeRoot || content.getAssociation().getParentAssociationId() > 0) {
                         SiteMapEntry s = new SiteMapEntry(content.getAssociation().getId(), content.getAssociation().getAssociationId(), -1, content.getType(), ContentStatus.PUBLISHED, ContentVisibilityStatus.ACTIVE.statusId, content.getTitle(), content.getNumberOfNotes(), content.getContentTemplateId());
@@ -133,7 +133,7 @@ public class GetNavigationPathTag  extends BodyTagSupport {
             }
             pageContext.setAttribute("aksess_menu_" + name, offset);
             offset++;
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             name = "menu";
             var="entry";

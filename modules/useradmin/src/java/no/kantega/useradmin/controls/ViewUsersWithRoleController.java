@@ -31,11 +31,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jul 19, 2007
- * Time: 2:41:31 PM
- */
 public class ViewUsersWithRoleController extends AbstractUserAdminController {
 
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -44,7 +39,7 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
         String id = param.getString("roleId");
         String domain = param.getString("domain");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         model.put("roleId", id);
         model.put("roleDomain", domain);
 
@@ -53,7 +48,7 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
         role.setId(id);
         role.setDomain(domain);
 
-        List<ProfileSet> profileSets = new ArrayList<ProfileSet>();
+        List<ProfileSet> profileSets = new ArrayList<>();
 
         List<RoleManagementConfiguration> roleConfigs = getRoleConfiguration();
 
@@ -74,10 +69,10 @@ public class ViewUsersWithRoleController extends AbstractUserAdminController {
                 profileSet.setIsEditable(true);
             }
 
-            List<Profile> profiles = new ArrayList<Profile>();
-            Iterator identities = roleManager.getUsersWithRole(role);
+            List<Profile> profiles = new ArrayList<>();
+            Iterator<Identity> identities = roleManager.getUsersWithRole(role);
             while (identities.hasNext()) {
-                Identity identity = (Identity) identities.next();
+                Identity identity = identities.next();
 
                 // Ønsker å vise fullt navn for de som har brukerprofil
                 ProfileManager profileManager = profileConfig.getProfileManager();

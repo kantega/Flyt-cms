@@ -44,7 +44,7 @@ public class PhotoLinkTag extends BodyTagSupport {
 
 
     public int doStartTag() throws JspException {
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException
@@ -53,7 +53,7 @@ public class PhotoLinkTag extends BodyTagSupport {
         RequestParameters  param = new RequestParameters(request, "utf-8");
 
         try {
-            List photos = PhotoAlbumHelper.getPhotos(pageContext, -1);
+            List<Multimedia> photos = PhotoAlbumHelper.getPhotos(pageContext, -1);
             if (photos != null && photos.size() > 0) {
                 int curOffset = param.getInt("offset");
                 if (curOffset == -1) {
@@ -64,7 +64,7 @@ public class PhotoLinkTag extends BodyTagSupport {
 
                 JspWriter out = getPreviousOut();
 
-                Multimedia mm = (Multimedia)photos.get(curOffset);
+                Multimedia mm = photos.get(curOffset);
 
                 out.write("<a");
                 if (cssClass != null) {
