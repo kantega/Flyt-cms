@@ -395,6 +395,7 @@
         <junit.version>4.12</junit.version>
         <javax.mail-api.version>1.5.2</javax.mail-api.version>
         <mail.version>1.4.7</mail.version>
+        <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
     </properties>
 
     <profiles>
