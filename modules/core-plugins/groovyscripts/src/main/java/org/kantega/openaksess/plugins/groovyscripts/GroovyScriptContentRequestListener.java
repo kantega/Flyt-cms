@@ -167,6 +167,9 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                         }
                     }
                 }
+                if(parameters[i] == null) {
+                    log.warn("Could not resolve parameter of class {} for method {}. The context contained {} beans of this type, If there are multiple beans, please use @Qualifier");
+                }
             }
 
         }
