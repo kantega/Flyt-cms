@@ -56,6 +56,7 @@ public class DbDiffController {
     @Autowired
     private PluginManager<OpenAksessPlugin> pluginManager;
 
+    @SuppressWarnings("unchecked")
     @RequestMapping(method = RequestMethod.GET)
     public String view(ModelMap model) throws IOException {
 

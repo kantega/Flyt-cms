@@ -1971,13 +1971,6 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
-        <attribute>
-            <description>Sets whether the user should be retrieved from cache. Increases performance at the risk of returning outdated user data.</description>
-            <name>usecache</name>
-            <required>false</required>
-            <rtexprvalue>true</rtexprvalue>
-            <type>boolean</type>
-        </attribute>
     </tag>
     <tag>
         <description>Print body if user is logged in</description>

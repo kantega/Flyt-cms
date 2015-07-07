@@ -18,7 +18,7 @@ import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import org.apache.commons.collections.Predicate;
+import org.apache.commons.collections4.Predicate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +31,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import static org.apache.commons.collections.CollectionUtils.select;
+import static org.apache.commons.collections4.CollectionUtils.select;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -218,10 +218,10 @@ public class ContentAOJdbcImplTest {
 
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
-        Collection<Content> content = select(contentList, new Predicate() {
+        Collection<Content> content = select(contentList, new Predicate<Content>() {
             @Override
-            public boolean evaluate(Object o) {
-                return c.getId() == ((Content)o).getId();
+            public boolean evaluate(Content o) {
+                return c.getId() == o.getId();
             }
         });
         assertEquals(1, content.size());
@@ -238,10 +238,10 @@ public class ContentAOJdbcImplTest {
 
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
-        Collection<Content> content = select(contentList, new Predicate() {
+        Collection<Content> content = select(contentList, new Predicate<Content>() {
             @Override
-            public boolean evaluate(Object o) {
-                return c.getId() == ((Content) o).getId();
+            public boolean evaluate(Content o) {
+                return c.getId() == o.getId();
             }
         });
 

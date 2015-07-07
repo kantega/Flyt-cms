@@ -22,10 +22,12 @@ import org.jsoup.parser.Tag;
 import org.jsoup.select.NodeTraversor;
 import org.jsoup.select.NodeVisitor;
 
+import java.util.Arrays;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  * Filter that removes nested spans.
@@ -57,41 +59,32 @@ public class RemoveNestedSpanTagsFilter implements Filter {
     /**
      Iterates the input and copies trusted nodes (tags, attributes, text) into the destination.
      */
-    private final class CleaningVisitor implements NodeVisitor {
+    private static final class CleaningVisitor implements NodeVisitor {
         private Element destination; // current element to append nodes to
 
-        private Stack<Boolean> spanTagsStack = new Stack<>();
-
-        private String parentTag = null;
-        private String parentStyle = null;
-        private String parentClz = null;
+        private Stack<NodeWrapper> elements = new Stack<>();
 
         private CleaningVisitor(Element destination) {
             this.destination = destination;
         }
 
         public void head(Node source, int depth) {
+            NodeWrapper node = new NodeWrapper(source);
+            NodeWrapper parentNode = elements.isEmpty() ? null : elements.peek();
+            elements.push(node);
+
             if (source instanceof Element) {
                 Element sourceEl = (Element) source;
 
                 String tagName = sourceEl.tagName();
-                if(tagName.equals("body")){
+                if (tagName.equals("body")) {
                     return;
                 }
-                org.jsoup.nodes.Attributes attributes = source.attributes();
-                boolean hasRemovedElement = tagName.equalsIgnoreCase("span") && isSameAsParent(tagName, attributes);
-                if (!hasRemovedElement) { // safe, clone and copy safe attrs
+
+                if(shouldKeepChild(node, parentNode)) {
                     Element destChild = createSafeElement(sourceEl);
                     destination.appendChild(destChild);
-
                     destination = destChild;
-                }
-                parentTag = tagName;
-                parentClz = attributes.get("class");
-                parentStyle = attributes.get("style");
-
-                if (tagName.equalsIgnoreCase("span")) {
-                    spanTagsStack.push(hasRemovedElement);
                 }
             } else if (source instanceof TextNode) {
                 TextNode sourceText = (TextNode) source;
@@ -104,37 +97,31 @@ public class RemoveNestedSpanTagsFilter implements Filter {
             }
         }
 
-        public void tail(Node source, int depth) {
-            if (source instanceof Element) {
-                Element sourceEl = (Element) source;
-                boolean hasRemovedElement = false;
-
-                if (sourceEl.tagName().equalsIgnoreCase("span")) {
-                    hasRemovedElement = spanTagsStack.pop();
+        private boolean shouldKeepChild(NodeWrapper node, NodeWrapper parentNode) {
+            if (node.isSpan()) {
+                if (nonNull(parentNode) && parentNode.isSpan()) {
+                    boolean ignore = sameClassAndStyle(node, parentNode);
+                    node.setIgnore(ignore);
                 }
+                return node.notIgnored();
 
-                if(!hasRemovedElement) {
+            }
+            return true;
+        }
+
+        private boolean sameClassAndStyle(NodeWrapper node, NodeWrapper parentNode) {
+            return parentNode.classAttribute.equals(node.classAttribute) &&
+                    parentNode.styleAttribute.equals(node.styleAttribute);
+        }
+
+        public void tail(Node source, int depth) {
+            NodeWrapper pop = elements.pop();
+            if (source instanceof Element) {
+
+                if(pop.notIgnored()) {
                     destination = destination.parent(); // would have descended, so pop destination stack
                 }
             }
-        }
-
-        private boolean isSameAsParent(String tagName, Attributes attributes) {
-            if (!tagName.equalsIgnoreCase(parentTag)) {
-                return false;
-            }
-
-            String clz = attributes.get("class");
-            if ((isBlank(clz) && isNotBlank(parentClz)) || clz != null && !clz.equalsIgnoreCase(parentClz)) {
-                return false;
-            }
-
-            String style = attributes.get("style");
-            if ((isBlank(style) && isNotBlank(parentStyle)) || style != null && !style.equalsIgnoreCase(parentStyle)) {
-                return false;
-            }
-
-            return true;
         }
     }
 
@@ -144,7 +131,7 @@ public class RemoveNestedSpanTagsFilter implements Filter {
         traversor.traverse(source);
     }
 
-    private Element createSafeElement(Element sourceEl) {
+    private static Element createSafeElement(Element sourceEl) {
         String sourceTag = sourceEl.tagName();
         org.jsoup.nodes.Attributes destAttrs = new org.jsoup.nodes.Attributes();
         Element dest = new Element(Tag.valueOf(sourceTag), sourceEl.baseUri(), destAttrs);
@@ -155,6 +142,50 @@ public class RemoveNestedSpanTagsFilter implements Filter {
         }
 
         return dest;
+    }
+
+    private static class NodeWrapper {
+        private final Node wrapped;
+        private String styleAttribute = "";
+        private String classAttribute = "";
+        private boolean ignore = false;
+
+        private static final Pattern whitespace = Pattern.compile("\\s+");
+
+        private NodeWrapper(Node wrapped) {
+            this.wrapped = wrapped;
+            Attributes attributes = wrapped.attributes();
+            if (nonNull(attributes)) {
+                String value = attributes.get("class");
+                if (nonNull(value)) {
+                    value = whitespace.matcher(value).replaceAll(" ");
+                    String[] split = value.split(" ");
+                    Arrays.sort(split);
+                    classAttribute = join(split, " ");
+                }
+                value = attributes.get("style");
+                if (nonNull(value)) {
+                    value = whitespace.matcher(value).replaceAll(" ");
+                    String[] split = value.split(";");
+                    Arrays.sort(split);
+                    styleAttribute = join(split, ";");
+                }
+            }
+        }
+
+        public void setIgnore(boolean ignore) {
+            this.ignore = ignore;
+        }
+
+
+        public boolean isSpan() {
+            String tagname = wrapped instanceof Element ? ((Element) wrapped).tagName() : "?";
+            return "span".equalsIgnoreCase(tagname);
+        }
+
+        public boolean notIgnored() {
+            return !ignore;
+        }
     }
 }
 

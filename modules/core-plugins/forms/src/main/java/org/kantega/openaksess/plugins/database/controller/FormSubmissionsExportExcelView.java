@@ -4,15 +4,17 @@ import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.publishing.api.forms.model.FormValue;
 import no.kantega.publishing.api.forms.service.FormService;
-import org.apache.poi.hssf.usermodel.*;
+import org.apache.poi.ss.usermodel.*;
 import org.kantega.openaksess.plugins.database.dao.FormSubmissionDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;
-import org.springframework.web.servlet.view.document.AbstractExcelView;
+import org.springframework.web.servlet.view.document.AbstractXlsxStreamingView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,13 +22,14 @@ import java.util.regex.Pattern;
 /**
  *
  */
-public class FormSubmissionsExportExcelView  extends AbstractExcelView {
+public class FormSubmissionsExportExcelView extends AbstractXlsxStreamingView {
     @Autowired
     private FormSubmissionDao dao;
     @Autowired
     private FormService formService;
 
-    protected void buildExcelDocument(Map map, HSSFWorkbook hssfWorkbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
+    @Override
+    protected void buildExcelDocument(Map<String, Object> model, Workbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
         int formIds[] = ServletRequestUtils.getIntParameters(request, "formId");
         if (formIds != null && formIds.length > 0) {
             for (int formId : formIds) {
@@ -35,10 +38,10 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                 List<String> fieldNames = dao.getFieldNamesForForm(formId);
 
                 String title = cleanUpTitle(form.getTitle());
-                HSSFSheet sheet = hssfWorkbook.createSheet(title);
-                HSSFRow row = sheet.createRow((short)0);
+                Sheet sheet = workbook.createSheet(title);
+                Row row = sheet.createRow((short)0);
 
-                HSSFCell cell = row.createCell(0);
+                Cell cell = row.createCell(0);
                 cell.setCellValue("Dato innsendt");
                 for (int i = 0; i < fieldNames.size(); i++) {
                     String header = fieldNames.get(i);
@@ -46,15 +49,16 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
                     cell.setCellValue(header);
                 }
 
-                HSSFCellStyle dateCellStyle = hssfWorkbook.createCellStyle();
-                short dataFormat = hssfWorkbook.createDataFormat().getFormat("dd.mm.yyyy");
+                CellStyle dateCellStyle = workbook.createCellStyle();
+                short dataFormat = workbook.createDataFormat().getFormat("dd.mm.yyyy");
                 dateCellStyle.setDataFormat(dataFormat);
 
                 String datefromString = ServletRequestUtils.getStringParameter(request, "datefrom", null);
                 String dateuntilString = ServletRequestUtils.getStringParameter(request, "dateuntil");
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                Date dateFrom = datefromString == null ? null : dateFormat.parse(datefromString);
-                Date dateUntil = dateuntilString == null ? null : dateFormat.parse(dateuntilString);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+                LocalDate dateFrom = datefromString == null ? null : LocalDate.parse(datefromString, formatter);
+                LocalDate dateUntil = dateuntilString == null ? null : LocalDate.parse(dateuntilString, formatter);
 
                 List<FormSubmission> formSubmissions = dao.getFormSubmissionsByFormId(formId);
                 int rowNo = 0;
@@ -108,30 +112,20 @@ public class FormSubmissionsExportExcelView  extends AbstractExcelView {
 
     }
 
-    private boolean isWithinDatePeriod(FormSubmission formSubmission, Date dateFrom, Date dateUntil) {
+    private boolean isWithinDatePeriod(FormSubmission formSubmission, LocalDate dateFrom, LocalDate dateUntil) {
+        LocalDate submissionDate = formSubmission.getSubmissionDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         if (dateFrom != null) {
-            if (formSubmission.getSubmissionDate().getTime() < dateFrom.getTime()) {
+            if (submissionDate.isAfter(dateFrom)) {
                 return false;
             }
         }
 
         if (dateUntil != null) {
-            Calendar cal = new GregorianCalendar();
-            cal.setTime(dateUntil);
-            cal.add(Calendar.DATE, 1);
-            if (formSubmission.getSubmissionDate().getTime() > cal.getTimeInMillis()) {
+            if (submissionDate.isAfter(dateUntil.plusDays(1))) {
                 return false;
             }
         }
 
         return true;
-    }
-
-    public void setDao(FormSubmissionDao dao) {
-        this.dao = dao;
-    }
-
-    public void setFormService(FormService formService) {
-        this.formService = formService;
     }
 }

@@ -28,13 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jun 26, 2007
- * Time: 2:05:18 PM
- */
 public abstract class AbstractUserAdminController extends AbstractController {
-    private final static String SOURCE = "AbstractUserAdminController";
 
     protected List<ProfileManagementConfiguration> profileConfiguration;
     protected List<RoleManagementConfiguration> roleConfiguration;
@@ -77,7 +71,7 @@ public abstract class AbstractUserAdminController extends AbstractController {
         this.profileConfiguration = profileConfigurations;
     }
 
-    public List getRoleConfiguration() {
+    public List<RoleManagementConfiguration> getRoleConfiguration() {
         return roleConfiguration;
     }
 

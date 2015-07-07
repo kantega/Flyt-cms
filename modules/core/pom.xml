@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.simplericity.datadirlocator</groupId>
             <artifactId>datadirlocator</artifactId>
-            <version>1.2</version>
+            <version>1.10</version>
         </dependency>
 
         <dependency>
@@ -111,12 +111,6 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons-codec.version}</version>
         </dependency>
 
         <dependency>
@@ -207,13 +201,19 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.2</version>
+            <version>${xstream.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.mortennobel</groupId>
             <artifactId>java-image-scaling</artifactId>
             <version>0.8.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -287,7 +287,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20080701</version>
+            <version>20141113</version>
         </dependency>
 
         <dependency>
@@ -360,7 +360,7 @@
         <dependency>
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache-core</artifactId>
-            <version>2.6.5</version>
+            <version>2.6.11</version>
         </dependency>
 
         <!-- Must use the 2.6.2-kantega version to get dependency to correct xmpcore version -->

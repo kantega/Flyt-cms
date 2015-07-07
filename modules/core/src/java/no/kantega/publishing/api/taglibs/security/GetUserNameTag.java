@@ -36,7 +36,6 @@ public class GetUserNameTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUserNameTag.class);
 
     private String userid;
-    private boolean useCache;
 
     public int doStartTag() throws JspException {
         try {
@@ -45,7 +44,7 @@ public class GetUserNameTag extends TagSupport {
             if (!isBlank(userid)) {
                 SecurityRealm realm = SecurityRealmFactory.getInstance();
                 try {
-                    user = realm.lookupUser(userid, useCache);
+                    user = realm.lookupUser(userid);
                 } catch (SystemException e) {
                     user = null;
                 }
@@ -75,10 +74,6 @@ public class GetUserNameTag extends TagSupport {
 
     public void setUserid(String userid) {
         this.userid = userid;
-    }
-
-    public void setUsecache(boolean useCache) {
-        this.useCache = useCache;
     }
 }
 

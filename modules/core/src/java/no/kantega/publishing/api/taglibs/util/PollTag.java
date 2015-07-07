@@ -113,7 +113,7 @@ public class PollTag  extends TagSupport {
         String alternativ = containingPage.getAttributeValue("alt" + altnum);
         while(alternativ != null && alternativ.length() > 0){
             if(!alternativeExists("alt" + altnum, pollid)){
-                jdbcTemplate.update("INSERT INTO poll(Alternative, Votes, ContentId) VALUES(?,0,?)", new Object[]{"alt" + altnum, pollid});
+                jdbcTemplate.update("INSERT INTO poll(Alternative, Votes, ContentId) VALUES(?,0,?)", "alt" + altnum, pollid);
             }
             altnum++;
             alternativ = containingPage.getAttributeValue("alt" + altnum);
@@ -129,7 +129,7 @@ public class PollTag  extends TagSupport {
      */
     private boolean alternativeExists(String alt, int contentId) {
         try{
-            int numRows = jdbcTemplate.queryForInt("SELECT COUNT(*) FROM poll WHERE Alternative=? AND ContentId=?", new Object[]{alt, pollid});
+            int numRows = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM poll WHERE Alternative=? AND ContentId=?", Integer.class, alt, pollid);
             return numRows > 0;
         } catch(IncorrectResultSizeDataAccessException e){//Query'et gir ingen treff
             return false;
@@ -168,7 +168,7 @@ public class PollTag  extends TagSupport {
         }
 
         try {
-            int numVotes = jdbcTemplate.queryForInt("SELECT SUM(Votes) FROM poll WHERE ContentId=?", new Object[]{pollid});
+            int numVotes = jdbcTemplate.queryForObject("SELECT SUM(Votes) FROM poll WHERE ContentId=?", Integer.class, pollid);
             request.setAttribute("num_votes", new Integer(numVotes));
         } catch (IncorrectResultSizeDataAccessException e) {
             //Skal ikke skje siden alle alternativer er default 0

@@ -21,6 +21,7 @@ public class IndexPopulator {
     @Autowired
     private SolrClient solrServer;
 
+    @SuppressWarnings("unchecked")
     @PostConstruct
     public void populateIndex() throws IOException, SolrServerException {
         try(InputStream inputStream = getClass().getResourceAsStream("/content.json")) {

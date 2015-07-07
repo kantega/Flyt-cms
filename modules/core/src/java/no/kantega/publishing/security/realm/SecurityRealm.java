@@ -111,20 +111,6 @@ public class SecurityRealm {
         }
     }
 
-    /**
-     * Returns an instance of User for the given userid.
-     * @param userid
-     * @param useCache - If true, the userid is first looked up in the cache.
-     * If the user is not found in the cache, an ordinary user lookup is performed and the user is added to the cache.
-     * @return User or null if not found.
-     * @throws SystemException
-     * @deprecated use lookupUser(String userid)
-     */
-    @Deprecated
-    public User lookupUser(String userid, boolean useCache) throws SystemException {
-        return lookupUser(userid);
-    }
-
     public List<Role> lookupRolesForUser(String userid) throws SystemException {
         List<Role> roles = new ArrayList<>();
         try {

@@ -32,7 +32,7 @@ import java.util.List;
 public class PhotoAlbumHelper {
     private static final Logger log = LoggerFactory.getLogger(PhotoAlbumHelper.class);
 
-    public static List getPhotos(PageContext pageContext, int albumId) {
+    public static List<Multimedia> getPhotos(PageContext pageContext, int albumId) {
         HttpServletRequest request = (HttpServletRequest)pageContext.getRequest();
 
         String photoalbum = (String) request.getAttribute("photoalbum");
@@ -47,7 +47,7 @@ public class PhotoAlbumHelper {
 
         if (albumId == -1) return null;
 
-        List<Multimedia> photos = (List)request.getAttribute("aksess_photos_" + albumId);
+        List<Multimedia> photos = (List<Multimedia>)request.getAttribute("aksess_photos_" + albumId);
         if (photos == null) {
             photos = new ArrayList<>();
 

@@ -113,9 +113,6 @@ public class GroovyScriptContentRequestListener extends ContentRequestListenerAd
                             context.getRequest().setAttribute(attribute.getKey(), attribute.getValue());
                         }
                     }
-                    return;
-
-
                 }
             } catch (IOException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
                 log.error("Error running script for template {} with url {}", template, URLHelper.getCurrentUrl(context.getRequest()));

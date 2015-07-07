@@ -18,6 +18,7 @@ package no.kantega.useradmin.controls;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.profile.Profile;
 import no.kantega.security.api.profile.ProfileManager;
 import no.kantega.security.api.search.SearchResult;
@@ -40,7 +41,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
         String query  = param.getString("q");
         String userId  = param.getString("userId");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         ProfileManagementConfiguration config = getProfileConfiguration(domain);
         if (config != null) {
@@ -57,10 +58,8 @@ public class SearchProfilesController extends AbstractUserAdminController  {
 
             if (userId != null && userId.length() > 0) {
                 // Opprettet en bruker, vis denne
-                List users = new ArrayList();
-                DefaultIdentity identity = new DefaultIdentity();
-                identity.setDomain(domain);
-                identity.setUserId(userId);
+                List<Profile> users = new ArrayList<>();
+                Identity identity = DefaultIdentity.withDomainAndUserId(domain, userId);
                 Profile p = manager.getProfileForUser(identity);
                 if (p != null) {
                     users.add(p);
