@@ -33,7 +33,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.springframework.test.jdbc.JdbcTestUtils.deleteFromTables;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -278,7 +282,7 @@ public class JdbcTopicDaoTest {
     public void contentAssociationShouldBePersisted() throws Exception {
         // Given
         Topic topic = saveMyTopic();
-
+        topicDao.deleteTopicAssociationsForContent(1);
         // When
         topicDao.addTopicToContentAssociation(topic, 1);
         List<Topic> associatedTopics = topicDao.getTopicsByContentId(1);
