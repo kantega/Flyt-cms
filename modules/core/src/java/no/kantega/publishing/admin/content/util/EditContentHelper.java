@@ -70,6 +70,18 @@ public class EditContentHelper {
     private static ContentIdHelper contentIdHelper;
     private static TopicDao topicDao;
     private static ContentTemplateAO contentTemplateAO;
+
+    private static void init() {
+        if(contentAO == null){
+            ApplicationContext context = RootContext.getInstance();
+            contentAO = context.getBean(ContentAO.class);
+            contentIdHelper = context.getBean(ContentIdHelper.class);
+            topicDao = context.getBean(TopicDao.class);
+            contentTemplateAO = context.getBean(ContentTemplateAO.class);
+
+        }
+    }
+
     /**
      * Create a new Content object
      * @param securitySession - SecuritySession
@@ -84,6 +96,7 @@ public class EditContentHelper {
         if (securitySession == null || !securitySession.isLoggedIn()) {
             throw new NotAuthorizedException("Not logged in");
         }
+        init();
         ContentManagementService aksessService = new ContentManagementService(securitySession);
 
         boolean inheritGroup = true;
@@ -228,6 +241,7 @@ public class EditContentHelper {
     }
 
     public static void addRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) throws InvalidTemplateException {
+        init();
         ContentTemplate template = null;
 
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
@@ -276,11 +290,13 @@ public class EditContentHelper {
     }
 
     public static void updateAttributesFromTemplate(Content content) throws SystemException, InvalidFileException, InvalidTemplateException {
+        init();
         content.setAttributesAreUpdatedFromTemplate(true);
         updateAttributesFromTemplate(content, null);
     }
 
     public static void updateAttributesFromTemplate(Content content, Map<String, String> defaultValues) throws SystemException, InvalidFileException, InvalidTemplateException {
+        init();
         content.setAttributesAreUpdatedFromTemplate(true);
         updateAttributesFromTemplate(content, AttributeDataType.CONTENT_DATA, defaultValues);
         updateAttributesFromTemplate(content, AttributeDataType.META_DATA, defaultValues);
@@ -542,14 +558,7 @@ public class EditContentHelper {
 
             if (name != null && from != null && from.length() > 0) {
                 try {
-                    if(contentAO == null){
-                        ApplicationContext context = RootContext.getInstance();
-                        contentAO = context.getBean(ContentAO.class);
-                        contentIdHelper = context.getBean(ContentIdHelper.class);
-                        topicDao = context.getBean(TopicDao.class);
-                        contentTemplateAO = context.getBean(ContentTemplateAO.class);
-
-                    }
+                    init();
                     ContentIdentifier parentCid = contentIdHelper.findRelativeContentIdentifier(content, from);
                     Content parent = contentAO.getContent(parentCid, true);
                     if (parent != null) {
@@ -578,6 +587,7 @@ public class EditContentHelper {
     }
 
     public static void deleteRepeaterRow(Content content, String rowPath, AttributeDataType attributeDataType) {
+        init();
         List<Attribute> attributes = content.getAttributes(attributeDataType);
 
         if (rowPath.contains("[")) {
