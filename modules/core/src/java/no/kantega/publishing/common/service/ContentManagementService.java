@@ -37,8 +37,6 @@ import no.kantega.publishing.api.notes.NotesDao;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.api.service.lock.ContentLock;
 import no.kantega.publishing.api.service.lock.LockManager;
-import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
-import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.ao.DeletedItemsAO;
@@ -115,7 +113,6 @@ public class ContentManagementService {
     private final Ehcache contentCache;
     private final Ehcache contentListCache;
     private final Ehcache siteMapCache;
-    private final XmlCache xmlCache;
     private EventLog eventLog;
     private boolean cachingEnabled;
     private TrafficLogger trafficLogger;
@@ -137,7 +134,6 @@ public class ContentManagementService {
 
         eventLog = context.getBean(EventLog.class);
         trafficLogger = context.getBean(TrafficLogger.class);
-        xmlCache = context.getBean(XmlCache.class);
 
         contentAO = context.getBean(ContentAO.class);
         contentIdHelper = context.getBean(ContentIdHelper.class);
@@ -1454,31 +1450,4 @@ public class ContentManagementService {
         return attachmentAO.getAttachmentList(id);
     }
 
-
-    /**
-     * Henter et objekt fra XML cachen i systemet.  XML cachen brukes for å lagre XML dokumenter lokalt
-     * istedet for å hente dem med HTTP for hver visning.  Kan brukes for f.eks nyheter.
-     *
-     * @param id - unik identifikator i basen
-     * @return
-     * @throws SystemException
-     * @deprecated Use XmlCache directly
-     */
-    @Deprecated
-    public XMLCacheEntry getXMLFromCache(String id) throws SystemException {
-        return xmlCache.getXMLFromCache(id);
-    }
-
-    /**
-     * Henter en liste med innslag fra XML-cachen.  Brukes for å se hvilke objekter som ligger der og nør
-     * de er oppdatert.
-     *
-     * @return
-     * @throws SystemException
-     * @deprecated Use XmlCache directly
-     */
-    @Deprecated
-    public List getXMLCacheSummary() throws SystemException {
-        return xmlCache.getSummary();
-    }
 }

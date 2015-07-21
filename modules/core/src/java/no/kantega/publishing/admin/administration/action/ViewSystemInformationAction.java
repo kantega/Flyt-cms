@@ -18,8 +18,8 @@ package no.kantega.publishing.admin.administration.action;
 
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.configuration.ConfigurationLoader;
+import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,6 +52,9 @@ public class ViewSystemInformationAction extends AbstractController {
     @Autowired
     private ConfigurationLoader configurationLoader;
 
+    @Autowired
+    private XmlCache xmlCache;
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
 
@@ -71,8 +74,7 @@ public class ViewSystemInformationAction extends AbstractController {
 
         addMemoryInformation(model);
 
-        ContentManagementService cms = new ContentManagementService(request);
-        model.put("xmlCache", cms.getXMLCacheSummary());
+        model.put("xmlCache", xmlCache.getSummary());
 
         Configuration config = Aksess.getConfiguration();
         model.put("configProperties", config.getProperties());
