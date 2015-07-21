@@ -1073,15 +1073,6 @@ public class ContentManagementService {
             siteCache = RootContext.getInstance().getBean(SiteCache.class);
         }
     }
-    /**
-     * Hent sti basert på ContentIdentifier
-     * @param cid - Innholdsid
-     * @return Liste med PathEntry objekter
-     * @throws SystemException
-     */
-    public List getPathByContentId(ContentIdentifier cid) throws SystemException {
-        return PathWorker.getPathByContentId(cid);
-    }
 
     /**
      * Hent en liste med visnings og innholdsmaler som er tillatt for et nettsted og en gitt innholdsmal
