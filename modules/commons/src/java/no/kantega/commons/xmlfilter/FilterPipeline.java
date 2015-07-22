@@ -24,12 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class FilterPipeline {
     private static final Logger log = LoggerFactory.getLogger(FilterPipeline.class);
 
-    List<Filter> filters = new ArrayList<>();
+    List<Filter> filters = new LinkedList<>();
 
     public void addFilter(Filter filter) {
         filters.add(filter);
@@ -38,8 +39,9 @@ public class FilterPipeline {
     public String filter(String content) throws SystemException {
         try {
             Document document = Jsoup.parseBodyFragment(content);
-            document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
-            document.outputSettings().prettyPrint(false);
+            Document.OutputSettings outputSettings = document.outputSettings();
+            outputSettings.escapeMode(Entities.EscapeMode.xhtml);
+            outputSettings.prettyPrint(false);
 
             for (Filter filter : filters) {
                 document = filter.runFilter(document);

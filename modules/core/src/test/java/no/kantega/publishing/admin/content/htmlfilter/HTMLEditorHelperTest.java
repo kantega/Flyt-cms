@@ -41,7 +41,7 @@ public class HTMLEditorHelperTest {
 
         String htmlAfter = HTMLEditorHelper.postEditFilter(htmlBefore);
 
-        assertEquals("<p>Test</p>", htmlAfter);
+        assertEquals("<p>Test</p>", htmlAfter.replace("\n", ""));
 
     }
 
@@ -51,7 +51,7 @@ public class HTMLEditorHelperTest {
 
         String htmlAfter = HTMLEditorHelper.postEditFilter(htmlBefore);
 
-        assertEquals(htmlBefore, htmlAfter);
+        assertEquals(htmlBefore.replace("\n", ""), htmlAfter.replace("\n", ""));
 
     }
 }
