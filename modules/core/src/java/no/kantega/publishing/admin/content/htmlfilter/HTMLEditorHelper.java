@@ -28,8 +28,6 @@ import java.util.regex.Pattern;
 public class HTMLEditorHelper {
     private static final Logger log = LoggerFactory.getLogger(HTMLEditorHelper.class);
     private static final Pattern emptyTagsPattern = Pattern.compile("<(i|I|b|B|em|EM|b|B|span|SPAN)>(\\s|&nbsp;)*</\\1>");
-    private static final String BODY_START = "<BODY>";
-    private static final String BODY_END   = "</BODY>";
 
     /**
      * Cleanup / replacement done after editing content
@@ -91,18 +89,6 @@ public class HTMLEditorHelper {
             value = "<html><body>" + value + "</body></html>";
 
             value = pipe.filter(value);
-
-            int start = value.indexOf(BODY_START.toLowerCase());
-            if (start == -1) {
-                start = value.indexOf(BODY_START.toUpperCase());
-            }
-
-            int end = value.indexOf(BODY_END.toLowerCase());
-            if (end == -1) {
-                end = value.indexOf(BODY_END.toUpperCase());
-            }
-
-            value = value.substring(start + BODY_START.length(), end);
         } catch (Exception e) {
             value = origVal;
             log.error("", e);
@@ -154,17 +140,6 @@ public class HTMLEditorHelper {
 
             value = pipe.filter(value);
 
-            int start = value.indexOf(BODY_START.toLowerCase());
-            if (start == -1) {
-                start = value.indexOf(BODY_START.toUpperCase());
-            }
-
-            int end = value.indexOf(BODY_END.toLowerCase());
-            if (end == -1) {
-                end = value.indexOf(BODY_END.toUpperCase());
-            }
-
-            value = value.substring(start + BODY_START.length(), end);
         } catch (Exception e) {
             value = origVal;
             log.error("", e);
