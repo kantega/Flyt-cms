@@ -1,8 +1,9 @@
 <%@ page import="java.util.Iterator" %>
 <%@ page import="java.util.Set" %>
-<%@ page contentType="application/javascript;charset=utf-8" trimDirectiveWhitespaces="true" %>
+<%--<%@ page contentType="application/javascript;charset=utf-8" trimDirectiveWhitespaces="true" %>--%>
+<%@ page contentType="application/json" %>
 
-var tinyMCETemplateList = [
+[
     <%
         Set<String> snippets = pageContext.getServletContext().getResourcePaths("/snippets/");
         if (snippets != null) {
@@ -25,9 +26,10 @@ var tinyMCETemplateList = [
                     if (name.contains(".")) {
                         name = name.substring(0, name.lastIndexOf("."));
                     }
-                    out.write("['" + name + "','" + filePrefix + file + "','" + name + "']");
+//                    out.write("['" + name + "','" + filePrefix + file + "','" + name + "']");
+                    out.write("{'title':'" + name + "', 'description': '"+ name + "', 'url': '" + filePrefix + file + "'}");
                 }
             }
         }
     %>
-];
+]

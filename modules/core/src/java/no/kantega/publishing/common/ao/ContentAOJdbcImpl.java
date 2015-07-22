@@ -166,6 +166,28 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             throw new RuntimeException(e);
         }
     }
+    public void deleteGhostcopyContentVersion(ContentIdentifier cid) {
+        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
+        int id = cid.getContentId();
+        int version = cid.getVersion();
+        int language = cid.getLanguage();
+
+        try {
+            Map<String, Object> values = getJdbcTemplate().queryForMap("select ContentVersionId, Status from contentversion where ContentId = ? and Version = ? and Language = ?", id, version, language);
+            int contentVersionId = ((Number) values.get("ContentVersionId")).intValue();
+            int existingStatus = ((Number) values.get("Status")).intValue();
+
+            boolean deleteActiveVersion = (ContentStatus.GHOSTDRAFT.getTypeAsInt() == existingStatus);
+            if (!deleteActiveVersion) {
+                return;
+            }
+
+            getJdbcTemplate().update("delete from contentversion where ContentVersionId = ?", contentVersionId);
+            getJdbcTemplate().update("delete from contentattributes where ContentVersionId = ?", contentVersionId);
+        } catch (EmptyResultDataAccessException e) {
+            log.error("Could not find contentversion with contentid {} version {} and language {}", id, version, language);
+        }
+    }
 
     @Override
     public void deleteContentVersion(ContentIdentifier cid, boolean deleteActiveVersion) {
@@ -188,6 +210,22 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         } catch (EmptyResultDataAccessException e) {
             log.error("Could not find contentversion with contentid {} version {} and language {}", id, version, language);
         }
+    }
+
+    private void deleteOldGhostdrafts(Content content) {
+//        ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
+//        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
+//        ContentIdentifier cid3 = content.getContentIdentifier();
+//        int id = content.getAssociation().getId(); //cid.getContentId();
+        int id = content.getId();
+        List<Integer> contentVersionIds = getJdbcTemplate().queryForList("select contentVersionId from contentversion where ContentId = ? and Status = ?", Integer.class, id, ContentStatus.GHOSTDRAFT.getTypeAsInt());
+        // add normal drafts? and merge the two lists?
+        if(contentVersionIds.size() == 0){
+            return; //Nothing to delete
+        }
+        String cviString = contentVersionIds.toString().replace('[', '(').replace(']', ')');
+        getJdbcTemplate().update("delete from contentversion where ContentVersionId in " + cviString );
+        getJdbcTemplate().update("delete from contentattributes where ContentVersionId in " + cviString );
     }
 
     @Override
@@ -615,18 +653,20 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
             boolean newVersionIsActive = false;
 
-            if (isNew) {
-                // New page, always active
-                newVersionIsActive = true;
-            }
-
             // Insert base information, no history
             insertOrUpdateContentTable(c, content);
 
-            deleteTempContentVersion(content);
+            if(newStatus != ContentStatus.GHOSTDRAFT || content.getStatus() == newStatus){
+                deleteTempContentVersion(content);
+            }
+
+            if(newStatus == ContentStatus.PUBLISHED || newStatus == ContentStatus.PUBLISHED_WAITING) { //waiting hearing
+                deleteOldGhostdrafts(content);
+            }
 
             if (isNew || newStatus == ContentStatus.PUBLISHED) {
                 newVersionIsActive = true;
+//                deleteOldGhostdrafts(content);
             }
 
             if (!isNew) {
@@ -804,13 +844,18 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
     private void deleteTempContentVersion(Content content) {
         // If this is a draft, rejected page etc delete previous version
-        boolean shouldDeletePreviousVersion = content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED || content.getStatus() == ContentStatus.HEARING;
+        boolean shouldDeletePreviousVersion = content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.GHOSTDRAFT || content.getStatus() == ContentStatus.WAITING_FOR_APPROVAL || content.getStatus() == ContentStatus.REJECTED || content.getStatus() == ContentStatus.HEARING;
         if (shouldDeletePreviousVersion) {
             // Delete this (previous) version
             ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
             cid.setVersion(content.getVersion());
             cid.setLanguage(content.getLanguage());
             deleteContentVersion(cid, true);
+//            if(content.getStatus() != ContentStatus.GHOSTDRAFT){
+//                deleteContentVersion(cid, true);
+//            } else {
+//                deleteGhostcopyContentVersion(cid);
+//            }
         }
     }
 

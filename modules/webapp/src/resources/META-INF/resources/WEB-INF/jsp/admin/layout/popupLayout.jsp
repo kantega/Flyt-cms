@@ -35,7 +35,7 @@
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
     <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-popuplayout.js"/>'></script>
-    <script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>
+    <%--<script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>--%>
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -71,7 +71,10 @@
             if (window.opener) {
                 window.close();
             } else {
-                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
+//                console.log("we failed");
+//                window.close();
+//                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
+                parent.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
             }
         }
 

@@ -34,6 +34,10 @@ public enum ContentStatus {
      */
     DRAFT(20),
     /**
+     * Content is saved as background draft.
+     */
+    GHOSTDRAFT(21),
+    /**
      * Content is waiting to become PUBLISHED.
      */
     PUBLISHED_WAITING(25),

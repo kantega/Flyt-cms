@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ViewUploadMultimediaFormController {
 
-    private static final String UPLOAD_FORM_VIEW = "/WEB-INF/jsp/admin/multimedia/uploadform.jsp";
+    private static final String UPLOAD_FORM_VIEW = "/WEB-INF/jsp/admin/multimedia/uploadform.jsp"; //.uploadPopup.jsp";
 
     @Autowired
     private SystemConfiguration configuration;

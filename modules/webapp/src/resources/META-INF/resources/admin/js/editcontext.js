@@ -94,9 +94,25 @@ openaksess.editcontext = function()  {
         saveAll : function() {
             // Save forms
             formSave();
+            if (typeof tinyMCE != "undefined"){
 
-            if (typeof tinyMCE != "undefined") {
+                //console.log( tinymce.editors.length );
+                //for (edId in tinyMCE.editors) {
+                //    console.log( "Editor id: "+edId);
+                //    console.log( tinyMCE.editors[edId].getContent() );
+                //}
                 tinyMCE.triggerSave();
+                //console.log( "Triggered Save" );
+                //console.log( "#1" );
+                //var textfields = $(".tinymce_textfield");
+                //console.log( "#2" );
+                //textfields.each( function(i, obj){
+                //    console.log(i + " -:- " +obj);
+                //    //console.log(obj.getValue());
+                //    console.log(obj.value);
+                //    //console.log(obj.toString());
+                //});
+                //console.log( "#3" );
             }
         },
 
@@ -148,12 +164,16 @@ openaksess.editcontext = function()  {
             var editor = getParent().tinymce.EditorManager.activeEditor;
 
             // IE 7 & 8 looses selection. Must be restored manually.
-            tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
+            console.log("Tries to put back bookmark from editcontext.js insertlink!")
+            console.log(editor.windowManager.bookmark);
+
+            editor.selection.moveToBookmark(editor.windowManager.bookmark);
 
             editor.execCommand("mceBeginUndoLevel");
             var elements = getSelectedElements(editor);
             for (var i = 0, n = elements.length; i < n; i++) {
                 setAttributes(editor, elements[i], attribs);
+                console.log("elements[i] ", elements[i]);
             }
             editor.execCommand("mceEndUndoLevel");
         },

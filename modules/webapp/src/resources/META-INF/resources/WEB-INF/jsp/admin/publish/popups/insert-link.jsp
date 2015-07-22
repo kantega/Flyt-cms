@@ -28,9 +28,9 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>
+    <%--<script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>--%>
     <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
-    <script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>
+    <%--<script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>--%>
 </kantega:section>
 
 <kantega:section id="body">
@@ -39,6 +39,7 @@
             var attribs = getUrlAttributes();
             if (attribs != null) {
                 openaksess.editcontext.insertLink(attribs);
+                closeWindow();
                 getParent().openaksess.common.modalWindow.close();
             }
         }
@@ -79,11 +80,11 @@
                 <c:if test="${(linkType == 'internal' && !allowInternalLinks) || (linkType == 'attachment' && !allowAttachments) || (linkType == 'multimedia' && !allowInternalLinks)}">
                     <c:set var="linkType" value="external"/>
                 </c:if>
-
+                <script>console.log("Link type: ${linkType}");</script>
                 <jsp:include page="insert-link/${linkType}.jsp"/>
                 <div class="buttonGroup">
                     <span class="button"><input type="button" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
-                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
+                    <%--<span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>--%>
                 </div>
             </form>
         </div>

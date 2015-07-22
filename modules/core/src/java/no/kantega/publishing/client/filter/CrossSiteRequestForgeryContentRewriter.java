@@ -32,7 +32,8 @@ public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
     public  static final String CSRF_KEY = "csrfkey";
 
     public String rewriteContent(HttpServletRequest request, String content) {
-        if( !shouldRewrite(request)) {
+        String csrfkeyDiv = "<div style=\"display: none\"><input type=\"hidden\" name=\"" + CSRF_KEY + "\" value=\"" + (generateKey(request)) + ("\"></div>");
+        if( !shouldRewrite(request) || content.contains(csrfkeyDiv)) {
             return content;
         }
         StringBuilder builder  = new StringBuilder();
@@ -41,7 +42,7 @@ public class CrossSiteRequestForgeryContentRewriter implements ContentRewriter{
         int prev = 0;
         while(matcher.find()) {
             builder.append(content.substring(prev, matcher.end()));
-            builder.append("<div style=\"display: none\"><input type=\"hidden\" name=\"" + CSRF_KEY + "\" value=\"").append(generateKey(request)).append("\"></div>");
+            builder.append(csrfkeyDiv);
             prev = matcher.end();
         }
         if(prev < content.length()) {
