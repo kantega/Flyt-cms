@@ -25,7 +25,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,7 +35,6 @@ import java.util.Locale;
 
 public class FormTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(FormTag.class);
-    private static WebApplicationContext webApplicationContext;
 
     private boolean allowDraft = false;
     private boolean hideInfoMessages = false;
@@ -72,16 +70,16 @@ public class FormTag extends BodyTagSupport {
             //TODO: Improvement: Use the page's language if this is one of Flyt CMS' supported admin languages.
             Locale locale = Aksess.getDefaultAdminLocale();
 
-            out.write("<script type=\"text/javascript\">\n");
-            out.write("var hasSubmitted = false;\n");
-            out.write("function saveContent(status) {\n");
-            out.write("   if (!hasSubmitted) {\n");
-            out.write("      hasSubmitted=true;\n");
-            out.write("      document.myform.status.value=status;\n");
-            out.write("      document.myform.submit();\n");
-            out.write("   }\n");
-            out.write("}\n");
-            out.write("</script>\n");
+            out.write("<script type=\"text/javascript\">" +
+            "var hasSubmitted = false;"+
+            "function saveContent(status) {"+
+            "   if (!hasSubmitted) {"+
+            "      hasSubmitted=true;"+
+            "      document.myform.status.value=status;"+
+            "      document.myform.submit();" +
+            "   }" +
+            "}" +
+            "</script>");
 
             if (!hideInfoMessages) {
                 if (!canApprove) {
@@ -93,12 +91,12 @@ public class FormTag extends BodyTagSupport {
                 }
             }
 
-            out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">");
-            out.write("    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">");
-            out.write("    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">");
-            out.write("    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">");
-            out.write("    <input type=\"hidden\" id=\"AddRepeaterRow\" name=\"addRepeaterRow\" value=\"\">");
-            out.write("    <input type=\"hidden\" id=\"DeleteRepeaterRow\" name=\"deleteRepeaterRow\" value=\"\">");
+            out.write("<form name=\"myform\" id=\"EditContentForm\" action=\"" + action + "\" method=\"post\" enctype=\"multipart/form-data\">"
+            + "    <input type=\"hidden\" id=\"ContentStatus\" name=\"status\" value=\"" + contentStatus + "\">"
+            + "    <input type=\"hidden\" name=\"currentId\" value=\"" + currentEditContent.getId() + "\">"
+            + "    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">"
+            + "    <input type=\"hidden\" id=\"AddRepeaterRow\" name=\"addRepeaterRow\" value=\"\">"
+            + "    <input type=\"hidden\" id=\"DeleteRepeaterRow\" name=\"deleteRepeaterRow\" value=\"\">");
             if (allowDraft && redirectUrl != null && redirectUrl.trim().length() > 0 ) {
                 out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
             }
