@@ -17,7 +17,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +33,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
 
     @Autowired
     private SolrClient solrServer;
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Async
     public void indexDocument(IndexableDocument document) {
@@ -160,7 +162,8 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         if(value instanceof String){
             return (String) value;
         } else if (Date.class.isAssignableFrom(value.getClass())){
-            return dateFormat.format(value);
+            LocalDateTime dateTime = LocalDateTime.ofInstant(((Date)value).toInstant(), ZoneId.systemDefault());
+            return dateTime.format(dateTimeFormatter);
         } else {
             return String.valueOf(value);
         }
