@@ -116,6 +116,11 @@
     if (height == -1) height = conf.getInt("editor.default.height", 450);
     request.setAttribute("attributeHeight", height + "px");
 
+    String headings = conf.getString(confPrefix + "heading");
+    if (headings == null) {
+        headings = conf.getString("editor.default.heading");
+    }
+    request.setAttribute("blockFormats", "Paragraph=p;Address=address;Preformated=pre;" + headings);
 %>
 
 <script type="text/javascript">
@@ -148,7 +153,8 @@
             entity_encoding : "raw",
             // Path to editor.css
             content_css : "${pageContext.request.contextPath}${cssPath}",
-            templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp"
+            templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",
+            block_formats: "${blockFormats}"
         });
     </script>
 </div>
