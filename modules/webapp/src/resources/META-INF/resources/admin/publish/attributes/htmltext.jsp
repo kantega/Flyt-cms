@@ -36,8 +36,7 @@
     Logger log = LoggerFactory.getLogger("no.kantega.openaksess.jsp.htmltext");
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
     Content   content   = (Content)request.getAttribute("content");
-    String    fieldName = (String)request.getAttribute("fieldName");
-    String value = HTMLEditorHelper.preEditFilter(attribute.getValue(), URLHelper.getRootURL(request));
+    request.setAttribute("value", HTMLEditorHelper.preEditFilter(attribute.getValue(), URLHelper.getRootURL(request)));
 
     ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(application);
     SystemConfiguration conf = context.getBean(SystemConfiguration.class);
@@ -126,10 +125,10 @@
 <aksess:getconfig key="editor.custom.javascript"/>
 
 <div class="inputs">
-    <textarea name="<%=fieldName%>" id="<%=fieldName%>" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}"><%=value%></textarea><br>
+    <textarea name="${fieldName}" id="${fieldName}" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}">${value}</textarea><br>
     <script type="text/javascript">
         tinymce.init({
-            selector: "textarea#<%=fieldName%>",
+            selector: "textarea#${fieldName}",
             theme: "modern",
             language: '<%=Aksess.getDefaultAdminLocale().getLanguage().toLowerCase()%>',
 
