@@ -56,9 +56,10 @@ public class RobotsController implements Controller {
         try (InputStream is = request.getServletContext().getResourceAsStream("/robots.txt")){
             try {
                 if (is != null) {
-                    BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-                    while (rd.ready()) {
-                        out.println(rd.readLine());
+                    try(BufferedReader rd = new BufferedReader(new InputStreamReader(is))) {
+                        while (rd.ready()) {
+                            out.println(rd.readLine());
+                        }
                     }
                 }
             } catch (IOException e) {
