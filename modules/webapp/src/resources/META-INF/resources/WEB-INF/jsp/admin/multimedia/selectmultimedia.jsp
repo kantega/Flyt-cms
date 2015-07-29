@@ -50,7 +50,6 @@
                 } else {
                     p = window.parent;
                 }
-                console.log("hei ONE");
                 if (p && <%=(!mm.isNew())%>) {
                     var metadata = {};
                     metadata.id = <%=mm.getId()%>;
@@ -58,48 +57,30 @@
                     metadata.url = '<%=mm.getUrl()%>';
                     metadata.mimeType = '<%=mm.getMimeType().getType()%>';
                     metadata.fileExtension = '<%=mm.getMimeType().getFileExtension()%>';
-                    console.log("insertTag? : "+ p.openaksess.editcontext.doInsertTag);
+
+                    var editor = p.tinymce.EditorManager.activeEditor;
                     if (p.openaksess.editcontext.doInsertTag) {
-                        console.log("hei TWO");
                         // Insert IMG or other tag
                         var str = document.mediaform.tag.value;
-                        var editor = p.tinymce.EditorManager.activeEditor;
                         // IE 7 & 8 looses selection. Must be restored manually.
                         editor.selection.moveToBookmark(editor.windowManager.bookmark);
 //                        tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
                         insertHtml(editor, str);
                     } else {
-                        console.log("hei THREE");
-
-                        var editor = p.tinymce.EditorManager.activeEditor;
                         insertHtml(editor, "");
                         p.openaksess.editcontext.insertMultimedia(metadata);
                     }
                 }
 
-                console.log("hei FIRE");
-                console.log(window);
-                console.log(window.opener);
                 if (window.opener) {
-                    console.log("hei FEM");
                     window.close();
                 } else {
-                    console.log(window.parent);
-//                    window.close();
-                    console.log(p.openaksess.common.modalWindow);
-                    console.log(window.closed);
                     p.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
-//                    window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                 }
             }
 
             function insertHtml(editor, html) {
-                console.log('Insert html <%=imageTag%> '+html);
-//                editor.execCommand("mceBeginUndoLevel");
-                editor.execCommand("mceInsertRawHTML", false, '<%=imageTag%>');//html, {skip_undo : 1});
-//                editor.execCommand("mceEndUndoLevel");
-                //var parentWin = (!window.frameElement && window.dialogArguments) || opener || parent || top;
-                //parentWin.my_namespace_tulleparam = '<%=imageTag%>';
+                editor.execCommand("mceInsertRawHTML", false, '<%=imageTag%>');
             }
         </script>
     </head>

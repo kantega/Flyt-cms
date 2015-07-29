@@ -50,7 +50,7 @@
             $("#Content .button .ok, #Content .button .insert").click(function(){
                 var close = true;
                 if (typeof buttonOkPressed == 'function') {
-                    close = buttonOkPressed();                    
+                    close = buttonOkPressed();
                 }
                 if (close) {
                     closeWindow();
@@ -71,9 +71,6 @@
             if (window.opener) {
                 window.close();
             } else {
-//                console.log("we failed");
-//                window.close();
-//                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
                 parent.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
             }
         }

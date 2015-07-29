@@ -19,7 +19,7 @@
  * * contextPath
  * * editcontext.labels.selecttopic
  * * editcontext.labels.selectcontent
- * * editcontext.labels.selectorgunit 
+ * * editcontext.labels.selectorgunit
  * * editcontext.labels.warningMaxchoose
  * * editcontext.labels.warningElements
  * * editcontext.labels.adduser
@@ -95,24 +95,7 @@ openaksess.editcontext = function()  {
             // Save forms
             formSave();
             if (typeof tinyMCE != "undefined"){
-
-                //console.log( tinymce.editors.length );
-                //for (edId in tinyMCE.editors) {
-                //    console.log( "Editor id: "+edId);
-                //    console.log( tinyMCE.editors[edId].getContent() );
-                //}
                 tinyMCE.triggerSave();
-                //console.log( "Triggered Save" );
-                //console.log( "#1" );
-                //var textfields = $(".tinymce_textfield");
-                //console.log( "#2" );
-                //textfields.each( function(i, obj){
-                //    console.log(i + " -:- " +obj);
-                //    //console.log(obj.getValue());
-                //    console.log(obj.value);
-                //    //console.log(obj.toString());
-                //});
-                //console.log( "#3" );
             }
         },
 
@@ -163,17 +146,12 @@ openaksess.editcontext = function()  {
         insertLink : function(attribs) {
             var editor = getParent().tinymce.EditorManager.activeEditor;
 
-            // IE 7 & 8 looses selection. Must be restored manually.
-            console.log("Tries to put back bookmark from editcontext.js insertlink!")
-            console.log(editor.windowManager.bookmark);
-
             editor.selection.moveToBookmark(editor.windowManager.bookmark);
 
             editor.execCommand("mceBeginUndoLevel");
             var elements = getSelectedElements(editor);
             for (var i = 0, n = elements.length; i < n; i++) {
                 setAttributes(editor, elements[i], attribs);
-                console.log("elements[i] ", elements[i]);
             }
             editor.execCommand("mceEndUndoLevel");
         },
@@ -197,7 +175,7 @@ openaksess.editcontext = function()  {
 
         addTopicAutocomplete : function() {
             var $input = $("#TopicInput");
-            
+
             var defaultValue = $input.val();
             $input.focus(function(){
                 $(this).val("");

@@ -93,18 +93,15 @@
         }
 
         function initShadowdraft(){
-            console.log( "val:'"+ $("#attributeValue_tekst").val()+"'" );
             openaksess.editcontext.saveAll();
             lastSavedForm = $("#EditContentForm").serializeArray();
         }
 
         function submitShadowdraft(){
             var form = $("#EditContentForm");
-            console.log("Saving Content SPØKELSESKLADD");
             //submit her
             form.submit(function( event ) {
                 lastSavedForm = $( this ).serializeArray();
-                //console.log( lastSavedForm );
                 $.post( form.attr("action"), lastSavedForm );
                 event.preventDefault();
             });
@@ -130,7 +127,6 @@
                 if ($contentIsModified.val() == "false") {
                     $contentIsModified.val(openaksess.editcontext.isModified());
                 }
-//                $("#MinorChange").val("true");
                 $("#ContentStatus").val(status);
                 submitShadowdraft();
                 displaySaveTimestamp();
@@ -166,8 +162,6 @@
             // Satse på at samme type og length
             for(var i=0; i< form.length; i++){
                 if( JSON.stringify(form[i]) != JSON.stringify(lastSavedForm[i]) ){
-                    console.log("form changed to ", form[i]);
-                    console.log("form changed from ", lastSavedForm[i]);
                     return true;
                 }
             }

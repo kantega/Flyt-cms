@@ -4,12 +4,12 @@ import java.util.List;
 
 public interface XmlCache {
 
-    public XMLCacheEntry getXMLFromCache(String id);
+    XMLCacheEntry getXMLFromCache(String id);
 
-    public void storeXMLInCache(XMLCacheEntry cacheEntry);
+    void storeXMLInCache(XMLCacheEntry cacheEntry);
 
     /**
      * @return All entries in the XmlCache, without document field set.
      */
-    public List<XMLCacheEntry> getSummary();
+    List<XMLCacheEntry> getSummary();
 }

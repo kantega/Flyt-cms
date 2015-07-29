@@ -80,7 +80,6 @@
                 <c:if test="${(linkType == 'internal' && !allowInternalLinks) || (linkType == 'attachment' && !allowAttachments) || (linkType == 'multimedia' && !allowInternalLinks)}">
                     <c:set var="linkType" value="external"/>
                 </c:if>
-                <script>console.log("Link type: ${linkType}");</script>
                 <jsp:include page="insert-link/${linkType}.jsp"/>
                 <div class="buttonGroup">
                     <span class="button"><input type="button" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>

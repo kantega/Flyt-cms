@@ -358,7 +358,7 @@
         <psql.version>9.4-1201-jdbc41</psql.version>
 
         <servlet.version>3.1.0</servlet.version>
-        <jsp.version>2.2.1</jsp.version>
+        <jsp.version>2.2</jsp.version>
         <javax.servlet.jsp-api.version>2.3.2-b01</javax.servlet.jsp-api.version>
         <jstl.version>1.2</jstl.version>
         <jstl-api.version>1.2</jstl-api.version>

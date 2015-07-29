@@ -36,13 +36,15 @@ public class XMLImportJob   {
     private String id;
     private String url;
     private XMLImportValidator validator = new DefaultXMLImportValidator();
+
+    @Autowired
     private XmlCache xmlCache;
     @Autowired
     private ServerType serverType;
 
     private ServerType disableForServerType;
 
-    protected void importXml() {
+    public void importXml() {
         if (Objects.equals(serverType, disableForServerType)) {
             log.info( "{} Import {} disabled for server type {}", id, url, disableForServerType);
             return;
