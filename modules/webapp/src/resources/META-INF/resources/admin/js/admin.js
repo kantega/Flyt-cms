@@ -60,7 +60,7 @@ openaksess.admin = {
      * @param elementProperties
      */
     setLayoutSpecificSizes : function (elementProperties){},
-    
+
 
 
     /**
@@ -136,7 +136,7 @@ openaksess.admin = {
                     window.location.href = properties.contextPath + '/admin/?dummy=' + new Date().getTime();
                 }
             }
-        });        
+        });
     },
 
     /**
@@ -310,34 +310,34 @@ openaksess.admin = {
         var remove = function(widget) {
             _getElementAsJquery(widget).remove();
         };
-        
+
         return {
 
             init : function(additionalConfig){
-                openaksess.common.debug("openaksess.admin.widgetmanager.init(): Starting widget manager."); 
+                openaksess.common.debug("openaksess.admin.widgetmanager.init(): Starting widget manager.");
 
                 if (additionalConfig && typeof(additionalConfig) == 'object') {
                     openaksess.common.debug("openaksess.admin.widgetmanager.init(): Extending default config with user supplied config.");
                     $.extend(config, additionalConfig);
                 }
-    
+
                 var $columns = $('.'+config.widgetContainerClass, config.context);
                 $columns.sortable({
                     connectWith: config.context + ' .'+config.widgetContainerClass
                 });
-    
+
                 var $widgets = $('.'+config.widgetClass, config.context);
                 $widgets.addClass("ui-widget ui-widget-content ui-helper-clearfix")
                         .find('.'+config.widgetHeaderClass)
                         .addClass("ui-widget-header")
                         .append('<span class="widget-controls"><span class="'+config.closeClass+'"></span><span class="'+config.minimizeClass+'"></span></span>');
-    
+
                 //Attach click listeners to controls (minimize/maximize/close)
                 $widgets.find(".widget-header .widget-controls").live('click', function(e) {
                     var $target = $(e.target);
                     openaksess.common.debug("widgetmanager: Control click received. target: " + config.minimizeClass);
                     var $widget = $(this).parents(".widget:first");
-    
+
                     if ($target.hasClass(config.minimizeClass)) {
                         openaksess.common.debug("widgetmanager: Click is minimize.");
                         minimize($widget);
@@ -350,16 +350,16 @@ openaksess.admin = {
                         openaksess.common.debug("widgetmanager: Click is close.");
                         remove($widget);
                     }
-    
+
                 });
-    
+
                 $columns.disableSelection();
             },
 
             minimize : minimize,
             maximize : maximize,
             remove : remove
-            
+
         };
 
 

@@ -62,6 +62,11 @@
         buttons = conf.getString("editor.default.buttons");
         log.error("Button set not defined:" + confPrefix + "buttons");
     }
+    String contextMenu = conf.getString(confPrefix + "contextmenu");
+    if (contextMenu == null) {
+        contextMenu = conf.getString("editor.default.contextmenu");
+    }
+
 
     boolean hasHtmlEditorRole = false;
     String[] htmlEditorRole = Aksess.getHtmlEditorRoles();
@@ -79,11 +84,6 @@
         for (int i = 0; i < buttonRows.length; i++) {
             buttonRows[i] = "\"" + buttonRows[i] + "\"";
         }
-    }
-
-    String heading = conf.getString(confPrefix + "heading");
-    if (heading == null) {
-        heading = conf.getString("editor.default.heading");
     }
 
     String valid_elements = conf.getString(confPrefix+"valid_elements");
@@ -144,7 +144,7 @@
             height : "${attributeHeight}",
 
             toolbar: <%=Arrays.toString(buttonRows) %>,
-            contextmenu: "aksess_insertmedia aksess_insertlink aksess_inserttable | inserttable tableprops cell row column deletetable",
+            contextmenu: "<%= contextMenu %>",
             menubar: false,
             autosave_interval: "5s", //reminder
             autosave_retention: "30m", //stored local incase of crash

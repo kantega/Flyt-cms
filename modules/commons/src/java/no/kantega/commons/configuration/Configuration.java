@@ -101,7 +101,7 @@ public class Configuration {
 
     public String[] getStrings(String name, String defaultValue) throws IllegalArgumentException {
         String[] val = getStrings(name);
-        if (val == null) {
+        if (val == null || val.length == 0) {
             return defaultValue.split(",");
         } else {
             return val;
