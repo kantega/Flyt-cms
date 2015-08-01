@@ -1,7 +1,11 @@
 package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
-import org.kantega.jexmec.*;
+import org.kantega.jexmec.ClassLoaderProvider;
+import org.kantega.jexmec.PluginLoader;
+import org.kantega.jexmec.PluginManager;
+import org.kantega.jexmec.PluginManagerListener;
+import org.kantega.jexmec.ServiceLocator;
 import org.kantega.jexmec.manager.DefaultPluginManager;
 import org.kantega.jexmec.spring.SpringPluginLoader;
 import org.kantega.jexmec.spring.SpringServiceLocator;
@@ -9,7 +13,11 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.*;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -30,7 +38,6 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
 
     private ApplicationContext applicationContext;
     private ServletContext servletContext;
-    private List<PluginLoader<OpenAksessPlugin>> pluginLoaders;
     private List<ClassLoaderProvider> pluginClassLoaderProviders;
     private List<BeanFactoryPostProcessor> postProcessors;
     private Class servicesClass;
@@ -73,8 +80,7 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
             }
 
             @Override
-            protected ConfigurableApplicationContext
-            createApplicationContext(URL url, ClassLoader loader) {
+            protected ConfigurableApplicationContext createApplicationContext(URL url, ClassLoader loader) {
                 final String resourceBases = System.getProperty("resourceBases");
                 final XmlWebApplicationContext context = resourceBases == null ? new XmlWebApplicationContext() : new DevXmlWebApplicationContext(resourceBases);
                 context.setClassLoader(loader);
@@ -132,6 +138,7 @@ public class PluginManagerFactory extends AbstractFactoryBean implements Applica
         this.postProcessors = postProcessors;
     }
 
+    @SuppressWarnings("unchecked")
     public void onApplicationEvent(ApplicationEvent event) {
         if (event instanceof ContextRefreshedEvent && event.getSource() == applicationContext) {
             try {

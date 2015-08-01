@@ -17,25 +17,25 @@ import javax.sql.DataSource;
  */
 public interface OpenAksessServices {
 
-    public SiteCache getSiteCache();
+    SiteCache getSiteCache();
 
-    public DataSource getDataSource(DataSourceName name);
+    DataSource getDataSource(DataSourceName name);
 
-    public IdentityResolver getIdentityResolver(IdentityResolverName name);
+    IdentityResolver getIdentityResolver(IdentityResolverName name);
 
-    public ProfileManager getProfileManager(ProfileManagerName name);
+    ProfileManager getProfileManager(ProfileManagerName name);
 
-    public FormService getFormService();
+    FormService getFormService();
 
-    public SystemConfiguration getSystemConfiguration();
+    SystemConfiguration getSystemConfiguration();
 
-    public PluginConfigProvider getPluginConfigProvider();
+    PluginConfigProvider getPluginConfigProvider();
 
-    public PluginManager<OpenAksessPlugin> getPluginManager();
+    PluginManager<OpenAksessPlugin> getPluginManager();
 
-    public UIServices getUIServices();
+    UIServices getUIServices();
 
-    public TemplateRenderer getTemplateRenderer();
+    TemplateRenderer getTemplateRenderer();
 
     enum DataSourceName {
         aksessDataSource
