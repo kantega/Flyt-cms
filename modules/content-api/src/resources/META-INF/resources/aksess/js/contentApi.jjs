@@ -1,0 +1,54 @@
+(function(window){
+    var contextPath = "${pageContext.request.contextPath}";
+
+    function fetchJson(http, url, callback){
+        http.onreadystatechange = callback;
+        http.open("GET", url, true);
+        http.send();
+    }
+
+    var ContentApi = {
+
+        getCurrentContent: function(callback){
+            var currentUrl = window.location.href;
+            var http = new XMLHttpRequest();
+            fetchJson(http, contextPath + "/content-api/current?url=" + currentUrl, function(){
+                if(http.readyState == 4 && http.status == 200){
+                    var dataString = http.responseText;
+                    callback(null, JSON.parse(dataString));
+                }
+            });
+        },
+
+        getCurrentContentAttributes: function(callback){
+            if(typeof ContentApi.contentObject === 'undefined'){
+                ContentApi.getCurrent({url:window.location.href}, function(err, data){
+                    if(err){
+                        callback(err);
+                    }else{
+                        var attributes = data.contentAttributes;
+                        callback(null, attributes);
+                    }
+                })
+            }else{
+                callback(null, ContentApi.data.contentAttributes);
+            }
+        },
+
+        queryContent: function(queryObject, callback){
+            var queryParams = "";
+            for(var param in queryObject){
+                queryParams += param + "=" + queryObject[param];
+            }
+            var http = new XMLHttpRequest();
+            fetchJson(http, contextPath + "/content-api/query?" + queryParams, function(){
+                if(http.readyState == 4 && http.status == 200){
+                    var dataString = http.responseText;
+                    callback(null, JSON.parse(dataString));
+                }
+            })
+        }
+    };
+
+    window.aksess = ContentApi;
+})(window);

@@ -39,7 +39,6 @@ public class ContentController {
 
     @RequestMapping(value = "/query", method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<List<Content>> getContentWithContentQuery(HttpServletRequest request, ContentQueryTransferObject queryTransferObject){
-
         ContentManagementService cms = new ContentManagementService(request);
         List<Content> contentList = cms.getContentList(queryTransferObject.getQuery(), -1, new SortOrder(ContentProperty.TITLE));
         if(!contentList.isEmpty()){
