@@ -1,28 +1,33 @@
 (function(window){
     var contextPath = "${pageContext.request.contextPath}";
 
-    function fetchJson(http, url, callback){
-        http.onreadystatechange = callback;
-        http.open("GET", url, true);
-        http.send();
+    function GET(xmlHttpRequest, url, callback){
+        xmlHttpRequest.onreadystatechange = callback;
+        xmlHttpRequest.open("GET", url, true);
+        xmlHttpRequest.send();
     }
 
     var ContentApi = {
-
+        cachedContent: null,
         getCurrentContent: function(callback){
             var currentUrl = window.location.href;
-            var http = new XMLHttpRequest();
-            fetchJson(http, contextPath + "/content-api/current?url=" + currentUrl, function(){
-                if(http.readyState == 4 && http.status == 200){
-                    var dataString = http.responseText;
-                    callback(null, JSON.parse(dataString));
+            var xmlHttpRequest = new XMLHttpRequest();
+            var url = contextPath + "/content-api/current?url=" + currentUrl;
+            GET(xmlHttpRequest, url, function(){
+                if(xmlHttpRequest.readyState == 4){
+                    if(xmlHttpRequest.status == 200){
+                        var json = JSON.parse(xmlHttpRequest.responseText);
+                        ContentApi.cachedContent = json;
+                        callback(null, json);
+                    }else{
+                        callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
+                    }
                 }
             });
         },
-
         getCurrentContentAttributes: function(callback){
-            if(typeof ContentApi.contentObject === 'undefined'){
-                ContentApi.getCurrent({url:window.location.href}, function(err, data){
+            if(ContentApi.cachedContent == null){
+                ContentApi.getCurrentContent(function(err, data){
                     if(err){
                         callback(err);
                     }else{
@@ -31,20 +36,24 @@
                     }
                 })
             }else{
-                callback(null, ContentApi.data.contentAttributes);
+                callback(null, ContentApi.cachedContent.contentAttributes);
             }
         },
-
         queryContent: function(queryObject, callback){
             var queryParams = "";
             for(var param in queryObject){
                 queryParams += param + "=" + queryObject[param];
             }
-            var http = new XMLHttpRequest();
-            fetchJson(http, contextPath + "/content-api/query?" + queryParams, function(){
-                if(http.readyState == 4 && http.status == 200){
-                    var dataString = http.responseText;
-                    callback(null, JSON.parse(dataString));
+            var xmlHttpRequest = new XMLHttpRequest();
+            var url = contextPath + "/content-api/query?" + queryParams;
+            GET(xmlHttpRequest, url, function(){
+                if(xmlHttpRequest.readyState == 4){
+                    if(xmlHttpRequest.status == 200){
+                        var dataString = xmlHttpRequest.responseText;
+                        callback(null, JSON.parse(dataString));
+                    }else{
+                        callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
+                    }
                 }
             })
         }
