@@ -90,6 +90,7 @@
         <module>modules/search-api</module>
         <module>modules/OA-Search</module>
         <module>modules/openaksess-metrics</module>
+        <module>modules/content-api</module>
     </modules>
 
     <dependencyManagement>
