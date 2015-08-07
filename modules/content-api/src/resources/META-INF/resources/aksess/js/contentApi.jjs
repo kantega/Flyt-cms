@@ -1,61 +1,84 @@
-(function(window){
+(function (window) {
     var contextPath = "${pageContext.request.contextPath}";
 
-    function GET(xmlHttpRequest, url, callback){
+    function GET(xmlHttpRequest, url, callback) {
         xmlHttpRequest.onreadystatechange = callback;
         xmlHttpRequest.open("GET", url, true);
         xmlHttpRequest.send();
     }
 
     var ContentApi = {
-        cachedContent: null,
-        getCurrentContent: function(callback){
+        cachedContent: undefined,
+        getCurrentContent: function (callback) {
             var currentUrl = window.location.href;
             var xmlHttpRequest = new XMLHttpRequest();
             var url = contextPath + "/content-api/current?url=" + currentUrl;
-            GET(xmlHttpRequest, url, function(){
-                if(xmlHttpRequest.readyState == 4){
-                    if(xmlHttpRequest.status == 200){
+            GET(xmlHttpRequest, url, function () {
+                if (xmlHttpRequest.readyState == 4) {
+                    if (xmlHttpRequest.status == 200) {
                         var json = JSON.parse(xmlHttpRequest.responseText);
                         ContentApi.cachedContent = json;
                         callback(null, json);
-                    }else{
+                    } else {
                         callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
                     }
                 }
             });
         },
-        getCurrentContentAttributes: function(callback){
-            if(ContentApi.cachedContent == null){
-                ContentApi.getCurrentContent(function(err, data){
-                    if(err){
+        getCurrentContentAttributes: function (callback) {
+            if (typeof ContentApi.cachedContent === 'undefined') {
+                ContentApi.getCurrentContent(function (err, data) {
+                    if (err) {
                         callback(err);
-                    }else{
+                    } else {
                         var attributes = data.contentAttributes;
                         callback(null, attributes);
                     }
                 })
-            }else{
+            } else {
                 callback(null, ContentApi.cachedContent.contentAttributes);
             }
         },
-        queryContent: function(queryObject, callback){
+        queryContent: function (queryObject, callback) {
             var queryParams = "";
-            for(var param in queryObject){
-                queryParams += param + "=" + queryObject[param];
+            for (var param in queryObject) {
+                if(queryObject.hasOwnProperty(param)){
+                    queryParams += param + "=" + queryObject[param];
+                }
             }
             var xmlHttpRequest = new XMLHttpRequest();
             var url = contextPath + "/content-api/query?" + queryParams;
-            GET(xmlHttpRequest, url, function(){
-                if(xmlHttpRequest.readyState == 4){
-                    if(xmlHttpRequest.status == 200){
+            GET(xmlHttpRequest, url, function () {
+                if (xmlHttpRequest.readyState == 4) {
+                    if (xmlHttpRequest.status == 200) {
                         var dataString = xmlHttpRequest.responseText;
                         callback(null, JSON.parse(dataString));
-                    }else{
+                    } else {
                         callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
                     }
                 }
             })
+        },
+        getMultimediaUrl: function (options, callback) {
+            if(typeof options.name === 'undefined'){
+                callback('No name property in first argument');
+            }
+            ContentApi.getCurrentContentAttributes(function (err, data) {
+                var multimedia = data[options.name].multimedia;
+                if(!multimedia){
+                    callback('Attribute not of type multimedia');
+                    return;
+                }
+
+                var url = contextPath + "/multimedia.ap?id="+multimedia.id;
+                for(var key in options){
+                    if(options.hasOwnProperty(key) && key != 'name'){
+                        url += "&"+key+"="+options[key];
+                    }
+                }
+
+                callback(null, url);
+            });
         }
     };
 
