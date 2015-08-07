@@ -37,7 +37,7 @@ public class Language {
     /**
      * Returnerer språkkoden i henhold til ISO639-1.
      *
-     * @param language
+     * @param language The language
      * @return
      */
     public static String getLanguageAsISOCode(int language) {
@@ -71,7 +71,7 @@ public class Language {
      * Returnerer språkkoden i henhold til ISO639-2.
      * Hvis det skal angies språk i html-attributtet lang anbefales det at denne standarden benyttes.
      *
-     * @param language
+     * @param language The language
      * @return
      */
     public static String getLanguageAsISO639_2Code(int language) {
