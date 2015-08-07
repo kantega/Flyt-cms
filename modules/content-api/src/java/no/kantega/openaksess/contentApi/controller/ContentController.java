@@ -3,7 +3,6 @@ package no.kantega.openaksess.contentApi.controller;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
@@ -13,31 +12,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
-@RequestMapping("/content-api")
+@RequestMapping("/content")
 public class ContentController {
 
     @Autowired
     private ContentIdHelper contentIdHelper;
 
     @RequestMapping(value = "/current")
-    public @ResponseBody ResponseEntity<Content> getCurrentContent(HttpServletRequest request, @RequestParam("url") String url) throws ContentNotFoundException, NotAuthorizedException {
-        ContentIdentifier contentIdentifier = contentIdHelper.fromUrl(url);
-        ContentManagementService cms = new ContentManagementService(request);
-        Content content = cms.getContent(contentIdentifier);
-
-        return new ResponseEntity<>(content, HttpStatus.OK);
+    public @ResponseBody ResponseEntity<Content> getCurrentContent(HttpServletRequest request) {
+        String url = request.getHeader("referer");
+        try {
+            ContentIdentifier contentIdentifier = contentIdHelper.fromUrl(url);
+            ContentManagementService cms = new ContentManagementService(request);
+            Content content = cms.getContent(contentIdentifier);
+            return new ResponseEntity<>(content, HttpStatus.OK);
+        } catch (ContentNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (NotAuthorizedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody ResponseEntity<List<Content>> getContentWithContentQuery(HttpServletRequest request, ContentQueryTransferObject queryTransferObject){
         ContentManagementService cms = new ContentManagementService(request);
         List<Content> contentList = cms.getContentList(queryTransferObject.getQuery(), -1, new SortOrder(ContentProperty.TITLE));
@@ -47,8 +49,8 @@ public class ContentController {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @RequestMapping(value = "/query", method = RequestMethod.GET, params = "associationId")
-    public @ResponseBody ResponseEntity<Content> getContentByAssociationId(HttpServletRequest request, @RequestParam("associationId") Integer associationId){
+    @RequestMapping(value = "/{identifier}", method = RequestMethod.GET)
+    public @ResponseBody ResponseEntity<Content> getContentByAssociationId(HttpServletRequest request, @PathVariable("identifier") Integer associationId){
         ContentManagementService cms = new ContentManagementService(request);
 
         return getContentByIdHelper(cms, associationId);

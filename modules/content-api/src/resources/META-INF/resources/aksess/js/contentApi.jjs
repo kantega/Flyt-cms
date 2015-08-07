@@ -1,27 +1,18 @@
-(function (window) {
+(function (window, undefined) {
     var contextPath = "${pageContext.request.contextPath}";
-
-    function GET(xmlHttpRequest, url, callback) {
-        xmlHttpRequest.onreadystatechange = callback;
-        xmlHttpRequest.open("GET", url, true);
-        xmlHttpRequest.send();
-    }
 
     var ContentApi = {
         cachedContent: undefined,
         getCurrentContent: function (callback) {
-            var currentUrl = window.location.href;
-            var xmlHttpRequest = new XMLHttpRequest();
-            var url = contextPath + "/content-api/current?url=" + currentUrl;
-            GET(xmlHttpRequest, url, function () {
-                if (xmlHttpRequest.readyState == 4) {
-                    if (xmlHttpRequest.status == 200) {
-                        var json = JSON.parse(xmlHttpRequest.responseText);
-                        ContentApi.cachedContent = json;
-                        callback(null, json);
-                    } else {
-                        callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
-                    }
+            $.ajax({
+                url: contextPath + '/content/current',
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR){
+                    ContentApi.cachedContent = data;
+                    callback(null, data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    callback(errorThrown);
                 }
             });
         },
@@ -40,24 +31,17 @@
             }
         },
         queryContent: function (queryObject, callback) {
-            var queryParams = "";
-            for (var param in queryObject) {
-                if (queryObject.hasOwnProperty(param)) {
-                    queryParams += param + "=" + queryObject[param];
+            $.ajax({
+                url: contextPath + "/content",
+                dataType: "json",
+                data: queryObject,
+                success: function(data, textStatus, jqXHR){
+                    callback(null, data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    callback(errorThrown);
                 }
-            }
-            var xmlHttpRequest = new XMLHttpRequest();
-            var url = contextPath + "/content-api/query?" + queryParams;
-            GET(xmlHttpRequest, url, function () {
-                if (xmlHttpRequest.readyState == 4) {
-                    if (xmlHttpRequest.status == 200) {
-                        var dataString = xmlHttpRequest.responseText;
-                        callback(null, JSON.parse(dataString));
-                    } else {
-                        callback({statusText: xmlHttpRequest.statusText, statusCode: xmlHttpRequest.status});
-                    }
-                }
-            })
+            });
         },
         getMultimediaUrl: function (options, callback){
             var multimedia = options.attribute.multimedia;
@@ -73,6 +57,7 @@
             callback(null, url);
         }
     };
-
-    window.flyt = ContentApi;
+    window.flyt = window.flyt || {};
+    window.flyt.contextPath = contextPath;
+    window.flyt.ContentApi = ContentApi;
 })(window);
