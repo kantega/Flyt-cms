@@ -48,7 +48,7 @@
             if(!multimedia){
                 return callback('Attribute not of type multimedia.');
             }
-            var url = contextPath + "/multimedia.ap?id=" + multimedia.id;
+            var url = multimedia.url + "?";
             for (var key in options) {
                 if (options.hasOwnProperty(key) && key != 'name') {
                     url += "&" + key + "=" + options[key];

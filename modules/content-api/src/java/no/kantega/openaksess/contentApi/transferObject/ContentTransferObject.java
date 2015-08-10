@@ -1,4 +1,4 @@
-package no.kantega.openaksess.contentApi.controller;
+package no.kantega.openaksess.contentApi.transferObject;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.kantega.publishing.api.content.ContentIdentifier;

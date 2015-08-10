@@ -1,4 +1,4 @@
-package no.kantega.openaksess.contentApi.controller;
+package no.kantega.openaksess.contentApi.transferObject;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.AssociationCategory;

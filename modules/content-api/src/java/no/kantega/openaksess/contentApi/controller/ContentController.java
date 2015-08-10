@@ -1,6 +1,8 @@
 package no.kantega.openaksess.contentApi.controller;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.openaksess.contentApi.transferObject.ContentQueryTransferObject;
+import no.kantega.openaksess.contentApi.transferObject.ContentTransferObject;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.SortOrder;

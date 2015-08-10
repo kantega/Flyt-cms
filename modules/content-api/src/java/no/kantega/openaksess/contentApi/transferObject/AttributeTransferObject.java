@@ -1,7 +1,6 @@
-package no.kantega.openaksess.contentApi.controller;
+package no.kantega.openaksess.contentApi.transferObject;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
@@ -34,10 +33,9 @@ public class AttributeTransferObject {
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public Multimedia getMultimedia(){
+    public MultimediaTransferObject getMultimedia(){
         if(attribute instanceof MediaAttribute){
-            MediaAttribute media = (MediaAttribute) attribute;
-            return media.getMultimedia();
+            return new MultimediaTransferObject(((MediaAttribute)attribute).getMultimedia());
         }
         return null;
     }
