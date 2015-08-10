@@ -25,13 +25,13 @@ public class ContentController {
     private ContentIdHelper contentIdHelper;
 
     @RequestMapping(value = "/current")
-    public @ResponseBody ResponseEntity<Content> getCurrentContent(HttpServletRequest request) {
+    public @ResponseBody ResponseEntity<ContentTransferObject> getCurrentContent(HttpServletRequest request) {
         String url = request.getHeader("referer");
         try {
             ContentIdentifier contentIdentifier = contentIdHelper.fromUrl(url);
             ContentManagementService cms = new ContentManagementService(request);
             Content content = cms.getContent(contentIdentifier);
-            return new ResponseEntity<>(content, HttpStatus.OK);
+            return new ResponseEntity<>(new ContentTransferObject(content), HttpStatus.OK);
         } catch (ContentNotFoundException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (NotAuthorizedException e) {
@@ -50,19 +50,19 @@ public class ContentController {
     }
 
     @RequestMapping(value = "/{identifier}", method = RequestMethod.GET)
-    public @ResponseBody ResponseEntity<Content> getContentByAssociationId(HttpServletRequest request, @PathVariable("identifier") Integer associationId){
+    public @ResponseBody ResponseEntity<ContentTransferObject> getContentByAssociationId(HttpServletRequest request, @PathVariable("identifier") Integer associationId){
         ContentManagementService cms = new ContentManagementService(request);
 
         return getContentByIdHelper(cms, associationId);
     }
 
-    private ResponseEntity<Content> getContentByIdHelper(ContentManagementService cms, int associationId){
+    private ResponseEntity<ContentTransferObject> getContentByIdHelper(ContentManagementService cms, int associationId){
         ContentIdentifier cid = new ContentIdentifier();
         cid.setAssociationId(associationId);
         try {
             Content content = cms.getContent(cid);
             if(content != null) {
-                return new ResponseEntity<>(content, HttpStatus.OK);
+                return new ResponseEntity<>(new ContentTransferObject(content), HttpStatus.OK);
             }
         } catch (NotAuthorizedException e) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
