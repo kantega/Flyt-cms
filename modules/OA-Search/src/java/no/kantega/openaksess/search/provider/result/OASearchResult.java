@@ -11,7 +11,7 @@ public class OASearchResult extends SearchResult {
     private final int associationId;
     private final String author;
     private final List<PathEntry> pathEntries;
-    private final Map<String, Object> resultFields = new LinkedHashMap<>();
+
 
     /**
      * @param id                 of the content this result is based on.
@@ -44,7 +44,4 @@ public class OASearchResult extends SearchResult {
         return associationId;
     }
 
-    public Map<String, Object> getResultFields(){
-        return this.resultFields;
-    }
 }

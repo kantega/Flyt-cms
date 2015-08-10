@@ -98,8 +98,8 @@
     <field name="metaDataTemplateId" type="int" indexed="true" stored="false" />
     <field name="displayTemplateId" type="int" indexed="true" stored="true" />
     <field name="displayTemplateName" type="string" indexed="true" stored="false" docValues="true"/>
-    <field name="documentTypeId" type="int" indexed="true" stored="false" />
-    <field name="documentTypeName" type="string" indexed="true" stored="false" docValues="true"/>
+    <field name="documentTypeId" type="int" indexed="true" stored="true" />
+    <field name="documentTypeName" type="string" indexed="true" stored="true" docValues="true"/>
     <field name="groupId" type="int" indexed="true" stored="true" />
     <field name="siteId" type="int" indexed="true" stored="true" multiValued="false" />
     <field name="location" type="text_path" indexed="true" stored="true" multiValued="true"/>

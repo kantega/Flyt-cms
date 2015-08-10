@@ -33,7 +33,7 @@ public interface RememberMeHandler {
     /**
      * Removes any remember-me-tokens or similar, i.e. logging out the user.
      * @param request logout request
-     * @param response
+     * @param response logout response
      *
      */
     void forgetUser(HttpServletRequest request, HttpServletResponse response);
