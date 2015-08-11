@@ -67,16 +67,6 @@
         <servlet-name>StatusServlet</servlet-name>
         <servlet-class>no.kantega.publishing.web.servlet.StatusServlet</servlet-class>
     </servlet>
-    
-    <servlet>
-        <servlet-name>ContentApi</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>ContentApi</servlet-name>
-        <url-pattern>/cms/*</url-pattern>
-    </servlet-mapping>
 
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>

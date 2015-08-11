@@ -1,19 +1,18 @@
-package no.kantega.openaksess.contentApi.transferObject;
+package no.kantega.openaksess.rest.transferObject;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author Tom
- * @since 07.08.15
- */
+@XmlAccessorType(XmlAccessType.NONE)
 public class AttributeTransferObject {
     private Attribute attribute;
 
@@ -21,19 +20,22 @@ public class AttributeTransferObject {
         this.attribute = attribute;
     }
 
+    @XmlElement
     public String getName(){
         return attribute.getName();
     }
 
+    @XmlElement
     public String getTitle(){
         return attribute.getTitle();
     }
 
+    @XmlElement
     public String getValue(){
         return attribute.getValue();
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @XmlElement
     public MultimediaTransferObject getMultimedia(){
         if(attribute instanceof MediaAttribute){
             Multimedia multimedia = ((MediaAttribute)attribute).getMultimedia();
@@ -44,7 +46,7 @@ public class AttributeTransferObject {
         return null;
     }
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @XmlElement
     public List<List<AttributeTransferObject>> getRows(){
         if(attribute instanceof RepeaterAttribute){
             RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attribute;
