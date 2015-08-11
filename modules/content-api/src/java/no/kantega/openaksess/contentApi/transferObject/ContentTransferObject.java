@@ -5,6 +5,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,9 +16,15 @@ import java.util.Map;
 public class ContentTransferObject {
     @JsonIgnore
     private Content content;
+    private HttpServletRequest request;
 
-    public ContentTransferObject(Content content){
+    public ContentTransferObject(Content content, HttpServletRequest request){
         this.content = content;
+        this.request = request;
+    }
+
+    public String getUrl(){
+        return request.getContextPath() + content.getPath(); // TODO: Should return context path.
     }
 
     public String getAlias(){

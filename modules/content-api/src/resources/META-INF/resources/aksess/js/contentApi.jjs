@@ -18,25 +18,28 @@
         },
         getCurrentContentAttributes: function (callback) {
             if (typeof ContentApi.cachedContent === 'undefined') {
-                ContentApi.getCurrentContent(function (err, data) {
+                return ContentApi.getCurrentContent(function (err, data) {
                     if (err) {
                         return callback(err);
                     } else {
                         var attributes = data.contentAttributes;
                         callback(null, attributes);
+                        return data;
                     }
                 })
             } else {
                 callback(null, ContentApi.cachedContent.contentAttributes);
+                return ContentApi.cachedContent.contentAttributes;
             }
         },
         queryContent: function (queryObject, callback) {
-            $.ajax({
+            return $.ajax({
                 url: contextPath + "/content",
                 dataType: "json",
                 data: queryObject,
                 success: function(data, textStatus, jqXHR){
                     callback(null, data);
+                    return data;
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     callback(errorThrown);
