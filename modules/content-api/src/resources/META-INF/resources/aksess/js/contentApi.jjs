@@ -1,11 +1,12 @@
 (function (window, undefined) {
     var contextPath = "${pageContext.request.contextPath}";
+    var rootResourcePath = contextPath + "/rest/content";
 
     var ContentApi = {
         cachedContent: undefined,
         getCurrentContent: function (callback) {
             $.ajax({
-                url: contextPath + '/content/current',
+                url: rootResourcePath + '/current',
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR){
                     ContentApi.cachedContent = data;
@@ -34,7 +35,7 @@
         },
         queryContent: function (queryObject, callback) {
             return $.ajax({
-                url: contextPath + "/content",
+                url: rootResourcePath,
                 dataType: "json",
                 data: queryObject,
                 success: function(data, textStatus, jqXHR){
