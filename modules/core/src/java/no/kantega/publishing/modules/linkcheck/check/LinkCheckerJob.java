@@ -412,7 +412,10 @@ public class LinkCheckerJob implements InitializingBean {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT).build())
+                            .setConnectTimeout(CONNECTION_TIMEOUT)
+                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
+                            .setSocketTimeout(CONNECTION_TIMEOUT)
+                            .build())
                     .setProxy(proxy);
 
             if(isNotBlank(proxyUser)) {
@@ -424,7 +427,10 @@ public class LinkCheckerJob implements InitializingBean {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
+                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
+                            .setConnectTimeout(CONNECTION_TIMEOUT)
+                            .setSocketTimeout(CONNECTION_TIMEOUT)
+                            .build());
         }
     }
 }

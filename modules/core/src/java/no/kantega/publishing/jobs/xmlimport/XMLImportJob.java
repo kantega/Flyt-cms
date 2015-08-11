@@ -126,7 +126,10 @@ public class XMLImportJob   {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(timeout).build())
+                            .setConnectTimeout(timeout)
+                            .setConnectionRequestTimeout(timeout)
+                            .setSocketTimeout(timeout)
+                        .build())
                     .setProxy(proxy);
 
             if(isNotBlank(proxyUser)) {
@@ -138,7 +141,10 @@ public class XMLImportJob   {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(timeout).build());
+                            .setConnectTimeout(timeout)
+                            .setSocketTimeout(timeout)
+                            .setConnectionRequestTimeout(timeout)
+                        .build());
         }
     }
 }

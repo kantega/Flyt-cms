@@ -114,7 +114,10 @@ public class XMLHelper {
         return HttpClients.custom()
                 .setDefaultRequestConfig(RequestConfig.custom()
                         .setRedirectsEnabled(true)
-                        .setConnectTimeout(10000).build()).build();
+                        .setConnectTimeout(10000)
+                        .setSocketTimeout(10000)
+                        .setConnectionRequestTimeout(10000)
+                        .build()).build();
     }
 
     public static Document openDocument(Resource resource) throws InvalidFileException {
