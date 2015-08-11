@@ -1,5 +1,8 @@
 package no.kantega.search.api.search;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 /**
  * A single hit in a SearchResponse
  * @see SearchResponse
@@ -12,6 +15,7 @@ public class SearchResult {
     private final String url;
     private final int securityId;
     private final int parentId;
+    private final Map<String, Object> resultFields = new LinkedHashMap<>();
 
     /**
      * @param id of the content this result is based on.
@@ -59,4 +63,9 @@ public class SearchResult {
     public int getParentId() {
         return parentId;
     }
+
+    public Map<String, Object> getResultFields(){
+        return this.resultFields;
+    }
+
 }

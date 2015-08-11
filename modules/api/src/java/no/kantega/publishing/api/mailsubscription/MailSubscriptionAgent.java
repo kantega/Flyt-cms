@@ -14,7 +14,7 @@ public interface MailSubscriptionAgent {
      * Called by the mail subscription jobs. It is up to the implementers of this method to lookup content changed
      * since previous run and locate the subscribers to send it to, based on the given interval.
      * @param previousRun timestamp.
-     * @param interval
+     * @param interval Mail subscription interval
      */
     void emailNewContentSincePreviousDate(Date previousRun, MailSubscriptionInterval interval);
 }
