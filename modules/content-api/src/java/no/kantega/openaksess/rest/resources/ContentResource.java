@@ -1,8 +1,8 @@
 package no.kantega.openaksess.rest.resources;
 
 import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.openaksess.rest.transferObject.ContentQueryTransferObject;
-import no.kantega.openaksess.rest.transferObject.ContentTransferObject;
+import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
+import no.kantega.openaksess.rest.representation.ContentTransferObject;
 import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
@@ -60,7 +60,7 @@ public class ContentResource {
             Content content = cms.getContent(cid);
             return new ContentTransferObject(content, request);
         } catch (ContentNotFoundException e) {
-            throw new Fault(404, "Content not found");
+            throw new Fault(404, "Content not found", null, false, false);
         } catch (no.kantega.commons.exception.NotAuthorizedException e) {
             throw new Fault(401, "Unauthorized");
         }
@@ -79,7 +79,7 @@ public class ContentResource {
             if(content != null){
                 return new ContentTransferObject(content, request);
             }
-            throw new Fault(404, "Content not found");
+            throw new Fault(404, "Content not found", null, false, false);
         } catch (NotAuthorizedException e) {
             throw new Fault(401, "Not authorized");
         }

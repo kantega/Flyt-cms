@@ -1,4 +1,4 @@
-package no.kantega.openaksess.rest.transferObject;
+package no.kantega.openaksess.rest.representation;
 
 import no.kantega.commons.media.MimeType;
 import no.kantega.publishing.common.data.Multimedia;

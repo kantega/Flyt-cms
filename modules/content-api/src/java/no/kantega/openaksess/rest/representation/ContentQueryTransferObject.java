@@ -1,4 +1,4 @@
-package no.kantega.openaksess.rest.transferObject;
+package no.kantega.openaksess.rest.representation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import no.kantega.publishing.api.content.ContentIdentifier;
