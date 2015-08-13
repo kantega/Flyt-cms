@@ -16,15 +16,15 @@ import java.util.List;
 @XmlType(name = "Fault")
 @XmlRootElement(name = "fault")
 @XmlAccessorType(XmlAccessType.NONE)
-public class FaultTo extends ArrayList<String> {
-    public FaultTo(int initialCapacity) {
+public class FaultTransferObject extends ArrayList<String> {
+    public FaultTransferObject(int initialCapacity) {
         super(initialCapacity);
     }
 
-    public FaultTo() {
+    public FaultTransferObject() {
     }
 
-    public FaultTo(Collection<? extends String> c) {
+    public FaultTransferObject(Collection<? extends String> c) {
         super(c);
     }
 

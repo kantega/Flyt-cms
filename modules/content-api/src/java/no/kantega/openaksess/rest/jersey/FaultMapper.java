@@ -1,7 +1,7 @@
 package no.kantega.openaksess.rest.jersey;
 
 import no.kantega.openaksess.rest.domain.Fault;
-import no.kantega.openaksess.rest.representation.FaultTo;
+import no.kantega.openaksess.rest.representation.FaultTransferObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +28,7 @@ public class FaultMapper implements ExceptionMapper<Fault> {
     @Override
     public Response toResponse(Fault throwable) {
         logger.error("Fault caught", throwable);
-        return Response.status(throwable.getCode()).entity(new FaultTo(getMessages(throwable))).build();
+        return Response.status(throwable.getCode()).entity(new FaultTransferObject(getMessages(throwable))).build();
     }
 
     protected List<String> getMessages(Throwable throwable) {

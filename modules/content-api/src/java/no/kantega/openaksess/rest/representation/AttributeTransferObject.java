@@ -8,9 +8,7 @@ import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class AttributeTransferObject {
@@ -47,26 +45,25 @@ public class AttributeTransferObject {
     }
 
     @XmlElement
-    public List<List<AttributeTransferObject>> getRows(){
+    public List<Map<String, AttributeTransferObject>> getRows(){
         if(attribute instanceof RepeaterAttribute){
             RepeaterAttribute repeaterAttribute = (RepeaterAttribute)attribute;
             return convertRows(repeaterAttribute);
         }
         return null;
     }
-
-    private List<List<AttributeTransferObject>> convertRows(RepeaterAttribute repeaterAttribute){
-        List<List<AttributeTransferObject>> output = new ArrayList<>(repeaterAttribute.getNumberOfRows());
+    
+    private List<Map<String, AttributeTransferObject>> convertRows(RepeaterAttribute repeaterAttribute){
+        List<Map<String, AttributeTransferObject>> output = new ArrayList<>(repeaterAttribute.getNumberOfRows());
         Iterator<List<Attribute>> iterator = repeaterAttribute.getIterator();
         while(iterator.hasNext()){
-            List<Attribute> next = iterator.next();
-            List<AttributeTransferObject> row = new ArrayList<>(next.size());
-            for(Attribute attr : next){
-                row.add(new AttributeTransferObject(attr));
+            List<Attribute> attributes = iterator.next();
+            Map<String, AttributeTransferObject> map = new HashMap<>(attributes.size());
+            for(Attribute attribute : attributes){
+                map.put(attribute.getName(), new AttributeTransferObject(attribute));
             }
-            output.add(row);
+            output.add(map);
         }
-
         return output;
     }
 }

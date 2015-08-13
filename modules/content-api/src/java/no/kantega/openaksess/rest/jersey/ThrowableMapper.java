@@ -1,6 +1,6 @@
 package no.kantega.openaksess.rest.jersey;
 
-import no.kantega.openaksess.rest.representation.FaultTo;
+import no.kantega.openaksess.rest.representation.FaultTransferObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +27,7 @@ public class ThrowableMapper implements ExceptionMapper<Throwable> {
     @Override
     public Response toResponse(Throwable throwable) {
         logger.error("Throwable caught", throwable);
-        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new FaultTo(getMessages(throwable))).build();
+        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(new FaultTransferObject(getMessages(throwable))).build();
     }
 
     protected List<String> getMessages(Throwable throwable) {
