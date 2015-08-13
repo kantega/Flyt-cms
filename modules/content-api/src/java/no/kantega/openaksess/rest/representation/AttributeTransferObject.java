@@ -52,7 +52,7 @@ public class AttributeTransferObject {
         }
         return null;
     }
-    
+
     private List<Map<String, AttributeTransferObject>> convertRows(RepeaterAttribute repeaterAttribute){
         List<Map<String, AttributeTransferObject>> output = new ArrayList<>(repeaterAttribute.getNumberOfRows());
         Iterator<List<Attribute>> iterator = repeaterAttribute.getIterator();

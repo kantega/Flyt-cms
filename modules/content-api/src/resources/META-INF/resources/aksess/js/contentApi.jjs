@@ -5,7 +5,7 @@
     var ContentApi = {
         cachedContent: undefined,
         getCurrentContent: function (callback) {
-            $.ajax({
+            return $.ajax({
                 url: rootResourcePath + '/current',
                 dataType: 'json',
                 success: function(data, textStatus, jqXHR){
@@ -19,28 +19,25 @@
         },
         getCurrentContentAttributes: function (callback) {
             if (typeof ContentApi.cachedContent === 'undefined') {
-                return ContentApi.getCurrentContent(function (err, data) {
+                ContentApi.getCurrentContent(function (err, data) {
                     if (err) {
                         return callback(err);
                     } else {
                         var attributes = data.contentAttributes;
                         callback(null, attributes);
-                        return data;
                     }
                 })
             } else {
                 callback(null, ContentApi.cachedContent.contentAttributes);
-                return ContentApi.cachedContent.contentAttributes;
             }
         },
         queryContent: function (queryObject, callback) {
-            return $.ajax({
+            $.ajax({
                 url: rootResourcePath,
                 dataType: "json",
                 data: queryObject,
                 success: function(data, textStatus, jqXHR){
                     callback(null, data);
-                    return data;
                 },
                 error: function(jqXHR, textStatus, errorThrown){
                     callback(errorThrown);
