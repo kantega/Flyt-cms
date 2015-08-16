@@ -19,10 +19,10 @@ package no.kantega.publishing.common.util.templates;
 import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.util.XMLHelper;
 import no.kantega.publishing.admin.content.util.ResourceLoaderEntityResolver;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.ContentTemplate;
 import no.kantega.publishing.common.data.TemplateConfigurationValidationError;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import org.springframework.core.io.Resource;
@@ -54,7 +54,7 @@ public class ContentTemplateValidator {
         // Check attributes in XML file
         try {
             Resource resource = contentTemplateResourceLoader.getResource(contentTemplate.getTemplateFile());
-            if (resource == null) {                
+            if (resource == null) {
                 errors.add(new TemplateConfigurationValidationError(contentTemplate.getName(), "aksess.templateconfig.error.attribute.missingtemplatefile", contentTemplate.getTemplateFile()));
                 return errors;
             }

@@ -1,6 +1,7 @@
 package no.kantega.publishing.modules.forms.model;
 
 import no.kantega.commons.xmlfilter.FilterPipeline;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.forms.model.DefaultForm;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.common.data.Content;
@@ -8,7 +9,6 @@ import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.EditableformAttribute;
 import no.kantega.publishing.common.data.attributes.EmailAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.modules.forms.filter.GetFormFieldsFilter;
 
 import java.util.Iterator;

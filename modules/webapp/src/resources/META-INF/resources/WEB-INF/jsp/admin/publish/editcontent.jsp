@@ -1,5 +1,5 @@
 <%@ page import="no.kantega.publishing.admin.content.InputScreenRenderer" %>
-<%@ page import="no.kantega.publishing.common.data.enums.AttributeDataType" %>
+<%@ page import="no.kantega.publishing.api.content.attribute.AttributeDataType" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>

@@ -2,9 +2,9 @@ package no.kantega.publishing.common.ao.rowmapper;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import org.springframework.jdbc.core.RowMapper;
 

@@ -18,13 +18,13 @@ package no.kantega.publishing.jobs.multimedia;
 
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.api.multimedia.MultimediaUsageDao;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.MediaAttribute;
 import no.kantega.publishing.common.data.attributes.TextAttribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.MultimediaHelper;

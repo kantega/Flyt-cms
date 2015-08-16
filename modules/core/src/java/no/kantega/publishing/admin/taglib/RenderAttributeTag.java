@@ -6,10 +6,10 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.InputScreenRenderer;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.factory.AttributeFactory;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 

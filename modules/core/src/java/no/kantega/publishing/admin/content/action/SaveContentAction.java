@@ -22,8 +22,8 @@ import no.kantega.commons.exception.InvalidFileException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.admin.content.util.SaveContentHelper;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.common.service.ContentManagementService;
 

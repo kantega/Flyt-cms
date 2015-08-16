@@ -1,5 +1,6 @@
 package no.kantega.publishing.controls.smoketest;
 
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
@@ -7,7 +8,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.data.DisplayTemplate;
 import no.kantega.publishing.common.data.SortOrder;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -22,7 +22,12 @@ import org.springframework.web.servlet.mvc.AbstractController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Creates an xml containing a list of pages where each page is the published page for each display template.

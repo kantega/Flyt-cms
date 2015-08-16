@@ -1,4 +1,4 @@
-package no.kantega.publishing.common.data.enums;
+package no.kantega.publishing.api.content.attribute;
 
 public enum AttributeDataType {
     ANY(-1), CONTENT_DATA(0),META_DATA(1);

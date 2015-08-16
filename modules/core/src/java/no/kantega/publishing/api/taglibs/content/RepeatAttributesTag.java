@@ -1,11 +1,11 @@
 package no.kantega.publishing.api.taglibs.content;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

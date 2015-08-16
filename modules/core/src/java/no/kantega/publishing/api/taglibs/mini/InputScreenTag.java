@@ -18,8 +18,8 @@ package no.kantega.publishing.api.taglibs.mini;
 
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.InputScreenRenderer;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -17,8 +17,8 @@
 package no.kantega.publishing.admin.templateconfiguration.action;
 
 import no.kantega.commons.client.util.RequestParameters;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 public class ListContentTemplatesAction extends AbstractController {
     private TemplateConfigurationCache templateConfigurationCache;
     private String view;
-    
+
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         Map<String, Object> model = new HashMap<>();
 

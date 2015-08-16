@@ -19,19 +19,28 @@ package no.kantega.publishing.common.data;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.enums.*;
+import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.common.data.enums.ContentType;
+import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
+import no.kantega.publishing.common.data.enums.ExpireAction;
+import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import static no.kantega.publishing.common.data.enums.AttributeDataType.CONTENT_DATA;
+import static no.kantega.publishing.api.content.attribute.AttributeDataType.CONTENT_DATA;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**

@@ -18,15 +18,11 @@ package no.kantega.publishing.common.ao;
 
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
-import no.kantega.publishing.api.content.ContentStatus;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.ListAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.enums.AttributeDataType;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.factory.ClassNameAttributeFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;

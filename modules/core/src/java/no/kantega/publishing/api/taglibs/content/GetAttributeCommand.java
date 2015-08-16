@@ -16,7 +16,7 @@
 
 package no.kantega.publishing.api.taglibs.content;
 
-import no.kantega.publishing.common.data.enums.AttributeDataType;
+import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.common.data.enums.Cropping;
 
