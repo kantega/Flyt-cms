@@ -345,8 +345,10 @@ public class LinkCheckerJob implements InitializingBean {
         } catch (ConnectTimeoutException e) {
             status = CheckStatus.CONNECTION_TIMEOUT;
         } catch(ConnectException e) {
+            log.debug("ConnectException when checking link " + link, e);
             status = CheckStatus.CONNECT_EXCEPTION;
         } catch (IOException e) {
+            log.debug("IOException when checking link " + link, e);
             status = CheckStatus.IO_EXCEPTION;
         }  catch (Exception e) {
             log.error("Error getting " + link, e);
