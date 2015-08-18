@@ -26,7 +26,7 @@ public class Rating {
     private String objectId;
     private Date date;
     private String comment;
-
+    private String userDisplayName;
 
     public int getRating() {
         return rating;
@@ -74,5 +74,13 @@ public class Rating {
 
     public void setComment(String comment) {
         this.comment = comment;
+    }
+
+    public String getUserDisplayName() {
+        return userDisplayName;
+    }
+
+    public void setUserDisplayName(String userDisplayName) {
+        this.userDisplayName = userDisplayName;
     }
 }

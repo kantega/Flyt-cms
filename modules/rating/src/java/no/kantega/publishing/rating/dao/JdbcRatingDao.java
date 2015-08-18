@@ -52,13 +52,14 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
 
         getJdbcTemplate().update(new PreparedStatementCreator() {
             public PreparedStatement createPreparedStatement(Connection c) throws SQLException {
-                PreparedStatement st = c.prepareStatement("insert into ratings values(?,?,?,?,?,?)");
+                PreparedStatement st = c.prepareStatement("insert into ratings values(?,?,?,?,?,?,?)");
                 st.setString(1, r.getUserid());
                 st.setString(2, r.getObjectId());
                 st.setString(3, r.getContext());
                 st.setInt(4, r.getRating());
                 st.setTimestamp(5, new java.sql.Timestamp(r.getDate().getTime()));
                 st.setString(6, r.getComment());
+                st.setString(7, r.getUserDisplayName());
                 return st;
             }
         });
@@ -91,6 +92,7 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
             r.setRating(rs.getInt("Rating"));
             r.setDate(rs.getDate("Ratingdate"));
             r.setComment(rs.getString("Comment"));
+            r.setUserDisplayName(rs.getString("UserDisplayName"));
             return r;
         }
     }

@@ -336,6 +336,7 @@
         <column name="Rating" required="true" type="INTEGER" size="10"/>
         <column name="RatingDate" required="true" type="TIMESTAMP" size="23,3"/>
         <column name="Comment" required="false" type="CLOB" size="2147483647"/>
+        <column name="UserDisplayName" required="false" type="VARCHAR" size="255"/>
     </table>
     <table name="role2topic">
         <column name="TopicMapId" required="true" type="INTEGER" size="10"/>
