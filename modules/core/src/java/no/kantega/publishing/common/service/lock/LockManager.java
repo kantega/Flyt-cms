@@ -16,15 +16,11 @@
 
 package no.kantega.publishing.common.service.lock;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
 import no.kantega.publishing.api.service.lock.ContentLock;
 import no.kantega.publishing.common.Aksess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -99,24 +95,14 @@ public class LockManager implements no.kantega.publishing.api.service.lock.LockM
      * @param owner - user owning the locks.
      */
     public void releaseLocksForOwner(final String owner) {
-        log.info( "Releasing lock for owner " + owner);
+        log.info("Releasing lock for owner " + owner);
         Map<Integer, ContentLock> locks = getLocks();
         Set<Map.Entry<Integer,ContentLock>> lockEntries = locks.entrySet();
-        Collection<Map.Entry<Integer, ContentLock>> contentLocksWithOwner = Collections2.filter(lockEntries, new Predicate<Map.Entry<Integer, ContentLock>>() {
-            @Override
-            public boolean apply(Map.Entry<Integer, ContentLock> lockEntry) {
-                return lockEntry.getValue().getOwner().equals(owner);
-            }
-        });
-        Collection<Integer> lockIdsForOwner = Collections2.transform(contentLocksWithOwner, new Function<Map.Entry<Integer, ContentLock>, Integer>() {
-            @Override
-            public Integer apply(Map.Entry<Integer, ContentLock> lockEntry) {
-                return lockEntry.getKey();
-            }
-        });
-        for (Integer lockId : lockIdsForOwner) {
-            locks.remove(lockId);
-        }
+
+        lockEntries.stream()
+                .filter(lock -> lock.getValue().getOwner().equals(owner))
+                .map(Map.Entry::getKey)
+                .forEach(locks::remove);
     }
 
     /**
@@ -124,9 +110,8 @@ public class LockManager implements no.kantega.publishing.api.service.lock.LockM
      */
     public void cleanup() {
         log.info( "Cleaning locks");
-        for (Integer id : getLocks().keySet()) {
-            peekAtLock(id);
-        }
+        getLocks().keySet()
+                .forEach(this::peekAtLock);
     }
 
     public Map<Integer, ContentLock> getLocks() {

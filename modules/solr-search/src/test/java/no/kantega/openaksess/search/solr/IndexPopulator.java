@@ -1,8 +1,6 @@
 package no.kantega.openaksess.search.solr;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.common.SolrInputDocument;
@@ -13,7 +11,12 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Component
 public class IndexPopulator {
@@ -33,19 +36,16 @@ public class IndexPopulator {
     }
 
     private Collection<SolrInputDocument> createInputDocuments(List<Map<String, String>> result) {
-
-
-        return Collections2.transform(result, new Function<Map<String, String>, SolrInputDocument>() {
-            public SolrInputDocument apply(Map<String, String> stringStringMap) {
-                Map<String, SolrInputField> transformedMap = new HashMap<>();
-                for (Map.Entry<String, String> stringStringEntry : stringStringMap.entrySet()) {
-                    String key = stringStringEntry.getKey();
-                    SolrInputField value = new SolrInputField(key);
-                    value.setValue(stringStringEntry.getValue(), 1);
-                    transformedMap.put(key, value);
-                }
-                return new SolrInputDocument(transformedMap);
-            }
-        });
+        return result.stream()
+                .map(resultObject -> {
+                    Map<String, SolrInputField> transformedMap = new HashMap<>();
+                    for (Map.Entry<String, String> stringStringEntry : resultObject.entrySet()) {
+                        String key = stringStringEntry.getKey();
+                        SolrInputField value = new SolrInputField(key);
+                        value.setValue(stringStringEntry.getValue(), 1);
+                        transformedMap.put(key, value);
+                    }
+                    return new SolrInputDocument(transformedMap);
+                }).collect(Collectors.toList());
     }
 }

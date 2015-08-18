@@ -1,21 +1,30 @@
 package no.kantega.publishing.admin.log.action;
 
-import com.google.common.base.Function;
 import com.google.common.io.PatternFilenameFilter;
 import no.kantega.publishing.common.Aksess;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.LineNumberReader;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
-
-import static com.google.common.collect.Lists.transform;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin/tools/logreader")
@@ -48,7 +57,10 @@ public class ViewServerlogController {
 
     @RequestMapping(value = "/logfiles.action", method = RequestMethod.GET)
     public @ResponseBody List<String> getLogFileNames(){
-        return transform(Arrays.asList(logFilesDir.listFiles(new PatternFilenameFilter(".*\\.log"))), logFileTransformer);
+        return Arrays.asList(logFilesDir.listFiles(new PatternFilenameFilter(".*\\.log")))
+                .stream()
+                .map(File::getName)
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value = "/logfiles/{logfile}.action", method = RequestMethod.GET)
@@ -102,13 +114,6 @@ public class ViewServerlogController {
             log.error("Error copying logfile", e);
         }
     }
-
-    private final Function<File,String> logFileTransformer = new Function<File, String>() {
-        @Override
-        public String apply(File input) {
-            return input.getName();
-        }
-    };
 
     private int determineStartline(int startlineParam, int numberoflinesToGet, int numberOfLinesInFile) {
         return startlineParam >= 0 ? startlineParam : (numberOfLinesInFile - numberoflinesToGet);

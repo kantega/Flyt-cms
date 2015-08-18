@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.cache;
 
-import com.google.common.base.Predicate;
 import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.hostname.HostnamesDao;
@@ -29,8 +28,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 
 public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCache {
     private static final Logger log = LoggerFactory.getLogger(DefaultSiteCache.class);
@@ -134,12 +133,9 @@ public class DefaultSiteCache implements no.kantega.publishing.api.cache.SiteCac
     }
 
     private Site determineDefaultSite() {
-        Collection<Site> defaultSites = filter(sites, new Predicate<Site>() {
-            @Override
-            public boolean apply(Site o) {
-                return o.isDefault();
-            }
-        });
+        Collection<Site> defaultSites = sites.stream()
+                .filter(Site::isDefault)
+                .collect(Collectors.toList());
         int size = defaultSites.size();
         if(size > 1){
             throw new IllegalStateException(size + " default sites exists, only 1 permitted. Add isDefault=\"true\" to only one site in aksess-templateconfig.xml");

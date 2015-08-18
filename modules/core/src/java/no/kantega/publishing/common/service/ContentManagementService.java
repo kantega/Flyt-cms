@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.service;
 
-import com.google.common.base.Predicate;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
@@ -98,8 +97,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 
 /**
  *  A monolithic service for fetching content objects, saving them, deleting them,
@@ -890,12 +889,9 @@ public class ContentManagementService {
         }
 
         List<Content> list = contentAO.getContentListForApproval();
-        return new ArrayList<>(filter(list, new Predicate<Content>() {
-            @Override
-            public boolean apply(Content c) {
-                return securitySession.isApprover(c);
-            }
-        }));
+        return list.stream()
+                .filter(securitySession::isApprover)
+                .collect(Collectors.toList());
     }
 
 

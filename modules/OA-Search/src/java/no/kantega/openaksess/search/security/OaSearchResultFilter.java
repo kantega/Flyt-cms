@@ -1,12 +1,15 @@
 package no.kantega.openaksess.search.security;
 
-import com.google.common.base.Predicate;
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.search.api.retrieve.IndexableContentTypeToObjectTypeMapping;
-import no.kantega.search.api.search.*;
+import no.kantega.search.api.search.GroupResultResponse;
+import no.kantega.search.api.search.SearchQuery;
+import no.kantega.search.api.search.SearchResponse;
+import no.kantega.search.api.search.SearchResult;
+import no.kantega.search.api.search.SearchResultFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 
 @Component
 public class OaSearchResultFilter implements SearchResultFilter {
@@ -57,12 +60,11 @@ public class OaSearchResultFilter implements SearchResultFilter {
         List<GroupResultResponse> groupResultResponses = new ArrayList<>(searchResponse.getGroupResultResponses().size());
         for (GroupResultResponse groupResultResponse : searchResponse.getGroupResultResponses()) {
             List<SearchResult> originalSearchResults = groupResultResponse.getSearchResults();
-            List<SearchResult> filteredResult = new ArrayList<>(filter(originalSearchResults, new Predicate<SearchResult>() {
-                public boolean apply(SearchResult documentHit) {
-                    Integer mappedType = indexedContentTypeToObjectTypeMapping.get(documentHit.getIndexedContentType());
-                    return mappedType == null || session.isAuthorized(toBaseObject(documentHit, mappedType), Privilege.VIEW_CONTENT);
-                }
-            }));
+            List<SearchResult> filteredResult = originalSearchResults.stream()
+                    .filter(documentHit -> {
+                        Integer mappedType = indexedContentTypeToObjectTypeMapping.get(documentHit.getIndexedContentType());
+                        return mappedType == null || session.isAuthorized(toBaseObject(documentHit, mappedType), Privilege.VIEW_CONTENT);
+                    }).collect(Collectors.toList());
 
             groupResultResponses.add(new GroupResultResponse(groupResultResponse.getGroupValue(),
                     getNumFoundReducedByRemovedElements(groupResultResponse, originalSearchResults, filteredResult),

@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.common.base.Predicate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.model.BaseObject;
 import no.kantega.publishing.api.services.security.PermissionAO;
@@ -39,8 +38,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 
 public class AssociationAO  {
     private static final Logger log = LoggerFactory.getLogger(AssociationAO.class);
@@ -284,12 +283,10 @@ public class AssociationAO  {
                 boolean isCrossPublished = associations.size() > 1;
                 if (isCrossPublished){
                     // The old associations, except the one that initiated the modify operation
-                    List<Association> interestingAssociations = new ArrayList<>(filter(associations, new Predicate<Association>() {
-                        @Override
-                        public boolean apply(Association input) {
-                            return input.getId() != oldAssociation.getId();
-                        }
-                    }));
+                    List<Association> interestingAssociations = associations.stream()
+                            .filter(a -> a.getId() != oldAssociation.getId())
+                            .collect(Collectors.toList());
+
                     AssociationAOHelper.MoveCrossPublishedResult moveCrossPublishedResult = AssociationAOHelper.handleMoveCrossPublished(oldAssociation, interestingAssociations, association);
                     log.info(association + " is cross published. Modifying " + moveCrossPublishedResult.associationsToMove
                         + " deleting " + moveCrossPublishedResult.associationsToDelete

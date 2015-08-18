@@ -1,6 +1,5 @@
 package org.kantega.openaksess.plugins.jobexecuter;
 
-import com.google.common.base.Predicate;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.security.SecuritySession;
@@ -29,9 +28,16 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 import static java.util.Arrays.asList;
 
 /**
@@ -109,12 +115,9 @@ public class ListJobsController {
     }
 
     private Collection<AnnotatedScheduledJob> filterJobs(Collection<AnnotatedScheduledJob> scheduledAnnotatedJobs, final List<String> enabledJobs) {
-        return filter(scheduledAnnotatedJobs, new Predicate<AnnotatedScheduledJob>() {
-            @Override
-            public boolean apply(AnnotatedScheduledJob annotatedScheduledJob) {
-                return enabledJobs.contains(annotatedScheduledJob.toString());
-            }
-        });
+        return scheduledAnnotatedJobs.stream()
+                .filter(annotatedScheduledJob -> enabledJobs.contains(annotatedScheduledJob.toString()))
+                .collect(Collectors.toList());
     }
 
     private boolean shouldFilterJobs(String[] jobs) {

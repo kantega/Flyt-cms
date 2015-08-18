@@ -16,8 +16,6 @@
 
 package no.kantega.publishing.common.service.impl;
 
-import com.google.common.base.Function;
-import com.google.common.collect.Collections2;
 import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.traffic.TrafficLogger;
@@ -28,9 +26,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implements TrafficLogger {
 
@@ -175,13 +179,10 @@ public class TrafficLoggerJdbcImpl extends NamedParameterJdbcDaoSupport implemen
     }
 
     public void setSearchEngineStringPatterns(List<String> searchEnginePatterns){
-        Function<String, Pattern> stringToPatternTransform = new Function<String, Pattern>() {
-            @Override
-            public Pattern apply(String pattern) {
-                return Pattern.compile(pattern);
-            }
-        };
-        this.searchEnginePatterns = Collections2.transform(searchEnginePatterns, stringToPatternTransform);
+        this.searchEnginePatterns = searchEnginePatterns
+                .stream()
+                .map(Pattern::compile)
+                .collect(Collectors.toList());
     }
 
     public void setBotsAndSpiders(List<String> botsAndSpiders){

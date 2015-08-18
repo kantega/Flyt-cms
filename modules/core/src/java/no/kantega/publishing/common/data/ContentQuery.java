@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.data;
 
-import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -43,14 +42,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.transform;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
@@ -156,10 +155,14 @@ public class ContentQuery {
             }
         } else if (contentList != null && !contentList.isEmpty()) {
             query.append(" and associations.UniqueId in (:contentlist)");
-            parameters.put("contentlist", transform(contentList, cidToAssociationIdTransformer));
+            parameters.put("contentlist", contentList.stream()
+                    .map(contentIdentifier -> {
+                        assureAssociationIdSet(contentIdentifier);
+                        return contentIdentifier.getAssociationId();
+                    }).collect(Collectors.toList()));
 
             if (excludedAssociationTypes == null) {
-                excludedAssociationTypes = asList(AssociationType.SHORTCUT);
+                excludedAssociationTypes = singletonList(AssociationType.SHORTCUT);
             }
         } else if (pathElementIds != null) {
             for (int i = 0; i < pathElementIds.size(); i++) {
@@ -389,12 +392,7 @@ public class ContentQuery {
                         query.append(" or (hearinginvitee.InviteeType = " + HearingInvitee.TYPE_ORGUNIT +
                                 " and hearinginvitee.InviteeRef in (:unitids))");
 
-                        List<String> orgunitIds = transform(orgUnits, new Function<OrgUnit, String>() {
-                            @Override
-                            public String apply(OrgUnit input) {
-                                return input.getExternalId();
-                            }
-                        });
+                        List<String> orgunitIds = orgUnits.stream().map(OrgUnit::getExternalId).collect(Collectors.toList());
                         parameters.put("unitids", orgunitIds);
                     }
                 }
@@ -625,7 +623,7 @@ public class ContentQuery {
     }
 
     public void setDisplayTemplate(int displayTemplate) {
-        this.displayTemplate = Collections.singletonList(displayTemplate);
+        this.displayTemplate = singletonList(displayTemplate);
     }
 
     public void setDisplayTemplate(String displayTemplate) throws SystemException {
@@ -787,15 +785,6 @@ public class ContentQuery {
     public void setExcludedAssociationTypes(List<Integer> excludedAssociationTypes){
         this.excludedAssociationTypes = excludedAssociationTypes;
     }
-
-    private final Function<ContentIdentifier,Integer> cidToAssociationIdTransformer = new Function<ContentIdentifier, Integer>() {
-        @Override
-        public Integer apply(ContentIdentifier input) {
-            assureAssociationIdSet(input);
-            return input.getAssociationId();
-        }
-    };
-
 
     /**
      * Class representing an instance of a query, that is the query string and the parameters to be set.

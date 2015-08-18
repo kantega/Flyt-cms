@@ -16,7 +16,6 @@
 
 package no.kantega.publishing.common.ao;
 
-import com.google.common.base.Predicate;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.model.Site;
@@ -31,8 +30,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
 import static no.kantega.publishing.common.ao.AssociationAO.getAssociationById;
 import static no.kantega.publishing.common.ao.AssociationAO.getAssociationsByContentId;
 
@@ -75,12 +74,10 @@ class AssociationAOHelper {
 
         if(firstSharedAnchestor != null){
             final Association newParentForInitiatingAssociation = getAssociationById(newAssociation.getParentAssociationId());
-            List<Association> interestingNewParents = new ArrayList<>(filter(getAssociationsByContentId(newParentForInitiatingAssociation.getContentId()), new Predicate<Association>() {
-                @Override
-                public boolean apply(Association input) {
-                    return input.getId() != newParentForInitiatingAssociation.getId();
-                }
-            }));
+            List<Association> interestingNewParents =
+                    getAssociationsByContentId(newParentForInitiatingAssociation.getContentId()).stream()
+                            .filter(a -> a.getId() != newParentForInitiatingAssociation.getId())
+                            .collect(Collectors.toList());
             for (Association interestingAssociation : interestingAssociations) {
                 Association newParent = findNewParent(interestingAssociation, interestingNewParents);
                 if (newParent != null) {

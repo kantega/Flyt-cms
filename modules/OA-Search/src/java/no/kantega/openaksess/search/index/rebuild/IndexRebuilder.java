@@ -1,7 +1,5 @@
 package no.kantega.openaksess.search.index.rebuild;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
@@ -14,15 +12,13 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
 @Component
@@ -124,21 +120,13 @@ public class IndexRebuilder {
     }
 
     private Collection<IndexableDocumentProvider> filterProviders(final List<String> providersToInclude) {
-        return filter(indexableDocumentProviders, new Predicate<IndexableDocumentProvider>() {
-            @Override
-            public boolean apply(IndexableDocumentProvider input) {
-                return providersToInclude.contains(input.getClass().getSimpleName());
-            }
-        });
+        return indexableDocumentProviders.stream()
+                .filter(indexableDocumentProvider -> providersToInclude.contains(indexableDocumentProvider.getClass().getSimpleName()))
+                .collect(Collectors.toList());
     }
 
-    private ArrayList<ProgressReporter> getProgressReporters(Collection<IndexableDocumentProvider> providers) {
-        return new ArrayList<>(transform(providers, new Function<IndexableDocumentProvider, ProgressReporter>() {
-            @Override
-            public ProgressReporter apply(IndexableDocumentProvider input) {
-                return input.getProgressReporter();
-            }
-        }));
+    private List<ProgressReporter> getProgressReporters(Collection<IndexableDocumentProvider> providers) {
+        return providers.stream().map(IndexableDocumentProvider::getProgressReporter).collect(Collectors.toList());
     }
 
     public void deleteIndex() {

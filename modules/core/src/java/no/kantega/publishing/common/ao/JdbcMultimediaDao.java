@@ -1,6 +1,5 @@
 package no.kantega.publishing.common.ao;
 
-import com.google.common.base.Function;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.api.multimedia.MultimediaUsageDao;
@@ -29,8 +28,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collections;
 import java.util.List;
-
-import static com.google.common.collect.Lists.transform;
+import java.util.stream.Collectors;
 
 
 /**
@@ -108,12 +106,7 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
         }
 
         String query = "SELECT * FROM multimediaexifdata WHERE MultimediaId IN (:ids) ORDER BY MultimediaId, Directory, ValueKey";
-        List<Integer> ids = transform(multimedia, new Function<Multimedia, Integer>() {
-            @Override
-            public Integer apply(Multimedia input) {
-                return input.getId();
-            }
-        });
+        List<Integer> ids = multimedia.stream().map(Multimedia::getId).collect(Collectors.toList());
         getNamedParameterJdbcTemplate().query(query, Collections.singletonMap("ids", ids), new ExifMetadataToMultimediaRowMapper(multimedia));
 
         return multimedia;

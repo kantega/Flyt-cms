@@ -1,6 +1,5 @@
 package no.kantega.publishing.modules.mailsubscription;
 
-import com.google.common.base.Function;
 import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.mailsubscription.MailSubscription;
 import no.kantega.publishing.api.mailsubscription.MailSubscriptionInterval;
@@ -8,21 +7,23 @@ import no.kantega.publishing.api.mailsubscription.MailSubscriptionService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractTransactionalJUnit4SpringContextTests;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Lists.transform;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="classpath*:spring/testContext.xml")
-@TransactionConfiguration(defaultRollback = true)
+@Rollback
 @Transactional
 public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJUnit4SpringContextTests {
     @Autowired
@@ -32,7 +33,7 @@ public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJU
     public void shouldGetSubscriptionsWithImmediate(){
         List<MailSubscription> mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.immediate);
 
-        List<String> emails = transform(mailSubscriptionByInterval, mailTransformer);
+        List<String> emails = mailSubscriptionByInterval.stream().map(MailSubscription::getEmail).collect(Collectors.toList());
 
         assertTrue("Result did not contain both mailz3@broadpark.no and mailz4@stinessen.com",
                 emails.contains("mailz3@broadpark.no") && emails.contains("mailz4@stinessen.com"));
@@ -45,7 +46,7 @@ public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJU
     public void shouldGetSubscriptionsWithWeekly(){
         List<MailSubscription> mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.weekly);
 
-        List<String> emails = transform(mailSubscriptionByInterval, mailTransformer);
+        List<String> emails = mailSubscriptionByInterval.stream().map(MailSubscription::getEmail).collect(Collectors.toList());
 
         assertTrue("Result did not contain both mailz5@mail.com and mailz4@stinessen.com",
                 emails.contains("mailz5@mail.com") && emails.contains("mailz6@email.com"));
@@ -58,7 +59,7 @@ public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJU
     public void shouldGetSubscriptionsWithDaily(){
         List<MailSubscription> mailSubscriptionByInterval = mailSubscriptionService.getMailSubscriptionByInterval(MailSubscriptionInterval.daily);
 
-        List<String> emails = transform(mailSubscriptionByInterval, mailTransformer);
+        List<String> emails = mailSubscriptionByInterval.stream().map(MailSubscription::getEmail).collect(Collectors.toList());
 
         assertTrue("Result did not contain both mailz@gmail.com and mailz2@gmail.com",
                 emails.contains("mailz@gmail.com") && emails.contains("mailz2@gmail.com"));
@@ -127,10 +128,4 @@ public class MailSubscriptionServiceJdbcImplTest extends AbstractTransactionalJU
         assertEquals("list was not null", 0, mailSubscriptions.size());
     }
 
-    private static final Function<MailSubscription, String> mailTransformer = new Function<MailSubscription, String>() {
-        @Override
-        public String apply(MailSubscription input) {
-            return input.getEmail();
-        }
-    };
 }
