@@ -78,4 +78,11 @@ public interface RatingService {
      * @return A score comparable to scores givent to other objects in the same context.
      */
     public float getScoreForObject(String objectId, String context);
+
+    /**
+     * Get all user ids
+     * @param context Object context identifier
+     * @return All user ids
+     */
+    public List<String> getAllUserIdsForContext(String context);
 }

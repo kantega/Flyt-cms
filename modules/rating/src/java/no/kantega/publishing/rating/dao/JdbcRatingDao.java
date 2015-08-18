@@ -82,6 +82,16 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
         getJdbcTemplate().update("delete from ratings where ObjectId = ? and Context = ? and UserId = ?", objectId, context, userId);
     }
 
+    @Override
+    public List<String> getAllUserIdsForContext(String context) {
+        return getJdbcTemplate().query("select distinct UserId from ratings where Context = ?", new RowMapper<String>() {
+            @Override
+            public String mapRow(ResultSet resultSet, int i) throws SQLException {
+                return resultSet.getString("UserId");
+            }
+        }, context);
+    }
+
     private class RatingRowMapper implements RowMapper {
         public Object mapRow(ResultSet rs, int i) throws SQLException {
             Rating r = new Rating();

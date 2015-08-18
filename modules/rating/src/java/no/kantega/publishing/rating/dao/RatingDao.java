@@ -15,4 +15,5 @@ public interface RatingDao {
     List<Rating> getRatingsForUser(String userId);
     List<Rating> getRatingsForUser(String userId, String objectId, String context);
     void deleteRatingsForUser(String userId, String objectId, String context);
+    List<String> getAllUserIdsForContext(String context);
 }
