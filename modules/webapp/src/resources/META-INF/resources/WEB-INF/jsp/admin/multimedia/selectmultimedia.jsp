@@ -75,12 +75,18 @@
                 if (window.opener) {
                     window.close();
                 } else {
+                    activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
+                    if(activeTinyPopup){
+                        activeTinyPopup.close();
+                    } else {
+                        window.setTimeout(p.openaksess.common.modalWindow.close, 300);
+                    }
                     p.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
                 }
             }
 
             function insertHtml(editor, html) {
-                editor.execCommand("mceInsertRawHTML", false, '<%=imageTag%>');
+                editor.execCommand("mceInsertRawHTML", false, html);
             }
         </script>
     </head>

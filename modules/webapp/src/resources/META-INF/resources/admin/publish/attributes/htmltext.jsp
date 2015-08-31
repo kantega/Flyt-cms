@@ -132,29 +132,48 @@
 <div class="inputs">
     <textarea name="${fieldName}" id="${fieldName}" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}">${value}</textarea><br>
     <script type="text/javascript">
-        tinymce.init({
+        var options = {
             selector: "textarea#${fieldName}",
             theme: "modern",
-            language: '<%=Aksess.getDefaultAdminLocale().getLanguage().toLowerCase()%>',
 
-            plugins: "<%= plugins %>",
+            plugins: <%=plugins%>,
             valid_elements : '<%=valid_elements%>',
 
             width : "${attributeWidth}",
             height : "${attributeHeight}",
 
-            toolbar: <%=Arrays.toString(buttonRows) %>,
-            contextmenu: "<%= contextMenu %>",
-            menubar: false,
+            toolbar: "<%=buttons%>",
+            contextmenu: "aksess_insertmedia aksess_insertlink aksess_inserttable | inserttable tableprops cell row column deletetable",
+            menubar: true, //TODO decide or off?
+
             autosave_interval: "5s", //reminder
             autosave_retention: "30m", //stored local incase of crash
             browser_spellcheck: true,
-            <aksess:getconfig key="editor.custom.tinymceparameters"/>
             entity_encoding : "raw",
-            // Path to editor.css
-            content_css : "${pageContext.request.contextPath}${cssPath}",
             templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",
-            block_formats: "${blockFormats}"
-        });
+            content_css : "${pageContext.request.contextPath}${cssPath}",
+
+            block_formats: "${blockFormats}",
+
+            //special custom parameters below?
+            //  <aksess:getconfig key="editor.custom.tinymceparameters"/>
+            AScgiloc: 'http://www.imathas.com/imathas/filter/graph/svgimg.php',
+            style_formats: [
+                {title: 'Bold text', inline: 'b'},
+                {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+                {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+                {title: 'Example 1', inline: 'span', classes: 'example1'},
+                {title: 'Example 2', inline: 'span', classes: 'example2'},
+                {title: 'Table styles'},
+                {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+            ]
+        };
+
+        if('<%=Aksess.getDefaultAdminLocale().getLanguage().toLowerCase()%>' == 'no' ){
+            //Sets Norwegian language if default, otherwise keeps tinyMCE (empty) default en_US.
+            options['language'] = 'nb_NO';
+        }
+        tinymce.init(options);
     </script>
+
 </div>
