@@ -136,7 +136,7 @@
             selector: "textarea#${fieldName}",
             theme: "modern",
 
-            plugins: <%=plugins%>,
+            plugins: '<%=plugins%>',
             valid_elements : '<%=valid_elements%>',
 
             width : "${attributeWidth}",
