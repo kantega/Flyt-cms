@@ -66,6 +66,10 @@
     if (contextMenu == null) {
         contextMenu = conf.getString("editor.default.contextmenu");
     }
+    String menubar = conf.getString(confPrefix + "menubar");
+    if (menubar == null) {
+        menubar = conf.getString("editor.default.menubar");
+    }
 
 
     boolean hasHtmlEditorRole = false;
@@ -143,8 +147,8 @@
             height : "${attributeHeight}",
 
             toolbar: "<%=buttons%>",
-            contextmenu: "aksess_insertmedia aksess_insertlink aksess_inserttable | inserttable tableprops cell row column deletetable",
-            menubar: true, //TODO decide or off?
+            contextmenu: '<%=contextMenu%>',
+            menubar: '<%=menubar%>', //true, //TODO decide or off?
 
             autosave_interval: "5s", //reminder
             autosave_retention: "30m", //stored local incase of crash
