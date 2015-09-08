@@ -1,0 +1,1 @@
+ALTER TABLE content MODIFY (Location VARCHAR(4096));
