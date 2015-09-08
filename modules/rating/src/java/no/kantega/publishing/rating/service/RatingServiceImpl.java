@@ -105,6 +105,11 @@ public class RatingServiceImpl implements RatingService, ApplicationContextAware
         return scoreCalculator.getScoreForRatings(getRatingsForObject(objectId, context));
     }
 
+    @Override
+    public List<String> getAllUserIdsForContext(String context) {
+        return ratingDao.getAllUserIdsForContext(context);
+    }
+
     public void setScoreCalculator(ScoreCalculator scoreCalculator) {
         this.scoreCalculator = scoreCalculator;
     }
