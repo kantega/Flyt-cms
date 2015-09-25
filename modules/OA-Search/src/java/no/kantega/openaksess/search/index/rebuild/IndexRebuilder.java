@@ -95,8 +95,12 @@ public class IndexRebuilder {
                     while (hasNotReachedMaxRetries(pollMistakes) && notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
-                            log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
-                            documentIndexer.indexDocument(poll);
+                            if (poll.shouldIndex()) {
+                                log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
+                                documentIndexer.indexDocument(poll);
+                            } else {
+                                log.info("Should not index document {} {}", poll.getUId(), poll.getTitle());
+                            }
                         } else {
                             pollMistakes++;
                             log.error("Polling IndexableDocumentQueue resulted in null!");
