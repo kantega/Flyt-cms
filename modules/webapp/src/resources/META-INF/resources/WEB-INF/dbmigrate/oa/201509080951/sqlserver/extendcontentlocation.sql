@@ -1,0 +1,1 @@
+ALTER TABLE content ALTER COLUMN Location VARCHAR(4096);

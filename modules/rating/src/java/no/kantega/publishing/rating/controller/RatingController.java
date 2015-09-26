@@ -48,6 +48,7 @@ public class RatingController {
         rating.setContext(context);
         rating.setRating(ratingValue);
         rating.setUserid(RatingUtil.getUserId(request));
+        rating.setUserDisplayName(RatingUtil.getUserDisplayName(request));
 
         if(isDeletionRequest) {
             if (hasRated(request, objectId, context)) {

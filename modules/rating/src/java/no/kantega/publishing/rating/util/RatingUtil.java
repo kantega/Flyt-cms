@@ -20,4 +20,12 @@ public class RatingUtil {
         }
         return request.getSession().getId();
     }
+
+    public static String getUserDisplayName(HttpServletRequest request) {
+        SecuritySession secSession = SecuritySession.getInstance(request);
+        if(secSession.isLoggedIn()) {
+            return secSession.getUser().getName();
+        }
+        return null;
+    }
 }

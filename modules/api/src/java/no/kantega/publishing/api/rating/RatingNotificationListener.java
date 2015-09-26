@@ -20,7 +20,7 @@ public interface RatingNotificationListener {
 
     /**
      * 
-     * @param notification
+     * @param notification The notification
      */
     void newRatingNotification(RatingNotification notification);
 }

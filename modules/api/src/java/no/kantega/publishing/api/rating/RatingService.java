@@ -56,8 +56,8 @@ public interface RatingService {
     /**
      * Returns all ratings given by a user.
      *
-     * @param userId
-     * @return
+     * @param userId The user id
+     * @return Ratings for a given user
      */
     public List<Rating> getRatingsForUser(String userId);
 
@@ -67,7 +67,6 @@ public interface RatingService {
      * @param userId
      * @param objectId E.g. a contentId or forumPostId.
      * @param context Object context identifier
-     * @return
      */
     void deleteRatingsForUser(String userId, String objectId, String context);
 
@@ -79,4 +78,11 @@ public interface RatingService {
      * @return A score comparable to scores givent to other objects in the same context.
      */
     public float getScoreForObject(String objectId, String context);
+
+    /**
+     * Get all user ids
+     * @param context Object context identifier
+     * @return All user ids
+     */
+    public List<String> getAllUserIdsForContext(String context);
 }

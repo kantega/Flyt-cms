@@ -84,10 +84,18 @@ public class HeaderDependenciesTag extends SimpleTagSupport {
                     "       $(\"#EditContentForm\").find(\"input[type='text']:first\").focus();\n" +
                     "    });\n");
         }
+
         out.write(
-                "        $.datepicker.setDefaults($.datepicker.regional['']);\n" +
-                "        $.datepicker.setDefaults($.datepicker.regional['" + Aksess.getDefaultAdminLocale().getCountry() + "']);\n" +
-                "        $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});" +
+                "        function setupDatepicker() {\n" +
+                        "            $.datepicker.setDefaults($.datepicker.regional['']);\n" +
+                        "            $.datepicker.setDefaults($.datepicker.regional['NO']);\n" +
+                        "            $.datepicker.setDefaults( {firstDay: 1, dateFormat:'dd.mm.yy'});\n" +
+                        "        }\n" +
+                        "        if ($.datepicker) {\n" +
+                        "            setupDatepicker();\n" +
+                        "        } else {\n" +
+                        "            $(document).ready(setupDatepicker);\n" +
+                        "        }" +
                 "    </script>");
 
     }

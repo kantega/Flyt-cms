@@ -31,7 +31,7 @@
 
 openaksess.editcontext = function()  {
     /*
-     * Get elements from select list as string
+     * Get elements from $select list as string
      */
     function getEntriesFromList(list) {
         var entries = "";
@@ -589,49 +589,58 @@ openaksess.editcontext = function()  {
     };
 }();
 
+function oaAutocompleteWidget() {
+    /**
+     * Flyt CMS specific extension of the jQueryUI autocomplete plugin.
+     */
+    $.widget('ui.oaAutocomplete', $.ui.autocomplete, {
+        _create: function() {
+            openaksess.common.debug("openaksesswidgets.oaAutocomplete._create(): Widget created");
+            //Add event listeners to focus and blur on the input field.
+            $(this.element).focus($.proxy(this._focus, this)).blur($.proxy(this._blur, this));
+            $.ui.autocomplete.prototype._create.apply(this);
+        },
 
-
-/**
- * Flyt CMS specific extension of the jQueryUI autocomplete plugin.
- */
-$.widget('ui.oaAutocomplete', $.ui.autocomplete, {
-    _create: function() {
-        openaksess.common.debug("openaksesswidgets.oaAutocomplete._create(): Widget created");
-        //Add event listeners to focus and blur on the input field.
-        $(this.element).focus($.proxy(this._focus, this)).blur($.proxy(this._blur, this));
-        $.ui.autocomplete.prototype._create.apply(this);
-    },
-
-    _focus: function(){
-        openaksess.common.debug("openaksesswidgets.oaAutocomplete._focus(): Focus on " + this.element.attr("id"));
-        if (this.element.val() == this.options.defaultValue) {
-            this.element.val('');
+        _focus: function(){
+            openaksess.common.debug("openaksesswidgets.oaAutocomplete._focus(): Focus on " + this.element.attr("id"));
+            if (this.element.val() == this.options.defaultValue) {
+                this.element.val('');
+            }
+        },
+        _blur: function(){
+            var formElement = this.element,
+                elementName = formElement[0].name,
+                elementId = formElement[0].id;
+            openaksess.common.debug("openaksesswidget.oaAutocomplete._blur(): Blur on " + elementId);
+            if (formElement.val().length == 0) {
+                formElement.val(this.options.defaultValue);
+                var idField = elementName.substring(0, elementName.length - 4);
+                $("#" + idField).val('');
+            }
         }
-    },
-    _blur: function(){
-        var formElement = this.element,
-        elementName = formElement[0].name,
-        elementId = formElement[0].id;
-        openaksess.common.debug("openaksesswidget.oaAutocomplete._blur(): Blur on " + elementId);
-        if (formElement.val().length == 0) {
-            formElement.val(this.options.defaultValue);
-            var idField = elementName.substring(0, elementName.length - 4);
-            $("#" + idField).val('');
+
+    });
+};
+
+function oaAutocompleteMultimediaWidget() {
+    /**
+     * Multimedia specific extension of the Flyt CMS autocomplete plugin.
+     */
+    $.widget('ui.oaAutocompleteMultimedia', $.ui.oaAutocomplete, {
+
+        _renderItem: function( ul, item ) {
+            return $( "<li></li>" )
+                .data( "item.autocomplete", item )
+                .append( "<a>" + item.image + " " + item.label + "</a>" )
+                .appendTo( ul );
         }
-    }
 
-});
-
-/**
- * Multimedia specific extension of the Flyt CMS autocomplete plugin.
- */
-$.widget('ui.oaAutocompleteMultimedia', $.ui.oaAutocomplete, {
-
-    _renderItem: function( ul, item ) {
-        return $( "<li></li>" )
-            .data( "item.autocomplete", item )
-            .append( "<a>" + item.image + " " + item.label + "</a>" )
-            .appendTo( ul );
-    }
-
-});
+    });
+};
+if ($ && $.ui && $.ui.autocomplete) {
+    oaAutocompleteWidget();
+    oaAutocompleteMultimediaWidget();
+} else {
+    $(document).ready(oaAutocompleteWidget);
+    $(document).ready(oaAutocompleteMultimediaWidget);
+}

@@ -1,0 +1,1 @@
+ALTER TABLE ratings ADD UserDisplayName VARCHAR(255) NULL;

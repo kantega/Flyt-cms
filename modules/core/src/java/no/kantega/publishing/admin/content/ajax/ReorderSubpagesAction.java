@@ -1,5 +1,6 @@
 package no.kantega.publishing.admin.content.ajax;
 
+import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.AssociationCategory;
@@ -46,9 +47,8 @@ public class ReorderSubpagesAction implements Controller {
                         i++;
                         String tmp = tokens.nextToken();
                         int uniqueId = Integer.parseInt(tmp);
-                        Association association = new Association();
+                        Association association = AssociationAO.getAssociationById(uniqueId);
                         association.setCategory(category);
-                        association.setId(uniqueId);
                         association.setPriority(i);
                         associations.add(association);
                     }
