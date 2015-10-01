@@ -159,6 +159,7 @@ public class LoginAction extends AbstractLoginAction {
             log.error(profile.getIdentity().getDomain() + " " + profile.getIdentity().getUserId() + " does not have required recipient attribute", e);
             model.put("missingrecipientattribute", true);
         } catch (SystemException e) {
+            log.error("Error sending logintoken", e);
             model.put("sendtokenfailed", true);
         }
         model.put("profile", profile);
