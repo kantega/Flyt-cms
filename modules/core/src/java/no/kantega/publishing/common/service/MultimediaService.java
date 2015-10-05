@@ -84,7 +84,7 @@ public class MultimediaService {
     }
 
     public Multimedia getMultimediaCheckAuthorization(int id) throws SystemException, NotAuthorizedException {
-        Multimedia multimedia = multimediaDao.getMultimedia(id);
+        Multimedia multimedia = multimediaAO.getMultimedia(id);
 
         if (multimedia != null && multimedia.getContentId() > 0) {
             ContentIdentifier cid = ContentIdentifier.fromContentId(multimedia.getContentId());
@@ -100,7 +100,7 @@ public class MultimediaService {
     }
 
     public Multimedia getMultimedia(int id) throws SystemException {
-        return multimediaDao.getMultimedia(id);
+        return multimediaAO.getMultimedia(id);
     }
 
 

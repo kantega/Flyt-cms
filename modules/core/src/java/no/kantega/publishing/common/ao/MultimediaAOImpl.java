@@ -127,19 +127,21 @@ public class MultimediaAOImpl implements MultimediaAO {
 
 
     private static void setSecurityIdForChildren(Connection c, int parentId, int oldSecurityId, int newSecurityId) throws SQLException {
-        ResultSet rs = SQLHelper.getResultSet(c, "select Id, Type from multimedia where ParentId = ? and SecurityId = ?", new Object[]{parentId, oldSecurityId});
-        PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?");
+        try(ResultSet rs = SQLHelper.getResultSet(c, "select Id, Type from multimedia where ParentId = ? and SecurityId = ?", new Object[]{parentId, oldSecurityId});
+            PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?")){
 
-        while (rs.next()) {
-            int id = rs.getInt("Id");
-            MultimediaType type = MultimediaType.getMultimediaTypeAsEnum(rs.getInt("Type"));
-            st.setInt(1, newSecurityId);
-            st.setInt(2, id);
-            st.execute();
-            if (type == MultimediaType.FOLDER) {
-                setSecurityIdForChildren(c, id, oldSecurityId, newSecurityId);
+            while (rs.next()) {
+                int id = rs.getInt("Id");
+                MultimediaType type = MultimediaType.getMultimediaTypeAsEnum(rs.getInt("Type"));
+                st.setInt(1, newSecurityId);
+                st.setInt(2, id);
+                st.execute();
+                if (type == MultimediaType.FOLDER) {
+                    setSecurityIdForChildren(c, id, oldSecurityId, newSecurityId);
+                }
             }
         }
+
     }
 
 
@@ -160,10 +162,11 @@ public class MultimediaAOImpl implements MultimediaAO {
                 securityId = parent.getSecurityId();
             }
         }
-        PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?");
-        st.setInt(1, securityId);
-        st.setInt(2, object.getId());
-        st.execute();
+        try(PreparedStatement st = c.prepareStatement("update multimedia set SecurityId = ? where Id = ?")) {
+            st.setInt(1, securityId);
+            st.setInt(2, object.getId());
+            st.execute();
+        }
         setSecurityIdForChildren(c, object.getId(), object.getSecurityId(), securityId);
     }
 
