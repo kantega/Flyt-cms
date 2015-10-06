@@ -18,7 +18,6 @@ import java.util.List;
 public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     private RatingRowMapper ratingRowMapper = new RatingRowMapper();
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Rating> getRatingsForObjects(List<String> objectIds, String context) {
         if (objectIds.size() == 0) {
@@ -67,7 +66,7 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
     }
 
     @Override
-    public List<Rating> getRatingsForUser(String userId) {        
+    public List<Rating> getRatingsForUser(String userId) {
         return getJdbcTemplate().query("select * from ratings where UserId = ? order by RatingDate desc", ratingRowMapper, userId);
     }
 
@@ -91,8 +90,8 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
         }, context);
     }
 
-    private class RatingRowMapper implements RowMapper {
-        public Object mapRow(ResultSet rs, int i) throws SQLException {
+    private class RatingRowMapper implements RowMapper<Rating> {
+        public Rating mapRow(ResultSet rs, int i) throws SQLException {
             Rating r = new Rating();
 
             r.setUserid(rs.getString("UserId"));
