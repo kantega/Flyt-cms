@@ -52,6 +52,18 @@ public interface Mailsender {
         void send(String from, String to, String subject, MimeBodyPart[] bodyParts) ;
 
         /**
+         * Sends a mail message. The content must be provided as MimeBodyPart objects.
+         *
+         * @param from      Sender's email address.
+         * @param to        Recipient's email address.
+         * @param cc        Email address for CC.
+         * @param bcc       Email address for BCC.
+         * @param subject   Subject text for the email.
+         * @param bodyParts The body parts to insert into the message.
+         */
+        void send(String from, String to, String cc, String bcc, String subject, MimeBodyPart[] bodyParts);
+
+        /**
          * Helper method to create a string from a Velocity template.
          *
          * @param templateFile The name of the template file to use.

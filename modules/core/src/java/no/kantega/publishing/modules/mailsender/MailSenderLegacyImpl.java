@@ -50,6 +50,15 @@ public class MailSenderLegacyImpl implements Mailsender {
     }
 
     @Override
+    public void send(String from, String to, String cc, String bcc, String subject, MimeBodyPart[] bodyParts) {
+        try {
+            MailSender.send(from, to, cc, bcc, subject, bodyParts);
+        } catch (ConfigurationException e) {
+            log.error("ConfigurationException", e);
+        }
+    }
+
+    @Override
     public String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) {
         return MailSender.createStringFromVelocityTemplate(templateFile, parameters);
     }
