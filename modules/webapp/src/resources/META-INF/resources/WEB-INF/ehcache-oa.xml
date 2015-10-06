@@ -14,8 +14,8 @@
            maxElementsInMemory="1000"
            eternal="false"
            overflowToDisk="false"
-           timeToIdleSeconds="0"
-           timeToLiveSeconds="0"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="300"
            memoryStoreEvictionPolicy="LFU"
            statistics="true">
             <cacheDecoratorFactory properties="metric-registry-name=oa-metric-registry" class="com.codahale.metrics.ehcache.InstrumentedCacheDecoratorFactory" />
