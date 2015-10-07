@@ -85,7 +85,6 @@ public class MultimediaRequestHandler {
             }
 
             String mimetype = mm.getMimeType().getType();
-            ServletOutputStream out = response.getOutputStream();
 
             ImageResizeParameters resizeParams = new ImageResizeParameters(param);
 
@@ -110,6 +109,7 @@ public class MultimediaRequestHandler {
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=" + "\"thumb" + mm.getId() + "." + mm.getMimeType().getFileExtension() + "\"");
                 response.addHeader("Content-Length", String.valueOf(bytes.length));
 
+                ServletOutputStream out = response.getOutputStream();
                 out.write(bytes);
 
             } else {
@@ -119,11 +119,9 @@ public class MultimediaRequestHandler {
                     response.addHeader("Content-Length", String.valueOf(mm.getSize()));
                 }
                 response.addHeader("Content-Disposition", contentDisposition + "; filename=\"" + mm.getFilename() + "\"");
+                ServletOutputStream out = response.getOutputStream();
                 mediaService.streamMultimediaData(id, new InputStreamHandler(out));
             }
-
-            out.flush();
-            out.close();
         } catch (Exception e) {
             log.error("", e);
         }

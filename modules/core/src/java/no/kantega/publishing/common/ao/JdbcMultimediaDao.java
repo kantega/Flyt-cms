@@ -127,7 +127,8 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
                         try {
                             ish.handleInputStream(blob.getBinaryStream());
                         } catch (IOException e) {
-                            // User has aborted download
+                            // User has aborted download?
+                            logger.error("Error streaming multimedia", e);
                         }
                     }
                 }
