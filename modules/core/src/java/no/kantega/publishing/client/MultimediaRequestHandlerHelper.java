@@ -24,14 +24,17 @@ public class MultimediaRequestHandlerHelper {
 
     @Cacheable(value = "ImageCache", key = "#calculatedKey")
     public byte[] getResizedMultimediaBytes(String calculatedKey, Multimedia mm, ImageResizeParameters resizeParams, MultimediaService mediaService) throws IOException, InvalidImageFormatException {
-        log.debug( "Resizing image with key: {}", calculatedKey);
+        log.debug("Resizing image with key: {}", calculatedKey);
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         mediaService.streamMultimediaData(mm.getId(), new InputStreamHandler(bos));
-        mm.setData(bos.toByteArray());
+        Multimedia resized = new Multimedia();
+        resized.setType(mm.getType());
+        resized.setFilename(mm.getFilename());
+        resized.setData(bos.toByteArray());
 
-        mm = imageEditor.resizeMultimedia(mm, resizeParams);
+        resized = imageEditor.resizeMultimedia(resized, resizeParams);
 
-        return mm.getData();
+        return resized.getData();
     }
 }

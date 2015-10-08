@@ -8,7 +8,7 @@ import no.kantega.publishing.common.exception.InvalidImageFormatException;
 import java.io.IOException;
 
 public interface ImageEditor {
-    public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException;
+    Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException;
 
      /**
      * Legcy method used in crop and resize batch operations from the admin GUI
@@ -24,11 +24,11 @@ public interface ImageEditor {
      * @throws InvalidImageFormatException
      */
     @Deprecated
-    public Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropX, int cropY, int cropWidth, int cropHeight) throws IOException, InvalidImageFormatException;
+    Multimedia resizeAndCropMultimedia(Multimedia multimedia, int targetWidth, int targetHeight, int cropX, int cropY, int cropWidth, int cropHeight) throws IOException, InvalidImageFormatException;
 
-    public MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight);
+    MultimediaDimensions getResizedImageDimensions(int originalWidth, int originalHeight, int targetWidth, int targetHeight);
 
-    public Multimedia resizeMultimedia(Multimedia mm, ImageResizeParameters resizeParameters)  throws IOException, InvalidImageFormatException;
+    Multimedia resizeMultimedia(Multimedia mm, ImageResizeParameters resizeParameters)  throws IOException, InvalidImageFormatException;
 
     /**
      * Rotates a multimedia object cointaining an image.
@@ -38,5 +38,5 @@ public interface ImageEditor {
      * @throws InvalidImageFormatException
      * @throws IOException
      */
-    public Multimedia rotateMultimedia(Multimedia multimedia, int degrees) throws IOException, InvalidImageFormatException;
+    Multimedia rotateMultimedia(Multimedia multimedia, int degrees) throws IOException, InvalidImageFormatException;
 }

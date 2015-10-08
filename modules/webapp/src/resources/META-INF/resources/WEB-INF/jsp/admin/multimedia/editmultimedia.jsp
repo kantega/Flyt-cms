@@ -68,7 +68,7 @@
         $(document).ready(function() {
             $("#MultimediaName").focus();
             if (openaksess.common.isPopup()) {
-               $("#EditMultimediaButtons .insert").removeClass("hidden"); 
+               $("#EditMultimediaButtons .insert").removeClass("hidden");
 
                $("#EditMultimediaButtons .insert").click(function (){
                     document.editmediaform.insert.value = true;

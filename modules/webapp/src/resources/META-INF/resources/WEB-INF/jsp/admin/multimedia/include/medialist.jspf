@@ -63,9 +63,9 @@
                             if (mimeType.contains("image")) {
                                 if (imageIndex < 30) {
                                     // Workaround for first images not being displayed in IE 7 with lazy load plugin
-                                    out.write("<img class=\"thumbnail\" src=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                    out.write("<img class=\"thumbnail\" src=\"../../multimedia/" + mm.getId() + "/" + mm.getFilename() + "?width=100&amp;height=100\">");
                                 } else {
-                                    out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia.ap?id=" + mm.getId() + "&amp;width=100&amp;height=100\">");
+                                    out.write("<img class=\"thumbnail\" src=\"../bitmaps/blank.gif\" original=\"../../multimedia/" + mm.getId() + "/" + mm.getFilename() + "?width=100&amp;height=100\">");
                                 }
                             } else {
                                 out.write("<span class=\"mediafile\"><span class=\"file " + mimeType + "\"></span></span>");
