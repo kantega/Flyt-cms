@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.index.rebuild;
 
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
@@ -64,8 +65,6 @@ public class IndexRebuilder {
         });
     }
 
-
-
     private void startConsumer(ExecutorService executorService, final BlockingQueue<IndexableDocument> indexableDocuments, final List<ProgressReporter> progressReporters) {
         executorService.execute(new Runnable() {
             @Override
@@ -102,6 +101,7 @@ public class IndexRebuilder {
                     stopWatch.stop();
                     double totalTimeSeconds = stopWatch.getTotalTimeSeconds();
                     log.info("Finished reindex. Used {} seconds ", totalTimeSeconds);
+                    executorService.shutdown();
                 }
             }
 

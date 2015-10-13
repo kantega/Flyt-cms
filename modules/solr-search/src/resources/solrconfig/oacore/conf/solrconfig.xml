@@ -16,9 +16,9 @@
  limitations under the License.
 -->
 
-<!-- 
+<!--
      For more details about configurations options that may appear in
-     this file, see http://wiki.apache.org/solr/SolrConfigXml. 
+     this file, see http://wiki.apache.org/solr/SolrConfigXml.
 -->
 <config>
     <!-- Set this to 'false' if you want solr to continue working after
@@ -39,7 +39,7 @@
        that you fully re-index after changing this setting as it can
        affect both how text is indexed and queried.
     -->
-    <luceneMatchVersion>5.0.0</luceneMatchVersion>
+    <luceneMatchVersion>5.2.0</luceneMatchVersion>
 
     <!-- <lib/> directives can be used to instruct Solr to load any Jars
            identified and use them to resolve any "plugins" specified in
@@ -74,7 +74,7 @@
 
 
     <!-- The DirectoryFactory to use for indexes.
-       
+
        solr.StandardDirectoryFactory, the default, is filesystem
        based and tries to pick the best implementation for the current
        JVM and platform.  One can force a particular implementation
@@ -235,20 +235,15 @@
        if the 'wt' parameter is not explicit
     -->
     <requestHandler name="/update" class="solr.UpdateRequestHandler">
-        <!-- See below for information on defining
-           updateRequestProcessorChains that can be used by name
-           on each Update Request
-        -->
-        <!--
+
         <lst name="defaults">
           <str name="update.chain">dedupe</str>
         </lst>
-        -->
     </requestHandler>
 
     <!-- Solr Cell Update Request Handler
 
-       http://wiki.apache.org/solr/ExtractingRequestHandler 
+       http://wiki.apache.org/solr/ExtractingRequestHandler
 
     -->
     <requestHandler name="/update/extract"
@@ -265,6 +260,7 @@
             <str name="captureAttr">true</str>
             <str name="fmap.a">links</str>
             <str name="fmap.div">ignored_</str>
+            <str name="expandMacros">false</str>
         </lst>
     </requestHandler>
 
@@ -328,7 +324,7 @@
     <!-- Admin Handlers
 
        Admin Handlers - This will register all the standard admin
-       RequestHandlers.  
+       RequestHandlers.
     -->
     <requestHandler name="/admin/"
                     class="solr.admin.AdminHandlers" />

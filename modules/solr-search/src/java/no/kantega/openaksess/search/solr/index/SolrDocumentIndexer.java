@@ -40,6 +40,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         try {
             File fileContent = document.getFileContent();
             SolrInputDocument solrParams = getSolrParams(document);
+            solrParams.addField("expandMacros", "false");
             if (fileContent == null) {
                 UpdateResponse add = solrServer.add(solrParams);
                 log.debug("Response from Solr: {}", add);
