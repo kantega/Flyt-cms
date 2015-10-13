@@ -8,15 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
@@ -31,9 +28,6 @@ public class IndexRebuilder {
 
     @Autowired
     private DocumentIndexer documentIndexer;
-
-    @Autowired
-    private TaskExecutor executorService;
 
     @Value("${IndexRebuilder.queueLength:1}")
     private int queueLength = 1;
@@ -53,28 +47,26 @@ public class IndexRebuilder {
         BlockingQueue<IndexableDocument> indexableDocuments = new LinkedBlockingQueue<>(queueLength);
         Collection<IndexableDocumentProvider> providers = filterProviders(providersToInclude);
         progressReporters = getProgressReporters(providers);
-        startConsumer(indexableDocuments, progressReporters);
-        startProducer(indexableDocuments, providers);
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        startConsumer(executorService, indexableDocuments, progressReporters);
+        startProducer(executorService, indexableDocuments, providers);
 
         return progressReporters;
     }
 
-    private void startProducer(final BlockingQueue<IndexableDocument> indexableDocuments, final Collection<IndexableDocumentProvider> indexableDocumentProviders) {
-        executorService.execute(new Runnable() {
-            @Override
-            public void run() {
-                for (IndexableDocumentProvider provider : indexableDocumentProviders) {
-                    log.info("Starting IndexableDocumentProvider {}", provider.getName());
-                    provider.provideDocuments(indexableDocuments);
-                    log.info("Finished IndexableDocumentProvider {}", provider.getName());
-                }
+    private void startProducer(ExecutorService executorService, final BlockingQueue<IndexableDocument> indexableDocuments, final Collection<IndexableDocumentProvider> indexableDocumentProviders) {
+        executorService.execute(() -> {
+            for (IndexableDocumentProvider provider : indexableDocumentProviders) {
+                log.info("Starting IndexableDocumentProvider {}", provider.getName());
+                provider.provideDocuments(indexableDocuments);
+                log.info("Finished IndexableDocumentProvider {}", provider.getName());
             }
         });
     }
 
 
 
-    private void startConsumer(final BlockingQueue<IndexableDocument> indexableDocuments, final List<ProgressReporter> progressReporters) {
+    private void startConsumer(ExecutorService executorService, final BlockingQueue<IndexableDocument> indexableDocuments, final List<ProgressReporter> progressReporters) {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
