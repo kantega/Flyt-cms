@@ -56,12 +56,12 @@ public class AlphabeticalListController implements AksessController {
         ContentIdentifier cid = current.getContentIdentifier();
         query.setAssociatedId(cid);
 
-        SortOrder sort = new SortOrder("title", false);
+        query.setSortOrder(new SortOrder("title", false));
         List<Content> contentList;
         if(skipAttributes) {
-            contentList = cms.getContentSummaryList(query, -1, sort);
+            contentList = cms.getContentSummaryList(query);
         } else {
-            contentList = cms.getContentList(query, -1, sort);
+            contentList = cms.getContentList(query);
         }
         Map<String, List<Content>> letters = new TreeMap<>(Collator.getInstance(new Locale("no", "NO")));
 
@@ -70,18 +70,14 @@ public class AlphabeticalListController implements AksessController {
             String letter = title.substring(0, 1).toUpperCase();
 
             if (letters.get(letter) == null) {
-                letters.put(letter, new ArrayList<Content>());
+                letters.put(letter, new ArrayList<>());
             }
 
             List<Content> links = letters.get(letter);
             links.add(content);
         }
 
-        Map<String, Object> model = new HashMap<>();
-
-        model.put("letters", letters);
-
-        return model;
+        return Collections.singletonMap("letters", letters);
     }
 
     public String getDescription() {

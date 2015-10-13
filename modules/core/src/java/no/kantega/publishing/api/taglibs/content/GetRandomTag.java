@@ -199,8 +199,8 @@ public class GetRandomTag  extends BodyTagSupport {
                 }
                 query.setAssociationCategory(category);
             }
-
-            tmpcollection = cs.getContentList(query, -1, new SortOrder(orderBy, true));
+            query.setSortOrder(new SortOrder(orderBy, true));
+            tmpcollection = cs.getContentList(query);
 
         } catch (Exception e) {
             log.error("", e);

@@ -52,7 +52,9 @@ public class AutocompleteContentAction implements Controller {
             }
             ContentManagementService cms = new ContentManagementService(request);
 
-            List<Content> pages = cms.getContentList(query, 100, new SortOrder(ContentProperty.TITLE, false));
+            query.setMaxRecords(100);
+            query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
+            List<Content> pages = cms.getContentList(query);
 
             // Add site name and replace illegal charachters.
             for (Content page : pages) {

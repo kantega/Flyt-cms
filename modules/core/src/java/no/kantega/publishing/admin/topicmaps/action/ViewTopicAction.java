@@ -62,7 +62,8 @@ public class ViewTopicAction extends AbstractController {
         // Associated content pages
         ContentQuery query = new ContentQuery();
         query.setTopic(topic);
-        model.put("relatedContent", cms.getContentSummaryList(query, -1, new SortOrder(ContentProperty.TITLE, false)));
+        query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
+        model.put("relatedContent", cms.getContentSummaryList(query));
 
         // Associated topics
         model.put("associations", topicMapService.getTopicAssociations(topic));

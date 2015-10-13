@@ -103,18 +103,18 @@ public abstract class ContentServiceLegacyImpl implements ContentManagementServi
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery query, SortOrder sort, boolean getAttributes, boolean getTopics) {
-        return getCMS().getContentList(query, query.getMaxRecords(), sort, getAttributes, getTopics);
+    public List<Content> getContentList(ContentQuery query, boolean getAttributes, boolean getTopics) {
+        return getCMS().getContentList(query, getAttributes, getTopics);
     }
 
     @Override
-    public List<Content> getContentList(ContentQuery query, SortOrder sort) {
-        return getCMS().getContentList(query, query.getMaxRecords(), sort);
+    public List<Content> getContentList(ContentQuery query) {
+        return getCMS().getContentList(query);
     }
 
     @Override
-    public List<Content> getContentSummaryList(ContentQuery query, SortOrder sort) {
-        return getCMS().getContentSummaryList(query, query.getMaxRecords(), sort);
+    public List<Content> getContentSummaryList(ContentQuery query) {
+        return getCMS().getContentSummaryList(query);
     }
 
     @Override

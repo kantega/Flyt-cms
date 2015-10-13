@@ -356,7 +356,9 @@ public class AbstractGetCollectionTag extends BodyTagSupport {
 
         if (query != null) {
             query.setOffset(offset);
-            collection = cs.getContentList(query, max, new SortOrder(orderBy, descending), !skipAttributes, !skipTopics);
+            query.setSortOrder(new SortOrder(orderBy, descending));
+            query.setMaxRecords(max);
+            collection = cs.getContentList(query, !skipAttributes, !skipTopics);
             if(shuffle) {
                 Collections.shuffle(collection);
                 if(shuffleMax != -1 && collection.size() > shuffleMax) {

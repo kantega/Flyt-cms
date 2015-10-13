@@ -62,7 +62,8 @@ public class TestPagesController extends AbstractController {
                 ContentQuery query = new ContentQuery();
                 query.setDisplayTemplate(template.getId());
 
-                contents.addAll(cms.getContentList(query, 1, new SortOrder(ContentProperty.PUBLISH_DATE)));
+                query.setSortOrder(new SortOrder(ContentProperty.PUBLISH_DATE));
+                contents.addAll(cms.getContentList(query));
             }
             Element pages = new Element("pages");
 

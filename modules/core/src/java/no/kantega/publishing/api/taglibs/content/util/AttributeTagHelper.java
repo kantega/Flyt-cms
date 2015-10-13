@@ -228,10 +228,11 @@ public final class AttributeTagHelper {
 
                 ContentQuery query = new ContentQuery();
                 query.setContentList(contentList);
+                query.setSortOrder(new SortOrder(ContentProperty.PRIORITY, false));
                 ContentManagementService cms = new ContentManagementService(securitySession);
-                List parents = cms.getContentList(query, -1, new SortOrder(ContentProperty.PRIORITY, false), true, false);
+                List<Content> parents = cms.getContentList(query, true, false);
                 for (int i = parents.size() - 1; i >= 0 ; i--) {
-                    Content parent =  (Content)parents.get(i);
+                    Content parent =  parents.get(i);
                     value = getAttribute(parent, cmd);
                     if (value != null && value.length() > 0) {
                         return value;

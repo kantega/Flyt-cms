@@ -76,7 +76,7 @@ public class RobotsController implements Controller {
         ContentQuery query = new ContentQuery();
         query.setSql("content.IsSearchable = 0");
         ContentManagementService cms = new ContentManagementService(request);
-        List<Content> excludedPages = cms.getContentSummaryList(query, -1, null);
+        List<Content> excludedPages = cms.getContentSummaryList(query);
         for (Content excludedPage : excludedPages) {
             if (excludedPage.getAlias() != null && excludedPage.getAlias().length() > 0) {
                 out.println("Disallow: " + request.getContextPath() + excludedPage.getAlias());

@@ -57,14 +57,15 @@ public class ListAssociatedContentAction extends AbstractTopicInfoAction {
             topicService.addTopicContentAssociation(topic, addContentId);
         }
 
-        model.put("content", cms.getContentSummaryList(query, -1, new SortOrder(ContentProperty.TITLE, false)));
+        query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
+        model.put("content", cms.getContentSummaryList(query));
 
         SecuritySession session = cms.getSecuritySession();
         if (session.isUserInRole(Aksess.getAdminRole())) {
             model.put("canAdd", Boolean.TRUE);
             model.put("canDelete", Boolean.TRUE);
-        }        
-                
+        }
+
         return new ModelAndView(view, model);
     }
 }

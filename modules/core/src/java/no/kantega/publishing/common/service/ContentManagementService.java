@@ -560,7 +560,7 @@ public class ContentManagementService {
             query.setIncludeWaitingForApproval(true);
             query.setAssociatedId(origialContentIdentifier);
 
-            for (Content child : getContentList(query, -1, null)) {
+            for (Content child : getContentList(query)) {
                 Association childAssociation = content.getAssociation();
                 copyContent(child, childAssociation, childAssociation.getCategory(), true);
             }
@@ -764,15 +764,14 @@ public class ContentManagementService {
     /**
      * Henter en liste med innholdsobjekter fra basen
      * @param query - Søk som angir hva som skal hentes
-     * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefølge
      * @param getAttributes - Hent attributter (true) for en side eller bare basisdata (false)
      * @param getTopics - Hent topics (true) for en side eller ikke (false)
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) throws SystemException {
-        List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), sort, getAttributes, getTopics);
+    public List<Content> getContentList(ContentQuery query, boolean getAttributes, boolean getTopics) throws SystemException {
+        int maxElements = query.getMaxRecords();
+        List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), query.getSortOrder(), getAttributes, getTopics);
         List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
@@ -841,26 +840,22 @@ public class ContentManagementService {
     /**
      * Henter en liste med innholdsobjekter fra basen med innholdsattributter
      * @param query - Søk som angir hva som skal hentes
-     * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefølge
      * @return the Content object matching contentQuery, that the user have access privilegies for.
      * @throws SystemException
      */
-    public List<Content> getContentList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
-        return getContentList(query, maxElements, sort, true, false);
+    public List<Content> getContentList(ContentQuery query) throws SystemException {
+        return getContentList(query, true, false);
     }
 
 
     /**
      * Henter en liste med innholdsobjekter fra basen uten attributter
      * @param query - Søk som angir hva som skal hentes
-     * @param maxElements - Max antall elementer som skal hentes, -1 for alle
-     * @param sort - Sorteringsrekkefølge
      * @return Liste med innholdsobjekter
      * @throws SystemException
      */
-    public List<Content> getContentSummaryList(ContentQuery query, int maxElements, SortOrder sort) throws SystemException {
-        return getContentList(query, maxElements, sort, false, false);
+    public List<Content> getContentSummaryList(ContentQuery query) throws SystemException {
+        return getContentList(query, false, false);
     }
 
 
