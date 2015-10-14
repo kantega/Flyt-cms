@@ -1,0 +1,64 @@
+(function (window, undefined) {
+    var contextPath = "${pageContext.request.contextPath}";
+    var rootResourcePath = contextPath + "/rest/content";
+
+    var ContentApi = {
+        cachedContent: undefined,
+        getCurrentContent: function (callback) {
+            return $.ajax({
+                url: rootResourcePath + '/current',
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR){
+                    ContentApi.cachedContent = data;
+                    callback(null, data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    callback(errorThrown);
+                }
+            });
+        },
+        getCurrentContentAttributes: function (callback) {
+            if (typeof ContentApi.cachedContent === 'undefined') {
+                ContentApi.getCurrentContent(function (err, data) {
+                    if (err) {
+                        return callback(err);
+                    } else {
+                        var attributes = data.contentAttributes;
+                        callback(null, attributes);
+                    }
+                })
+            } else {
+                callback(null, ContentApi.cachedContent.contentAttributes);
+            }
+        },
+        queryContent: function (queryObject, callback) {
+            $.ajax({
+                url: rootResourcePath,
+                dataType: "json",
+                data: queryObject,
+                success: function(data, textStatus, jqXHR){
+                    callback(null, data);
+                },
+                error: function(jqXHR, textStatus, errorThrown){
+                    callback(errorThrown);
+                }
+            });
+        },
+        getMultimediaUrl: function (options, callback){
+            var multimedia = options.attribute.multimedia;
+            if(!multimedia){
+                return callback('Attribute not of type multimedia.');
+            }
+            var url = multimedia.url + "?";
+            for (var key in options) {
+                if (options.hasOwnProperty(key) && key != 'name') {
+                    url += "&" + key + "=" + options[key];
+                }
+            }
+            callback(null, url);
+        }
+    };
+    window.flyt = window.flyt || {};
+    window.flyt.contextPath = contextPath;
+    window.flyt.ContentApi = ContentApi;
+})(window);

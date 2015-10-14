@@ -38,6 +38,7 @@
     <import resource="application-event.xml"/>
     <import resource="application-editableforms.xml"/>
     <import resource="classpath*:META-INF/applicationContext-search.xml"/>
+    <import resource="classpath*:META-INF/resources/WEB-INF/ContentApi-servlet.xml"/>
 
     <bean class="no.kantega.publishing.spring.ConditionalResourceImporter">
         <property name="propertyName" value="server.type"/>

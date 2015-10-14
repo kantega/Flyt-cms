@@ -792,6 +792,7 @@
         <property name="templateValidator" ref="aksessTemplateValidator"/>
         <property name="view" value="/WEB-INF/jsp/admin/administration/templates/templateconfiguration.jsp"/>
     </bean>
+
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
     <bean class="no.kantega.publishing.admin.administration.action.SqlToolController"/>
