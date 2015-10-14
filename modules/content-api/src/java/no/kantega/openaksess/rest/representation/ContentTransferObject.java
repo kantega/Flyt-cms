@@ -9,6 +9,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,5 +58,10 @@ public class ContentTransferObject {
     @XmlElement
     public ContentIdentifier getContentIdentifier(){
         return content.getContentIdentifier();
+    }
+
+    @XmlElement
+    public Date getPublishdate() {
+        return content.getPublishDate();
     }
 }
