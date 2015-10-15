@@ -28,7 +28,7 @@ public class ContentTransferObject {
 
     @XmlElement
     public String getUrl(){
-        return request.getContextPath() + content.getPath();
+        return content.getPath();
     }
 
     @XmlElement
