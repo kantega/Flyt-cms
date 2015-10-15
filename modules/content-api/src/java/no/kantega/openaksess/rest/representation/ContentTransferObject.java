@@ -1,7 +1,9 @@
 package no.kantega.openaksess.rest.representation;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +28,7 @@ public class ContentTransferObject {
 
     @XmlElement
     public String getUrl(){
-        return request.getContextPath() + content.getPath(); // TODO: Should return context path.
+        return request.getContextPath() + content.getPath();
     }
 
     @XmlElement
@@ -63,5 +65,11 @@ public class ContentTransferObject {
     @XmlElement
     public Date getPublishdate() {
         return content.getPublishDate();
+    }
+
+    @XmlElement
+    public String getDocumentTypeName(){
+        DocumentType documentTypeById = DocumentTypeCache.getDocumentTypeById(content.getDocumentTypeId());
+        return documentTypeById != null ? documentTypeById.getName() : "No type";
     }
 }
