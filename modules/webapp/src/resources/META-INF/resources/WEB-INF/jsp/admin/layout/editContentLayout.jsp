@@ -109,9 +109,17 @@
             form.unbind("submit");
         }
 
+        function zeropad(input){
+            if(input < 10){
+                return '0' + input;
+            } else {
+                return input;
+            }
+        }
+
         function displaySaveTimestamp(){
             var date = new Date;
-            var timeString = date.getHours()+":"+date.getMinutes()+":"+date.getSeconds();
+            var timeString = zeropad(date.getHours()) + ":" + zeropad(date.getMinutes()) + ":" + zeropad(date.getSeconds());
             $("#lastAutosaveTime").text(timeString);
             $("#lastAutosaveSpan").show();
             $("#minorChangeSpan").addClass("barButton");

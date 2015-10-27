@@ -109,7 +109,7 @@ public class TestPagesController extends AbstractController {
             return allTemplates;
         }
 
-        List<DisplayTemplate> filteredTemplates = new ArrayList<DisplayTemplate>();
+        List<DisplayTemplate> filteredTemplates = new ArrayList<>();
         for (DisplayTemplate template : allTemplates) {
             if (!isExcluded(excludes, template)) {
                 filteredTemplates.add(template);
@@ -129,15 +129,13 @@ public class TestPagesController extends AbstractController {
     }
 
     private Map<String, String> parseFilter(String includeFilter) {
-        Map<String, String> filters = new HashMap<String, String>();
+        Map<String, String> filters = new HashMap<>();
         if (StringUtils.isNotEmpty(includeFilter)) {
             String[] filterArr = includeFilter.split(FILTER_SEPARATOR);
-            if (filterArr != null) {
-                for (String filter : filterArr) {
-                    String[] filterNameVal = filter.split("=");
-                    if (filterNameVal != null && filterNameVal.length == 2) {
-                        filters.put(filterNameVal[0], filterNameVal[1]);
-                    }
+            for (String filter : filterArr) {
+                String[] filterNameVal = filter.split("=");
+                if (filterNameVal.length == 2) {
+                    filters.put(filterNameVal[0], filterNameVal[1]);
                 }
             }
         }

@@ -39,6 +39,6 @@
 </c:if>
 
 <span id="lastAutosaveSpan" hidden>
-    Auto saved at: <span id="lastAutosaveTime"></span>
+    <kantega:label key="aksess.lastautosave"/>: <span id="lastAutosaveTime"></span>
 </span>
 
