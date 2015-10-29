@@ -63,6 +63,10 @@
                     <groupId>org.springframework</groupId>
                     <artifactId>spring-web</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.glassfish.hk2.external</groupId>
+                    <artifactId>bean-validator</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
