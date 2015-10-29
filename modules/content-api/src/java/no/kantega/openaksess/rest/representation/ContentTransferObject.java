@@ -72,4 +72,9 @@ public class ContentTransferObject {
         DocumentType documentTypeById = DocumentTypeCache.getDocumentTypeById(content.getDocumentTypeId());
         return documentTypeById != null ? documentTypeById.getName() : "No type";
     }
+
+    @XmlElement
+    public Date getLastModified(){
+        return content.getLastModified();
+    }
 }
