@@ -135,6 +135,22 @@ public class MailSender {
      * @throws ConfigurationException if a configuration error occurs.
      */
     public static void send(String from, String to, String subject, MimeBodyPart[] bodyParts) throws ConfigurationException, SystemException {
+        send(from, to, null, null, subject, bodyParts);
+    }
+
+    /**
+     * Sends a mail message. The content must be provided as MimeBodyPart objects.
+     *
+     * @param from      Sender's email address.
+     * @param to        Recipient's email address.
+     * @param cc        Email address for CC.
+     * @param bcc       Email address for BCC.
+     * @param subject   Subject text for the email.
+     * @param bodyParts The body parts to insert into the message.
+     * @throws SystemException        if an unexpected error occurs.
+     * @throws ConfigurationException if a configuration error occurs.
+     */
+    public static void send(String from, String to, String cc, String bcc, String subject, MimeBodyPart[] bodyParts) throws ConfigurationException, SystemException {
 
         initEventLog();
 
@@ -151,8 +167,18 @@ public class MailSender {
             String catchAllTo = config.getString("mail.catchall.to");
             boolean catchallExists = catchAllTo != null && catchAllTo.contains("@");
             if (catchallExists) {
-                subject = " (original recipient: " + to + ") " + subject;
+                StringBuilder prefix = new StringBuilder(" (original recipient: " + to);
+                if (cc != null) {
+                    prefix.append(", cc: ").append(cc);
+                }
+                if (bcc != null) {
+                    prefix.append(", bcc: ").append(bcc);
+                }
+                prefix.append(") ");
+                subject = prefix + subject;
                 to = catchAllTo;
+                cc = null;
+                bcc = null;
             }
 
             props.setProperty("mail.smtp.host", host);
@@ -176,6 +202,13 @@ public class MailSender {
             } else {
                 message.setRecipients(Message.RecipientType.TO, toAddress);
             }
+            if (cc != null) {
+                message.addRecipients(Message.RecipientType.CC, cc);
+            }
+            if (bcc != null) {
+                message.addRecipients(Message.RecipientType.BCC, bcc);
+            }
+
             message.setSubject(subject, "ISO-8859-1");
             message.setSentDate(new Date());
 
