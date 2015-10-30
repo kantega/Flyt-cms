@@ -1,9 +1,10 @@
 package no.kantega.openaksess.rest.resources;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
 import no.kantega.openaksess.rest.representation.ContentTransferObject;
-import no.kantega.openaksess.rest.domain.Fault;
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -11,19 +12,19 @@ import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
-import no.kantega.publishing.content.api.ContentIdHelper;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
+import javax.ws.rs.BeanParam;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Kristian Myrhaug
- * @since 2015-08-11
- */
 @Path("/content")
 @Consumes("application/json")
 @Produces("application/json")
@@ -40,9 +41,10 @@ public class ContentResource {
 
     @GET
     public List<ContentTransferObject> get(@BeanParam ContentQueryTransferObject contentQuery){
-        ContentQuery test = new ContentQuery();
         ContentManagementService cms = new ContentManagementService(request);
-        List<Content> contentList = cms.getContentList(contentQuery.getQuery(), -1, new SortOrder(ContentProperty.TITLE));
+        ContentQuery query = contentQuery.getQuery();
+        query.setSortOrder(new SortOrder(ContentProperty.TITLE));
+        List<Content> contentList = cms.getContentList(query);
         if(!contentList.isEmpty()){
             return convertToTransferObject(contentList);
         }
