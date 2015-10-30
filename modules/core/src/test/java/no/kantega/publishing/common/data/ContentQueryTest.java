@@ -1,12 +1,25 @@
 package no.kantega.publishing.common.data;
 
+import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.common.data.enums.AssociationType;
+import no.kantega.publishing.spring.RootContext;
+import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.ApplicationContext;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ContentQueryTest {
+
+    @Before
+    public void setup(){
+        ApplicationContext mock = mock(ApplicationContext.class);
+        RootContext.setInstance(mock);
+        when(mock.getBean(ContentIdHelper.class)).thenReturn(mock(ContentIdHelper.class));
+    }
 
     @Test
     public void emptyContentQueryShouldNotIncludeCrosspostingAndShortcuts(){
