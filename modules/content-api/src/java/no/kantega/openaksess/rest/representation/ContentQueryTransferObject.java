@@ -58,9 +58,9 @@ public class ContentQueryTransferObject {
     }
 
     @QueryParam("modifiedDate")
-    public void set(Date date){
+    public void setModifiedDate(Long date){
         if(date != null){
-            query.setModifiedDate(date);
+            query.setModifiedDate(new Date(date));
         }
     }
 
