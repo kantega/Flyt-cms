@@ -176,6 +176,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         status = content.getStatus();
         switch (status) {
             case DRAFT:
+            case GHOSTDRAFT:
                 message = "draft";
                 break;
             case PUBLISHED:

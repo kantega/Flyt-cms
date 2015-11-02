@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=utf-8" language="java" pageEncoding="utf-8" %>
 <%@ taglib uri="http://www.kantega.no/aksess/tags/admin" prefix="admin" %>
+<%@ taglib uri="http://www.kantega.no/aksess/tags/aksess" prefix="aksess" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 <%@ page buffer="none" %>
@@ -98,15 +99,11 @@
         }
 
         function submitShadowdraft(){
-            var form = $("#EditContentForm");
-            //submit her
-            form.submit(function( event ) {
-                lastSavedForm = $( this ).serializeArray();
-                $.post( form.attr("action"), lastSavedForm );
-                event.preventDefault();
-            });
-            form.submit();
-            form.unbind("submit");
+            lastSavedForm = $("#EditContentForm").serializeArray();
+            $.post( properties.contextPath + '/admin/publish/SaveContent2.action', lastSavedForm )
+                    .done(function(data){
+                        $('#currentId').val(data.id)
+                    });
         }
 
         function zeropad(input){
@@ -185,7 +182,8 @@
         }
 
         window.onbeforeunload = confirmBeforeUnload;
-        window.setInterval( autosaveMethod, (5 *1000));
+        var autosaveInterval = <aksess:getconfig key="admin.autosaveinterval" default="60000"/>;
+        window.setInterval( autosaveMethod, autosaveInterval);
     </script>
 </kantega:section>
 
@@ -234,7 +232,7 @@
         <input type="hidden" name="action" value="">
         <input type="hidden" id="AddRepeaterRow" name="addRepeaterRow" value="">
         <input type="hidden" id="DeleteRepeaterRow" name="deleteRepeaterRow" value="">
-        <input type="hidden" name="currentId" value="${currentContent.id}">
+        <input type="hidden" id="currentId" name="currentId" value="${currentContent.id}">
         <input type="hidden" id="ContentIsModified" name="isModified" value="${currentContent.modified}">
     </form>
 

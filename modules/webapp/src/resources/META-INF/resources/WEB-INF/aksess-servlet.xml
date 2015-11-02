@@ -164,6 +164,7 @@
                 <prop key="/admin/publish/ViewContentPreviewFrame.action">ViewContentPreviewFrameAction</prop>
                 <prop key="/admin/publish/SaveAttachments.action">SaveAttachmentsAction</prop>
                 <prop key="/admin/publish/SaveContent.action">SaveContentAction</prop>
+                <prop key="/admin/publish/SaveContent2.action">SaveContentAction2</prop>
                 <prop key="/admin/publish/SaveMetadata.action">SaveMetadataAction</prop>
                 <prop key="/admin/publish/SaveVersion.action">SaveVersionAction</prop>
                 <prop key="/admin/publish/SelectTemplate.action">SelectTemplateAction</prop>
@@ -538,6 +539,10 @@
     <bean class="no.kantega.publishing.admin.content.action.SaveContentAction" id="SaveContentAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editcontent.jsp"/>
     </bean>
+    <bean class="no.kantega.publishing.admin.content.action.SaveContentAction2" id="SaveContentAction2">
+
+    </bean>
+
     <bean class="no.kantega.publishing.admin.content.action.SaveMetadataAction" id="SaveMetadataAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/editmetadata.jsp"/>
     </bean>
