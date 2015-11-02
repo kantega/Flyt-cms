@@ -25,13 +25,11 @@ import org.springframework.web.servlet.DispatcherServlet;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -54,12 +52,6 @@ public class ListJobsController {
 
     @Autowired
     private SystemConfiguration configuration;
-    private ApplicationContext rootcontext;
-
-    @PostConstruct
-    public void init(){
-        rootcontext = RootContext.getInstance();
-    }
 
     /**
      * ListJobsController is used to find all jobs that are scheduled using a Springs scheduling.
@@ -78,7 +70,7 @@ public class ListJobsController {
 
         Map<String, Object> model = new HashMap<>();
 
-        model.put("annotationScheduledBeans", getAnnotationScheduledBeans(rootcontext));
+        model.put("annotationScheduledBeans", getAnnotationScheduledBeans(RootContext.getInstance()));
 
         return new ModelAndView("org/kantega/openaksess/plugins/jobexecuter/view", model);
     }
@@ -90,7 +82,7 @@ public class ListJobsController {
         SecuritySession securitySession = SecuritySession.getInstance(request);
         log.info("{} is triggering job {} {}", securitySession.getUser().getId(), runAnnotatedBeanJob, runAnnotatedMethodJob);
 
-        executeAnnotatedScheduledJob(runAnnotatedBeanJob, runAnnotatedMethodJob, rootcontext);
+        executeAnnotatedScheduledJob(runAnnotatedBeanJob, runAnnotatedMethodJob, RootContext.getInstance());
 
         return listJobs(request);
     }
@@ -105,12 +97,7 @@ public class ListJobsController {
             scheduledAnnotatedJobs = new ArrayList<>(filterJobs(scheduledAnnotatedJobs, asList(enabledJobs)));
         }
 
-        Collections.sort(scheduledAnnotatedJobs, new Comparator<AnnotatedScheduledJob>() {
-            @Override
-            public int compare(AnnotatedScheduledJob o1, AnnotatedScheduledJob o2) {
-                return o1.getMethodName().toLowerCase().compareTo(o2.getMethodName().toLowerCase());
-            }
-        });
+        Collections.sort(scheduledAnnotatedJobs, (o1, o2) -> o1.getMethodName().toLowerCase().compareTo(o2.getMethodName().toLowerCase()));
         return scheduledAnnotatedJobs;
     }
 
