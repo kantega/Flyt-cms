@@ -65,9 +65,9 @@ public class dbConnectionFactory {
     private static int dbRemoveAbandonedTimeout = -1;
     private static int dbMaxWait = -1;
     private static int dbDefaultQueryTimeout;
-    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
+    private static int dbTransactionIsolationLevel = Connection.TRANSACTION_READ_COMMITTED;
 
-    private static boolean dbUseTransactions = false;
+    private static boolean dbUseTransactions = true;
 
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
@@ -183,7 +183,7 @@ public class dbConnectionFactory {
         shouldMigrateDatabase = configuration.getBoolean("database.migrate", true);
         dbNTMLAuthentication = configuration.getBoolean("database.useNTLMauthentication", false);
         dbUseTransactions = configuration.getBoolean("database.usetransactions", dbUseTransactions);
-        dbTransactionIsolationLevel = configuration.getInt("database.transactionisolationlevel", Connection.TRANSACTION_READ_UNCOMMITTED);
+        dbTransactionIsolationLevel = configuration.getInt("database.transactionisolationlevel", Connection.TRANSACTION_READ_COMMITTED);
     }
 
     private static void verifyCompleteDatabaseConfiguration() throws ConfigurationException {
