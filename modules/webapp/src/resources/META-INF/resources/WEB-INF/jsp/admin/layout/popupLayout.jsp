@@ -71,7 +71,7 @@
             if (window.opener) {
                 window.close();
             } else {
-                parent.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
+                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
             }
         }
 
