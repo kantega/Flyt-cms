@@ -23,6 +23,7 @@ import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
+import no.kantega.publishing.modules.linkcheck.check.CheckStatus;
 import no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
@@ -43,12 +44,7 @@ import java.util.Map;
  *
  */
 public class ListBrokenLinksAction extends SimpleAdminController {
-    private final Comparator<LinkOccurrence> comp = new Comparator<LinkOccurrence>() {
-        @Override
-        public int compare(LinkOccurrence o1, LinkOccurrence o2) {
-            return o1.getLastChecked().compareTo(o2.getLastChecked());
-        }
-    };
+    private final Comparator<LinkOccurrence> comp = Comparator.comparing(LinkOccurrence::getLastChecked);
     private LinkCheckerJob checker;
 
     @Autowired
@@ -92,6 +88,7 @@ public class ListBrokenLinksAction extends SimpleAdminController {
                 model.put("brokenLinks", brokenLinks);
                 model.put("lastChecked", lastChecked == null ? "" : new SimpleDateFormat().format(lastChecked));
                 model.put("thisPageOnly", thisPageOnly);
+                model.put("checkStatuses", CheckStatus.values());
             } catch (ContentNotFoundException e) {
             }
         }

@@ -39,6 +39,14 @@
 
     <input id="thisPageBtn" type="button" class="ui-button" value="<kantega:label key="aksess.linkcheck.onlyThisPage"/>">
 
+    <div id="statusFilter" class="ui-state-highlight">
+        <c:forEach var="linkStatus" items="${checkStatuses}">
+            <label>
+                <input type="checkbox" id="${linkStatus}" value="${linkStatus}" class="activeStatuses" checked>
+                <%@include file="fragments/linkcheckStatus.jsp"%>
+            </label>
+        </c:forEach>
+    </div>
     <c:choose>
         <c:when test="${not empty brokenLinks}">
             <table class="fullWidth">
@@ -54,7 +62,7 @@
                 </thead>
                 <tbody>
                 <c:forEach var="link" items="${brokenLinks}" varStatus="status">
-                    <tr class="tableRow${status.index mod 2}" valign="top">
+                    <tr class="tableRow${status.index mod 2} brokenlink" valign="top" data-status="${link.status}">
                         <td>
                             <a href="${pageContext.request.contextPath}/admin/publish/Navigate.action?contentId=${link.contentId}" target="_top">${link.contentTitle}</a>
                         </td>
@@ -75,36 +83,8 @@
                             <%= url.length() > 40 ? url.substring(0, 40) + "..." : url%>
                         </a></td>
                         <td>
-                            <c:choose>
-                                <c:when test="${link.status == 'UNKNOWN_HOST'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.2"/></c:when>
-                                <c:when test="${link.status == 'HTTP_NOT_200'}">
-                                    <c:choose>
-                                        <c:when test="${link.httpStatus == 401}"><kantega:label
-                                                key="aksess.linkcheck.httpstatus.401"/></c:when>
-                                        <c:when test="${link.httpStatus == 404}"><kantega:label
-                                                key="aksess.linkcheck.httpstatus.404"/></c:when>
-                                        <c:when test="${link.httpStatus == 500}"><kantega:label
-                                                key="aksess.linkcheck.httpstatus.500"/></c:when>
-                                        <c:otherwise>HTTP ${link.httpStatus}</c:otherwise>
-                                    </c:choose>
-                                </c:when>
-                                <c:when test="${link.status == 'IO_EXCEPTION'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.4"/></c:when>
-                                <c:when test="${link.status == 'CONNECTION_TIMEOUT'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.5"/></c:when>
-                                <c:when test="${link.status == 'CIRCULAR_REDIRECT'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.6"/></c:when>
-                                <c:when test="${link.status == 'CONNECT_EXCEPTION'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.7"/></c:when>
-                                <c:when test="${link.status == 'CONTENT_AP_NOT_FOUND'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.8"/></c:when>
-                                <c:when test="${link.status == 'INVALID_URL'}"><kantega:label
-                                        key="aksess.linkcheck.statuses.9"/></c:when>
-                                <c:when test="${link.status == 'ATTACHMENT_AP_NOT_FOUND'}"><kantega:label key="aksess.linkcheck.statuses.10"/></c:when>
-                                <c:when test="${link.status == 'MULTIMEDIA_AP_NOT_FOUND'}"><kantega:label key="aksess.linkcheck.statuses.11"/></c:when>
-                                <c:otherwise>${link.status}</c:otherwise>
-                            </c:choose>
+                            <c:set var="linkStatus" value="${link.status}"/>
+                            <%@include file="fragments/linkcheckStatus.jsp"%>
                         </td>
                         <td>
                             <c:if test="${link.lastChecked != null}">
@@ -136,18 +116,46 @@
     </c:choose>
     <script>
         $(document).ready(function () {
-            var btn = $('#thisPageBtn');
-            btn.click(function (event) {
+            var thisPageBtn = $('#thisPageBtn');
+            thisPageBtn.click(function (event) {
                 openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
                 openaksess.linkcheck.updateLinkList("title", {thisPageOnly: true});
             });
-        });
-        $(document).ready(function () {
-            var btn = $('#updatePageBtn');
-            btn.click(function (event) {
+
+            var updatePageBtn = $('#updatePageBtn');
+            updatePageBtn.click(function (event) {
                 openaksess.linkcheck.currentUrl = "${currentNavigateContent.url}";
                 openaksess.linkcheck.updateLinkList("title", {thisPageOnly: false});
             });
+
+            var filterState = {};
+            var $activeStatuses = $('.activeStatuses');
+            $activeStatuses.each(function(i, element){
+                var $element = $(element);
+                var value = $element.val();
+                filterState[value] = $element.is(':checked');
+            });
+
+            function updaterows(){
+                $('.brokenlink').each(function(i, element){
+                    var $element = $(element);
+                    var attr = $element.attr('data-status');
+                    if(filterState[attr]){
+                        $element.show();
+                    } else {
+                        $element.hide();
+                    }
+                })
+            }
+
+            $activeStatuses.change(function(event){
+                var $element = $(this);
+                var value = $element.val();
+                filterState[value] = $element.is(':checked');
+
+                updaterows();
+            })
+
         });
     </script>
 </admin:box>
