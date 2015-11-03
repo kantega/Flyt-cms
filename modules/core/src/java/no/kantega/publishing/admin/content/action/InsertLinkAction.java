@@ -17,9 +17,10 @@
 package no.kantega.publishing.admin.content.action;
 
 import no.kantega.commons.client.util.RequestParameters;
-import no.kantega.commons.configuration.Configuration;
 import no.kantega.commons.util.HttpHelper;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.Aksess;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 
@@ -38,6 +39,9 @@ public class InsertLinkAction extends AbstractController {
     private final String LINKTYPE_EMAIL = "email";
     private final String LINKTYPE_ANCHOR = "anchor";
     private final String LINKTYPE_MEDIA = "multimedia";
+
+    @Autowired
+    private SystemConfiguration config;
 
     private String view;
 
@@ -101,7 +105,6 @@ public class InsertLinkAction extends AbstractController {
             model.put("smartLink", Boolean.TRUE);
         }
 
-        Configuration config = Aksess.getConfiguration();
 
         boolean miniAdminMode = param.getBoolean("isMiniAdminMode", false);
 

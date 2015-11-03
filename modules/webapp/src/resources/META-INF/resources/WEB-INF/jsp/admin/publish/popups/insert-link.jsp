@@ -39,8 +39,9 @@
             var attribs = getUrlAttributes();
             if (attribs != null) {
                 openaksess.editcontext.insertLink(attribs);
-                closeWindow();
-                getParent().openaksess.common.modalWindow.close();
+                var tinymce = getParent().tinymce;
+                var ed = tinymce.editors[0];
+                ed.windowManager.windows[0].close();
             }
         }
     </script>
@@ -83,7 +84,7 @@
                 <jsp:include page="insert-link/${linkType}.jsp"/>
                 <div class="buttonGroup">
                     <span class="button"><input type="button" class="insert" value="<kantega:label key="aksess.button.insert"/>"></span>
-                    <%--<span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>--%>
+                    <span class="button"><input type="button" class="cancel" value="<kantega:label key="aksess.button.cancel"/>"></span>
                 </div>
             </form>
         </div>

@@ -52,7 +52,6 @@
                 hasSubmitted = true;
                 var prmstr = window.location.search.substr(1);
                 var prmarr = prmstr.split ("&");
-                var params = {};
 
                 var form = $(document.editmediaform);
                 for ( var i = 0; i < prmarr.length; i++) {
@@ -68,9 +67,10 @@
         $(document).ready(function() {
             $("#MultimediaName").focus();
             if (openaksess.common.isPopup()) {
-               $("#EditMultimediaButtons .insert").removeClass("hidden");
+                var $EditMultimediaButtons = $("#EditMultimediaButtons .insert");
+                $EditMultimediaButtons.removeClass("hidden");
 
-               $("#EditMultimediaButtons .insert").click(function (){
+               $EditMultimediaButtons.click(function (){
                     document.editmediaform.insert.value = true;
                     saveForm();
                 }).parent().show();

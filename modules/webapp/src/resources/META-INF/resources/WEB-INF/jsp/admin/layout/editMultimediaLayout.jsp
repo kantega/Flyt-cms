@@ -88,10 +88,6 @@
                 location.href = "ImageRotate.action?id=${media.id}&direction=cw";
             });
             </c:if>
-
-
-
-
         }
 
         openaksess.multimedia.onDeleteConfirm = function() {
