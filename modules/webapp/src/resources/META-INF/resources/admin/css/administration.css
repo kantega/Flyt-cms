@@ -56,3 +56,7 @@ table th.date {
 .showinadmin {
     width: 15%;
 }
+
+#statusFilter label {
+    display: inline-block;
+}

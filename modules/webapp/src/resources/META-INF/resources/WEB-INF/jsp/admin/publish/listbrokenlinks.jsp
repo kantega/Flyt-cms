@@ -131,10 +131,15 @@
             var filterState = {};
             var $activeStatuses = $('.activeStatuses');
             $activeStatuses.each(function(i, element){
-                var $element = $(element);
-                var value = $element.val();
-                filterState[value] = $element.is(':checked');
+                var value = element.value;
+                if(localStorage){
+                    var typeIsChecked = localStorage.getItem(value) || "true";
+                    element.checked = typeIsChecked === "true";
+                }
+                filterState[value] = element.checked;
             });
+
+            updaterows();
 
             function updaterows(){
                 $('.brokenlink').each(function(i, element){
@@ -151,8 +156,12 @@
             $activeStatuses.change(function(event){
                 var $element = $(this);
                 var value = $element.val();
-                filterState[value] = $element.is(':checked');
+                var isActive = $element.is(':checked');
+                filterState[value] = isActive;
 
+                if(localStorage){
+                    localStorage.setItem(value, isActive);
+                }
                 updaterows();
             })
 
