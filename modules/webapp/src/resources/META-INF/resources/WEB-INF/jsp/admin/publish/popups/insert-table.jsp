@@ -44,7 +44,8 @@
 
             var summary = document.myform.summary.value;
 
-            var editor = getParent().tinymce.EditorManager.activeEditor;
+            var tinymce = getParent().tinymce;
+            var editor = tinymce.EditorManager.activeEditor;
 
             if ("${modifyExisting}" == "true") {
                 var table = editor.dom.getParent(editor.selection.getNode(), 'table')
@@ -100,6 +101,8 @@
 
                 insertHtml(editor, html);
             }
+            var ed = tinymce.editors[0];
+            ed.windowManager.windows[0].close();
             return true;
         }
 
