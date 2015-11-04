@@ -73,8 +73,7 @@ public class ContentResource {
     public ContentTransferObject getByIdentifier(@PathParam("id") Integer id){
         ContentManagementService cms = new ContentManagementService(request);
 
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(id);
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(id);
 
         try{
             Content content = cms.getContent(cid);
