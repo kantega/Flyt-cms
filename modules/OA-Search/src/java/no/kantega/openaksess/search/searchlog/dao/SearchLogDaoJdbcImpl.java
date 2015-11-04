@@ -4,13 +4,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -49,7 +48,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
         return namedjdbcTemplate.queryForObject(queryString.toString(), params, Integer.class);
     }
 
-    public List getMostPopularQueries(int siteId) {
+    public List<QueryStatItem> getMostPopularQueries(int siteId) {
         return getQueryStats("numberofsearches desc", siteId);
     }
 
@@ -58,18 +57,12 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
     }
 
     private List<QueryStatItem> getQueryStats(final String orderBy, final int siteId) {
-        return jdbcTemplate.query(new PreparedStatementCreator() {
-                                      public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                                          PreparedStatement p = connection.prepareStatement("select query, count(*) as numberofsearches, avg(numberofhits) as numberofhits from searchlog where siteId=? group by query order by " + orderBy);
-                                          p.setMaxRows(100);
-                                          p.setInt(1, siteId);
-                                          return p;
-                                      }
-                                  }, new RowMapper<QueryStatItem>() {
-                                      public QueryStatItem mapRow(ResultSet rs, int i) throws SQLException {
-                                          return new QueryStatItem(rs.getString("query"), rs.getInt("numberofsearches"), rs.getLong("numberofhits"));
-                                      }
-                                  });
+        return jdbcTemplate.query(connection -> {
+            PreparedStatement p = connection.prepareStatement("select query, count(*) as numberofsearches, avg(numberofhits) as numberofhits from searchlog where siteId=? group by query order by " + orderBy);
+            p.setMaxRows(100);
+            p.setInt(1, siteId);
+            return p;
+        }, (rs, i) -> { return new QueryStatItem(rs.getString("query"), rs.getInt("numberofsearches"), rs.getLong("numberofhits"));  });
     }
 
 

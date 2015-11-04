@@ -47,13 +47,12 @@ public class OaSearchResultFilter implements SearchResultFilter {
     }
 
     private void registerPerformedSearch(final SearchResponse searchResponse, final AksessSearchContext searchContext) {
-        taskExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                SearchQuery query = searchResponse.getQuery();
+        SearchQuery query = searchResponse.getQuery();
+        if (query.isLogQuery()) {
+            taskExecutor.execute(() -> {
                 searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
-            }
-        });
+            });
+        }
     }
 
     private void filterHits(SearchResponse searchResponse, final SecuritySession session) {

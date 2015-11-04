@@ -38,6 +38,7 @@ public class SearchQuery {
     private String sortField = null;
     private SORT_ORDER sortOrder = SORT_ORDER.asc;
     private boolean useCollatedSuggestions = false;
+    private boolean logQuery = true;
 
     /**
      * Construct an query with a query string which typically comes from the user, and an
@@ -460,5 +461,16 @@ public class SearchQuery {
 
     public SORT_ORDER getSortOrder() {
         return sortOrder;
+    }
+
+    public boolean isLogQuery() {
+        return logQuery;
+    }
+
+    /**
+     * @param logQuery - set to false if this search should not be logged in the search log.
+     */
+    public void setLogQuery(boolean logQuery) {
+        this.logQuery = logQuery;
     }
 }

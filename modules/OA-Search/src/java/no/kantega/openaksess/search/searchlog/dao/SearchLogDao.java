@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 public interface SearchLogDao {
-    public void registerSearch(String queryString, List<String> exactQuery, int siteId, Number numberOfHits);
-    public int getSearchCountForPeriod(Date after, Date before, int siteId);
-    public List getMostPopularQueries(int siteId);
-    public List getQueriesWithLeastHits(int siteId);
+    void registerSearch(String queryString, List<String> exactQuery, int siteId, Number numberOfHits);
+    int getSearchCountForPeriod(Date after, Date before, int siteId);
+    List<QueryStatItem> getMostPopularQueries(int siteId);
+    List<QueryStatItem> getQueriesWithLeastHits(int siteId);
 }
