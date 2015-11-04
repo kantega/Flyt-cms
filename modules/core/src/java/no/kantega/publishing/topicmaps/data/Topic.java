@@ -19,6 +19,7 @@ package no.kantega.publishing.topicmaps.data;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Topic {
     private String id = null;
@@ -168,6 +169,11 @@ public class Topic {
         if (id != null ? !id.equals(topic.id) : topic.id != null) return false;
 
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(topicMapId, id);
     }
 
     public boolean isSelectable() {

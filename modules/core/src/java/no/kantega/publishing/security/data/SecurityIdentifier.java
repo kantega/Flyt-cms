@@ -19,6 +19,7 @@ package no.kantega.publishing.security.data;
 import no.kantega.publishing.common.Aksess;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -29,7 +30,7 @@ public abstract class SecurityIdentifier implements Serializable {
 
     public SecurityIdentifier() {
     }
-    
+
     public String getId() {
         if (isNotBlank(id)) {
             return id;
@@ -60,5 +61,10 @@ public abstract class SecurityIdentifier implements Serializable {
         } else {
             return id.equalsIgnoreCase(role);
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
