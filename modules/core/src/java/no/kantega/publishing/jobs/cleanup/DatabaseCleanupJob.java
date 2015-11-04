@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.jobs.cleanup;
 
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.runtime.ServerType;
@@ -50,6 +51,9 @@ public class DatabaseCleanupJob {
 
     @Resource(name = "contentListenerNotifier")
     private ContentEventListener contentEventListener;
+
+    @Autowired
+    private SystemConfiguration systemConfiguration;
 
     @Scheduled(cron = "${dbcleanupjob.cron:0 0 4 * * ?}")
     @DisableOnServertype(ServerType.SLAVE)
@@ -140,7 +144,7 @@ public class DatabaseCleanupJob {
 
     private void deleteOldSearhlogEntries(Connection c) throws SQLException {
         Calendar cal = new GregorianCalendar();
-        cal.add(Calendar.MONTH, -1);
+        cal.add(Calendar.MONTH, - systemConfiguration.getInt("searchlog.maxagemonths", 12));
 
         log.info( "Deleting search log entries older than 1 month");
 

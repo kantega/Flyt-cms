@@ -10,5 +10,5 @@ public interface TrafficLogger {
      * @param content - object to log
      * @param request - the request used to access the content
      */
-    public void log(Content content, HttpServletRequest request);
+    void log(Content content, HttpServletRequest request);
 }

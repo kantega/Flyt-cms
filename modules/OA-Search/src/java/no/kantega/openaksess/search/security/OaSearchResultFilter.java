@@ -2,6 +2,7 @@ package no.kantega.openaksess.search.security;
 
 import no.kantega.openaksess.search.searchlog.dao.SearchLogDao;
 import no.kantega.publishing.api.model.BaseObject;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import no.kantega.search.api.retrieve.IndexableContentTypeToObjectTypeMapping;
@@ -48,7 +49,7 @@ public class OaSearchResultFilter implements SearchResultFilter {
 
     private void registerPerformedSearch(final SearchResponse searchResponse, final AksessSearchContext searchContext) {
         SearchQuery query = searchResponse.getQuery();
-        if (query.isLogQuery()) {
+        if (Aksess.isSearchLogEnabled() && query.isLogQuery()) {
             taskExecutor.execute(() -> {
                 searchLogDao.registerSearch(query.getOriginalQuery(), query.getFilterQueries(), searchContext.getSiteId(), searchResponse.getNumberOfHits());
             });

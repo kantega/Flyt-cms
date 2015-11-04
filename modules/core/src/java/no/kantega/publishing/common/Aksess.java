@@ -17,7 +17,6 @@
 package no.kantega.publishing.common;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.publishing.api.runtime.ServerType;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -561,11 +560,7 @@ public class Aksess {
 
     public static void setConfiguration(Configuration configuration) {
         Aksess.c = configuration;
-        configuration.addConfigurationListener(new ConfigurationListener() {
-            public void configurationRefreshed(Configuration configuration) {
-                loadConfiguration();
-            }
-        });
+        configuration.addConfigurationListener(c -> loadConfiguration());
     }
 
     public static String getMultimediaDefaultCopyright() {

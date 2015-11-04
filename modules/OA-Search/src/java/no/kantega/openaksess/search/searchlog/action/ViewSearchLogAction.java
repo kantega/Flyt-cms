@@ -26,9 +26,18 @@ import org.springframework.web.servlet.mvc.AbstractController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.defaultIfBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class ViewSearchLogAction extends AbstractController {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private SiteCache siteCache;
     private String view;
     @Autowired
@@ -40,34 +49,68 @@ public class ViewSearchLogAction extends AbstractController {
         List<Site> sites = siteCache.getSites();
 
         RequestParameters param = new RequestParameters(request, "utf-8");
+        int siteId = getSiteId(sites, param);
+
+        String fromDateParam = param.getString("fromdate");
+        String toDateParam = param.getString("todate");
+        if("".equals(toDateParam)) toDateParam = null;
+
+        if(isBlank(fromDateParam) && isBlank(toDateParam)){
+            defaultSearch(model, siteId);
+        } else {
+            dateSpecifiedSearch(model, siteId, fromDateParam, toDateParam);
+        }
+
+        model.put("sites", sites);
+        model.put("selectedSiteId", siteId);
+
+        return new ModelAndView(view, model);
+    }
+
+    private void dateSpecifiedSearch(Map<String, Object> model, int siteId, String fromDateParam, String toDateParam) {
+        LocalDateTime fromDate = getFromDate(fromDateParam).atTime(0, 0);
+        LocalDateTime toDate = getToDate(toDateParam).atTime(23, 59, 59, 999);
+
+        model.put("numSearches", searchLogDao.getSearchCountForPeriod(fromDate, toDate, siteId));
+        model.put("most", searchLogDao.getMostPopularQueries(siteId, fromDate, toDate));
+        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId, fromDate, toDate));
+
+        model.put("startDate", fromDate.format(formatter));
+        model.put("endDate", toDate.format(formatter));
+    }
+
+    private LocalDate getFromDate(String fromDateParam) {
+        return java.util.Optional.ofNullable(defaultIfBlank(fromDateParam, null))
+                .map(s -> LocalDate.parse(s, formatter))
+                .orElseGet(() -> LocalDate.now().minusMonths(1));
+    }
+
+    private LocalDate getToDate(String toDateParam) {
+        return java.util.Optional.ofNullable(defaultIfBlank(toDateParam, null))
+                .map(s -> LocalDate.parse(s, formatter))
+                .orElseGet(LocalDate::now);
+    }
+
+    private void defaultSearch(Map<String, Object> model, int siteId) {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyMinutesAgo = now.minusMinutes(30);
+        model.put("last30min", searchLogDao.getSearchCountForPeriod(thirtyMinutesAgo, now, siteId));
+
+        LocalDateTime oneMonthAgo = now.minusDays(30);
+        model.put("sumLastMonth", searchLogDao.getSearchCountForPeriod(oneMonthAgo, now, siteId));
+
+        model.put("most", searchLogDao.getMostPopularQueries(siteId));
+        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId));
+    }
+
+    private int getSiteId(List<Site> sites, RequestParameters param) {
         int siteId = param.getInt("siteId");
         if (siteId == -1) {
             if (sites.size() > 0) {
                 siteId = sites.get(0).getId();
             }
         }
-
-        Calendar cal = new GregorianCalendar();
-        Date now = cal.getTime();
-        cal.add(Calendar.MINUTE, -30);
-        Date thirtyMinutesAgo = cal.getTime();
-
-        model.put("last30min", searchLogDao.getSearchCountForPeriod(thirtyMinutesAgo, now, siteId));
-
-        cal = new GregorianCalendar();
-        cal.add(Calendar.MONTH, -1);
-        Date oneMonthAgo = cal.getTime();
-        model.put("sumLastMonth", searchLogDao.getSearchCountForPeriod(oneMonthAgo, now, siteId));
-
-        List mostPopular = searchLogDao.getMostPopularQueries(siteId);
-        model.put("most", mostPopular);
-        List leastHits = searchLogDao.getQueriesWithLeastHits(siteId);
-        model.put("least", leastHits);
-
-        model.put("sites", sites);
-        model.put("selectedSiteId", siteId);
-
-        return new ModelAndView(view, model);
+        return siteId;
     }
 
     public void setSiteCache(SiteCache siteCache) {

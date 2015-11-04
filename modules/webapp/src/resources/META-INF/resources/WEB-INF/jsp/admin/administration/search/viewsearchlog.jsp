@@ -23,16 +23,35 @@
 </kantega:section>
 
 <kantega:section id="content">
+    <style>
+        fieldset {
+            display: inline-block;
+        }
+    </style>
     <admin:box>
         <h1><kantega:label key="aksess.search.log.title"/></h1>
 
         <form name="myform" action="" method="get" style="margin-bottom: 20px">
-            <strong><kantega:label key="aksess.search.log.site"/>:</strong>
-            <select name="siteId" onchange="document.myform.submit()">
-                <c:forEach items="${sites}" var="site">
-                    <option value="${site.id}" <c:if test="${site.id == selectedSiteId}"> selected</c:if>>${site.name}</option>
-                </c:forEach>
-            </select>
+            <fieldset>
+                <legend><strong><kantega:label key="aksess.search.log.site"/>:</strong></legend>
+                <select name="siteId" onchange="document.myform.submit()">
+                    <c:forEach items="${sites}" var="site">
+                        <option value="${site.id}" <c:if test="${site.id == selectedSiteId}"> selected</c:if>>${site.name}</option>
+                    </c:forEach>
+                </select>
+            </fieldset>
+            <fieldset class="datesearch">
+                <legend><kantega:label key="aksess.search.log.timespan"/></legend>
+                <label><kantega:label key="aksess.search.log.from"/><input name="fromdate" class="datepicker" value="${startDate}"></label>
+                <label><kantega:label key="aksess.search.log.to"/><input name="todate" class="datepicker" value="${endDate}"></label>
+                <script>
+                    $(".datepicker").datepicker({
+                        dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
+                    });
+                </script>
+            </fieldset>
+
+            <input class="submit" type="submit" value="<kantega:label key="aksess.search.log.update"/>">
         </form>
 
         <table class="fullWidth">
@@ -42,39 +61,47 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="tableRow0">
-                <td><kantega:label key="aksess.search.log.summary.now"/></td>
-                <td class="number">${last30min}</td>
-            </tr>
-            <tr class="tableRow0">
-                <td><kantega:label key="aksess.search.log.summary.lastmonth"/></td>
-                <td class="number">${sumLastMonth}</td>
-            </tr>
-            </tbody>
-        </table>
-
-        <table class="fullWidth">
-            <thead>
-            <tr>
-                <th>&nbsp;</th>
-                <th><kantega:label key="aksess.search.log.query.mostpopular"/></th>
-                <th class="number"><kantega:label key="aksess.search.log.query.hits"/></th>
-                <th class="number"><kantega:label key="aksess.search.log.query.searches"/></th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach items="${most}" var="q" varStatus="status">
-                <tr  class="tableRow${status.index mod 2}">
-                    <td>${status.index + 1}</td>
-                    <td>${q.query}</td>
-                    <td class="number"><fmt:formatNumber value="${q.numberOfHits}" maxFractionDigits="2"/></td>
-                    <td class="number">${q.numberOfSearches}</td>
+            <c:if test="${not empty last30min}">
+                <tr class="tableRow0">
+                    <td><kantega:label key="aksess.search.log.summary.now"/></td>
+                    <td class="number">${last30min}</td>
                 </tr>
-            </c:forEach>
+                <tr class="tableRow0">
+                    <td><kantega:label key="aksess.search.log.summary.lastmonth"/></td>
+                    <td class="number">${sumLastMonth}</td>
+                </tr>
+            </c:if>
+            <c:if test="${empty notlast30min}">
+                <tr class="tableRow0">
+                    <td><kantega:label key="aksess.search.log.query.searches"/></td>
+                    <td class="number">${numSearches}</td>
+                </tr>
+            </c:if>
             </tbody>
         </table>
-
-        <table class="fullWidth">
+        <c:if test="${not empty most}">
+            <table class="fullWidth">
+                <thead>
+                <tr>
+                    <th>&nbsp;</th>
+                    <th><kantega:label key="aksess.search.log.query.mostpopular"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.hits"/></th>
+                    <th class="number"><kantega:label key="aksess.search.log.query.searches"/></th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${most}" var="q" varStatus="status">
+                    <tr  class="tableRow${status.index mod 2}">
+                        <td>${status.index + 1}</td>
+                        <td>${q.query}</td>
+                        <td class="number"><fmt:formatNumber value="${q.numberOfHits}" maxFractionDigits="2"/></td>
+                        <td class="number">${q.numberOfSearches}</td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+        <c:if test="${not empty least}"> <table class="fullWidth">
             <thead>
             <tr>
                 <th>&nbsp;</th>
@@ -93,10 +120,15 @@
                 </tr>
             </c:forEach>
             </tbody>
-        </table>
+        </table></c:if>
 
-        <div class="ui-state-highlight"><kantega:label key="aksess.search.log.help"/></div>
+        <c:if test="${not empty last30min}">
+            <div class="ui-state-highlight"><kantega:label key="aksess.search.log.help"/></div>
+        </c:if>
 
+        <c:if test="${empty last30min}">
+            <div class="ui-state-highlight"><kantega:label key="aksess.search.log.help.generic" start="${startDate}" end="${endDate}"/></div>
+        </c:if>
     </admin:box>
 </kantega:section>
 <%@ include file="../../layout/administrationLayout.jsp" %>
