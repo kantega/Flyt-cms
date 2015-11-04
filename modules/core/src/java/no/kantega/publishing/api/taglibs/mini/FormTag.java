@@ -23,6 +23,7 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,8 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 import java.io.IOException;
 import java.util.Locale;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class FormTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(FormTag.class);
@@ -97,14 +100,14 @@ public class FormTag extends BodyTagSupport {
             + "    <input type=\"hidden\" id=\"ContentIsModified\" name=\"isModified\" value=\"true\">"
             + "    <input type=\"hidden\" id=\"AddRepeaterRow\" name=\"addRepeaterRow\" value=\"\">"
             + "    <input type=\"hidden\" id=\"DeleteRepeaterRow\" name=\"deleteRepeaterRow\" value=\"\">");
-            if (allowDraft && redirectUrl != null && redirectUrl.trim().length() > 0 ) {
-                out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + redirectUrl + "\">");
+            if (allowDraft && isNotBlank(redirectUrl)) {
+                out.write("    <input type=\"hidden\" name=\"redirectUrl\" value=\"" + StringEscapeUtils.escapeHtml4(redirectUrl) + "\">");
             }
-            if (draftRedirectUrl != null && draftRedirectUrl.trim().length() > 0 ) {
-                out.write("    <input type=\"hidden\" name=\"draftRedirectUrl\" value=\"" + draftRedirectUrl + "\">");
+            if (isNotBlank(draftRedirectUrl)) {
+                out.write("    <input type=\"hidden\" name=\"draftRedirectUrl\" value=\"" + StringEscapeUtils.escapeHtml4(draftRedirectUrl) + "\">");
             }
-            if (cancelUrl != null && cancelUrl.trim().length() > 0 ) {
-                out.write("    <input type=\"hidden\" name=\"cancelUrl\" value=\"" + cancelUrl + "\">");
+            if (isNotBlank(cancelUrl)) {
+                out.write("    <input type=\"hidden\" name=\"cancelUrl\" value=\"" + StringEscapeUtils.escapeHtml4(cancelUrl) + "\">");
             }
 
             out.write(body);
