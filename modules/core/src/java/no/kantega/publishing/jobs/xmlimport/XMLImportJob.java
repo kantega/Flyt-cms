@@ -111,6 +111,10 @@ public class XMLImportJob   {
         this.validator = validator;
     }
 
+    public void setDisableForServerType(ServerType disableForServerType) {
+        this.disableForServerType = disableForServerType;
+    }
+
     @PostConstruct
     private void init() {
         int timeout = configuration.getInt("httpclient.connectiontimeout", 10000);
