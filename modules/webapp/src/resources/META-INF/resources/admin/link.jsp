@@ -32,7 +32,7 @@
         }
     }
 %>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE HTML>
 <html>
     <title>link</title>
     <script type="text/javascript" src="${pageContext.request.contextPath}/aksess/js/jquery-1.5.2.min.js"></script>
