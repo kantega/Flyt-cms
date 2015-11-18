@@ -54,26 +54,28 @@ public class ViewSearchLogAction extends AbstractController {
         String fromDateParam = param.getString("fromdate");
         String toDateParam = param.getString("todate");
         if("".equals(toDateParam)) toDateParam = null;
+        Integer numberOfRows = Integer.parseInt(defaultIfBlank(param.getString("numberofRows"), "100"));
 
         if(isBlank(fromDateParam) && isBlank(toDateParam)){
             defaultSearch(model, siteId);
         } else {
-            dateSpecifiedSearch(model, siteId, fromDateParam, toDateParam);
+            dateSpecifiedSearch(model, siteId, fromDateParam, toDateParam, numberOfRows);
         }
 
+        model.put("numberofRows", numberOfRows);
         model.put("sites", sites);
         model.put("selectedSiteId", siteId);
 
         return new ModelAndView(view, model);
     }
 
-    private void dateSpecifiedSearch(Map<String, Object> model, int siteId, String fromDateParam, String toDateParam) {
+    private void dateSpecifiedSearch(Map<String, Object> model, int siteId, String fromDateParam, String toDateParam, Integer numberOfRows) {
         LocalDateTime fromDate = getFromDate(fromDateParam).atTime(0, 0);
         LocalDateTime toDate = getToDate(toDateParam).atTime(23, 59, 59, 999);
 
         model.put("numSearches", searchLogDao.getSearchCountForPeriod(fromDate, toDate, siteId));
-        model.put("most", searchLogDao.getMostPopularQueries(siteId, fromDate, toDate));
-        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId, fromDate, toDate));
+        model.put("most", searchLogDao.getMostPopularQueries(siteId, fromDate, toDate, numberOfRows));
+        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId, fromDate, toDate, numberOfRows));
 
         model.put("startDate", fromDate.format(formatter));
         model.put("endDate", toDate.format(formatter));
@@ -99,8 +101,8 @@ public class ViewSearchLogAction extends AbstractController {
         LocalDateTime oneMonthAgo = now.minusDays(30);
         model.put("sumLastMonth", searchLogDao.getSearchCountForPeriod(oneMonthAgo, now, siteId));
 
-        model.put("most", searchLogDao.getMostPopularQueries(siteId));
-        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId));
+        model.put("most", searchLogDao.getMostPopularQueries(siteId, 100));
+        model.put("least", searchLogDao.getQueriesWithLeastHits(siteId, 100));
     }
 
     private int getSiteId(List<Site> sites, RequestParameters param) {

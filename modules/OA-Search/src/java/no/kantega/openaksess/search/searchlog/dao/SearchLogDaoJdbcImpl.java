@@ -49,23 +49,23 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
         return namedjdbcTemplate.queryForObject(queryString.toString(), params, Integer.class);
     }
 
-    public List<QueryStatItem> getMostPopularQueries(int siteId, LocalDateTime after, LocalDateTime before) {
-        return getQueryStats("numberofsearches desc", siteId, after, before);
+    public List<QueryStatItem> getMostPopularQueries(int siteId, LocalDateTime after, LocalDateTime before, Integer numberOfRows) {
+        return getQueryStats("numberofsearches desc", siteId, after, before, numberOfRows);
     }
 
-    public List<QueryStatItem> getQueriesWithLeastHits(int siteId, LocalDateTime after, LocalDateTime before) {
-        return getQueryStats("numberofhits asc", siteId, after, before);
+    public List<QueryStatItem> getQueriesWithLeastHits(int siteId, LocalDateTime after, LocalDateTime before, Integer numberOfRows) {
+        return getQueryStats("numberofhits asc", siteId, after, before, numberOfRows);
     }
 
-    public List<QueryStatItem> getMostPopularQueries(int siteId) {
-        return getQueryStats("numberofsearches desc", siteId, null, null);
+    public List<QueryStatItem> getMostPopularQueries(int siteId, Integer numberOfRows) {
+        return getQueryStats("numberofsearches desc", siteId, null, null, numberOfRows);
     }
 
-    public List<QueryStatItem> getQueriesWithLeastHits(int siteId) {
-        return getQueryStats("numberofhits asc", siteId, null, null);
+    public List<QueryStatItem> getQueriesWithLeastHits(int siteId, Integer numberOfRows) {
+        return getQueryStats("numberofhits asc", siteId, null, null, numberOfRows);
     }
 
-    private List<QueryStatItem> getQueryStats(final String orderBy, final int siteId, LocalDateTime after, LocalDateTime before) {
+    private List<QueryStatItem> getQueryStats(final String orderBy, final int siteId, LocalDateTime after, LocalDateTime before, Integer numberOfRows) {
         StringBuilder sql = new StringBuilder("select query, count(*) as numberofsearches, avg(numberofhits) as numberofhits from searchlog where siteId=? ");
         if(after != null){
             sql.append(" and Time >= ? ");
@@ -77,7 +77,7 @@ public class SearchLogDaoJdbcImpl implements SearchLogDao {
 
         return jdbcTemplate.query(connection -> {
             PreparedStatement p = connection.prepareStatement(sql.toString());
-            p.setMaxRows(100);
+            p.setMaxRows(numberOfRows);
             p.setInt(1, siteId);
             if(after != null){
                 p.setTimestamp(2, getTimestamp(after));

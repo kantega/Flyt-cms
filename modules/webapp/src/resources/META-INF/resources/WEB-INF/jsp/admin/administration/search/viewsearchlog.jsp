@@ -44,6 +44,7 @@
                 <legend><kantega:label key="aksess.search.log.timespan"/></legend>
                 <label><kantega:label key="aksess.search.log.from"/><input name="fromdate" class="datepicker" value="${startDate}"></label>
                 <label><kantega:label key="aksess.search.log.to"/><input name="todate" class="datepicker" value="${endDate}"></label>
+                <label><kantega:label key="aksess.search.log.number"/><input name="numberofRows" type="number" value="${numberofRows}"></label>
                 <script>
                     $(".datepicker").datepicker({
                         dateFormat: "<%=Aksess.getDefaultDateFormatJS()%>"
