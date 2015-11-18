@@ -63,7 +63,7 @@ public abstract class AbstractUserAdminController extends AbstractController {
         return roleConfiguration.get(0);
     }
 
-    public List getProfileConfiguration() {
+    public List<ProfileManagementConfiguration> getProfileConfiguration() {
         return profileConfiguration;
     }
 
