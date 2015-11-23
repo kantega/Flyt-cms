@@ -78,7 +78,6 @@
                     } else {
                         window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                     }
-                    p.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
                 }
             }
 
