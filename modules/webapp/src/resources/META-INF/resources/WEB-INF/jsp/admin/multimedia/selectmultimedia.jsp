@@ -72,7 +72,7 @@
                 if (window.opener) {
                     window.close();
                 } else {
-                    activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
+                    var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
                     if(activeTinyPopup){
                         activeTinyPopup.close();
                     } else {
