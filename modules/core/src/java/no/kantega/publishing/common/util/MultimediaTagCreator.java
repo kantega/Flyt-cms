@@ -70,17 +70,25 @@ public class MultimediaTagCreator {
 
         if (mimeType.contains("image")) {
             return createImgTag(mm, align, resizeWidth, resizeHeight, cropping, cssClass, skipImageMap, url, altname);
-        } else if (mimeType.contains("flash")) {
-            return createFlashTag(mm, url);
-        } else if(mimeType.contains("x-ms-wmv") || mimeType.contains("x-msvideo")) {
-            return createMSVideoTag(mm, url);
-        } else if (mimeType.startsWith("video") || mimeType.startsWith("audio")) {
-            return createFlashAVTag(baseUrl, mm, resizeWidth, resizeHeight);
-
+        } else if (mimeType.contains("x-ms-wmv") || mimeType.contains("x-msvideo") || mimeType.startsWith("video")) {
+            return createVideoTag(baseUrl, mm, resizeWidth, resizeHeight);
+        } else if (mimeType.startsWith("audio")) {
+            return createAudioTag(baseUrl, mm);
         } else {
             return createDefaultTag(mm, url, mimeType);
 
         }
+    }
+
+    private static String createAudioTag(String baseUrl, Multimedia mm) {
+        return setupPlayer(baseUrl) +
+            "<audio id=\"" + mm.getId() + "\" src=\"" + mm.getUrl() + "\" controls=\"controls\"></audio>";
+    }
+
+    private static String setupPlayer(String baseUrl) {
+        return Aksess.mediaElementIncludeJquery() ? "<script src=\"" + baseUrl + "/aksess/js/mediaelement/jquery.js\"></script>" : "" +
+                "<script src=\"" + baseUrl + "/aksess/js/mediaelement/mediaelement-and-player.min.js\"></script>" +
+                "<script src=\"" + baseUrl + "/aksess/js/mediaelement/insertstyle.jjs\"></script>";
     }
 
     private static String createDefaultTag(Multimedia mm, String url, String mimeType) {
@@ -101,8 +109,7 @@ public class MultimediaTagCreator {
         return tag.toString();
     }
 
-    private static String createFlashAVTag(String baseUrl, Multimedia mm, int resizeWidth, int resizeHeight) {
-        StringBuilder tag = new StringBuilder();
+    private static String createVideoTag(String baseUrl, Multimedia mm, int resizeWidth, int resizeHeight) {
 
         int width  = Aksess.getDefaultMediaWidth();
         if (resizeWidth > 0) {
@@ -114,78 +121,18 @@ public class MultimediaTagCreator {
         }
         String playerUrl = Aksess.getFlashVideoPlayerUrl();
         String movieUrl = mm.getUrl();
-        String playerStr = baseUrl + playerUrl + "?movieAutoPlay=" + Aksess.isFlashVideoAutoplay() + "&movieUrl=" + movieUrl;
-        if (Aksess.isFlashUseJavascript()) {
-            String id = "swf" + mm.getId();
-            tag.append("<script type=\"text/javascript\">\n");
-            tag.append("try {\n");
-            tag.append("aksessMultimedia.embedFlashVideo(\"").append(movieUrl).append("\", ").append(mm.getId()).append(", ").append(width).append(", ").append(height).append(");\n");
-            tag.append("} catch (e) {\n");
-            tag.append("}\n");
-            tag.append("</script>\n");
-            tag.append("<div id=\"").append(id).append("\">\n");
-            tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>\n");
-            tag.append("</div>\n");
-            tag.append("<noscript>");
-        }
-        tag.append("<OBJECT classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\" codebase=\"https://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
-        tag.append("<PARAM name=\"movie\" value=\"").append(playerStr).append("\">");
-        tag.append("<PARAM name=\"quality\" value=\"high\">");
-        tag.append("<PARAM name=\"allowFullScreen\" value=\"true\" />");
-        tag.append("<EMBED src=\"").append(playerStr).append("\" quality=\"high\" allowFullScreen=\"true\"  pluginspage=\"https://www.macromedia.com/go/getflashplayer\" type=\"application/x-shockwave-flash\" swliveconnect=\"true\" width=\"").append(width).append("\" height=\"").append(height).append("\"></EMBED></OBJECT>");
-        if (Aksess.isFlashUseJavascript()) {
-            tag.append("</noscript>");
-        }
-        return tag.toString();
-    }
 
-    private static String createMSVideoTag(Multimedia mm, String url) {
-        StringBuilder tag = new StringBuilder();
-
-        int width  = mm.getWidth();
-        int height = mm.getHeight();
-        tag.append("<OBJECT ID=\"MediaPlayer\"");
-        tag.append(" classid=\"CLSID:22d6f312-b0f6-11d0-94ab-0080c74c7e95\"");
-        tag.append(" codebase=\"http://activex.microsoft.com/activex/controls/mplayer/en/nsmp2inf.cab#Version=6,4,7,1112\"");
-        tag.append(" type=\"application/x-oleobject\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
-        tag.append("<PARAM name=\"filename\" value=\"").append(url).append("\">");
-        tag.append("<PARAM name=\"autostart\" value=\"").append(Aksess.isFlashVideoAutoplay()).append("\">");
-        tag.append("<EMBED type=\"application/x-mplayer2\"");
-        tag.append(" pluginspage=\"http://www.microsoft.com/windows/windowsmedia/download/AllDownloads.aspx\"");
-        tag.append(" width=\"").append(width).append("\"");
-        tag.append(" height=\"").append(height).append("\"");
-        tag.append(" src=\"").append(url).append("\">");
-        tag.append(" autostart=\"").append(Aksess.isFlashVideoAutoplay()).append("\" ");
-        tag.append("</EMBED>");
-        tag.append("</OBJECT>");
-        return tag.toString();
-    }
-
-    private static String createFlashTag(Multimedia mm, String url) {
-        StringBuilder tag = new StringBuilder();
-
-        int width  = mm.getWidth();
-        int height = mm.getHeight();
-        if (Aksess.isFlashUseJavascript()) {
-            tag.append("<script type=\"text/javascript\">");
-            tag.append("try {");
-            tag.append("aksessMultimedia.embedFlash(\"").append(url).append("\", ").append(mm.getId()).append(", ").append(width).append(", ").append(height).append(");");
-            tag.append("} catch (e) {");
-            tag.append("}");
-            tag.append("</script>");
-            tag.append("<div id=\"swf").append(mm.getId()).append("\">");
-            tag.append("<p><a href=\"http://www.adobe.com/go/getflashplayer\"><img src=\"http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif\" alt=\"Get Adobe Flash player\" /></a></p>");
-            tag.append("</div>");
-            tag.append("<noscript>");
-        }
-        tag.append("<object type=\"application/x-shockwave-flash\" data=\"").append(url).append("\" width=\"").append(width).append("\" height=\"").append(height).append("\">");
-        tag.append("<param name=\"movie\" value=\"").append(url).append("\" />");
-        tag.append("<param name=\"quality\" value=\"high\" />");
-        tag.append("</object>");
-        if (Aksess.isFlashUseJavascript()) {
-            tag.append("</noscript>");
-        }
-        return tag.toString();
+        return setupPlayer(baseUrl) +
+            "<video width=\"" + width + "\" height=\"" + height + "\"" + " id=\"" + mm.getId() + "\" " +
+            "controls=\"controls\" preload=\"none\" class=\"mejs-player\">" +
+            "<source " +
+            "src=\"" + movieUrl + "\" />" +
+            "<object width=\"" + width + "\" height=\"" + height + "\" type=\"application/x-shockwave-flash\" " +
+            "data=\"" + movieUrl + "\">" +
+            "<param name=\"movie\" value=\"" + baseUrl + playerUrl + "\" /> " +
+            "<param name=\"flashvars\" value=\"controls=true&amp;file=" + movieUrl + "\" /> " +
+            "</object> " +
+            "</video>";
     }
 
     private static String createImgTag(Multimedia mm, String align, int resizeWidth, int resizeHeight, Cropping cropping, String cssClass, boolean skipImageMap, String url, String altname) {

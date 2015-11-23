@@ -61,7 +61,6 @@ public class Aksess {
 
     private static String[] internalIpSegment = null;
 
-    private static String flashPluginVersion;
     private static boolean flashUseJavascript = false;
     private static String version = "unknown";
     private static String revision;
@@ -134,6 +133,7 @@ public class Aksess {
 
     private static String queryStringEncoding;
     private static int xmlCacheMaxAge = 3;
+    private static boolean mediaElementIncludeJquery;
 
     public static void loadConfiguration() {
 
@@ -153,10 +153,10 @@ public class Aksess {
         maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
         maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
 
-        flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
         flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
         flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
-        flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
+        flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/js/mediaelement/flashmediaelement.swf");
+        mediaElementIncludeJquery = c.getBoolean("multimedia.mediaElementIncludeJquery", false);
 
         isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
 
@@ -394,10 +394,6 @@ public class Aksess {
         return new Locale(language, country);
     }
 
-    public static String getDefaultFlashVersion() {
-        return flashPluginVersion;
-    }
-
     public static String getDefaultSecurityDomain() {
         return defaultSecurityDomain;
     }
@@ -589,5 +585,9 @@ public class Aksess {
 
     public static String getDefaultDateFormatJS() {
         return defaultDateFormatJS;
+    }
+
+    public static boolean mediaElementIncludeJquery() {
+        return mediaElementIncludeJquery;
     }
 }

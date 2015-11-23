@@ -29,7 +29,7 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <script language="Javascript" type="text/javascript">
+    <script type="text/javascript">
         var hasSubmitted = false;
 
         function saveForm() {

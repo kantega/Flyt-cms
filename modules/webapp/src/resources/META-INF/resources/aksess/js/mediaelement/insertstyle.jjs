@@ -1,0 +1,11 @@
+//<%@ page contentType="application/javascript;charset=utf-8" language="java" pageEncoding="utf-8" %>
+(function(){
+    var head = document.head;
+    var link = document.createElement('link');
+
+    link.type = 'text/css';
+    link.rel = 'stylesheet';
+    link.href = '${pageContext.request.contextPath}/aksess/js/mediaelement/mediaelementplayer.min.css';
+
+    head.appendChild(link)
+})();

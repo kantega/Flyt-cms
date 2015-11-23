@@ -14,15 +14,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ page import="no.kantega.commons.client.util.RequestParameters,
-                 no.kantega.commons.util.URLHelper"%>
-<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
+<%@ page import="no.kantega.commons.util.URLHelper,
+                 no.kantega.publishing.common.data.Multimedia"%>
 <%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 <%
     Multimedia mm = (Multimedia)request.getAttribute("media");
-    RequestParameters param = new RequestParameters(request, "utf-8");
 
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -34,14 +32,13 @@
     if (maxWidth > mm.getWidth() && mm.getWidth() > 0) {
         maxWidth = mm.getWidth();
     }
-    String imageTag = MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null);
 %>
 <!DOCTYPE HTML>
 
 <html>
     <head>
         <title>...</title>
-        <%--<!--script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script-->--%>
+
         <script language="Javascript">
             function insertMMObject() {
                 var p;
