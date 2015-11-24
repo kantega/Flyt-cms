@@ -152,7 +152,7 @@ public class ContentPropertiesAction {
                 }
 
                 // Content hints for publisher
-                if (content.getStatus() == ContentStatus.DRAFT) {
+                if (content.getStatus() == ContentStatus.DRAFT || content.getStatus() == ContentStatus.GHOSTDRAFT) {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.draft", Aksess.getDefaultAdminLocale()));
                 } else if (content.getChangeFromDate() != null) {
                     model.put("contentHints", LocaleLabels.getLabel("aksess.navigator.hints.changefromdate", Aksess.getDefaultAdminLocale()));

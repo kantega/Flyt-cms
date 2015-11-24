@@ -97,7 +97,7 @@ public class NavigatorUtil {
                     txt = "Innholdsside";
                 }
 
-                if (status == ContentStatus.DRAFT) {
+                if (status == ContentStatus.DRAFT || status == ContentStatus.GHOSTDRAFT ) {
                     txt = txt + " (kladd)";
                 }
 
