@@ -330,7 +330,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.32</version>
+                    <version>1.33</version>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -408,6 +408,10 @@
         <hibernate-validation.version>5.2.2.Final</hibernate-validation.version>
 
         <solr.version>5.3.1</solr.version>
+
+        <xalan.version>2.7.2</xalan.version>
+        <xercesImpl.version>2.11.0</xercesImpl.version>
+        <xml-apis.version>1.4.01</xml-apis.version>
     </properties>
 
     <profiles>
