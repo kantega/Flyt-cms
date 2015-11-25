@@ -124,6 +124,7 @@ public class MultimediaTagCreator {
 
         return setupPlayer(baseUrl) +
             "<video width=\"" + width + "\" height=\"" + height + "\"" + " id=\"" + mm.getId() + "\" " +
+                (Aksess.isJavascriptDebugEnabled() ? "data-mejsoptions='{\"enablePluginDebug\": true}' " : "") +
             "controls=\"controls\" preload=\"none\" class=\"mejs-player\">" +
             "<source " +
             "src=\"" + movieUrl + "\" />" +
