@@ -1,11 +1,22 @@
 //<%@ page contentType="application/javascript;charset=utf-8" language="java" pageEncoding="utf-8" %>
 (function(){
-    var head = document.head;
-    var link = document.createElement('link');
+    if(!window.mediaelementplayerloaded){
+        window.mediaelementplayerloaded = true;
 
-    link.type = 'text/css';
-    link.rel = 'stylesheet';
-    link.href = '${pageContext.request.contextPath}/aksess/js/mediaelement/mediaelementplayer.min.css';
+        var head = document.head;
+        var link = document.createElement('link');
 
-    head.appendChild(link)
+        link.id = 'mediaelementplayercss';
+        link.type = 'text/css';
+        link.rel = 'stylesheet';
+        link.href = '${pageContext.request.contextPath}/aksess/js/mediaelement/mediaelementplayer.min.css';
+
+        head.appendChild(link) ;
+        var script = document.createElement('script');
+
+        script.id = 'mediaelementplayerscript';
+        script.src = '${pageContext.request.contextPath}/aksess/js/mediaelement/mediaelement-and-player.min.js';
+
+        head.appendChild(script)
+    }
 })();

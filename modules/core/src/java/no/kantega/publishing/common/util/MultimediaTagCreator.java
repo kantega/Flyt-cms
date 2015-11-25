@@ -87,7 +87,6 @@ public class MultimediaTagCreator {
 
     private static String setupPlayer(String baseUrl) {
         return Aksess.mediaElementIncludeJquery() ? "<script src=\"" + baseUrl + "/aksess/js/mediaelement/jquery.js\"></script>" : "" +
-                "<script src=\"" + baseUrl + "/aksess/js/mediaelement/mediaelement-and-player.min.js\"></script>" +
                 "<script src=\"" + baseUrl + "/aksess/js/mediaelement/insertstyle.jjs\"></script>";
     }
 
@@ -123,8 +122,7 @@ public class MultimediaTagCreator {
         String movieUrl = mm.getUrl();
 
         return setupPlayer(baseUrl) +
-            "<video width=\"" + width + "\" height=\"" + height + "\"" + " id=\"" + mm.getId() + "\" " +
-                (Aksess.isJavascriptDebugEnabled() ? "data-mejsoptions='{\"enablePluginDebug\": true}' " : "") +
+            "<video width=\"" + width + "\" height=\"" + height + "\"" + " id=\"media" + mm.getId() + "\" " +
             "controls=\"controls\" preload=\"none\" class=\"mejs-player\">" +
             "<source " +
             "src=\"" + movieUrl + "\" />" +
