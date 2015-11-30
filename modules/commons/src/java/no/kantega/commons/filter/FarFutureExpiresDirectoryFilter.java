@@ -50,7 +50,7 @@ public class FarFutureExpiresDirectoryFilter implements Filter {
 
         Matcher m = resourcePattern.matcher(uri);
 
-        if(m.find() && !uri.contains("/WEB-INF")) {
+        if(m.find() && isLegal(uri)) {
             final String realUri = m.group(2);
             res.setDateHeader("Expires", System.currentTimeMillis() + YEAR);
             req.getRequestDispatcher(realUri).forward(request, response);
@@ -59,6 +59,11 @@ public class FarFutureExpiresDirectoryFilter implements Filter {
 
         chain.doFilter(req, res);
 
+    }
+
+    private boolean isLegal(String uri) {
+        boolean illegal = uri.contains("/WEB-INF") || uri.contains("/META-INF");
+        return !illegal;
     }
 
     public void destroy() {
