@@ -13,7 +13,12 @@ import org.springframework.scheduling.support.ScheduledMethodRunnable;
 
 import java.lang.reflect.Method;
 import java.util.Date;
-import java.util.concurrent.*;
+import java.util.concurrent.Delayed;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Custom TaskScheduler that extends the original by supporting annotations for
@@ -101,7 +106,7 @@ public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
             DisableOnServertype annotation = AnnotationUtils.findAnnotation(method, DisableOnServertype.class);
             if(annotation != null){
                 ServerType disabledOnServertype = annotation.value();
-                return disabledOnServertype != serverType;
+                return disabledOnServertype == serverType;
             }
         }
         return false;
