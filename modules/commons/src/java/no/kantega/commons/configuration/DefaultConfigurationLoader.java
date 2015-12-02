@@ -22,6 +22,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +54,9 @@ public class DefaultConfigurationLoader implements ConfigurationLoader {
 
                     if(resource.exists()) {
                         log.info("Loading properties from: " +resource.getDescription());
-                        properties.load(resource.getInputStream());
+                        try (InputStream is = resource.getInputStream()){
+                            properties.load(is);
+                        }
                     } else {
                         log.info("Ignoring property resource: " +resource.getDescription() +" because it does not exist");
                     }
