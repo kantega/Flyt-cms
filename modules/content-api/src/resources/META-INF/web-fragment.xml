@@ -9,7 +9,7 @@
     <name>openaksess-rest</name>
 
     <servlet>
-        <servlet-name>JaxRS forum</servlet-name>
+        <servlet-name>JaxRS content-api</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -19,7 +19,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>JaxRS forum</servlet-name>
+        <servlet-name>JaxRS content-api</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
 
