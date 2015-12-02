@@ -22,13 +22,13 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import java.io.InputStream;
+
 
 /**
  *
  */
 public class MailTextReader {
-
-    public static final String SOURCE = "Akesss.MailTextReader";
 
     public static String getContent(String filename, String[] replaceStrings) throws SystemException {
 
@@ -36,22 +36,24 @@ public class MailTextReader {
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(filename);
 
-            String content = IOUtils.toString(resource.getInputStream());
+            try(InputStream is = resource.getInputStream()) {
+                String content = IOUtils.toString(is);
 
-            StringBuilder result = new StringBuilder();
-            int count = 0;
-            char[] chars = content.toCharArray();
-            for (int j = 0; j < chars.length; j++) {
-                if(chars[j] == '%') {
-                    if(count < replaceStrings.length) {
-                        result.append(replaceStrings[count++]);
+                StringBuilder result = new StringBuilder();
+                int count = 0;
+                char[] chars = content.toCharArray();
+                for (char aChar : chars) {
+                    if (aChar == '%') {
+                        if (count < replaceStrings.length) {
+                            result.append(replaceStrings[count++]);
+                        }
+                    } else {
+                        result.append(aChar);
                     }
-                } else {
-                    result.append(chars[j]);
                 }
-            }
 
-            return result.toString();
+                return result.toString();
+            }
         } catch (Exception e) {
             throw new SystemException("Feil ved lesing av " + filename, e);
         }

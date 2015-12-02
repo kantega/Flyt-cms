@@ -28,7 +28,11 @@ import org.apache.xml.serialize.XMLSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
-import org.w3c.dom.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.w3c.dom.Text;
 import org.xml.sax.Attributes;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -36,7 +40,14 @@ import org.xml.sax.helpers.AttributesImpl;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.URL;
 
 
@@ -131,17 +142,10 @@ public class XMLHelper {
                         .setConnectTimeout(10000).build()).build();
     }
 
-    public static Document openDocument(Resource resource) throws InvalidFileException {
-        try {
-            return openDocument(resource.getInputStream());
-        } catch (IOException e) {
-            throw new InvalidFileException("Error opening XML document from Resource", e);
-        }
-    }
-
     public static Document openDocument(Resource resource, EntityResolver er) throws InvalidFileException {
-        try {
-            return openDocument(resource.getInputStream(), er, resource.getURI().getRawPath());
+        try (InputStream is = resource.getInputStream()){
+
+            return openDocument(is, er, resource.getURI().getRawPath());
         } catch (IOException e) {
             throw new InvalidFileException("Error opening XML document from Resource", e);
         }
