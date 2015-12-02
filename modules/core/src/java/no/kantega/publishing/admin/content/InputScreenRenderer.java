@@ -124,7 +124,7 @@ public class InputScreenRenderer {
             }
 
             if (attribute instanceof RepeaterAttribute) {
-                renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute, tabIndex);
+                tabIndex = renderRepeaterAttribute(out, request, fieldErrors, (RepeaterAttribute) attribute, tabIndex);
             } else if(attribute instanceof SeparatorAttribute){
                 renderSeparatorAttribute(out, (SeparatorAttribute) attribute);
             } else {
@@ -159,6 +159,7 @@ public class InputScreenRenderer {
                 List<Attribute> attributes = repeaterAttribute.getRow(rowNo);
                 for (Attribute attribute : attributes) {
                     tabIndex = renderAttribute(out, request, fieldErrors, attribute, tabIndex);
+                    tabIndex += 10;
                 }
                 pageContext.include("/admin/publish/attributes/repeater_row_end.jsp");
                 out.print("</div>\n");
