@@ -34,13 +34,18 @@ import org.springframework.core.io.ResourceLoader;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.File;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
@@ -253,18 +258,20 @@ public class MailSender {
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(templateFile);
 
-            parameters.put("dateFormatter", new DateTool());            
+            parameters.put("dateFormatter", new DateTool());
 
             Configuration config = Aksess.getConfiguration();
 
             String encoding = config.getString("mail.templates.encoding", "ISO-8859-1");
-            String templateText = IOUtils.toString(resource.getInputStream(), encoding);
+            try(InputStream is = resource.getInputStream()) {
+                String templateText = IOUtils.toString(is, encoding);
 
-            VelocityContext context = new VelocityContext(parameters);
-            StringWriter textWriter = new StringWriter();
-            Velocity.evaluate(context, textWriter, "body", templateText);
+                VelocityContext context = new VelocityContext(parameters);
+                StringWriter textWriter = new StringWriter();
+                Velocity.evaluate(context, textWriter, "body", templateText);
 
-            return textWriter.toString();
+                return textWriter.toString();
+            }
         } catch (Exception e) {
             throw new SystemException("Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }
