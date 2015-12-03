@@ -61,7 +61,7 @@ public class AksessContentForm extends DefaultForm {
         while(it.hasNext()) {
             for (Attribute a : it.next()) {
                 if (a instanceof EmailAttribute) {
-                    if (!isBlank(email)) {
+                    if (emailBuilder.length() > 0) {
                         emailBuilder.append(",");
                     }
                     emailBuilder.append(a.getValue());
