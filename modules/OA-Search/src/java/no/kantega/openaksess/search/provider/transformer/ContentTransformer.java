@@ -6,7 +6,22 @@ import no.kantega.publishing.common.cache.DocumentTypeCache;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
-import no.kantega.publishing.common.data.attributes.*;
+import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.common.data.attributes.ContentidAttribute;
+import no.kantega.publishing.common.data.attributes.ContentlistAttribute;
+import no.kantega.publishing.common.data.attributes.DateAttribute;
+import no.kantega.publishing.common.data.attributes.EmailAttribute;
+import no.kantega.publishing.common.data.attributes.FileAttribute;
+import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
+import no.kantega.publishing.common.data.attributes.ListAttribute;
+import no.kantega.publishing.common.data.attributes.NumberAttribute;
+import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
+import no.kantega.publishing.common.data.attributes.RoleAttribute;
+import no.kantega.publishing.common.data.attributes.TextAttribute;
+import no.kantega.publishing.common.data.attributes.TopicAttribute;
+import no.kantega.publishing.common.data.attributes.TopicmapAttribute;
+import no.kantega.publishing.common.data.attributes.UrlAttribute;
+import no.kantega.publishing.common.data.attributes.UserAttribute;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.IndexableDocumentCustomizer;
@@ -22,7 +37,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -121,9 +135,8 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
         List<Attribute> attributes = new ArrayList<>(values.size());
         for (Attribute value : values) {
             if(value instanceof RepeaterAttribute){
-                Iterator<List<Attribute>> iterator = ((RepeaterAttribute) value).getIterator();
-                while (iterator.hasNext()){
-                    attributes.addAll(iterator.next());
+                for (List<Attribute> row : (RepeaterAttribute)value){
+                    attributes.addAll(row);
                 }
             } else {
                 attributes.add(value);

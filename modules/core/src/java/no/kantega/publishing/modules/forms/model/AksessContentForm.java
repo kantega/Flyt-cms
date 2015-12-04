@@ -11,7 +11,6 @@ import no.kantega.publishing.common.data.attributes.EmailAttribute;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import no.kantega.publishing.modules.forms.filter.GetFormFieldsFilter;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -57,9 +56,9 @@ public class AksessContentForm extends DefaultForm {
 
     private String getEmailFromRepeater(RepeaterAttribute repeaterAttribute, String email) {
         StringBuilder emailBuilder = new StringBuilder(email);
-        Iterator<List<Attribute>> it =  repeaterAttribute.getIterator();
-        while(it.hasNext()) {
-            for (Attribute a : it.next()) {
+
+        for(List<Attribute> row : repeaterAttribute) {
+            for (Attribute a : row) {
                 if (a instanceof EmailAttribute) {
                     if (emailBuilder.length() > 0) {
                         emailBuilder.append(",");
