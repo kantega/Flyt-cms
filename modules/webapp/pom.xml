@@ -78,12 +78,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.kantega.openaksess</groupId>
-            <artifactId>openaksess-content-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.kantega.flytcms</groupId>
             <artifactId>tiny-mce</artifactId>
             <version>1.1</version>

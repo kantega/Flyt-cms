@@ -330,7 +330,7 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.33</version>
+                    <version>1.34</version>
                 </plugin>
             </plugins>
         </pluginManagement>
