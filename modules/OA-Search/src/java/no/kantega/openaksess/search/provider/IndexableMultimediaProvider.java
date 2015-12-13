@@ -67,9 +67,9 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                 taskExecutor.execute(new IDProducer(dataSource, ids));
                 while (!progressReporter.isFinished()) {
                     try {
-                        log.trace("Polling ids, size: {}", ids.size());
+                        log.debug("Polling ids, size: {}", ids.size());
                         Integer id = ids.poll(10L, TimeUnit.SECONDS);
-                        log.trace("Got multimediaid {}", id);
+                        log.debug("Got multimediaid {}", id);
                         if (id != null) {
                             Multimedia multimedia = multimediaService.getMultimedia(id);
                             if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
@@ -77,6 +77,8 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                                 log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
                                 indexableDocumentQueue.put(indexableDocument);
                             }
+                        } else {
+                            log.info("Multimedia poll returned null");
                         }
                     } catch (Exception e) {
                         log.error("Error transforming multimedia", e);
@@ -116,7 +118,9 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                 while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
                     int id = resultSet.getInt("id");
                     log.trace("Got Id {}, queue size: {}", id, ids.size());
-                    ids.put(id);
+                    if(!ids.offer(id, 5, TimeUnit.SECONDS)){
+                        log.info("Timed out offering id " + id);
+                    }
                     log.trace("Put Id {}, queue size: {}", id, ids.size());
                 }
             } catch (Exception e) {
