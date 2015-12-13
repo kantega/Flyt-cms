@@ -62,12 +62,14 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
             //Progressreporters is set to finish to stop reindexing, this if test is needed to hinder creation of IDProducers after the canceled reindex
             if(progressReporter!=null && !progressReporter.isFinished()){
-                log.info("creating IDProudcer ! - " + this.getClass());
+                log.info("creating IDProducer " + this.getClass());
 
                 taskExecutor.execute(new IDProducer(dataSource, ids));
                 while (!progressReporter.isFinished()) {
                     try {
+                        log.trace("Polling ids, size: {}", ids.size());
                         Integer id = ids.poll(10L, TimeUnit.SECONDS);
+                        log.trace("Got multimediaid {}", id);
                         if (id != null) {
                             Multimedia multimedia = multimediaService.getMultimedia(id);
                             if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
@@ -111,8 +113,11 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()) {
-                    ids.put(resultSet.getInt("id"));
+                while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
+                    int id = resultSet.getInt("id");
+                    log.trace("Got Id {}, queue size: {}", id, ids.size());
+                    ids.put(id);
+                    log.trace("Put Id {}, queue size: {}", id, ids.size());
                 }
             } catch (Exception e) {
                 log.error("Error getting IDs", e);
