@@ -31,7 +31,7 @@ public class DefaultImageEditor implements ImageEditor {
 
     private String defaultImageFormat = "png";
 
-    private int jpgOutputQuality = 85;
+    private int jpgOutputQuality = 95; // quality quantifier is not the same as photoshop uses. this needs to be high!
 
     public Multimedia resizeMultimedia(Multimedia multimedia, int targetWidth, int targetHeight) throws IOException, InvalidImageFormatException {
         return resizeAndCropMultimedia(multimedia, targetWidth, targetHeight, -1, -1, -1, -1);

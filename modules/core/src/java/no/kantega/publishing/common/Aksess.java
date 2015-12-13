@@ -91,8 +91,9 @@ public class Aksess {
 
     private static int defaultMediaWidth;
     private static int defaultMediaHeight;
-    private static int maxMediaWidth = 1024;
-    private static int maxMediaHeight = 768;
+    private static int maxMediaWidth = 2048;
+    private static int maxMediaHeight = 2048;
+    private static boolean preserveImageSize;
 
     private static boolean flashVideoAutoplay;
     private static String flashVideoPlayerUrl;
@@ -152,6 +153,7 @@ public class Aksess {
 
         maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
         maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
+        preserveImageSize = c.getBoolean("multimedia.preserveImageSize", true);
 
         flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
         flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
@@ -161,6 +163,7 @@ public class Aksess {
         isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
 
         historyMaxVersions = c.getInt("history.maxversions", 20);
+
 
         // Sikkerhetsconfig
         loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
@@ -589,5 +592,9 @@ public class Aksess {
 
     public static boolean mediaElementIncludeJquery() {
         return mediaElementIncludeJquery;
+    }
+
+    public static boolean isPreserveImageSize() {
+        return preserveImageSize;
     }
 }
