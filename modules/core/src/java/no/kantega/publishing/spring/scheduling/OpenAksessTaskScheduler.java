@@ -11,10 +11,12 @@ import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.support.ScheduledMethodRunnable;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +41,11 @@ public class OpenAksessTaskScheduler extends ConcurrentTaskScheduler {
 
     @Autowired
     private SystemConfiguration configuration;
+
+    @PostConstruct
+    public void init() {
+        setConcurrentExecutor(Executors.newFixedThreadPool(configuration.getInt("OpenAksessTaskScheduler.numThreads", 4)));
+    }
 
     @Override
     public ScheduledFuture schedule(Runnable task, Trigger trigger) {
