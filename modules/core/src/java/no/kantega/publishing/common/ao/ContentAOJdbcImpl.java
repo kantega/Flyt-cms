@@ -42,8 +42,6 @@ import no.kantega.publishing.common.data.SortOrder;
 import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.data.UserContentChanges;
 import no.kantega.publishing.common.data.WorkList;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ContentType;
@@ -534,11 +532,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         final Map<Integer, Content> contentMap   = new HashMap<>();
         final List<Content> contentList = new ArrayList<>();
 
-        doForEachInContentList(contentQuery, new ContentHandler() {
-            public void handleContent(Content content) {
-                contentList.add(content);
-                contentMap.put(content.getVersionId(), content);
-            }
+        doForEachInContentList(contentQuery, content -> {
+            contentList.add(content);
+            contentMap.put(content.getVersionId(), content);
         });
 
 
@@ -546,14 +542,11 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (listSize > 0 && getAttributes) {
             // Hent attributter
             String attrquery = "select * from contentattributes where ContentVersionId in (" + join(contentMap.keySet(), ',') +") order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), new RowCallbackHandler() {
-                @Override
-                public void processRow(ResultSet rs) throws SQLException {
-                    int cvid = rs.getInt("ContentVersionId");
-                    Content current = contentMap.get(cvid);
-                    if (current != null) {
-                        ContentAOHelper.addAttributeFromRS(current, rs);
-                    }
+            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), rs -> {
+                int cvid = rs.getInt("ContentVersionId");
+                Content current = contentMap.get(cvid);
+                if (current != null) {
+                    ContentAOHelper.addAttributeFromRS(current, rs);
                 }
             });
         }
@@ -1084,15 +1077,13 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     private void insertAttributes(final Connection c, final Content content, final AttributeDataType attributeDataType) throws SQLException, SystemException {
-        content.doForEachAttribute(attributeDataType, new AttributeHandler() {
-            public void handleAttribute(Attribute attr) {
-                PersistAttributeBehaviour attributeSaver = attr.getSaveBehaviour();
-                try {
-                    attributeSaver.persistAttribute(c, content, attr);
-                } catch (SQLException e) {
-                    log.error("Error persisting attribute " + attr, e);
-                    throw new SystemException("Error saving attribute", e);
-                }
+        content.doForEachAttribute(attributeDataType, attr -> {
+            PersistAttributeBehaviour attributeSaver = attr.getSaveBehaviour();
+            try {
+                attributeSaver.persistAttribute(c, content, attr);
+            } catch (SQLException e) {
+                log.error("Error persisting attribute " + attr, e);
+                throw new SystemException("Error saving attribute", e);
             }
         });
     }
