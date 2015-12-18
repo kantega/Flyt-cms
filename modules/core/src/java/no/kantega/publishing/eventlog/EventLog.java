@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface EventLog {
 
-    public List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery);
+    List<EventLogEntry> getQueryResult(EventLogQuery eventLogQuery);
 
-    public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object);
+    void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject, BaseObject object);
 
-    public void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject);
+    void log(SecuritySession securitySession, HttpServletRequest request, String event, String subject);
 
-    public void log(String username, String remoteAddr, String event, String subject, BaseObject object);
+    void log(String username, String remoteAddr, String event, String subject, BaseObject object);
 }
