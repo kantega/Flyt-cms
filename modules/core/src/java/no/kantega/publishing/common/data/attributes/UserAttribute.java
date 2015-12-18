@@ -45,6 +45,8 @@ public class UserAttribute extends Attribute {
             multiple = "true".equals(config.getAttribute("multiple"));
         }
     }
+
+    @Override
     public String getRenderer() {
         return multiple ? "user_multiple" : "user";
     }
@@ -53,6 +55,7 @@ public class UserAttribute extends Attribute {
         this.multiple = multiple;
     }
 
+    @Override
     public String getProperty(String property) {
         if (isBlank(value)) {
             return "";
@@ -84,10 +87,12 @@ public class UserAttribute extends Attribute {
         this.moveable = moveable;
     }
 
+    @Override
     public MapAttributeValueToContentPropertyBehaviour getMapAttributeValueToContentPropertyBehaviour() {
         return new MapUserAttributeValueToContentPropertyBehaviour();
     }
 
+    @Override
     public boolean isSearchable() {
         return true;
     }    
