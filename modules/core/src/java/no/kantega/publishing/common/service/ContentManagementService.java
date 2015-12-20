@@ -771,7 +771,7 @@ public class ContentManagementService {
      */
     public List<Content> getContentList(ContentQuery query, boolean getAttributes, boolean getTopics) throws SystemException {
         int maxElements = query.getMaxRecords();
-        List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), query.getSortOrder(), getAttributes, getTopics);
+        List<Content> list = getContentListFromCache(query, getMaxElementsToGetBeforeAuthorizationCheck(maxElements), getAttributes, getTopics);
         List<Content> approved = new ArrayList<>();
 
         // Add only elements which user is authorized for, and only get maxElements items
@@ -786,18 +786,11 @@ public class ContentManagementService {
         return approved;
     }
 
-    private List<Content> getContentListFromCache(ContentQuery query, int maxElements, SortOrder sort, boolean getAttributes, boolean getTopics) {
+    private List<Content> getContentListFromCache(ContentQuery query, int maxElements, boolean getAttributes, boolean getTopics) {
         if(cachingEnabled) {
-            if(maxElements != -1) {
-                query.setMaxRecords(maxElements);
-            }
-
-            if (sort != null){
-                query.setSortOrder(sort);
-            }
             ContentQuery.QueryWithParameters qp = query.getQueryWithParameters();
 
-            String key = buildContentListKey(qp, maxElements, sort, getAttributes, getTopics);
+            String key = buildContentListKey(qp, maxElements, query.getSortOrder(), getAttributes, getTopics);
 
             Element element = contentListCache.get(key);
 
