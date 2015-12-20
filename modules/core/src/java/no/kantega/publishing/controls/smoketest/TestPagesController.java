@@ -15,6 +15,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.w3c.dom.Document;
@@ -68,7 +69,7 @@ public class TestPagesController extends AbstractController {
             for (DisplayTemplate template : templates) {
                 ContentQuery query = new ContentQuery();
                 query.setDisplayTemplate(template.getId());
-
+                query.setMaxRecords(ServletRequestUtils.getIntParameter(request, "numberPrTemplate", 10));
                 query.setSortOrder(new SortOrder(ContentProperty.PUBLISH_DATE));
                 contents.addAll(cms.getContentList(query, false, false));
             }
