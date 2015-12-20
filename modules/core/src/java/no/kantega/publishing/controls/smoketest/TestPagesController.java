@@ -3,6 +3,7 @@ package no.kantega.publishing.controls.smoketest;
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.taglibs.content.GetAttributeCommand;
 import no.kantega.publishing.api.taglibs.content.util.AttributeTagHelper;
+import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -12,15 +13,21 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.data.enums.ContentType;
 import no.kantega.publishing.common.service.ContentManagementService;
 import org.apache.commons.lang3.StringUtils;
-import org.jdom.Element;
-import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +56,7 @@ public class TestPagesController extends AbstractController {
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 
-        List<Content> contents = new ArrayList<Content>();
+        List<Content> contents = new ArrayList<>();
 
         ContentManagementService cms = new ContentManagementService(request);
 
@@ -63,38 +70,36 @@ public class TestPagesController extends AbstractController {
                 query.setDisplayTemplate(template.getId());
 
                 query.setSortOrder(new SortOrder(ContentProperty.PUBLISH_DATE));
-                contents.addAll(cms.getContentList(query));
+                contents.addAll(cms.getContentList(query, false, false));
             }
-            Element pages = new Element("pages");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder docBuilder= dbFactory.newDocumentBuilder();
+            Document doc = docBuilder.newDocument();
+            Element pages = doc.createElement("pages");
+            doc.appendChild(pages);
 
             for(Content content : contents) {
                 if (content.getType() == ContentType.PAGE) {
-                    Element page = new Element("page");
-                    final GetAttributeCommand cmd = new GetAttributeCommand();
-                    cmd.setAttributeType(AttributeDataType.CONTENT_DATA);
+                    Element page = doc.createElement("page");
+                    page.setAttribute("url", content.getPath());
 
-                    cmd.setName("url");
-                    page.setAttribute("url", AttributeTagHelper.getAttribute(content, cmd).substring(request.getContextPath().length()));
-
-                    cmd.setName("displaytemplate");
-                    page.setAttribute("category", AttributeTagHelper.getAttribute(content, cmd));
+                    page.setAttribute("category", DisplayTemplateCache.getTemplateById(content.getDisplayTemplateId()).getName());
 
                     page.setAttribute("title", content.getTitle());
 
                     page.setAttribute("id", "contentId-" + content.getId());
 
-                    pages.addContent(page);
+                    pages.appendChild(page);
                 }
             }
 
             response.setContentType("text/xml");
-            XMLOutputter outputter = new XMLOutputter();
-            try {
-                outputter.output(pages, response.getOutputStream());
-            }
-            catch (IOException e) {
-                log.error("", e);
-            }
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            DOMSource source = new DOMSource(doc);
+            StreamResult result = new StreamResult(response.getOutputStream());
+
+            transformer.transform(source, result);
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
         }
