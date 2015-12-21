@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 @Component
 public class SolrDocumentIndexer implements DocumentIndexer {
@@ -132,7 +133,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         streamParams.add("literal.contentStatus", document.getContentStatus());
         streamParams.add("literal.indexedContentType", document.getContentType());
         streamParams.add("literal.language", document.getLanguage());
-        streamParams.add("literal.description_" + languageSuffix, document.getDescription());
+        streamParams.add("literal.description_" + languageSuffix, defaultString(document.getDescription()));
         streamParams.add("literal.id", document.getId());
         streamParams.add("literal.parentId", String.valueOf(document.getParentId()));
         streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
