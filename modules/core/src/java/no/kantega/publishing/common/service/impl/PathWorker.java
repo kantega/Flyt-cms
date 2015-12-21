@@ -26,6 +26,7 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
 import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
@@ -95,8 +96,9 @@ public class PathWorker {
 
         int parentId = mm.getParentId();
 
+        JdbcTemplate jdbcTemplate = dbConnectionFactory.getJdbcTemplate();
         while (parentId > 0) {
-            SqlRowSet rs = dbConnectionFactory.getJdbcTemplate().queryForRowSet("select Id, ParentId, Name from multimedia where id = ?", parentId);
+            SqlRowSet rs = jdbcTemplate.queryForRowSet("select Id, ParentId, Name from multimedia where id = ?", parentId);
             if(rs.next()) {
                 int id = rs.getInt("Id");
                 parentId = rs.getInt("ParentId");
@@ -108,24 +110,18 @@ public class PathWorker {
         return pathEntries;
     }
 
-    private static final RowMapper<PathEntry> rowMapper = new RowMapper<PathEntry>() {
-        @Override
-        public PathEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
-            String title = rs.getString("Title");
-            int id = rs.getInt("AssociationId");
-            return new PathEntry(id, title);
-        }
+    private static final RowMapper<PathEntry> rowMapper = (rs, rowNum) -> {
+        String title = rs.getString("Title");
+        int id = rs.getInt("AssociationId");
+        return new PathEntry(id, title);
     };
 
-    private static final RowMapper<PathEntry> rowMapperWithContentTemplateId = new RowMapper<PathEntry>() {
-        @Override
-        public PathEntry mapRow(ResultSet rs, int rowNum) throws SQLException {
-            String title = rs.getString("Title");
-            int id = rs.getInt("AssociationId");
-            int contentTemplateId = rs.getInt("ContentTemplateId");
-            PathEntry entry = new PathEntry(id, title);
-            entry.setContentTemplateId(contentTemplateId);
-            return entry;
-        }
+    private static final RowMapper<PathEntry> rowMapperWithContentTemplateId = (rs, rowNum) -> {
+        String title = rs.getString("Title");
+        int id = rs.getInt("AssociationId");
+        int contentTemplateId = rs.getInt("ContentTemplateId");
+        PathEntry entry = new PathEntry(id, title);
+        entry.setContentTemplateId(contentTemplateId);
+        return entry;
     };
 }

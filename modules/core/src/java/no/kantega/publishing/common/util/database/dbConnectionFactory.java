@@ -401,11 +401,7 @@ public class dbConnectionFactory {
 
     public static void setConfiguration(Configuration configuration) {
         dbConnectionFactory.configuration = configuration;
-        configuration.addConfigurationListener(new ConfigurationListener() {
-            public void configurationRefreshed(Configuration configuration) {
-                loadConfiguration();
-            }
-        });
+        configuration.addConfigurationListener(c -> loadConfiguration());
     }
 
     public static void setServletContext(ServletContext servletContext) {
