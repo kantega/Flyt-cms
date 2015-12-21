@@ -5,5 +5,5 @@ import no.kantega.publishing.common.data.ExifMetadata;
 import java.util.List;
 
 public interface ExifMetadataExtractor {
-    public List<ExifMetadata> getMetadataForImage(byte[] imageData);
+    List<ExifMetadata> getMetadataForImage(byte[] imageData);
 }

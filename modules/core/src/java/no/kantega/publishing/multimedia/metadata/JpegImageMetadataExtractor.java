@@ -11,6 +11,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     private static final Logger log = LoggerFactory.getLogger(JpegImageMetadataExtractor.class);
     private ExifMetadataExtractor exifMetadataExtractor;
@@ -25,12 +27,17 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
         List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia.getData());
         for (ExifMetadata metadata : metadatas) {
             String directory = metadata.getDirectory();
-            if (directory.equals(ExifMetadata.EXIF_DIRECTORY) || directory.equals(ExifMetadata.EXIF_SUBDIRECTORY)) {
-                addExifMetadata(multimedia, metadata);
-            } else if (directory.equals(ExifMetadata.GPS_DIRECTORY)) {
-                addExifGPSMetadata(multimedia, metadata);
-            } else if (directory.equals(ExifMetadata.IPTC_DIRECTORY)) {
-                addIptcMetadata(multimedia, metadata);
+            switch (directory) {
+                case ExifMetadata.EXIF_DIRECTORY:
+                case ExifMetadata.EXIF_SUBDIRECTORY:
+                    addExifMetadata(multimedia, metadata);
+                    break;
+                case ExifMetadata.GPS_DIRECTORY:
+                    addExifGPSMetadata(multimedia, metadata);
+                    break;
+                case ExifMetadata.IPTC_DIRECTORY:
+                    addIptcMetadata(multimedia, metadata);
+                    break;
             }
         }
         multimedia.setExifMetadata(metadatas);
@@ -38,32 +45,38 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     private void addIptcMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && (multimedia.getAuthor() == null || multimedia.getAuthor().length() == 0 )) {
+        if (metadata.getKey().equals(ExifMetadata.IPTC_COPYRIGHT) && (isBlank(multimedia.getAuthor()))) {
             multimedia.setAuthor(metadata.getValue());
         }
     }
 
 
     private void addExifGPSMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.GPS_LATITUDE_REF)) {
-            multimedia.setGpsLatitudeRef(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.GPS_LATITUDE)) {
-            multimedia.setGpsLatitude(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.GPS_LONGITUDE_REF)) {
-            multimedia.setGpsLongitudeRef(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.GPS_LONGITUDE)) {
-            multimedia.setGpsLongitude(metadata.getValue());
+        switch (metadata.getKey()) {
+            case ExifMetadata.GPS_LATITUDE_REF:
+                multimedia.setGpsLatitudeRef(metadata.getValue());
+                break;
+            case ExifMetadata.GPS_LATITUDE:
+                multimedia.setGpsLatitude(metadata.getValue());
+                break;
+            case ExifMetadata.GPS_LONGITUDE_REF:
+                multimedia.setGpsLongitudeRef(metadata.getValue());
+                break;
+            case ExifMetadata.GPS_LONGITUDE:
+                multimedia.setGpsLongitude(metadata.getValue());
+                break;
         }
     }
 
     private void addExifMetadata(Multimedia multimedia, ExifMetadata metadata) {
-        if (metadata.getKey().equals(ExifMetadata.EXIF_COPYRIGHT) && (multimedia.getAuthor() == null || multimedia.getAuthor().length() == 0)) {
+        String key = metadata.getKey();
+        if (key.equals(ExifMetadata.EXIF_COPYRIGHT) && (isBlank(multimedia.getAuthor()))) {
             multimedia.setAuthor(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.EXIF_MAKE)) {
+        } else if (key.equals(ExifMetadata.EXIF_MAKE)) {
             multimedia.setCameraMake(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.EXIF_MODEL)) {
+        } else if (key.equals(ExifMetadata.EXIF_MODEL)) {
             multimedia.setCameraModel(metadata.getValue());
-        } else if (metadata.getKey().equals(ExifMetadata.EXIF_ORIGINAL_DATE)) {
+        } else if (key.equals(ExifMetadata.EXIF_ORIGINAL_DATE)) {
             if (!metadata.getValue().startsWith("0000")) {
                 DateFormat df = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
                 try {
