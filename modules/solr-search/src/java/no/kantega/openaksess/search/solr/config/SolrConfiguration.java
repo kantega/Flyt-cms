@@ -61,7 +61,7 @@ public class SolrConfiguration {
         } else {
             log.info("Using EmbeddedSolrServer");
             File solrConfigFile = initSolrConfigIfAbsent(solrHome, disableUpdateSolrHome);
-            CoreContainer container = CoreContainer.createAndLoad(solrHome.getAbsolutePath(), solrConfigFile);
+            CoreContainer container = CoreContainer.createAndLoad(solrHome.toPath(), solrConfigFile.toPath());
 
             return new EmbeddedSolrServer(container, "oacore");
         }
