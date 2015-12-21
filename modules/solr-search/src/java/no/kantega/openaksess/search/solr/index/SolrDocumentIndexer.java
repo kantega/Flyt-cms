@@ -130,7 +130,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         // map stream_name such that it is ignored, otherwise names like .pdf6291048212804771660indexer ends up in index.
         streamParams.add("stream_name", "stream_name_ignored");
 
-        streamParams.add("literal.contentStatus", document.getContentStatus());
+        streamParams.add("literal.contentStatus", defaultString(document.getContentStatus()));
         streamParams.add("literal.indexedContentType", document.getContentType());
         streamParams.add("literal.language", document.getLanguage());
         streamParams.add("literal.description_" + languageSuffix, defaultString(document.getDescription()));
@@ -140,7 +140,7 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         streamParams.add("literal.uid", document.getUId());
         streamParams.add("literal.siteId", String.valueOf(document.getSiteId()));
         streamParams.add("literal.title_" + languageSuffix, document.getTitle());
-        streamParams.add("literal.visibilityStatus", document.getVisibility());
+        streamParams.add("literal.visibilityStatus", defaultString(document.getVisibility()));
 
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
             streamParams.add(new ModifiableSolrParams());
