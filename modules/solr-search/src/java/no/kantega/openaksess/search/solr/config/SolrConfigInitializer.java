@@ -35,9 +35,6 @@ public class SolrConfigInitializer {
         if(!solrHome.exists()){
             createSolrHome(solrHome, confdir, langdir, configPairs);
         } else if(!disableUpdateSolrHome){
-            if(!coredir.exists()){
-                coredir.mkdirs();
-            }
             for (ConfigPair configPair : configPairs) {
                 copyToConfigDir(configPair);
             }

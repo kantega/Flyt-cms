@@ -76,6 +76,7 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                                 IndexableDocument indexableDocument = transformer.transform(multimedia);
                                 log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
                                 indexableDocumentQueue.put(indexableDocument);
+                                log.debug("Put multimedia {}, indexableDocumentQueue size {} ",multimedia.getId(), indexableDocumentQueue.size());
                             }
                         } else {
                             log.info("Multimedia poll returned null");
