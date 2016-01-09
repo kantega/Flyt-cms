@@ -11,7 +11,6 @@ import no.kantega.publishing.common.data.enums.ObjectType;
 import no.kantega.publishing.common.exception.ObjectInUseException;
 import no.kantega.publishing.common.util.InputStreamHandler;
 import org.springframework.beans.factory.annotation.Required;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
@@ -22,7 +21,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Blob;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -115,25 +113,23 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
 
 
     public void streamMultimediaData(final int id, final InputStreamHandler ish) {
-        getJdbcTemplate().execute(new ConnectionCallback() {
-            public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                try(PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?")) {
-                    p.setInt(1, id);
-                    try(ResultSet rs = p.executeQuery()) {
-                        if (!rs.next()) {
-                            return null;
-                        }
-                        Blob blob = rs.getBlob("Data");
-                        try {
-                            ish.handleInputStream(blob.getBinaryStream());
-                        } catch (IOException e) {
-                            // User has aborted download?
-                            logger.error("Error streaming multimedia", e);
-                        }
+        getJdbcTemplate().execute((ConnectionCallback) connection -> {
+            try(PreparedStatement p = connection.prepareStatement("select Data from multimedia where Id = ?")) {
+                p.setInt(1, id);
+                try(ResultSet rs = p.executeQuery()) {
+                    if (!rs.next()) {
+                        return null;
+                    }
+                    Blob blob = rs.getBlob("Data");
+                    try {
+                        ish.handleInputStream(blob.getBinaryStream());
+                    } catch (IOException e) {
+                        // User has aborted download?
+                        logger.error("Error streaming multimedia", e);
                     }
                 }
-                return null;
             }
+            return null;
         });
     }
 
@@ -201,63 +197,61 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
     private PreparedStatementCreator getPreparedStatementCreator(final Multimedia multimedia) {
         final boolean hasData = multimedia.getData() != null;
 
-        return new PreparedStatementCreator() {
-            public PreparedStatement createPreparedStatement(Connection c) throws SQLException {
-                PreparedStatement st;
-                byte[] data = multimedia.getData();
-                if (multimedia.isNew()) {
-                    if (!hasData) {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, OwnerPerson, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ID"});
-                    } else {
-                        st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, OwnerPerson, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ID"});
-                    }
+        return c -> {
+            PreparedStatement st;
+            byte[] data = multimedia.getData();
+            if (multimedia.isNew()) {
+                if (!hasData) {
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, OwnerPerson, ProfileImageUserId) values(?,?,?,?,?,?,?,?,NULL,0,NULL,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ID"});
                 } else {
-                    if (!hasData) {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ?, OwnerPerson = ? where Id = ?");
-                    } else {
-                        st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ?, OwnerPerson = ? where Id = ?");
-                    }
+                    st = c.prepareStatement("insert into multimedia (ParentId, SecurityId, Type, Name, Author, Description, Width, Height, Filename, MediaSize, Data, Lastmodified, LastModifiedBy, AltName, UsageInfo, OriginalDate, CameraMake, CameraModel, GPSLatitudeRef, GPSLatitude, GPSLongitudeRef, GPSLongitude, HasImageMap, ContentId, OwnerPerson, ProfileImageUserId) values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,0,?,?,?)", new String[] {"ID"});
                 }
-
-                int p = 1;
-                if (multimedia.isNew()) {
-                    st.setInt(p++, multimedia.getParentId());
-                    st.setInt(p++, multimedia.getSecurityId());
-                    st.setInt(p++, multimedia.getType().getTypeAsInt());
-                }
-                st.setString(p++, multimedia.getName());
-                st.setString(p++, multimedia.getAuthor());
-                st.setString(p++, multimedia.getDescription());
-                st.setInt(p++, multimedia.getWidth());
-                st.setInt(p++, multimedia.getHeight());
-
-                if (data != null) {
-                    st.setString(p++, multimedia.getFilename());
-                    st.setInt(p++, multimedia.getSize());
-                    st.setBinaryStream(p++, new ByteArrayInputStream(data), data.length);
-                }
-                st.setTimestamp(p++, new java.sql.Timestamp(new java.util.Date().getTime()));
-                st.setString(p++, multimedia.getModifiedBy());
-                st.setString(p++, multimedia.getAltname());
-                st.setString(p++, multimedia.getUsage());
-                st.setTimestamp(p++, multimedia.getOriginalDate() != null ? new java.sql.Timestamp(multimedia.getOriginalDate().getTime()) : null);
-                st.setString(p++, multimedia.getCameraMake());
-                st.setString(p++, multimedia.getCameraModel());
-                st.setString(p++, multimedia.getGpsLatitudeRef());
-                st.setString(p++, multimedia.getGpsLatitude());
-                st.setString(p++, multimedia.getGpsLongitudeRef());
-                st.setString(p++, multimedia.getGpsLongitude());
-                st.setInt(p++, multimedia.getContentId());
-                st.setString(p++, multimedia.getOwnerPerson());
-
-                if (!multimedia.isNew()) {
-                    st.setInt(p, multimedia.getId());
+            } else {
+                if (!hasData) {
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ?, OwnerPerson = ? where Id = ?");
                 } else {
-                    st.setString(p, multimedia.getProfileImageUserId());
+                    st = c.prepareStatement("update multimedia set Name = ?, Author = ?, Description = ?, Width = ?, Height = ?, Filename = ?, MediaSize = ?, Data = ?, LastModified = ?, LastModifiedBy = ?, AltName = ?, UsageInfo = ?, OriginalDate = ?, CameraMake = ?, CameraModel = ?, GPSLatitudeRef = ?, GPSLatitude = ?, GPSLongitudeRef = ?, GPSLongitude = ?, ContentId = ?, OwnerPerson = ? where Id = ?");
                 }
-
-                return st;
             }
+
+            int p = 1;
+            if (multimedia.isNew()) {
+                st.setInt(p++, multimedia.getParentId());
+                st.setInt(p++, multimedia.getSecurityId());
+                st.setInt(p++, multimedia.getType().getTypeAsInt());
+            }
+            st.setString(p++, multimedia.getName());
+            st.setString(p++, multimedia.getAuthor());
+            st.setString(p++, multimedia.getDescription());
+            st.setInt(p++, multimedia.getWidth());
+            st.setInt(p++, multimedia.getHeight());
+
+            if (data != null) {
+                st.setString(p++, multimedia.getFilename());
+                st.setInt(p++, multimedia.getSize());
+                st.setBinaryStream(p++, new ByteArrayInputStream(data), data.length);
+            }
+            st.setTimestamp(p++, new java.sql.Timestamp(new java.util.Date().getTime()));
+            st.setString(p++, multimedia.getModifiedBy());
+            st.setString(p++, multimedia.getAltname());
+            st.setString(p++, multimedia.getUsage());
+            st.setTimestamp(p++, multimedia.getOriginalDate() != null ? new java.sql.Timestamp(multimedia.getOriginalDate().getTime()) : null);
+            st.setString(p++, multimedia.getCameraMake());
+            st.setString(p++, multimedia.getCameraModel());
+            st.setString(p++, multimedia.getGpsLatitudeRef());
+            st.setString(p++, multimedia.getGpsLatitude());
+            st.setString(p++, multimedia.getGpsLongitudeRef());
+            st.setString(p++, multimedia.getGpsLongitude());
+            st.setInt(p++, multimedia.getContentId());
+            st.setString(p++, multimedia.getOwnerPerson());
+
+            if (!multimedia.isNew()) {
+                st.setInt(p, multimedia.getId());
+            } else {
+                st.setString(p, multimedia.getProfileImageUserId());
+            }
+
+            return st;
         };
     }
 
