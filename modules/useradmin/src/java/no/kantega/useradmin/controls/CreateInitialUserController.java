@@ -41,7 +41,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class CreateInitialUserController extends AbstractController {
     public final static String FORM_VIEW = "/WEB-INF/jsp/useradmin/setup/initialuser.jsp";
@@ -51,8 +55,8 @@ public class CreateInitialUserController extends AbstractController {
     public final static String NOT_AUTH_VIEW = "/WEB-INF/jsp/useradmin/setup/initialusernotauthorized.jsp";
 
     private String defaultDomain;
-    private List profileConfiguration;
-    private List roleConfiguration;
+    private List<ProfileManagementConfiguration> profileConfiguration;
+    private List<RoleManagementConfiguration> roleConfiguration;
     private File tokenFile;
 
     private SecureRandom random = new SecureRandom();
@@ -232,14 +236,13 @@ public class CreateInitialUserController extends AbstractController {
             return null;
         }
 
-        for (int i = 0; i < profileConfiguration.size(); i++) {
-            ProfileManagementConfiguration pmc = (ProfileManagementConfiguration) profileConfiguration.get(i);
+        for (ProfileManagementConfiguration pmc : profileConfiguration) {
             if (pmc.getDomain().equalsIgnoreCase(domain)) {
                 return pmc;
             }
         }
 
-        return (ProfileManagementConfiguration)profileConfiguration.get(0);
+        return profileConfiguration.get(0);
     }
 
     private RoleManagementConfiguration getRoleConfiguration(String domain) {
@@ -247,14 +250,13 @@ public class CreateInitialUserController extends AbstractController {
             return null;
         }
 
-        for (int i = 0; i < roleConfiguration.size(); i++) {
-            RoleManagementConfiguration rmc = (RoleManagementConfiguration) roleConfiguration.get(i);
+        for (RoleManagementConfiguration rmc : roleConfiguration) {
             if (rmc.getDomain().equalsIgnoreCase(domain)) {
                 return rmc;
             }
         }
 
-        return (RoleManagementConfiguration)roleConfiguration.get(0);
+        return roleConfiguration.get(0);
     }
 
     private boolean isLocalhost(HttpServletRequest request) {
@@ -262,7 +264,7 @@ public class CreateInitialUserController extends AbstractController {
 
     }
 
-    public void setProfileConfiguration(List profileConfigurations) {
+    public void setProfileConfiguration(List<ProfileManagementConfiguration> profileConfigurations) {
         this.profileConfiguration = profileConfigurations;
     }
 
