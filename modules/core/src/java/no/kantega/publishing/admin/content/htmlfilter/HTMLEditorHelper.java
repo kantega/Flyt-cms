@@ -150,6 +150,10 @@ public class HTMLEditorHelper {
         value = StringUtils.replace(value, "</BR>", "");
         value = StringUtils.replace(value, "</IMG>", "");
 
+        // Tinymce decodes entities, so if there are code fragments, like &lt;/title&gt;, these was decoded and removed.
+        value = StringUtils.replace(value, "&lt;", "&amp;lt;");
+        value = StringUtils.replace(value, "&gt;", "&amp;gt;");
+
         return value;
     }
 }

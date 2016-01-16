@@ -25,19 +25,20 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class PathWorker {
+
+    private static final Logger log = LoggerFactory.getLogger(PathWorker.class);
 
     private static ContentIdHelper contentIdHelper;
 
@@ -97,18 +98,24 @@ public class PathWorker {
         int parentId = mm.getParentId();
 
         JdbcTemplate jdbcTemplate = dbConnectionFactory.getJdbcTemplate();
-        while (parentId > 0) {
-            SqlRowSet rs = jdbcTemplate.queryForRowSet("select Id, ParentId, Name from multimedia where id = ?", parentId);
-            if(rs.next()) {
-                int id = rs.getInt("Id");
-                parentId = rs.getInt("ParentId");
-                PathEntry entry = new PathEntry(id, rs.getString("Name"));
+        try {
+            while (parentId > 0) {
+                PathEntryWithParent entry = jdbcTemplate.queryForObject("select Id, ParentId, Name from multimedia where id = ?", pathEntryWithParentRowMapper, parentId);
+                parentId = entry.parentId;
                 pathEntries.add(0, entry);
             }
+        } catch (DataAccessException e) {
+            log.error("", e);
         }
 
         return pathEntries;
     }
+
+    private static final RowMapper<PathEntryWithParent> pathEntryWithParentRowMapper = (rs, rowNum) -> {
+        String title = rs.getString("Name");
+        int id = rs.getInt("Id");
+        return new PathEntryWithParent(id, title, rs.getInt("ParentId"));
+    };
 
     private static final RowMapper<PathEntry> rowMapper = (rs, rowNum) -> {
         String title = rs.getString("Title");
@@ -124,4 +131,12 @@ public class PathWorker {
         entry.setContentTemplateId(contentTemplateId);
         return entry;
     };
+
+    private static class PathEntryWithParent extends PathEntry {
+        int parentId;
+        public PathEntryWithParent(int id, String title, int parentId) {
+            super(id, title);
+            this.parentId = parentId;
+        }
+    }
 }

@@ -32,7 +32,7 @@ public class BrokenLinkNotifierJob {
 
     private String sortBy = "";
 
-    @Scheduled(cron = "0 10 4 ? * MON")
+    @Scheduled(cron = "${BrokenLinkNotifierJob.cron:0 10 4 ? * MON}")
 	public void notifyBrokenLinks() {
         List<LinkOccurrence> brokenlinks = linkDao.getAllBrokenLinks(sortBy);
         for(BrokenLinkEventListener listener : listeners){

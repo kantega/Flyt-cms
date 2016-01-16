@@ -34,7 +34,7 @@
     // Init
     Logger log = LoggerFactory.getLogger("no.kantega.openaksess.jsp.htmltext");
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
-    Content   content   = (Content)request.getAttribute("content");
+    Content content = (Content)request.getAttribute("content");
     request.setAttribute("value", HTMLEditorHelper.preEditFilter(attribute.getValue(), URLHelper.getRootURL(request)));
 
     ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(application);
@@ -154,6 +154,7 @@
             autosave_retention: "30m", //stored local incase of crash
             browser_spellcheck: true,
             entity_encoding : "raw",
+            element_format : 'html',
             templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",
             content_css : "${pageContext.request.contextPath}${cssPath}",
 

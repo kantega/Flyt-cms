@@ -72,8 +72,8 @@
                 if (window.opener) {
                     window.close();
                 } else {
-                    var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
-                    if(activeTinyPopup){
+                    if(p.tinymce.EditorManager.activeEditor){
+                        var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
                         activeTinyPopup.close();
                     } else {
                         window.setTimeout(p.openaksess.common.modalWindow.close, 300);
@@ -82,7 +82,9 @@
             }
 
             function insertHtml(editor, html) {
-                editor.execCommand("mceInsertRawHTML", false, html);
+                if (editor) {
+                    editor.execCommand("mceInsertRawHTML", false, html);
+                }
             }
         </script>
     </head>
