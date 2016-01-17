@@ -28,9 +28,7 @@
         }
         properties.contextPath = '${pageContext.request.contextPath}';
     </script>
-    <%--<script type="text/javascript" src="<kantega:expireurl url="/aksess/js/aksess-i18n.jjs"/>"></script>--%>
     <script type="text/javascript" src="<kantega:expireurl url="/admin/js/editcontext.js"/>"></script>
-    <%--<script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script>--%>
 </kantega:section>
 
 <kantega:section id="body">
@@ -38,7 +36,10 @@
         function buttonOkPressed() {
             var attribs = getUrlAttributes();
             if (attribs != null) {
+                openaksess.common.debug("insert-link: buttonOkPressed");
                 openaksess.editcontext.insertLink(attribs);
+                openaksess.common.debug("insert-link: starting close");
+
                 var tinymce = getParent().tinymce;
                 var ed = tinymce.editors[0];
                 ed.windowManager.windows[0].close();
