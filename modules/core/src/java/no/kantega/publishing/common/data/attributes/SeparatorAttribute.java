@@ -18,28 +18,13 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.admin.content.behaviours.attributes.SkipPersistAttributeBehaviour;
 
-import java.util.List;
-
 /*
-* A RepeaterAttribute is a composite Attribute, used to make repeatable rows with attributes
+* Separators are used to section template files for easier editing for publisists
 */
 public class SeparatorAttribute extends Attribute {
 
-
-
     public SeparatorAttribute() {
         super();
-    }
-
-
-    private void setParent(List<Attribute> attributes) {
-        for (Attribute attribute : attributes) {
-            attribute.setParent(this);
-        }
-    }
-
-    public String getRenderer() {
-        return "separator";
     }
 
     @Override
