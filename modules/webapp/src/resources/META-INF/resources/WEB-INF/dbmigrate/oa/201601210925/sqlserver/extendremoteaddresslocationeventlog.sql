@@ -1,0 +1,1 @@
+ALTER TABLE eventlog ALTER COLUMN RemoteAddress VARCHAR(4096);
