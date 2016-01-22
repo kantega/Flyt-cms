@@ -63,9 +63,6 @@ public class HTMLEditorHelper {
         value = StringUtils.replace(value,"<U>", "<span style=\"text-decoration: underline;\">");
         value = StringUtils.replace(value,"</U>", "</span>");
 
-        // Replace illegal chars in id, name and href
-        pipe.addFilter(new IdAndNameFilter());
-
         // Replace the align attribute from p elements with inline style
         pipe.addFilter(new ReplaceAlignAttributeFilter());
 
