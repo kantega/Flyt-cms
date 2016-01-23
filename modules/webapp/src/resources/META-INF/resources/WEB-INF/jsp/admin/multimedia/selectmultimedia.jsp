@@ -47,6 +47,9 @@
                 } else {
                     p = window.parent;
                 }
+                if(!p.tinyMCE){
+                    p = p.parent;
+                }
                 if (p && <%=(!mm.isNew())%>) {
                     var metadata = {};
                     metadata.id = <%=mm.getId()%>;
@@ -59,13 +62,16 @@
                     if (p.openaksess.editcontext.doInsertTag) {
                         // Insert IMG or other tag
                         var str = document.mediaform.tag.value;
-                        // IE 7 & 8 looses selection. Must be restored manually.
                         editor.selection.moveToBookmark(editor.windowManager.bookmark);
-//                        tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
                         insertHtml(editor, str);
                     } else {
                         insertHtml(editor, "");
-                        p.openaksess.editcontext.insertMultimedia(metadata);
+
+                        if(window.opener.insertMultimedia){
+                            window.opener.insertMultimedia(metadata);
+                        } else {
+                            p.openaksess.editcontext.insertMultimedia(metadata);
+                        }
                     }
                 }
 

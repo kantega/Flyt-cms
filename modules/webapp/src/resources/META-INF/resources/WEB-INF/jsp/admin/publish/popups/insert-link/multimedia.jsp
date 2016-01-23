@@ -34,9 +34,19 @@
         }
 
         function selectMultimedia() {
+
             openaksess.editcontext.doInsertTag = false;
             openaksess.editcontext.doInsertUrl = true;
+            openaksess.editcontext.lol = 'olololol';
+            openaksess.editcontext.insertMultimediaLink = function (metadata) {
+                var frm = document.linkform;
+                frm.url.value = metadata.url;
+                frm.urltext.value = metadata.name;
+                frm.mimeType.value = metadata.mimeType.replace(/(\.|\/)/g, '-');
+                frm.fileExtension.value = metadata.fileExtension;
+            };
             var mmwin = window.open("${pageContext.request.contextPath}/admin/multimedia/Navigate.action", "openAksessPopup", "toolbar=no,width=800,height=500,resizable=yes,scrollbars=yes");
+
             mmwin.focus();
         }
 
@@ -45,7 +55,9 @@
          * @param url
          * @param text
          */
-        openaksess.editcontext.insertMultimedia = function (metadata) {
+        openaksess.editcontext.insertMultimedia = insertMultimedia;
+
+        function insertMultimedia(metadata) {
             var frm = document.linkform;
             frm.url.value = metadata.url;
             frm.urltext.value = metadata.name;

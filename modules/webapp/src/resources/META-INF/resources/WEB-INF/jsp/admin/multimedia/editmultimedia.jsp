@@ -82,9 +82,13 @@
                     p = window.parent;
                 }
 
-                // Get max width of editor field, image should be resized to fit
-                var editor = p.tinymce.EditorManager.activeEditor;
-                if (editor) {
+                if(!p.tinyMCE){
+                    p = p.parent;
+                }
+
+                if (p.tinyMCE) {
+                    // Get max width of editor field, image should be resized to fit
+                    var editor = p.tinyMCE.editors[0];
                     var editorwidth = editor.dom.getSize(editor.dom.getRoot()).w;
 
                     // Subtract 10 pixels to avoid scrolling
