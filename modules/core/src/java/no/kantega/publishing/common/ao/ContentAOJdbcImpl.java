@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.join;
 
 /**
@@ -571,12 +572,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 Collections.sort(contentList, comparator);
             } else {
                 // Kan sorteres etter inntil to kriterier
-                if (sort2 != null) {
+                if (isNotBlank(sort2)) {
                     Comparator<Content> comparator = new ContentComparator(this, sort2, sort.sortDescending());
                     Collections.sort(contentList, comparator);
                 }
 
-                if (!contentQuery.useSqlSort() && sort1 != null) {
+                if (!contentQuery.useSqlSort() && isNotBlank(sort1)) {
                     Comparator<Content> comparator = new ContentComparator(this, sort1, sort.sortDescending());
                     Collections.sort(contentList, comparator);
                 }
