@@ -67,7 +67,7 @@
                     } else {
                         insertHtml(editor, "");
 
-                        if(window.opener.insertMultimedia){
+                        if(window.opener && window.opener.insertMultimedia){
                             window.opener.insertMultimedia(metadata);
                         } else {
                             p.openaksess.editcontext.insertMultimedia(metadata);
@@ -80,7 +80,11 @@
                 } else {
                     if(p.tinymce.EditorManager.activeEditor){
                         var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
-                        activeTinyPopup.close();
+                        if (activeTinyPopup){
+                            activeTinyPopup.close();
+                        } else{
+                            window.setTimeout(p.openaksess.common.modalWindow.close, 300);
+                        }
                     } else {
                         window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                     }
