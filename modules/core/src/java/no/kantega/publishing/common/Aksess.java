@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -336,7 +337,7 @@ public class Aksess {
     }
 
     public static String getBaseUrl() {
-        return baseUrl;
+        return defaultString(baseUrl);
     }
 
     public static String getContextPath() {

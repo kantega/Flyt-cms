@@ -17,6 +17,7 @@
 package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
@@ -25,13 +26,11 @@ import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.api.multimedia.MultimediaDao;
 import no.kantega.publishing.api.runtime.ServerType;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.util.Counter;
-import no.kantega.publishing.spring.RootContext;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
@@ -58,16 +57,18 @@ import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.regex.Pattern;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public class LinkCheckerJob implements InitializingBean {
     private static final Logger log = LoggerFactory.getLogger(LinkCheckerJob.class);
     public static final String CONTENT = Aksess.VAR_WEB + Aksess.CONTENT_URL_PREFIX + "/";
     public static final String CONTENT_AP = Aksess.VAR_WEB + "/content.ap?thisId=";
+    public static final String CONTENT_AP_CONTENT = Aksess.VAR_WEB + "/content.ap?contentId=";
     private static final String MULTIMEDIA_AP = Aksess.VAR_WEB +"/multimedia.ap?id=";
-    private static final String MULTIMEDIA = Aksess.VAR_WEB + "/" + Aksess.MULTIMEDIA_URL_PREFIX;
+    private static final String MULTIMEDIA = Aksess.VAR_WEB + Aksess.MULTIMEDIA_URL_PREFIX;
     private static final String ATTACHMENT_AP = Aksess.VAR_WEB +"/" + Aksess.ATTACHMENT_REQUEST_HANDLER +"?id=";
-    private static final String ATTACHMENT = Aksess.VAR_WEB +"/" + Aksess.ATTACHMENT_URL_PREFIX;
+    private static final String ATTACHMENT = Aksess.VAR_WEB + Aksess.ATTACHMENT_URL_PREFIX;
     private final int CONNECTION_TIMEOUT = 10000;
 
     private String webroot = "http://localhost";
@@ -91,6 +92,9 @@ public class LinkCheckerJob implements InitializingBean {
     @Autowired
     private SystemConfiguration configuration;
 
+    @Autowired
+    private AttachmentAO attachmentAO;
+
     private HttpClientBuilder httpClientBuilder;
 
     public void runLinkChecker() {
@@ -112,19 +116,10 @@ public class LinkCheckerJob implements InitializingBean {
 
         long start = System.currentTimeMillis();
         try (CloseableHttpClient client = getHttpClient()){
-            linkDao.doForEachLink(term, new LinkHandler() {
+            linkDao.doForEachLink(term, (id, link, occurrence) -> {
+                doCheck(link, occurrence, client);
 
-                public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                    if (link.contains(Aksess.VAR_WEB)) {
-                        // in case something has been saved with http://<@WEB@>
-                        String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
-                        checkInternalLink(substring, occurrence, client);
-                    } else if (link.startsWith("http")) {
-                        checkRemoteUrl(link, occurrence, client);
-                    }
-
-                    linkCounter.increment();
-                }
+                linkCounter.increment();
             });
         } catch (IOException e) {
             log.error("Error with HttpClient", e);
@@ -132,6 +127,17 @@ public class LinkCheckerJob implements InitializingBean {
         log.info("Checked {} links in {} ms.", linkCounter.getI(), (System.currentTimeMillis()-start));
 
     }
+
+    private void doCheck(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
+        if (link.contains(Aksess.VAR_WEB)) {
+            // in case something has been saved with http://<@WEB@>
+            String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
+            checkInternalLink(substring, occurrence, client);
+        } else if (link.startsWith("http")) {
+            checkRemoteUrl(link, occurrence, client);
+        }
+    }
+
     public void executeForContent(int contentId){
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
@@ -145,18 +151,7 @@ public class LinkCheckerJob implements InitializingBean {
         }
         ContentLinkQueryGenerator contentLinkQueryGenerator = new ContentLinkQueryGenerator(contentId);
         try (CloseableHttpClient client = getHttpClient()){
-            linkDao.doForEachLink(contentLinkQueryGenerator, new LinkHandler() {
-
-                public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                    if(link.contains(Aksess.VAR_WEB)) {
-                        // in case something has been saved with http://<@WEB@>
-                        String substring = link.substring(link.indexOf(Aksess.VAR_WEB));
-                        checkInternalLink(substring, occurrence, client);
-                    } else if(link.startsWith("http")) {
-                        checkRemoteUrl(link, occurrence, client);
-                    }
-                }
-            });
+            linkDao.doForEachLink(contentLinkQueryGenerator, (id, link, occurrence) -> doCheck(link, occurrence, client));
         } catch (IOException e) {
             log.error("Error with HttpClient", e);
         }
@@ -167,7 +162,7 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void checkInternalLink(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
-        if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT)) {
+        if (link.startsWith(CONTENT_AP) || link.startsWith(CONTENT_AP_CONTENT)|| link.startsWith(CONTENT)) {
             log.debug("Checking content path {}", link);
             checkContent(link, occurrence, client);
 
@@ -193,6 +188,14 @@ public class LinkCheckerJob implements InitializingBean {
         String idPart;
         if (link.startsWith(CONTENT_AP)) {
             idPart = link.substring(CONTENT_AP.length());
+            if (idPart.contains("&")) {
+                idPart = idPart.substring(0, idPart.indexOf('&'));
+            }
+            if (idPart.contains("#")) {
+                idPart = idPart.substring(0, idPart.indexOf('#'));
+            }
+        } else if (link.startsWith(CONTENT_AP_CONTENT)) {
+            idPart = link.substring(CONTENT_AP_CONTENT.length());
             if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf('&'));
             }
@@ -228,17 +231,7 @@ public class LinkCheckerJob implements InitializingBean {
     private void checkMultimedia(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
         // Bilde / multimedia
         String idPart;
-        if (link.startsWith(MULTIMEDIA_AP)) {
-            idPart = link.substring(MULTIMEDIA_AP.length());
-            if (idPart.contains("&")) {
-                idPart = idPart.substring(0, idPart.indexOf('&'));
-            }
-        } else {
-            idPart = link.substring(MULTIMEDIA.length());
-            if (idPart.contains("/")) {
-                idPart = idPart.substring(0, idPart.indexOf('/'));
-            }
-        }
+        idPart = extractMultimediaId(link, MULTIMEDIA_AP, MULTIMEDIA);
         try {
             int i = Integer.parseInt(idPart);
             try {
@@ -260,24 +253,29 @@ public class LinkCheckerJob implements InitializingBean {
         }
     }
 
-    private void checkAttachment(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
-        // Vedlegg
+    private String extractMultimediaId(String link, String prefix, String prefix2) {
         String idPart;
-        if (link.startsWith(ATTACHMENT_AP)) {
-            idPart = link.substring(ATTACHMENT_AP.length());
+        if (link.startsWith(prefix)) {
+            idPart = link.substring(prefix.length());
             if (idPart.contains("&")) {
                 idPart = idPart.substring(0, idPart.indexOf('&'));
             }
         } else {
-            idPart = link.substring(ATTACHMENT.length());
+            idPart = link.substring(prefix2.length() + 1);
             if (idPart.contains("/")) {
                 idPart = idPart.substring(0, idPart.indexOf('/'));
             }
         }
+        return idPart;
+    }
+
+    private void checkAttachment(String link, LinkOccurrence occurrence, CloseableHttpClient client) {
+        // Vedlegg
+        String idPart = extractMultimediaId(link, ATTACHMENT_AP, ATTACHMENT);
         try {
             int i = Integer.parseInt(idPart);
             try {
-                Attachment attachment = RootContext.getInstance().getBean(AttachmentAOImpl.class).getAttachment(i);
+                Attachment attachment = attachmentAO.getAttachment(i);
 
                 if(attachment != null) {
                     occurrence.setStatus(CheckStatus.OK);
@@ -368,32 +366,28 @@ public class LinkCheckerJob implements InitializingBean {
         return s.replace('\\', '/');
     }
 
-    public void setWebroot(String webroot) {
+    private void setWebroot(String webroot) {
         this.webroot = webroot;
     }
 
-    public void setProxyHost(String proxyHost) {
+    private void setProxyHost(String proxyHost) {
         this.proxyHost = proxyHost;
     }
 
-    public void setProxyPort(int proxyPort) {
+    private void setProxyPort(int proxyPort) {
         this.proxyPort = proxyPort;
     }
 
-    public void setProxyUser(String proxyUser) {
+    private void setProxyUser(String proxyUser) {
         this.proxyUser = proxyUser;
     }
 
-    public void setProxyPassword(String proxyPassword) {
+    private void setProxyPassword(String proxyPassword) {
         this.proxyPassword = proxyPassword;
     }
 
-    public void setLinkDao(LinkDao linkDao) {
-        this.linkDao = linkDao;
-    }
-
     public void afterPropertiesSet() throws Exception {
-        setWebroot(Aksess.getApplicationUrl());
+        setWebroot(defaultString(Aksess.getApplicationUrl()));
         setProxyHost(configuration.getString("linkchecker.proxy.host"));
         String proxyPort = configuration.getString("linkchecker.proxy.port");
         if(proxyPort != null) {
