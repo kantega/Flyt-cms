@@ -337,7 +337,7 @@
     </build>
 
     <properties>
-        <aksess-maven-plugin.version>2.21</aksess-maven-plugin.version>
+        <aksess-maven-plugin.version>2.22</aksess-maven-plugin.version>
         <securityapi.version>2.9</securityapi.version>
         <securityapi.openimpl.version>2.19</securityapi.openimpl.version>
 
