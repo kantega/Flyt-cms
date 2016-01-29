@@ -24,7 +24,7 @@
     <%
       if (maxLength <= 255) {
     %>
-  <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
+  <input type="text" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField(this)" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" tabindex="<%=attribute.getTabIndex()%>"
     <%
         if (maxLength <  72) {
             out.write(" size=" + maxLength);
@@ -37,7 +37,7 @@
     %>><%
 } else {
 %>
-  <textarea rows="<%=rows%>" cols="72" class="fullWidth" wrap="soft" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
+  <textarea rows="<%=rows%>" cols="72" class="fullWidth" wrap="soft" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField(this)" name="<%=fieldName%>" id="<%=fieldName%>" tabindex="<%=attribute.getTabIndex()%>"><%=value%></textarea>
   <%
     }
   %>

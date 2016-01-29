@@ -229,7 +229,7 @@ public interface ContentAO {
      */
     void updateDisplayPeriodForContent(ContentIdentifier cid, Date publishDate, Date expireDate, boolean updateChildren) throws SystemException;
 
-    public interface ContentHandlerStopper {
-        public boolean isStopRequested();
+    interface ContentHandlerStopper {
+        boolean isStopRequested();
     }
 }

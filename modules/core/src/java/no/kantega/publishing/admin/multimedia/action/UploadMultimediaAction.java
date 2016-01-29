@@ -20,6 +20,7 @@ import com.glaforge.i18n.io.CharsetToolkit;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttachmentBlacklistHelper;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.exception.InvalidImageFormatException;
@@ -69,7 +70,7 @@ public class UploadMultimediaAction extends AbstractController {
             parent = mediaService.getMultimedia(parentId);
         }
 
-        boolean preserveImageSize = parameters.getBoolean("preserveImageSize", false);
+        boolean preserveImageSize = parameters.getBoolean("preserveImageSize", Aksess.isPreserveImageSize());
 
         List<Multimedia> uploadedFiles = getUploadedFiles(parameters, preserveImageSize);
 

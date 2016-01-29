@@ -200,10 +200,10 @@
     </table>
     <table name="eventlog">
         <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
-        <column name="UserId" required="false" type="VARCHAR" size="255"/>
+        <column name="UserId" required="false" type="VARCHAR" size="4096"/>
         <column name="EventName" required="true" type="VARCHAR" size="255"/>
         <column name="SubjectName" required="false" type="VARCHAR" size="255"/>
-        <column name="RemoteAddress" required="false" type="VARCHAR" size="32"/>
+        <column name="RemoteAddress" required="false" type="VARCHAR" size="4096"/>
         <column name="SubjectType" required="false" type="INTEGER" size="10"/>
         <column name="SubjectId" required="false" type="INTEGER" size="10"/>
     </table>
@@ -420,7 +420,7 @@
         <column name="Time" required="true" type="TIMESTAMP" size="23,3"/>
         <column name="ContentId" required="true" type="INTEGER" size="10"/>
         <column name="Language" required="true" type="INTEGER" size="10"/>
-        <column name="RemoteAddress" required="false" type="VARCHAR" size="32"/>
+        <column name="RemoteAddress" required="false" type="VARCHAR" size="4096"/>
         <column name="Referer" required="false" type="VARCHAR" size="255"/>
         <column name="SessionId" required="false" type="VARCHAR" size="128"/>
         <column name="SiteId" required="false" type="INTEGER" size="10"/>
@@ -430,6 +430,9 @@
         <column name="IsSpider" required="true" type="INTEGER" size="10" default="0"/>
         <index name="idx_trafficlog_contentid">
             <index-column name="ContentId"/>
+        </index>
+        <index name="idx_trafficlog_Time">
+            <index-column name="Time"/>
         </index>
     </table>
     <table name="transactionlocks">

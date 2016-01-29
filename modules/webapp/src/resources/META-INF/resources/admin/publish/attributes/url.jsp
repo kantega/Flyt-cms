@@ -29,7 +29,7 @@
     String value = attribute.getValue();
 %>
 <div class="inputs">
-    <input type="url" class="fullWidth" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField()" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
+    <input type="url" class="fullWidth" onFocus="openaksess.editcontext.setFocusField(this)" onBlur="openaksess.editcontext.blurField(this)" name="<%=fieldName%>" id="<%=fieldName%>" value="<%=value%>" maxlength="512" tabindex="<%=attribute.getTabIndex()%>">
 
 <%
     if (!Aksess.doOpenLinksInNewWindow() && ContentProperty.URL.equalsIgnoreCase(attribute.getField())) {

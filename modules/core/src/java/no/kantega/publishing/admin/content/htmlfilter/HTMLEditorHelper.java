@@ -63,9 +63,6 @@ public class HTMLEditorHelper {
         value = StringUtils.replace(value,"<U>", "<span style=\"text-decoration: underline;\">");
         value = StringUtils.replace(value,"</U>", "</span>");
 
-        // Replace illegal chars in id, name and href
-        pipe.addFilter(new IdAndNameFilter());
-
         // Replace the align attribute from p elements with inline style
         pipe.addFilter(new ReplaceAlignAttributeFilter());
 
@@ -149,6 +146,10 @@ public class HTMLEditorHelper {
         value = StringUtils.replace(value, "</HR>", "");
         value = StringUtils.replace(value, "</BR>", "");
         value = StringUtils.replace(value, "</IMG>", "");
+
+        // Tinymce decodes entities, so if there are code fragments, like &lt;/title&gt;, these was decoded and removed.
+        value = StringUtils.replace(value, "&lt;", "&amp;lt;");
+        value = StringUtils.replace(value, "&gt;", "&amp;gt;");
 
         return value;
     }

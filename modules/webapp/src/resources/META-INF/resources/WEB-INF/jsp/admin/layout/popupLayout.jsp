@@ -71,6 +71,13 @@
             if (window.opener) {
                 window.close();
             } else {
+                try {
+                    var tinymce = getParent().tinymce;
+                    var ed = tinymce.editors[0];
+                    ed.windowManager.windows[0].close();
+                } catch (e) {
+                    openaksess.common.debug("Failed to close tiny modal " + e);
+                }
                 window.setTimeout(parent.openaksess.common.modalWindow.close,300);
             }
         }

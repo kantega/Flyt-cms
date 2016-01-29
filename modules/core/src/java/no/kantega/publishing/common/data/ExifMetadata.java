@@ -8,7 +8,7 @@ import java.util.List;
 public class ExifMetadata implements Serializable {
     public static final String EXIF_DIRECTORY = "Exif IFD0";
     public static final String EXIF_SUBDIRECTORY = "Exif SubIFD";
-    public static final String IPTC_DIRECTORY = "Iptc";
+    public static final String IPTC_DIRECTORY = "IPTC";
     public static final String GPS_DIRECTORY = "GPS";
 
     public static final String EXIF_MAKE = "Make";

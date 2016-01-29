@@ -39,7 +39,7 @@ public class SqlToolController {
                 try (Connection c  = dbConnectionFactory.getConnection();
                      PreparedStatement st = c.prepareStatement(query)){
                     String lowerCaseQuery = query.toLowerCase();
-                    if(lowerCaseQuery.contains("update") || lowerCaseQuery.contains("insert")|| lowerCaseQuery.contains("delete")){
+                    if(lowerCaseQuery.contains("update ") || lowerCaseQuery.contains("insert ")|| lowerCaseQuery.contains("delete ")){
                         lines.append("number of successful updates: ").append(st.executeUpdate());
                     }else{
                         ResultSet rs = st.executeQuery();

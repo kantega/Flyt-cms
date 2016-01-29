@@ -8,7 +8,10 @@ import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class AttributeTransferObject {
@@ -55,9 +58,8 @@ public class AttributeTransferObject {
 
     private List<Map<String, AttributeTransferObject>> convertRows(RepeaterAttribute repeaterAttribute){
         List<Map<String, AttributeTransferObject>> output = new ArrayList<>(repeaterAttribute.getNumberOfRows());
-        Iterator<List<Attribute>> iterator = repeaterAttribute.getIterator();
-        while(iterator.hasNext()){
-            List<Attribute> attributes = iterator.next();
+
+        for(List<Attribute> attributes : repeaterAttribute){
             Map<String, AttributeTransferObject> map = new HashMap<>(attributes.size());
             for(Attribute attribute : attributes){
                 map.put(attribute.getName(), new AttributeTransferObject(attribute));

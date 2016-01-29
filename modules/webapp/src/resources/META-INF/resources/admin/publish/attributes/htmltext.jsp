@@ -15,7 +15,6 @@
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="org.springframework.context.ApplicationContext" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
-<%@ page import="java.util.Arrays" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -35,7 +34,7 @@
     // Init
     Logger log = LoggerFactory.getLogger("no.kantega.openaksess.jsp.htmltext");
     HtmltextAttribute attribute = (HtmltextAttribute)request.getAttribute("attribute");
-    Content   content   = (Content)request.getAttribute("content");
+    Content content = (Content)request.getAttribute("content");
     request.setAttribute("value", HTMLEditorHelper.preEditFilter(attribute.getValue(), URLHelper.getRootURL(request)));
 
     ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(application);
@@ -80,7 +79,7 @@
     }
     if(hasHtmlEditorRole){
         plugins += " code";
-        buttons += " |code";
+        buttons += " | code";
     }
     String[] buttonRows = new String[]{};
     if (buttons != null) {
@@ -137,6 +136,7 @@
     <textarea name="${fieldName}" id="${fieldName}" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}">${value}</textarea><br>
     <script type="text/javascript">
         var options = {
+            schema: "html5",
             selector: "textarea#${fieldName}",
             theme: "modern",
 
@@ -148,20 +148,18 @@
 
             toolbar: "<%=buttons%>",
             contextmenu: '<%=contextMenu%>',
-            menubar: '<%=menubar%>', //true, //TODO decide or off?
+            menubar: '<%=menubar%>',
 
             autosave_interval: "5s", //reminder
             autosave_retention: "30m", //stored local incase of crash
             browser_spellcheck: true,
             entity_encoding : "raw",
+            element_format : 'html',
             templates : "${pageContext.request.contextPath}/aksess/js/editor_templates.jsp",
             content_css : "${pageContext.request.contextPath}${cssPath}",
 
             block_formats: "${blockFormats}",
 
-            //special custom parameters below?
-            //  <aksess:getconfig key="editor.custom.tinymceparameters"/>
-            AScgiloc: 'http://www.imathas.com/imathas/filter/graph/svgimg.php',
             style_formats: [
                 {title: 'Bold text', inline: 'b'},
                 {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
@@ -171,6 +169,7 @@
                 {title: 'Table styles'},
                 {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
             ]
+            <aksess:getconfig key="editor.custom.tinymceparameters"/>
         };
 
         if('<%=Aksess.getDefaultAdminLocale().getLanguage().toLowerCase()%>' == 'no' ){

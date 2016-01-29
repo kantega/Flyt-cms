@@ -194,8 +194,8 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
             formSubmission.setPassword(rs.getString("Password"));
             formSubmission.setSubmittedByEmail(rs.getString("Email"));
-            formSubmission.setSubmissionDate(rs.getDate("SubmittedDate"));
-            formSubmission.setValues(new ArrayList<FormValue>());
+            formSubmission.setSubmissionDate(rs.getTimestamp("SubmittedDate"));
+            formSubmission.setValues(new ArrayList<>());
 
             return formSubmission;
         }

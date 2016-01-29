@@ -28,10 +28,8 @@ import org.slf4j.LoggerFactory;
 
 public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAttributeFromRequestBehaviour {
     private static final Logger log = LoggerFactory.getLogger(UpdateEditableformAttributeFromRequestBehaviour.class);
-
-    private static String BODY_START = "<BODY>";
-    private static String BODY_END   = "</BODY>";
-
+    private final String BODY_START = "<html><body>";
+    private final String BODY_END = "</body></html>";
 
     public void updateAttribute(RequestParameters param, Content content, Attribute attribute) {
         String inputField = AttributeHelper.getInputFieldName(attribute.getNameIncludingPath());
@@ -56,30 +54,21 @@ public class UpdateEditableformAttributeFromRequestBehaviour implements UpdateAt
 
         try {
             // Filter expects complete document
-            value = "<html><body>" + value + "</body></html>";
+            value = BODY_START + value + BODY_END;
 
 
             value = pipe.filter(value);
 
-            int start = value.indexOf(BODY_START.toLowerCase());
-            if (start == -1) {
-                start = value.indexOf(BODY_START.toUpperCase());
-            }
-
-            int end = value.indexOf(BODY_END.toLowerCase());
-            if (end == -1) {
-                end = value.indexOf(BODY_END.toUpperCase());
-            }
-
-            value = value.substring(start + BODY_START.length(), end);
+            value = value.replace(BODY_START, "");
+            value = value.replace(BODY_END, "");
         } catch (Exception e) {
             value = origVal;
-            log.error("", e);
+            log.error("Error when processing \"" + origVal + "\"", e);
         }
-
+        log.debug("original: \n\"{}\"\n result: \n\"{}\"");
         // Some versions of Xerces creates XHTML tags
         value = StringHelper.replace(value, "</BR>", "");
-        
+
         return value;
     }
 

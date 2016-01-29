@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 
 @Component
 public class SolrDocumentIndexer implements DocumentIndexer {
@@ -129,17 +130,17 @@ public class SolrDocumentIndexer implements DocumentIndexer {
         // map stream_name such that it is ignored, otherwise names like .pdf6291048212804771660indexer ends up in index.
         streamParams.add("stream_name", "stream_name_ignored");
 
-        streamParams.add("literal.contentStatus", document.getContentStatus());
+        streamParams.add("literal.contentStatus", defaultString(document.getContentStatus()));
         streamParams.add("literal.indexedContentType", document.getContentType());
         streamParams.add("literal.language", document.getLanguage());
-        streamParams.add("literal.description_" + languageSuffix, document.getDescription());
+        streamParams.add("literal.description_" + languageSuffix, defaultString(document.getDescription()));
         streamParams.add("literal.id", document.getId());
         streamParams.add("literal.parentId", String.valueOf(document.getParentId()));
         streamParams.add("literal.securityId", String.valueOf(document.getSecurityId()));
         streamParams.add("literal.uid", document.getUId());
         streamParams.add("literal.siteId", String.valueOf(document.getSiteId()));
         streamParams.add("literal.title_" + languageSuffix, document.getTitle());
-        streamParams.add("literal.visibilityStatus", document.getVisibility());
+        streamParams.add("literal.visibilityStatus", defaultString(document.getVisibility()));
 
         for(Map.Entry<String, Object> attributeEntry : document.getAttributes().entrySet()){
             streamParams.add(new ModifiableSolrParams());

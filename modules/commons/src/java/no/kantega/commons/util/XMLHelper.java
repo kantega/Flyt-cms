@@ -120,17 +120,10 @@ public class XMLHelper {
                         .build()).build();
     }
 
-    public static Document openDocument(Resource resource) throws InvalidFileException {
-        try {
-            return openDocument(resource.getInputStream());
-        } catch (IOException e) {
-            throw new InvalidFileException("Error opening XML document from Resource", e);
-        }
-    }
-
     public static Document openDocument(Resource resource, EntityResolver er) throws InvalidFileException {
-        try {
-            return openDocument(resource.getInputStream(), er, resource.getURI().getRawPath());
+        try (InputStream is = resource.getInputStream()){
+
+            return openDocument(is, er, resource.getURI().getRawPath());
         } catch (IOException e) {
             throw new InvalidFileException("Error opening XML document from Resource", e);
         }

@@ -12,7 +12,7 @@ import java.util.Map;
 /*
 * A RepeaterAttribute is a composite Attribute, used to make repeatable rows with attributes
 */
-public class RepeaterAttribute extends Attribute {
+public class RepeaterAttribute extends Attribute implements Iterable<List<Attribute>> {
 
     List<List<Attribute>> rows = new ArrayList<>();
 
@@ -31,8 +31,13 @@ public class RepeaterAttribute extends Attribute {
         }
     }
 
+    /**
+     *
+     * @deprecated use {@code iterator} or for(List&lt;Attribute&gt; attribues : repeater)
+     */
+    @Deprecated
     public Iterator<List<Attribute>> getIterator() {
-        return rows.iterator();
+        return iterator();
     }
 
     public void addRow(List<Attribute> attributes) {
@@ -126,5 +131,10 @@ public class RepeaterAttribute extends Attribute {
             return "Repeaterattribute with " + size + " rows";
         }
         return super.getValue();
+    }
+
+    @Override
+    public Iterator<List<Attribute>> iterator() {
+        return rows.iterator();
     }
 }

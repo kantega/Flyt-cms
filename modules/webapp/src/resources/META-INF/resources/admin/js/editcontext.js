@@ -53,30 +53,6 @@ openaksess.editcontext = function()  {
         return "" + dt.getTime();
     }
 
-    function getSelectedElements(editor) {
-        var elements = [];
-        var element = editor.selection.getNode();
-        element = editor.dom.getParent(element, "A");
-        if (element == null) {
-            editor.getDoc().execCommand("unlink", false, null);
-            editor.execCommand("CreateLink", false, "#insertlink_temp_url#", {skip_undo : 1});
-            elements = getParent().tinymce.grep(
-                    editor.dom.select("a"),
-                    function(n) {
-                        return editor.dom.getAttrib(n, 'href') == '#insertlink_temp_url#';
-                    });
-        } else {
-            elements.push(element);
-        }
-        return elements;
-    }
-
-    function setAttributes(editor, element, attributes) {
-        for (var key in attributes) {
-            editor.dom.setAttrib(element, key, attributes[key]);
-        }
-    }
-
     /*
      *  Update status set that page has been edited
      */
@@ -139,21 +115,27 @@ openaksess.editcontext = function()  {
         },
 
 
-        blurField : function () {
-            openaksess.editcontext.focusField = null;
+        blurField : function (field) {
+            if(openaksess.editcontext.focusField == field ){
+                openaksess.common.debug("blurField");
+                openaksess.editcontext.focusField = null;
+            } else if(openaksess.editcontext.focusField && field){
+                openaksess.common.debug("blurField called from " + field.name + ", " + openaksess.editcontext.focusField.name + " was focused" );
+            } else {
+                openaksess.common.debug("blurField called but openaksess.editcontext.focusField was null");
+            }
+
         },
 
         insertLink : function(attribs) {
+            openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
             var editor = getParent().tinymce.EditorManager.activeEditor;
+            openaksess.common.debug("insertLink: move to bookmark");
+            openaksess.common.debug("Createlink");
 
-            editor.selection.moveToBookmark(editor.windowManager.bookmark);
+            editor.execCommand("CreateLink", false, attribs.href, {skip_undo : 1});
 
-            editor.execCommand("mceBeginUndoLevel");
-            var elements = getSelectedElements(editor);
-            for (var i = 0, n = elements.length; i < n; i++) {
-                setAttributes(editor, elements[i], attribs);
-            }
-            editor.execCommand("mceEndUndoLevel");
+            openaksess.common.debug("insertLink done");
         },
 
         /**
@@ -250,6 +232,7 @@ openaksess.editcontext = function()  {
          *  Popup window for selecting a page url
          */
         selectContentUrl : function (formElement) {
+            openaksess.common.debug("selectContentUrl formElement: " + formElement);
             openaksess.editcontext.focusField = formElement;
             openaksess.editcontext.doInsertTag = true;
             openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 400, height:500});
@@ -527,6 +510,8 @@ openaksess.editcontext = function()  {
             openaksess.editcontext.setIsModified();
             if (openaksess.editcontext.focusField != null) {
                 openaksess.editcontext.focusField.value = "" + val;
+            } else {
+                openaksess.common.debug("openaksess.editcontext.focusField == null");
             }
         },
 

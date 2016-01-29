@@ -62,19 +62,24 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
             //Progressreporters is set to finish to stop reindexing, this if test is needed to hinder creation of IDProducers after the canceled reindex
             if(progressReporter!=null && !progressReporter.isFinished()){
-                log.info("creating IDProudcer ! - " + this.getClass());
+                log.info("creating IDProducer " + this.getClass());
 
                 taskExecutor.execute(new IDProducer(dataSource, ids));
                 while (!progressReporter.isFinished()) {
                     try {
+                        log.debug("Polling ids, size: {}", ids.size());
                         Integer id = ids.poll(10L, TimeUnit.SECONDS);
+                        log.debug("Got multimediaid {}", id);
                         if (id != null) {
                             Multimedia multimedia = multimediaService.getMultimedia(id);
                             if (multimedia != null && multimedia.getType() != MultimediaType.FOLDER) {
                                 IndexableDocument indexableDocument = transformer.transform(multimedia);
                                 log.debug("Transformed multimedia {} {}", multimedia.getName(), multimedia.getId());
                                 indexableDocumentQueue.put(indexableDocument);
+                                log.debug("Put multimedia {}, indexableDocumentQueue size {} ", multimedia.getId(), indexableDocumentQueue.size());
                             }
+                        } else {
+                            log.info("Multimedia poll returned null");
                         }
                     } catch (Exception e) {
                         log.error("Error transforming multimedia", e);
@@ -111,8 +116,13 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()) {
-                    ids.put(resultSet.getInt("id"));
+                while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
+                    int id = resultSet.getInt("id");
+                    log.trace("Got Id {}, queue size: {}", id, ids.size());
+                    if(!ids.offer(id, 5, TimeUnit.SECONDS)){
+                        log.info("Timed out offering id " + id);
+                    }
+                    log.trace("Put Id {}, queue size: {}", id, ids.size());
                 }
             } catch (Exception e) {
                 log.error("Error getting IDs", e);

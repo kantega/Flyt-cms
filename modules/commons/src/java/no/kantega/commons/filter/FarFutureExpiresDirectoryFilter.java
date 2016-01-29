@@ -16,7 +16,12 @@
 
 package no.kantega.commons.filter;
 
-import javax.servlet.*;
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -45,15 +50,20 @@ public class FarFutureExpiresDirectoryFilter implements Filter {
 
         Matcher m = resourcePattern.matcher(uri);
 
-        if(m.find()) {
+        if(m.find() && isLegal(uri)) {
             final String realUri = m.group(2);
             res.setDateHeader("Expires", System.currentTimeMillis() + YEAR);
             req.getRequestDispatcher(realUri).forward(request, response);
             return;
-        } 
+        }
 
         chain.doFilter(req, res);
 
+    }
+
+    private boolean isLegal(String uri) {
+        boolean illegal = uri.contains("/WEB-INF") || uri.contains("/META-INF");
+        return !illegal;
     }
 
     public void destroy() {

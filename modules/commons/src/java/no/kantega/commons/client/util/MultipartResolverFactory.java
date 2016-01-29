@@ -21,11 +21,6 @@ import org.springframework.beans.factory.config.AbstractFactoryBean;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Dec 13, 2007
- * Time: 11:40:36 AM
- */
 public class MultipartResolverFactory extends AbstractFactoryBean {
     private CommonsMultipartResolver multipartResolver;
 

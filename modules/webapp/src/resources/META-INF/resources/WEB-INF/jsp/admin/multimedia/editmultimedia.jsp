@@ -29,7 +29,7 @@
 </kantega:section>
 
 <kantega:section id="content">
-    <script language="Javascript" type="text/javascript">
+    <script type="text/javascript">
         var hasSubmitted = false;
 
         function saveForm() {
@@ -82,12 +82,18 @@
                     p = window.parent;
                 }
 
-                // Get max width of editor field, image should be resized to fit
-                var editor = p.tinymce.EditorManager.activeEditor;
-                var editorwidth = editor.dom.getSize(editor.dom.getRoot()).w;
+                if(!p.tinyMCE){
+                    p = p.parent;
+                }
 
-                // Subtract 10 pixels to avoid scrolling
-                $("#MaxWidth").val(editorwidth - 10);
+                if (p.tinyMCE) {
+                    // Get max width of editor field, image should be resized to fit
+                    var editor = p.tinyMCE.editors[0];
+                    var editorwidth = editor.dom.getSize(editor.dom.getRoot()).w;
+
+                    // Subtract 10 pixels to avoid scrolling
+                    $("#MaxWidth").val(editorwidth - 10);
+                }
             }
 
             <c:if test="${isPropertyPaneEditable}">

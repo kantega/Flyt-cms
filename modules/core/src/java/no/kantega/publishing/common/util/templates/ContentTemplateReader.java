@@ -64,9 +64,9 @@ public class ContentTemplateReader {
 
             Document def = XMLHelper.openDocument(resource, entityResolver);
 
-            NodeList attributes = (NodeList)xpath.evaluate("attributes/attribute|attributes/repeater", def.getDocumentElement(), XPathConstants.NODESET);
+            NodeList attributes = (NodeList)xpath.evaluate("attributes/attribute|attributes/repeater|attributes/separator", def.getDocumentElement(), XPathConstants.NODESET);
             if (attributes.getLength()  == 0) {
-                attributes = (NodeList)xpath.evaluate("attribute|repeater", def.getDocumentElement(), XPathConstants.NODESET);
+                attributes = (NodeList)xpath.evaluate("attribute|repeater|separator", def.getDocumentElement(), XPathConstants.NODESET);
             }
             for (int i = 0; i < attributes.getLength(); i++) {
                 Element attr = (Element)attributes.item(i);

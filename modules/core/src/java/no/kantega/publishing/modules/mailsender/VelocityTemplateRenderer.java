@@ -13,6 +13,7 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,21 +42,23 @@ public class VelocityTemplateRenderer {
             Configuration config = Aksess.getConfiguration();
 
             String encoding = config.getString("mail.templates.encoding", "ISO-8859-1");
-            String templateText = IOUtils.toString(resource.getInputStream(), encoding);
+            try(InputStream is = resource.getInputStream()) {
+                String templateText = IOUtils.toString(is, encoding);
 
-            VelocityContext context = new VelocityContext(properties);
-            if(htmlEscape){
-                EventCartridge eventCartridge = new EventCartridge();
-                context.attachEventCartridge(eventCartridge);
-                eventCartridge.addReferenceInsertionEventHandler(new ReferenceInsertionEventHandler() {
-                    public Object referenceInsert(String reference, Object value) {
-                        return escapeHtml4(value.toString());
-                    }
-                });
+                VelocityContext context = new VelocityContext(properties);
+                if (htmlEscape) {
+                    EventCartridge eventCartridge = new EventCartridge();
+                    context.attachEventCartridge(eventCartridge);
+                    eventCartridge.addReferenceInsertionEventHandler(new ReferenceInsertionEventHandler() {
+                        public Object referenceInsert(String reference, Object value) {
+                            return escapeHtml4(value.toString());
+                        }
+                    });
+                }
+                StringWriter textWriter = new StringWriter();
+                Velocity.evaluate(context, textWriter, "body", templateText);
+                return textWriter.toString();
             }
-            StringWriter textWriter = new StringWriter();
-            Velocity.evaluate(context, textWriter, "body", templateText);
-            return textWriter.toString();
         } catch (Exception e) {
             throw new SystemException("Feil ved generering av mailtekst basert på Velocity. TemplateFile: " + templateFile, e);
         }

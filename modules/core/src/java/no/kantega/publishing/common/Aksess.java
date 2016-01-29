@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.Properties;
 
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 /**
@@ -61,7 +62,6 @@ public class Aksess {
 
     private static String[] internalIpSegment = null;
 
-    private static String flashPluginVersion;
     private static boolean flashUseJavascript = false;
     private static String version = "unknown";
     private static String revision;
@@ -92,8 +92,9 @@ public class Aksess {
 
     private static int defaultMediaWidth;
     private static int defaultMediaHeight;
-    private static int maxMediaWidth = 1024;
-    private static int maxMediaHeight = 768;
+    private static int maxMediaWidth = 2048;
+    private static int maxMediaHeight = 2048;
+    private static boolean preserveImageSize;
 
     private static boolean flashVideoAutoplay;
     private static String flashVideoPlayerUrl;
@@ -134,6 +135,7 @@ public class Aksess {
 
     private static String queryStringEncoding;
     private static int xmlCacheMaxAge = 3;
+    private static boolean mediaElementIncludeJquery;
 
     public static void loadConfiguration() {
 
@@ -152,15 +154,17 @@ public class Aksess {
 
         maxMediaWidth = c.getInt("multimedia.maxwidth", maxMediaWidth);
         maxMediaHeight = c.getInt("multimedia.maxheight", maxMediaHeight);
+        preserveImageSize = c.getBoolean("multimedia.preserveImageSize", true);
 
-        flashPluginVersion = c.getString("multimedia.swf.defaultversion", "10.0.0.0");
         flashUseJavascript = c.getBoolean("multimedia.swf.usejavascript", false);
         flashVideoAutoplay = c.getBoolean("multimedia.flv.autoplay", true);
-        flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/multimedia/videoplayer.swf");
+        flashVideoPlayerUrl = c.getString("multimedia.flv.playerurl", "/aksess/js/mediaelement/flashmediaelement.swf");
+        mediaElementIncludeJquery = c.getBoolean("multimedia.mediaElementIncludeJquery", false);
 
         isDefaultMinorChange = c.getBoolean("default.minorchange", isDefaultMinorChange);
 
         historyMaxVersions = c.getInt("history.maxversions", 20);
+
 
         // Sikkerhetsconfig
         loginUrl = c.getString("security.login.url", getContextPath()  + "/Login.action");
@@ -333,7 +337,7 @@ public class Aksess {
     }
 
     public static String getBaseUrl() {
-        return baseUrl;
+        return defaultString(baseUrl);
     }
 
     public static String getContextPath() {
@@ -392,10 +396,6 @@ public class Aksess {
 
     public static Locale getDefaultAdminLocale() {
         return new Locale(language, country);
-    }
-
-    public static String getDefaultFlashVersion() {
-        return flashPluginVersion;
     }
 
     public static String getDefaultSecurityDomain() {
@@ -589,5 +589,13 @@ public class Aksess {
 
     public static String getDefaultDateFormatJS() {
         return defaultDateFormatJS;
+    }
+
+    public static boolean mediaElementIncludeJquery() {
+        return mediaElementIncludeJquery;
+    }
+
+    public static boolean isPreserveImageSize() {
+        return preserveImageSize;
     }
 }

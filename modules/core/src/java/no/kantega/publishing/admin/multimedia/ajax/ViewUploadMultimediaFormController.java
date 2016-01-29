@@ -61,7 +61,7 @@ public class ViewUploadMultimediaFormController {
         model.addAttribute("mediaNameRequired", configuration.getBoolean("multimedia.medianame.required", false));
         model.addAttribute("altNameRequired", configuration.getBoolean("multimedia.altname.required", false));
         model.addAttribute("authorRequired", configuration.getBoolean("multimedia.author.required", false));
-        model.addAttribute("allowPreserveImageSize", securitySession.isUserInRole(Aksess.getPhotographerRoles()));
+        model.addAttribute("allowPreserveImageSize", !Aksess.isPreserveImageSize() && securitySession.isUserInRole(Aksess.getPhotographerRoles()));
 
         return UPLOAD_FORM_VIEW;
     }

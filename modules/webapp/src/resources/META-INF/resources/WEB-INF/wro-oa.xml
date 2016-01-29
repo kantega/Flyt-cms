@@ -106,7 +106,6 @@
         <js>/admin/js/editmultimedia.js</js>
         <group-ref>editcontext</group-ref>
         <js>/admin/js/jquery.Jcrop.min.js</js>
-        <js>/aksess/js/swfobject.js</js>
         <js>/admin/js/navigate.js</js>
         <js>/admin/js/multimedia.js</js>
     </group>

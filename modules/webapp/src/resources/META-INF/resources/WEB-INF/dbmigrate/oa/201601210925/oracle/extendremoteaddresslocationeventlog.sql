@@ -1,0 +1,2 @@
+ALTER TABLE eventlog MODIFY (RemoteAddress VARCHAR(4096));
+ALTER TABLE eventlog MODIFY (UserId VARCHAR(4096));

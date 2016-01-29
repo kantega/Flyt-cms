@@ -30,7 +30,7 @@ public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
         return exifMetadatas;
     }
 
-    private List<ExifMetadata> extractMetadata(ByteArrayInputStream inputStream) throws JpegProcessingException {
+    private List<ExifMetadata> extractMetadata(ByteArrayInputStream inputStream) throws JpegProcessingException, IOException {
         List<ExifMetadata> exifMetadatas = new ArrayList<>();
 
         Metadata metadata = JpegMetadataReader.readMetadata(inputStream);

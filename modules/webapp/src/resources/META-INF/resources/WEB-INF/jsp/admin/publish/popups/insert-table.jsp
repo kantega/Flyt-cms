@@ -48,7 +48,7 @@
             var editor = tinymce.EditorManager.activeEditor;
 
             if ("${modifyExisting}" == "true") {
-                var table = editor.dom.getParent(editor.selection.getNode(), 'table')
+                var table = editor.dom.getParent(editor.selection.getNode(), 'table');
                 if (table) {
                     table.border = border;
                     table.cellPadding = cellpadding;

@@ -14,15 +14,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   --%>
-<%@ page import="no.kantega.commons.client.util.RequestParameters,
-                 no.kantega.commons.util.URLHelper"%>
-<%@ page import="no.kantega.publishing.common.data.Multimedia" %>
+<%@ page import="no.kantega.commons.util.URLHelper,
+                 no.kantega.publishing.common.data.Multimedia"%>
 <%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
 
 <%
     Multimedia mm = (Multimedia)request.getAttribute("media");
-    RequestParameters param = new RequestParameters(request, "utf-8");
 
     String baseUrl = URLHelper.getRootURL(request);
     baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -34,14 +32,13 @@
     if (maxWidth > mm.getWidth() && mm.getWidth() > 0) {
         maxWidth = mm.getWidth();
     }
-    String imageTag = MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null);
 %>
 <!DOCTYPE HTML>
 
 <html>
     <head>
         <title>...</title>
-        <%--<!--script type="text/javascript" src="<kantega:expireurl url="/aksess/tiny_mce/tiny_mce_popup.js"/>"></script-->--%>
+
         <script language="Javascript">
             function insertMMObject() {
                 var p;
@@ -49,6 +46,9 @@
                     p = window.opener;
                 } else {
                     p = window.parent;
+                }
+                if(!p.tinyMCE){
+                    p = p.parent;
                 }
                 if (p && <%=(!mm.isNew())%>) {
                     var metadata = {};
@@ -62,31 +62,39 @@
                     if (p.openaksess.editcontext.doInsertTag) {
                         // Insert IMG or other tag
                         var str = document.mediaform.tag.value;
-                        // IE 7 & 8 looses selection. Must be restored manually.
                         editor.selection.moveToBookmark(editor.windowManager.bookmark);
-//                        tinyMCEPopup.editor.selection.moveToBookmark(tinyMCEPopup.editor.windowManager.bookmark);
                         insertHtml(editor, str);
                     } else {
                         insertHtml(editor, "");
-                        p.openaksess.editcontext.insertMultimedia(metadata);
+
+                        if(window.opener && window.opener.insertMultimedia){
+                            window.opener.insertMultimedia(metadata);
+                        } else {
+                            p.openaksess.editcontext.insertMultimedia(metadata);
+                        }
                     }
                 }
 
                 if (window.opener) {
                     window.close();
                 } else {
-                    activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
-                    if(activeTinyPopup){
-                        activeTinyPopup.close();
+                    if(p.tinymce.EditorManager.activeEditor){
+                        var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
+                        if (activeTinyPopup){
+                            activeTinyPopup.close();
+                        } else{
+                            window.setTimeout(p.openaksess.common.modalWindow.close, 300);
+                        }
                     } else {
                         window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                     }
-                    p.tinymce.EditorManager.activeEditor.windowManager.windows[0].close();
                 }
             }
 
             function insertHtml(editor, html) {
-                editor.execCommand("mceInsertRawHTML", false, html);
+                if (editor) {
+                    editor.execCommand("mceInsertRawHTML", false, html);
+                }
             }
         </script>
     </head>

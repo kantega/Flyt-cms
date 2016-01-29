@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess</artifactId>
-        <version>7.9.1-SNAPSHOT</version>
+        <version>7.9.9-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -78,15 +78,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.kantega.openaksess</groupId>
-            <artifactId>openaksess-content-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.kantega.flytcms</groupId>
             <artifactId>tiny-mce</artifactId>
-            <version>1.0</version>
+            <version>1.2</version>
         </dependency>
 
         <dependency>

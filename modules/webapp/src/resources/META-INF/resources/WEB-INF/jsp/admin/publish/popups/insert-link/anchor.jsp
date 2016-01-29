@@ -22,11 +22,11 @@
         var elements = getParent().tinymce.grep(
                 editor.dom.select("a"),
                 function(n) {
-                    return editor.dom.getAttrib(n, 'class').indexOf('mceItemAnchor') != -1;
+                    return editor.dom.getAttrib(n, 'class').indexOf('mce-item-anchor') != -1;
                 });
 
         for (var i = 0; i < elements.length; i++) {
-            var name = elements[i].name;
+            var name = elements[i].id;
             document.linkform.url.options[document.linkform.url.options.length] = new Option(name, '#' + name);
         }
     }
