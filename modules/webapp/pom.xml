@@ -80,7 +80,7 @@
         <dependency>
             <groupId>org.kantega.flytcms</groupId>
             <artifactId>tiny-mce</artifactId>
-            <version>1.3-SNAPSHOT</version>
+            <version>1.3</version>
         </dependency>
 
         <dependency>
