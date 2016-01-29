@@ -35,7 +35,6 @@
         properties.thisId = '<%=AdminRequestParameters.THIS_ID %>';
     </script>
     <script type="text/javascript" src='<kantega:expireurl url="/wro-oa/admin-popuplayout.js"/>'></script>
-    <%--<script type="text/javascript" src='${pageContext.request.contextPath}/admin/js/jquery-ui-i18n.min.js'></script>--%>
 
     <script type="text/javascript">
         $(document).ready(function() {

@@ -35,16 +35,17 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class ViewUploadMultimediaFormController {
 
-    private static final String UPLOAD_FORM_VIEW = "/WEB-INF/jsp/admin/multimedia/uploadform.jsp"; //.uploadPopup.jsp";
+    private static final String UPLOAD_FORM_VIEW = "/WEB-INF/jsp/admin/multimedia/uploadform.jsp";
 
     @Autowired
     private SystemConfiguration configuration;
 
     @RequestMapping(value = "/admin/multimedia/ViewUploadMultimediaForm.action", method = RequestMethod.GET)
     public String showForm(Model model,
-                           @RequestParam(value = "id", required = false, defaultValue = "-1") Integer id,
-                           @RequestParam(value = "parentId", required = false, defaultValue = "-1") Integer folderId,
-                           @RequestParam(value = "fileUploadedFromEditor", required = false, defaultValue = "false") Boolean fileUploadedFromEditor,
+                           @RequestParam(required = false, defaultValue = "-1") Integer id,
+                           @RequestParam(required = false, defaultValue = "-1") Integer folderId,
+                           @RequestParam(required = false, defaultValue = "false") Boolean fileUploadedFromEditor,
+                           @RequestParam(defaultValue = "false") Boolean doInsertTag,
                            HttpServletRequest request) throws Exception {
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
@@ -55,6 +56,7 @@ public class ViewUploadMultimediaFormController {
 
         model.addAttribute("parentId", folderId);
         model.addAttribute("fileUploadedFromEditor", fileUploadedFromEditor);
+        model.addAttribute("doInsertTag", doInsertTag);
         model.addAttribute("id", id);
         model.addAttribute("blacklistedFileTypes", AttachmentBlacklistHelper.getBlacklistedFileTypes());
         model.addAttribute("blacklistedErrorMessage", AttachmentBlacklistHelper.getErrorMessage());

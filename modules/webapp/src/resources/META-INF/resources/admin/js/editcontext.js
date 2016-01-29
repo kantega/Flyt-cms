@@ -313,11 +313,8 @@ openaksess.editcontext = function()  {
          */
         uploadMultimedia : function (formElement) {
             openaksess.editcontext.focusField = formElement;
-            var id = -1;
-            if (openaksess.editcontext.focusField.value != "") {
-                id = openaksess.editcontext.focusField.value;
-            }
 
+            openaksess.common.debug('uploadMultimedia' + formElement);
             openaksess.editcontext.doInsertTag = false;
             openaksess.common.modalWindow.open({title:properties.editcontext.labels.uploadmultimedia, iframe:true, href: properties.contextPath + "/admin/multimedia/ViewUploadMultimediaForm.action?fileUploadedFromEditor=true&refresh=" + getRefresh(),width: 450, height:450});
         },

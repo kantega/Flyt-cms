@@ -18,6 +18,7 @@
                  no.kantega.publishing.common.data.Multimedia"%>
 <%@ page import="no.kantega.publishing.common.util.MultimediaTagCreator" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <%
     Multimedia mm = (Multimedia)request.getAttribute("media");
@@ -40,6 +41,7 @@
         <title>...</title>
 
         <script language="Javascript">
+
             function insertMMObject() {
                 var p;
                 if (window.opener) {
@@ -58,51 +60,56 @@
                     metadata.mimeType = '<%=mm.getMimeType().getType()%>';
                     metadata.fileExtension = '<%=mm.getMimeType().getFileExtension()%>';
 
-                    var editor = p.tinymce.EditorManager.activeEditor;
-                    if (p.openaksess.editcontext.doInsertTag) {
-                        // Insert IMG or other tag
-                        var str = document.mediaform.tag.value;
-                        editor.selection.moveToBookmark(editor.windowManager.bookmark);
-                        insertHtml(editor, str);
-                    } else {
-                        insertHtml(editor, "");
+                    <c:if test="${doInsertTag}">
+                        p.openaksess.common.debug("Setting editcontext.doInsertTag = true");
+                        p.openaksess.editcontext.doInsertTag = true;
+                    </c:if>
 
-                        if(window.opener && window.opener.insertMultimedia){
-                            window.opener.insertMultimedia(metadata);
+                        var editor = p.tinymce.EditorManager.activeEditor;
+                        if (p.openaksess.editcontext.doInsertTag) {
+                            // Insert IMG or other tag
+                            var str = document.mediaform.tag.value;
+                            editor.selection.moveToBookmark(editor.windowManager.bookmark);
+                            insertHtml(editor, str);
                         } else {
-                            p.openaksess.editcontext.insertMultimedia(metadata);
+                            insertHtml(editor, "");
+
+                            if(window.opener && window.opener.insertMultimedia){
+                                window.opener.insertMultimedia(metadata);
+                            } else {
+                                p.openaksess.editcontext.insertMultimedia(metadata);
+                            }
                         }
                     }
-                }
 
-                if (window.opener) {
-                    window.close();
-                } else {
-                    if(p.tinymce.EditorManager.activeEditor){
-                        var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
-                        if (activeTinyPopup){
-                            activeTinyPopup.close();
-                        } else{
+                    if (window.opener) {
+                        window.close();
+                    } else {
+                        if(p.tinymce.EditorManager.activeEditor){
+                            var activeTinyPopup = p.tinymce.EditorManager.activeEditor.windowManager.windows[0];
+                            if (activeTinyPopup){
+                                activeTinyPopup.close();
+                            } else{
+                                window.setTimeout(p.openaksess.common.modalWindow.close, 300);
+                            }
+                        } else {
                             window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                         }
-                    } else {
-                        window.setTimeout(p.openaksess.common.modalWindow.close, 300);
                     }
                 }
-            }
 
-            function insertHtml(editor, html) {
-                if (editor) {
-                    editor.execCommand("mceInsertRawHTML", false, html);
+                function insertHtml(editor, html) {
+                    if (editor) {
+                        editor.execCommand("mceInsertRawHTML", false, html);
+                    }
                 }
-            }
-        </script>
-    </head>
-    <body onLoad="insertMMObject()">
-    <form name="mediaform" style="display:none;">
-        <textarea name="tag" rows="2" cols="30"><%=MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
-    </form>
-    </body>
-</html>
+            </script>
+        </head>
+        <body onLoad="insertMMObject()">
+        <form name="mediaform" style="display:none;">
+            <textarea name="tag" rows="2" cols="30"><%=MultimediaTagCreator.mm2HtmlTag(baseUrl, mm, null, maxWidth, -1, null)%></textarea>
+        </form>
+        </body>
+    </html>
 
 

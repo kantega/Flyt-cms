@@ -34,7 +34,8 @@
         }
         function buttonOkPressed() {
             var val = validateUpload();
-            if (val){//validateUpload()) {
+
+            if (val){
                 document.uploadForm.submit();
             }
             return false;
@@ -50,7 +51,7 @@
                 <c:forEach var="fileType" items="${blacklistedFileTypes}" varStatus="status">
                 blacklistedFileTypes[${status.index}] = ".${fileType}";
                 </c:forEach>
-                for (i = 0; i < blacklistedFileTypes.length; i++) {
+                for (var i = 0; i < blacklistedFileTypes.length; i++) {
                     var indexOfMatch = fileName.search(blacklistedFileTypes[i]);
                     var expectedIndexOfMatch = fileName.length - blacklistedFileTypes[i].length;
                     if ((indexOfMatch != -1) && (indexOfMatch == expectedIndexOfMatch)) {
@@ -152,6 +153,7 @@
             </c:if>
 
             <input type="hidden" name="fileUploadedFromEditor" value="${fileUploadedFromEditor}">
+            <input type="hidden" name="doInsertTag" value="${doInsertTag}">
 
             <div class="formElement">
                 <div class="heading">

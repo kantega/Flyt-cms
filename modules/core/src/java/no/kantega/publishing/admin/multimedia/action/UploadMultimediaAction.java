@@ -35,11 +35,17 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipException;
 
 public class UploadMultimediaAction extends AbstractController {
@@ -110,7 +116,12 @@ public class UploadMultimediaAction extends AbstractController {
                     currentContent.addMultimedia(uploadedFile);
                 }
             }
-            return new ModelAndView(insertMultimediaView, Collections.singletonMap("media", uploadedFiles.get(0)));
+            boolean doInsertTag = parameters.getBoolean("doInsertTag", false);
+
+            Map<String, Object> model = new HashMap<>();
+            model.put("media", uploadedFiles.get(0));
+            model.put("doInsertTag", doInsertTag);
+            return new ModelAndView(insertMultimediaView, model);
         } else if (uploadedFiles.size() > 0) {
             List<Integer> ids = new ArrayList<>();
             for (Multimedia uploadedFile : uploadedFiles) {
