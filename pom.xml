@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.opensource-parent</groupId>
         <artifactId>opensource-parent</artifactId>
-        <version>1.1</version>
+        <version>1.8</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kantega.openaksess</groupId>
