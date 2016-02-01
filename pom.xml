@@ -27,9 +27,10 @@
     <version>7.4.28-mysql57-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
+
     <scm>
-        <connection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.4.28</connection>
-        <developerConnection>scm:svn:https://opensource.kantega.no/svn/openaksess/tags/openaksess-7.4.28</developerConnection>
+        <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
+        <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
     </scm>
 
     <pluginRepositories>
