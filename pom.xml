@@ -232,13 +232,6 @@
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>2.2.2</version>
-                <configuration>
-                    <remoteTagging>true</remoteTagging>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <goals>deploy</goals>
-                    <username>hudson</username>
-                    <password>${hudson.password}</password>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
