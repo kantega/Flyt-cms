@@ -44,6 +44,7 @@ import java.util.regex.Pattern;
 import static java.util.Arrays.asList;
 import static no.kantega.openaksess.search.provider.transformer.LocationUtil.locationWithoutTrailingSlash;
 import static no.kantega.publishing.api.content.Language.getLanguageAsISOCode;
+import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -272,7 +273,7 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
     }
 
     private String stripHtml(String html) {
-        Document document = Jsoup.parse(html);
+        Document document = Jsoup.parse(defaultString(html, ""));
         Document.OutputSettings outputSettings = document.outputSettings();
         outputSettings.prettyPrint(false);
         outputSettings.escapeMode(Entities.EscapeMode.xhtml);
