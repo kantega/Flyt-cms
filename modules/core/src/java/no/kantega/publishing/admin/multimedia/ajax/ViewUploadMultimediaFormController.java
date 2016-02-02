@@ -43,18 +43,18 @@ public class ViewUploadMultimediaFormController {
     @RequestMapping(value = "/admin/multimedia/ViewUploadMultimediaForm.action", method = RequestMethod.GET)
     public String showForm(Model model,
                            @RequestParam(required = false, defaultValue = "-1") Integer id,
-                           @RequestParam(required = false, defaultValue = "-1") Integer folderId,
+                           @RequestParam(required = false, defaultValue = "-1") Integer parentId,
                            @RequestParam(required = false, defaultValue = "false") Boolean fileUploadedFromEditor,
                            @RequestParam(defaultValue = "false") Boolean doInsertTag,
                            HttpServletRequest request) throws Exception {
 
         SecuritySession securitySession = SecuritySession.getInstance(request);
 
-        if (folderId == -1) {
-            folderId = 0;
+        if (parentId == -1) {
+            parentId = 0;
         }
 
-        model.addAttribute("parentId", folderId);
+        model.addAttribute("parentId", parentId);
         model.addAttribute("fileUploadedFromEditor", fileUploadedFromEditor);
         model.addAttribute("doInsertTag", doInsertTag);
         model.addAttribute("id", id);
