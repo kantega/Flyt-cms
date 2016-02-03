@@ -98,6 +98,7 @@ public class HTMLEditorHelper {
         value = StringUtils.replace(value, "</HR>", "");
         value = StringUtils.replace(value, "</BR>", "");
         value = StringUtils.replace(value, "</IMG>", "");
+        value = StringUtils.replace(value, "&lt;@WEB@&gt;", "<@WEB@>");
 
         return value;
     }
