@@ -31,7 +31,8 @@
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
         <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <organization>
         <name>Kantega AS</name>
