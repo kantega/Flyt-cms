@@ -130,10 +130,18 @@ openaksess.editcontext = function()  {
         insertLink : function(attribs) {
             openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
             var editor = getParent().tinymce.EditorManager.activeEditor;
-            openaksess.common.debug("insertLink: move to bookmark");
-            openaksess.common.debug("Createlink");
+            openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
 
-            editor.execCommand("CreateLink", false, attribs.href, {skip_undo : 1});
+            var selectionText = editor.selection.getContent({format : "text"});
+            var aTag = '<a';
+            var attrs = Object.keys(attribs);
+            for (var i = 0; i < attrs.length; i++){
+                var attr = attrs[i];
+                aTag += ' ' + attr + '="' + attribs[attr] + '"'
+            }
+            aTag += '>' + selectionText + '</a>';
+
+            editor.selection.setContent(aTag, {format : "html"});
 
             openaksess.common.debug("insertLink done");
         },
