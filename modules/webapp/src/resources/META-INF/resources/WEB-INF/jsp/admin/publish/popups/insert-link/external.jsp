@@ -18,7 +18,7 @@
 
         var attribs = {'href': url};
         if (frm.newwindow.checked) {
-            attribs['onclick'] = 'window.open(this.href); return false';
+            attribs['target'] = '_blank';
         }
 
         return attribs;

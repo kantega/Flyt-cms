@@ -130,18 +130,80 @@ openaksess.editcontext = function()  {
         insertLink : function(attribs) {
             openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
             var editor = getParent().tinymce.EditorManager.activeEditor;
-            openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
+            // from tinymce link plugin
+            var data = attribs, selection = editor.selection, dom = editor.dom, selectedElm, anchorElm, initialText, onlyText;
+            var href = data.href;
+            initialText = selection.getContent({format : "text"});
 
-            var selectionText = editor.selection.getContent({format : "text"});
-            var aTag = '<a';
-            var attrs = Object.keys(attribs);
-            for (var i = 0; i < attrs.length; i++){
-                var attr = attrs[i];
-                aTag += ' ' + attr + '="' + attribs[attr] + '"'
+            function isOnlyTextSelected(anchorElm) {
+                var html = selection.getContent();
+
+                // Partial html and not a fully selected anchor element
+                if (/</.test(html) && (!/^<a [^>]+>[^<]+<\/a>$/.test(html) || html.indexOf('href=') == -1)) {
+                    return false;
+                }
+
+                if (anchorElm) {
+                    var nodes = anchorElm.childNodes, i;
+
+                    if (nodes.length === 0) {
+                        return false;
+                    }
+
+                    for (i = nodes.length - 1; i >= 0; i--) {
+                        if (nodes[i].nodeType != 3) {
+                            return false;
+                        }
+                    }
+                }
+
+                return true;
             }
-            aTag += '>' + selectionText + '</a>';
 
-            editor.selection.setContent(aTag, {format : "html"});
+            function insertLink() {
+                var linkAttrs = {
+                    href: href,
+                    target: data.target ? data.target : null,
+                    rel: data.rel ? data.rel : null,
+                    "class": data["class"] ? data["class"] : null,
+                    title: data.title ? data.title : null
+                };
+
+                if (anchorElm) {
+                    editor.focus();
+
+                    if (onlyText && data.text != initialText) {
+                        if ("innerText" in anchorElm) {
+                            anchorElm.innerText = data.text;
+                        } else {
+                            anchorElm.textContent = data.text;
+                        }
+                    }
+
+                    dom.setAttribs(anchorElm, linkAttrs);
+
+                    selection.select(anchorElm);
+                    editor.undoManager.add();
+                } else {
+                    editor.execCommand('mceInsertLink', false, linkAttrs);
+                }
+            }
+
+            openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
+            debugger;
+
+            selectedElm = selection.getNode();
+            anchorElm = dom.getParent(selectedElm, 'a[href]');
+            onlyText = isOnlyTextSelected();
+
+            data.text = initialText = anchorElm ? (anchorElm.innerText || anchorElm.textContent) : selection.getContent({format: 'text'});
+            data.href = anchorElm ? dom.getAttrib(anchorElm, 'href') : '';
+
+            if (anchorElm) {
+                data.target = dom.getAttrib(anchorElm, 'target');
+            }
+
+            insertLink();
 
             openaksess.common.debug("insertLink done");
         },
