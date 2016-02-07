@@ -159,7 +159,10 @@
             content_css : "${pageContext.request.contextPath}${cssPath}",
 
             block_formats: "${blockFormats}",
-
+            table_style_by_css : true,
+            table_default_attributes : {
+                border: '1'
+            },
             style_formats: [
                 {title: 'Bold text', inline: 'b'},
                 {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
