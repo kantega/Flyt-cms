@@ -190,7 +190,6 @@ openaksess.editcontext = function()  {
             }
 
             openaksess.common.debug("insertLink: " + JSON.stringify(attribs));
-            debugger;
 
             selectedElm = selection.getNode();
             anchorElm = dom.getParent(selectedElm, 'a[href]');
