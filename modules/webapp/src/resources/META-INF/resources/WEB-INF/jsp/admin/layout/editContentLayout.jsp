@@ -172,12 +172,31 @@
             }
             return false;
         }
+
+        function hasOpenWindows() {
+            var hasOpenWindows = false;
+            var editors = window.tinymce.editors;
+            for (var i = 0; i < editors.length; i++) {
+                var editor = editors[i];
+                if(editor.windowManager.windows && editor.windowManager.windows.length > 0) {
+                    hasOpenWindows = true;
+                    break;
+                }
+            }
+            openaksess.common.debug("Has open windows: " + hasOpenWindows);
+            return hasOpenWindows;
+        }
+
         function autosaveMethod(){
-            openaksess.editcontext.saveAll(); // Saves tinyMCE data to textareas
-            var currentForm = $("#EditContentForm").serializeArray();
-            if( formIsChanged(currentForm) ){
+            if(hasOpenWindows()){
                 openaksess.common.debug("editContentLayout.saveBackgroundDraft");
-                saveContentBackgroundDraft();
+            } else {
+                openaksess.editcontext.saveAll(); // Saves tinyMCE data to textareas
+                var currentForm = $("#EditContentForm").serializeArray();
+                if (formIsChanged(currentForm)) {
+                    openaksess.common.debug("editContentLayout.saveBackgroundDraft");
+                    saveContentBackgroundDraft();
+                }
             }
         }
 
