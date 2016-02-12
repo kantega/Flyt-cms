@@ -72,8 +72,6 @@
                             editor.selection.moveToBookmark(editor.windowManager.bookmark);
                             insertHtml(editor, str);
                         } else {
-                            insertHtml(editor, "");
-
                             if(window.opener && window.opener.insertMultimedia){
                                 window.opener.insertMultimedia(metadata);
                             } else {

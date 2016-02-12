@@ -37,7 +37,6 @@
 
             openaksess.editcontext.doInsertTag = false;
             openaksess.editcontext.doInsertUrl = true;
-            openaksess.editcontext.lol = 'olololol';
             openaksess.editcontext.insertMultimediaLink = function (metadata) {
                 var frm = document.linkform;
                 frm.url.value = metadata.url;
