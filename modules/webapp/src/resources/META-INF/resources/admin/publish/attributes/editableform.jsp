@@ -78,6 +78,7 @@
                                     <option value="number"><kantega:label key="aksess.formeditor.validator.number"/></option>
                                     <option value="norwegianssn"><kantega:label key="aksess.formeditor.validator.norwegianssn"/></option>
                                     <option value="regularexpression"><kantega:label key="aksess.formeditor.validator.regularexpression"/></option>
+                                    <option value="norwegianphonenumber"><kantega:label key="aksess.formeditor.validator.norwegianphonenumber"/></option>
                                 </select>
                             </td>
                         </tr>
