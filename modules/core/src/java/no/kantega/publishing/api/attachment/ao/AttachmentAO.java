@@ -5,9 +5,12 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.util.InputStreamHandler;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface AttachmentAO {
+    int setAttachment(Connection c, Attachment attachment) throws SystemException;
+
     int setAttachment(Attachment attachment) throws SystemException;
 
     void deleteAttachment(int id) throws SystemException;

@@ -211,14 +211,10 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         }
     }
 
-    private void deleteOldGhostdrafts(Content content) {
-//        ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
-//        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
-//        ContentIdentifier cid3 = content.getContentIdentifier();
-//        int id = content.getAssociation().getId(); //cid.getContentId();
+    private void deleteOldGhostdrafts(Connection c, Content content) {
         int id = content.getId();
         List<Integer> contentVersionIds = getJdbcTemplate().queryForList("select contentVersionId from contentversion where ContentId = ? and Status = ?", Integer.class, id, ContentStatus.GHOSTDRAFT.getTypeAsInt());
-        // add normal drafts? and merge the two lists?
+
         if(contentVersionIds.size() == 0){
             return; //Nothing to delete
         }
@@ -651,16 +647,15 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             insertOrUpdateContentTable(c, content);
 
             if(newStatus != ContentStatus.GHOSTDRAFT || content.getStatus() == newStatus){
-                deleteTempContentVersion(content);
+                deleteTempContentVersion(c, content);
             }
 
             if(newStatus == ContentStatus.PUBLISHED || newStatus == ContentStatus.PUBLISHED_WAITING) { //waiting hearing
-                deleteOldGhostdrafts(content);
+                deleteOldGhostdrafts(c, content);
             }
 
             if (isNew || newStatus == ContentStatus.PUBLISHED) {
                 newVersionIsActive = true;
-//                deleteOldGhostdrafts(content);
             }
 
             if (!isNew) {
@@ -681,7 +676,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 if (association.getId() == -1) {
                     // New association: add
                     association.setContentId(content.getId());
-                    AssociationAO.addAssociation(association);
+                    AssociationAO.addAssociation(c, association);
                 }
             }
 
@@ -755,26 +750,10 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 c.commit();
             }
         } catch (TransactionLockException tle) {
-            if (c != null) {
-                try {
-                    if (dbConnectionFactory.useTransactions()) {
-                        c.rollback();
-                    }
-                } catch (SQLException e1) {
-                    log.error("Error rolling back transaction", e1);
-                }
-            }
+            rollBackIfTransactionEnabled(c);
             throw tle;
         } catch (Exception e) {
-            if (c != null) {
-                try {
-                    if (dbConnectionFactory.useTransactions()) {
-                        c.rollback();
-                    }
-                } catch (SQLException e1) {
-                    log.error("Error rolling back transaction", e);
-                }
-            }
+            rollBackIfTransactionEnabled(c);
             throw new SystemException("Feil ved lagring", e);
         } finally {
             try {
@@ -785,7 +764,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 // Could not close connection, probably closed already
             }
         }
-
 
         // Delete old versions (only keep last n versions)
         ContentTemplate ct = contentTemplateAO.getTemplateById(content.getContentTemplateId());
@@ -800,6 +778,18 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         content.setStatus(newStatus);
 
         return content;
+    }
+
+    private void rollBackIfTransactionEnabled(Connection c) {
+        if (c != null) {
+            try {
+                if (dbConnectionFactory.useTransactions()) {
+                    c.rollback();
+                }
+            } catch (SQLException e1) {
+                log.error("Error rolling back transaction", e1);
+            }
+        }
     }
 
     private void setVersionAsActive(Connection c, Content content) throws SQLException {
@@ -845,11 +835,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             cid.setVersion(content.getVersion());
             cid.setLanguage(content.getLanguage());
             deleteContentVersion(cid, true);
-//            if(content.getStatus() != ContentStatus.GHOSTDRAFT){
-//                deleteContentVersion(cid, true);
-//            } else {
-//                deleteGhostcopyContentVersion(cid);
-//            }
         }
     }
 
@@ -957,9 +942,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
      * Mechanism to prevent multiple instances or servers modifying same content object at the same time.
      * Will normally block when database is configured to use transactions,
      * if not it will throw an exception since the same TransactionId cannot be inserted in the transactionlocks table
-     * @param contentId
-     * @param c
-     * @throws TransactionLockException
      */
     private void addContentTransactionLock(int contentId, Connection c) throws TransactionLockException {
         if (contentId != -1) {

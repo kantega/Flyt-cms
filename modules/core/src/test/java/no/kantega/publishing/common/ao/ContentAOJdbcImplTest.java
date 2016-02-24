@@ -37,6 +37,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations= "classpath*:spring/testContext.xml")
@@ -238,12 +239,7 @@ public class ContentAOJdbcImplTest {
 
         assertNotNull(contentList);
         assertFalse(contentList.isEmpty());
-        Collection<Content> content = select(contentList, new Predicate<Content>() {
-            @Override
-            public boolean evaluate(Content o) {
-                return c.getId() == o.getId();
-            }
-        });
+        Collection<Content> content = select(contentList, o -> c.getId() == o.getId());
 
         assertTrue(content.iterator().next().getAttributes(AttributeDataType.ANY).isEmpty());
     }
@@ -259,4 +255,12 @@ public class ContentAOJdbcImplTest {
         assertEquals(ContentStatus.PUBLISHED, content.getStatus());
         assertEquals(1, content.getVersion());
     }
+
+    @Test
+    public void testGhostDraftHandling() {
+        //Test that ghost draft versjons are removed when normal save is executed.
+        fail();
+    }
+
+
 }

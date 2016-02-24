@@ -45,11 +45,11 @@ public class AttachmentAOImpl implements AttachmentAO {
     private ContentEventListener contentNotifier;
 
     @Override
-    public int setAttachment(Attachment attachment) throws SystemException {
-        if(contentNotifier == null){
-            contentNotifier = RootContext.getInstance().getBean("contentListenerNotifier", ContentEventListener.class);
-        }
-        try (Connection c = dbConnectionFactory.getConnection()){
+    public int setAttachment(Connection c, Attachment attachment) throws SystemException {
+        try {
+            if(contentNotifier == null){
+                contentNotifier = RootContext.getInstance().getBean("contentListenerNotifier", ContentEventListener.class);
+            }
             byte[] data = attachment.getData();
 
             attachment.setLastModified(new Date());
@@ -68,10 +68,10 @@ public class AttachmentAOImpl implements AttachmentAO {
                         st.execute();
                     }
                 } else {
-                    /*
-                     * Content id of attachment can not be set before after content is saved in database.
-                     * Update contentid now that content id has been set
-                     */
+                        /*
+                         * Content id of attachment can not be set before after content is saved in database.
+                         * Update contentid now that content id has been set
+                         */
                     try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ? where Id = ?")) {
                         st.setInt(1, attachment.getContentId());
                         st.setInt(2, attachment.getId());
@@ -104,7 +104,16 @@ public class AttachmentAOImpl implements AttachmentAO {
         } catch (SQLException e) {
             throw new SystemException("SQL Feil ved databasekall", e);
         }
+    }
 
+    @Override
+    public int setAttachment(Attachment attachment) throws SystemException {
+
+        try (Connection c = dbConnectionFactory.getConnection()){
+            return setAttachment(c, attachment);
+        } catch (SQLException e) {
+            throw new SystemException("SQL Feil ved databasekall", e);
+        }
     }
 
     private void indexAttachmentIfContentIdSet(Attachment attachment) {

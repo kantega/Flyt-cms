@@ -83,7 +83,11 @@ public class AssociationAO  {
     }
 
 
-    private static void addAssociation(Connection c, Association a) throws SystemException, SQLException {
+    public static void addAssociation(Connection c, Association a) throws SystemException, SQLException {
+        if (a.getAssociationtype() == AssociationType.SHORTCUT && a.getAssociationId() == -1) {
+            // Kan ikke opprette en snarvei uten å ha en knytningsid
+            return;
+        }
         int aid = a.getParentAssociationId();
 
         // Finn path
@@ -165,13 +169,6 @@ public class AssociationAO  {
      * @throws SystemException
      */
     public static void addAssociation(Association association) throws SystemException {
-
-        if (association.getAssociationtype() == AssociationType.SHORTCUT && association.getAssociationId() == -1) {
-            // Kan ikke opprette en snarvei uten å ha en knytningsid
-            return;
-        }
-
-
         try (Connection c = dbConnectionFactory.getConnection()){
             addAssociation(c, association);
         } catch (SQLException e) {
