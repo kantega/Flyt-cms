@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.util.database;
 
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.configuration.ConfigurationListener;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.exception.DatabaseConnectionException;
@@ -67,7 +66,7 @@ public class dbConnectionFactory {
     private static int dbDefaultQueryTimeout;
     private static int dbTransactionIsolationLevel = Connection.TRANSACTION_NONE;
 
-    private static boolean dbUseTransactions = false;
+    private static boolean dbUseTransactions = true;
 
     private static boolean dbEnablePooling = false;
     private static boolean dbCheckConnections = true;
