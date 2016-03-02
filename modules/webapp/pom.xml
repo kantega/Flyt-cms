@@ -50,8 +50,6 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-commons</artifactId>
-            <classifier>war</classifier>
-            <type>war</type>
             <version>${project.version}</version>
         </dependency>
 
