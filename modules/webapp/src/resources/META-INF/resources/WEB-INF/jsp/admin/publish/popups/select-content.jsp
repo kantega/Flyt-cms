@@ -74,6 +74,31 @@
             return currentItemIdentifier;
         };
 
+        var charMappings = [
+            {key:' ', replacement: '-'},
+            {key:'/', replacement: '-'},
+            {key:'\u00E5', replacement: 'a'},
+            {key:'\u00C5', replacement: 'A'},
+            {key:'\u00E4', replacement: 'a'},
+            {key:'\u00C4', replacement: 'A'},
+            {key:'\u00E6', replacement: 'a'},
+            {key:'\u00C6', replacement: 'A'},
+            {key:'\u00F8', replacement: 'o'},
+            {key:'\u00D8', replacement: 'O'},
+            {key:'\u00F6', replacement: 'o'},
+            {key:'\u00D6', replacement: 'O'}
+        ];
+
+        var LEGAL_URL_PATTERN = /[^a-zA-Z_0-9-+\\.:]/g;
+        function uglifyTitle(title) {
+            debugger;
+            for (var i = 0; i < charMappings.length; i++) {
+                var mapping = charMappings[i];
+                title = title.replace(new RegExp(mapping.key, 'g'), mapping.replacement);
+            }
+            return title.replace(LEGAL_URL_PATTERN, '');
+        }
+
         var updateParentWindowWithSelectedElement = function(elm){
             var href = elm.attr("href");
             var title = elm.attr("title");
@@ -87,7 +112,7 @@
                 </c:when>
                 <c:otherwise>
                     id = openaksess.common.getQueryParam("thisId", href);
-                    url = "/content/" + id + "/" + encodeURIComponent(title);
+                    url = "/content/" + id + "/" + uglifyTitle(title);
                 </c:otherwise>
             </c:choose>
             updateParentWindowWithContentAttributes(id, title,url);
