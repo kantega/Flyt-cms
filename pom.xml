@@ -269,6 +269,17 @@
                 </executions>
                 -->
             </plugin>
+			<plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5</version>
+                <configuration>
+                    <remoteTagging>true</remoteTagging>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <goals>deploy</goals>
+                    <username>git</username>
+                </configuration>
+                <inherited>true</inherited>
+            </plugin>
         </plugins>
     </build>
 
