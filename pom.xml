@@ -24,14 +24,14 @@
     <groupId>org.kantega.openaksess</groupId>
     <artifactId>openaksess</artifactId>
     <packaging>pom</packaging>
-    <version>7.4.28-mysql57-v3</version>
+    <version>7.4.28-mysql57-v4-SNAPSHOT</version>
     <name>OpenAksess</name>
     <url>http://opensource.kantega.no/aksess</url>
 
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
         <developerConnection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</developerConnection>
-      <tag>openaksess-7.4.28-mysql57-v3</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <pluginRepositories>
