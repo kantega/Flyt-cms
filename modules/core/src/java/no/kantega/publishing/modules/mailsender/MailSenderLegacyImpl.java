@@ -1,12 +1,12 @@
 package no.kantega.publishing.modules.mailsender;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.api.mail.Mailsender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.internet.MimeBodyPart;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 public class MailSenderLegacyImpl implements Mailsender {
@@ -17,8 +17,9 @@ public class MailSenderLegacyImpl implements Mailsender {
     public void send(String from, String to, String subject, String contentFile, String[] replaceStrings) {
         try {
             MailSender.send(from, to, subject, contentFile, replaceStrings);
-        } catch (ConfigurationException e) {
-            log.error("ConfigurationException", e);
+        } catch (Exception e) {
+            log.error("Error sending from: {}, to: {}, subject: {}, contentFile: {}, replaceStrings: {}", from, to, subject, contentFile, Arrays.toString(replaceStrings));
+            log.error("Exception", e);
         }
     }
 
@@ -26,8 +27,10 @@ public class MailSenderLegacyImpl implements Mailsender {
     public void send(String from, String to, String subject, String contentFile, Map<String, Object> parameters) {
         try {
             MailSender.send(from, to, subject, contentFile, parameters);
-        } catch (ConfigurationException e) {
-            log.error("ConfigurationException", e);
+        } catch (Exception e) {
+            log.error("Error sending from: {}, to: {}, subject: {}, contentFile: {}, replaceStrings: {}", from, to, subject, contentFile, parameters);
+
+            log.error("Exception", e);
         }
     }
 
@@ -35,8 +38,9 @@ public class MailSenderLegacyImpl implements Mailsender {
     public void send(String from, String to, String subject, String content) {
         try {
             MailSender.send(from, to, subject, content);
-        } catch (ConfigurationException e) {
-            log.error("ConfigurationException", e);
+        } catch (Exception e) {
+            log.error("Error sending from: {}, to: {}, subject: {}, content: {}", from, to, subject, content);
+            log.error("Exception", e);
         }
     }
 
@@ -44,8 +48,9 @@ public class MailSenderLegacyImpl implements Mailsender {
     public void send(String from, String to, String subject, MimeBodyPart[] bodyParts) {
         try {
             MailSender.send(from, to, subject, bodyParts);
-        } catch (ConfigurationException e) {
-            log.error("ConfigurationException", e);
+        } catch (Exception e) {
+            log.error("Error sending from: {}, to: {}, subject: {}, bodyParts: {}", from, to, subject, bodyParts.length);
+            log.error("Exception", e);
         }
     }
 
@@ -53,8 +58,8 @@ public class MailSenderLegacyImpl implements Mailsender {
     public void send(String from, String to, String cc, String bcc, String subject, MimeBodyPart[] bodyParts) {
         try {
             MailSender.send(from, to, cc, bcc, subject, bodyParts);
-        } catch (ConfigurationException e) {
-            log.error("ConfigurationException", e);
+        } catch (Exception e) {
+            log.error("Exception", e);
         }
     }
 
