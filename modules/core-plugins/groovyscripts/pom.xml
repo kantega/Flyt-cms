@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess-core-plugins-parent</artifactId>
-        <version>7.9.14-SNAPSHOT</version>
+        <version>7.9.14</version>
     </parent>
     <artifactId>openaksess-groovyscripts-plugin</artifactId>
     <name>OpenAksess Groovy scripts Plugin</name>
