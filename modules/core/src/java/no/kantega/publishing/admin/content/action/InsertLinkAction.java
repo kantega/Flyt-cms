@@ -91,6 +91,9 @@ public class InsertLinkAction extends AbstractController {
 
         }
 
+        model.put("allowNewAttachment", param.getBoolean("allowNewAttachment", true));
+        model.put("insertLink", param.getBoolean("insertLink", true));
+        model.put("insertTag", param.getBoolean("insertTag", false));
 
         model.put("url", url);
 

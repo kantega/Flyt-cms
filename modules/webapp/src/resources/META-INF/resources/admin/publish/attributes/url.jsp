@@ -44,6 +44,17 @@
 %>
 </div>
 <div class="buttonGroup">
+    <%
+        Configuration c = Aksess.getConfiguration();
+        if(c.getBoolean("urlattribute.onlyContent", true)){
+    %>
     <a href="#" onclick="openaksess.editcontext.selectContentUrl(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <%
+        } else {
+    %>
+    <a href="#" onclick="openaksess.editcontext.selectUrl(document.myform.<%=fieldName%>)" class="button"><span class="choose"><kantega:label key="aksess.button.choose"/></span></a>
+    <%
+        }
+    %>
     <a href="#" onclick="openaksess.editcontext.removeValueAndNameFromForm(document.myform.<%=fieldName%>)" class="button"><span class="remove"><kantega:label key="aksess.button.remove"/></span></a>
 </div>

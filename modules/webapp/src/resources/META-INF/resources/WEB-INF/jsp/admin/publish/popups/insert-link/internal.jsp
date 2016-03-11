@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script type="text/javascript">
     // Used by popup when sending data back to this form
-    
+
     openaksess.editcontext.doInsertTag = false;
 
     openaksess.editcontext.insertValueAndNameIntoForm = function (id, text) {
@@ -22,10 +22,13 @@
         var frm = document.linkform;
 
         var id = "";
+        var title = "Tittel";
         if (frm.smartlink.checked) {
-            id = frm.url_contentId.value ;
+            id = frm.url_contentId.value;
+            title = frm.url_contentIdtext.value;
         } else {
-            id = frm.url_associationId.value ;
+            id = frm.url_associationId.value;
+            title = frm.url_associationIdtext.value;
         }
 
         if (id == "") {
@@ -37,7 +40,7 @@
         if (frm.smartlink.checked) {
             url = "<%=URLHelper.getRootURL(request)%>content.ap?contentId=" + id + "&amp;contextId=$contextId$";
         } else {
-            url =  "<%=URLHelper.getRootURL(request)%>content.ap?thisId="+ id;
+            url =  "<%=URLHelper.getRootURL(request)%>content/"+ id + "/" + openaksess.common.uglifyTitle(title);
         }
 
         var anchor = frm.anchor.value;
@@ -47,7 +50,7 @@
             }
             url = url + "#" + anchor;
         }
-        
+
         return {'href': url};
     }
 

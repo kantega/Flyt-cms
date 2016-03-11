@@ -30,6 +30,29 @@
 
 <kantega:section id="content">
     <script type="text/javascript">
+        function getParent() {
+            if (window.opener) {
+                return window.opener;
+            } else {
+                return window.parent;
+            }
+        }
+
+        function closeWindow() {
+            if (window.opener) {
+                window.close();
+            } else {
+                try {
+                    var tinymce = getParent().tinymce;
+                    var ed = tinymce.editors[0];
+                    ed.windowManager.windows[0].close();
+                } catch (e) {
+                    openaksess.common.debug("Failed to close tiny modal " + e);
+                }
+                window.setTimeout(parent.openaksess.common.modalWindow.close,300);
+            }
+        }
+
         var hasSubmitted = false;
 
         function saveForm() {
@@ -61,7 +84,21 @@
                         form.append('<input type="hidden" name="ids" value="' + tmparr[1] +'" />');
                     }
                 }
-                document.editmediaform.submit();
+                var w = getParent();
+                if (w && w.openaksess.editcontext.insertMultimediaLink) {
+                    var id = form[0].id.value;
+                    var title = form[0].name.value;
+                    w.openaksess.editcontext.insertMultimediaLink({
+                        url : '/multimedia/' + id + '/' + w.openaksess.common.uglifyTitle(title),
+                        name: title,
+                        mimeType: '',
+                        fileExtension : ''
+                    });
+                    closeWindow();
+                } else {
+                    document.editmediaform.submit();
+                }
+
             }
         }
         $(document).ready(function() {

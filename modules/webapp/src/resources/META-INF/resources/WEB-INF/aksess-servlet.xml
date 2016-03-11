@@ -81,6 +81,7 @@
                 <!-- Popups for publishing -->
                 <prop key="/publish/popups/AddAttachment.action">AddAttachmentAction</prop>
                 <prop key="/publish/popups/InsertLink.action">InsertLinkAction</prop>
+                <prop key="/publish/popups/SelectLink.action">SelectLinkAction</prop>
                 <prop key="/publish/popups/InsertTable.action">InsertTableAction</prop>
                 <prop key="/publish/popups/AddAttribute.action">AddAttributeAction</prop>
 
@@ -579,6 +580,10 @@
 
     <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="InsertLinkAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/insert-link.jsp"/>
+    </bean>
+
+    <bean class="no.kantega.publishing.admin.content.action.InsertLinkAction" id="SelectLinkAction">
+        <property name="view" value="/WEB-INF/jsp/admin/publish/popups/select-link.jsp"/>
     </bean>
     <bean class="org.springframework.web.servlet.mvc.ParameterizableViewController" id="InsertTableAction">
         <property name="viewName" value="/WEB-INF/jsp/admin/publish/popups/insert-table.jsp"/>

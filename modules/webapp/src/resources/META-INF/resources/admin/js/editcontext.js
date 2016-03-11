@@ -307,6 +307,16 @@ openaksess.editcontext = function()  {
             openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: properties.contextPath + "/admin/publish/popups/SelectContent.action?refresh=" + getRefresh(),width: 400, height:500});
         },
 
+        /*
+         *  Popup window for selecting a page url for content, attachemnt, external og multimedia.
+         */
+        selectUrl : function (formElement) {
+            openaksess.common.debug("selectUrl formElement: " + formElement);
+            openaksess.editcontext.focusField = formElement;
+            openaksess.editcontext.doInsertTag = true;
+            var href = properties.contextPath +"/publish/popups/SelectLink.action?url=" + encodeURI(formElement.value);
+            openaksess.common.modalWindow.open({title:properties.editcontext.labels.selectcontent, iframe:true, href: href, width: 580, height:500});
+        },
 
         /*
          *  Popup vindu for selecting a page id

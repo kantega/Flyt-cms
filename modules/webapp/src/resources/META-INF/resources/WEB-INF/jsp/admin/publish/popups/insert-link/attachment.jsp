@@ -18,9 +18,11 @@
             <option></option>
         </select>
     </div>
+    <c:if test="${allowNewAttachment}">
     <div class="buttonGroup">
-        <a href="${pageContext.request.contextPath}/publish/popups/AddAttachment.action?insertLink=true" class="button"><span class="add"><kantega:label key="aksess.button.newattachment"/></span></a>
+        <a href="${pageContext.request.contextPath}/publish/popups/AddAttachment.action?insertLink=${insertLink}" class="button"><span class="add"><kantega:label key="aksess.button.newattachment"/></span></a>
     </div>
+    </c:if>
 
 </div>
 

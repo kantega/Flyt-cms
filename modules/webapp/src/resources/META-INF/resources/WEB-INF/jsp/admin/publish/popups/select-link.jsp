@@ -36,19 +36,12 @@
         function buttonOkPressed() {
             var attribs = getUrlAttributes();
             if (attribs != null) {
-                openaksess.common.debug("insert-link: buttonOkPressed");
-                openaksess.editcontext.insertLink(attribs);
-                openaksess.common.debug("insert-link: starting close");
-
-                var tinymce = getParent().tinymce;
-                for(var i = 0; i < tinymce.editors.length; i ++){
-                    var ed = tinymce.editors[i];
-                    if(ed.windowManager.windows[0]){
-                        ed.windowManager.windows[0].close();
-                    }
+                var w = getParent();
+                if (w) {
+                    w.openaksess.editcontext.insertValueIntoForm(attribs.href);
                 }
-
             }
+            closeWindow();
         }
     </script>
     <div id="SelectLinkType" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
@@ -70,7 +63,7 @@
             </li>
             <c:if test="${allowAttachments}">
                 <li class="<c:if test="${linkType == 'attachment'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
-                    <a href="?linkType=attachment${extraparams}"><kantega:label key="aksess.insertlink.attachment"/></a>
+                    <a href="?linkType=attachment&allowNewAttachment=false&insertLink=true${extraparams}"><kantega:label key="aksess.insertlink.attachment"/></a>
                 </li>
             </c:if>
             <li class="<c:if test="${linkType == 'email'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
@@ -78,7 +71,7 @@
             </li>
             <c:if test="${allowMediaArchive}">
                 <li class="<c:if test="${linkType == 'multimedia'}">ui-tabs-selected ui-state-active </c:if>ui-state-default ui-corner-top">
-                    <a href="?linkType=multimedia${extraparams}"><kantega:label key="aksess.insertlink.multimedia"/></a>
+                    <a href="?linkType=multimedia&insertLink=true${extraparams}"><kantega:label key="aksess.insertlink.multimedia"/></a>
                 </li>
             </c:if>
         </ul>

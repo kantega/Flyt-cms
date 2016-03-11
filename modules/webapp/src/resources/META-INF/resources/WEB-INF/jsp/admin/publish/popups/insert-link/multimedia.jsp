@@ -34,9 +34,10 @@
         }
 
         function selectMultimedia() {
-
-            openaksess.editcontext.doInsertTag = false;
-            openaksess.editcontext.doInsertUrl = true;
+            var insertTag = ${insertTag};
+            openaksess.editcontext.doInsertTag = insertTag;
+            openaksess.editcontext.doInsertUrl = !insertTag;
+            openaksess.common.debug('openaksess.editcontext.doInsertTag = ' + insertTag);
             openaksess.editcontext.insertMultimediaLink = function (metadata) {
                 var frm = document.linkform;
                 frm.url.value = metadata.url;
