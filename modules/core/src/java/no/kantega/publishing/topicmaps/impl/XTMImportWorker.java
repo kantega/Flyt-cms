@@ -49,8 +49,8 @@ public class XTMImportWorker{
     }
 
     public List<Topic> getTopicsFromDocument(Document document) throws TransformerException, XPathExpressionException {
-        List<Topic> topicList = new ArrayList<>();
         NodeList topics = (NodeList)XPathFactory.newInstance().newXPath().evaluate("//topic", document, XPathConstants.NODESET);
+        List<Topic> topicList = new ArrayList<>(topics.getLength());
         for (int i = 0; i < topics.getLength(); i++) {
             Element elmTopic = (Element)topics.item(i);
             Topic topic = getTopicFromElement(elmTopic);
@@ -102,7 +102,7 @@ public class XTMImportWorker{
         return topic;
     }
 
-    private String getAttributeValue(Element element,  String[] attributes,String... xpaths)
+    private String getAttributeValue(Element element, String[] attributes, String... xpaths)
             throws TransformerException, XPathExpressionException {
         String attributeValue = null;
         XPathFactory factory = XPathFactory.newInstance();
@@ -130,7 +130,7 @@ public class XTMImportWorker{
     private List<TopicBaseName> getBaseNamesForTopic(Element topicElement)
             throws TransformerException, XPathExpressionException {
         NodeList elmBaseNames = selectNodeList(topicElement, "baseName", "name");
-        List<TopicBaseName> baseNames = new ArrayList<TopicBaseName>();
+        List<TopicBaseName> baseNames = new ArrayList<>(elmBaseNames.getLength());
         for (int i = 0; i < elmBaseNames.getLength(); i++) {
             Element elmBaseName = (Element)elmBaseNames.item(i);
 
@@ -142,8 +142,7 @@ public class XTMImportWorker{
             if (scope != null) {
                 //TODO: Add support to query for mulitiple languages
                 // skip nynorsk, samisk and english
-                if ((scope.indexOf("#nno") != -1 || scope.indexOf("#eng") != -1 || scope.indexOf("#sme") != -1 ||
-                    scope.indexOf("639-eng") != -1 || scope.indexOf("639-nno") != -1 || scope.indexOf("639-sme") != -1)) {
+                if (notWantedLanguage(scope)) {
                     continue;
                 }
                 scope = removeLeadingSquare(scope);
@@ -153,7 +152,13 @@ public class XTMImportWorker{
         }
         return baseNames;
     }
-    
+
+    private boolean notWantedLanguage(String scope) {
+        return scope.contains("#nno") || scope.contains("#eng") || scope.contains("#sme")
+            || scope.contains("639-eng") || scope.contains("639-nno")
+            || scope.contains("639-sme") || scope.contains("639-smj") || scope.contains("639-sma");
+    }
+
     private NodeList selectNodeList(Element element, String... elementNames)
             throws TransformerException, XPathExpressionException {
         NodeList elements = null;
@@ -166,7 +171,7 @@ public class XTMImportWorker{
         }
         return elements;
     }
-    
+
     private String getString(Element element, String... xpaths){
         String value = null;
         for(String xpath: xpaths){
@@ -175,14 +180,13 @@ public class XTMImportWorker{
             }
         }
         return value;
-        
     }
 
     private List<TopicOccurence> getOccurencesForTopic(Element topicElement)
             throws TransformerException, XPathExpressionException {
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList elmOccurrences = (NodeList)xpath.evaluate("occurrence", topicElement, XPathConstants.NODESET);
-        List<TopicOccurence> occurences = new ArrayList<>();
+        List<TopicOccurence> occurences = new ArrayList<>(elmOccurrences.getLength());
         for (int i = 0; i < elmOccurrences.getLength(); i++) {
             Element elmOccurrence = (Element)elmOccurrences.item(i);
             TopicOccurence occurence = new TopicOccurence();
@@ -202,9 +206,9 @@ public class XTMImportWorker{
 
     public List<TopicAssociation> getTopicAssociationsFromDocument(Document document)
             throws TransformerException, XPathExpressionException {
-        List<TopicAssociation> topicAssociations = new ArrayList<TopicAssociation>();
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList associations = (NodeList)xpath.evaluate("association", document.getDocumentElement(), XPathConstants.NODESET);
+        List<TopicAssociation> topicAssociations = new ArrayList<>(associations.getLength());
         for (int i = 0; i < associations.getLength(); i++) {
             Element elmAssociation = (Element)associations.item(i);
 

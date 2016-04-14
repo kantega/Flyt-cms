@@ -43,6 +43,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 public class TopicMapService {
     private static final Logger log = LoggerFactory.getLogger(TopicMapService.class);
 
@@ -148,12 +150,14 @@ public class TopicMapService {
     }
 
     private void saveImportedTopic(int topicMapId, Topic topic) {
-        log.debug("Saving imported topic: " + topic.getBaseName());
+        log.debug("Saving imported topic: {}", topic.getBaseName());
         if (topic.getBaseNames().size() == 0) {
             topic.setBaseName(topic.getId());
         }
         for(TopicBaseName topicBaseName: topic.getBaseNames()){
-            topicBaseName.setScope(topic.getInstanceOf().getId());
+            if (nonNull(topic.getInstanceOf())) {
+                topicBaseName.setScope(topic.getInstanceOf().getId());
+            }
         }
         topicDao.setTopic(topic);
         createInstanceOf(topicMapId, topic);
