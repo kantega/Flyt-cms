@@ -49,7 +49,7 @@
     </bean>
 
     <bean class="org.kantega.openaksess.plugins.database.controller.FormSubmissionsExportExcelView" id="formSubmissionsExportExcelView"/>
-    
+
     <bean class="org.kantega.openaksess.plugins.database.controller.FormSubmissionsExportExcelController" id="formSubmissionsExportExcelAction">
         <property name="view" ref="formSubmissionsExportExcelView"/>
     </bean>
