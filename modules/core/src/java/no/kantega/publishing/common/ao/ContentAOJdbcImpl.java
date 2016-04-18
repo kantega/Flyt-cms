@@ -718,6 +718,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             } catch (SQLException e) {
                 // Could not close connection, probably closed already
             }
+            if (!dbConnectionFactory.useTransactions()) {
+                // Remove lock
+                try {
+                    removeContentTransactionLock(content.getId(), c);
+                } catch (SQLException e) {
+                    log.error("Error when removeContentTransactionLock for " + content.getId(), e);
+                }
+            }
         }
 
 
