@@ -26,11 +26,7 @@ import no.kantega.commons.util.HttpHelper;
 import no.kantega.publishing.admin.content.util.EditContentHelper;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.cache.SiteCache;
-import no.kantega.publishing.api.content.ContentAO;
-import no.kantega.publishing.api.content.ContentIdHelper;
-import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentStatus;
-import no.kantega.publishing.api.content.ContentTemplateAO;
+import no.kantega.publishing.api.content.*;
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.api.notes.NotesDao;
@@ -44,24 +40,7 @@ import no.kantega.publishing.common.ao.HearingAO;
 import no.kantega.publishing.common.cache.AssociationCategoryCache;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.AssociationCategory;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.AttributeDefaultValues;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentCreateParameters;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.DeletedItem;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.DocumentType;
-import no.kantega.publishing.common.data.Hearing;
-import no.kantega.publishing.common.data.HearingInvitee;
-import no.kantega.publishing.common.data.Note;
-import no.kantega.publishing.common.data.SiteMapEntry;
-import no.kantega.publishing.common.data.SortOrder;
-import no.kantega.publishing.common.data.UserContentChanges;
-import no.kantega.publishing.common.data.WorkList;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.AssociationType;
 import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -89,14 +68,7 @@ import org.springframework.context.ApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -470,6 +442,10 @@ public class ContentManagementService {
                 break;
             case WAITING_FOR_APPROVAL:
                 eventName = Event.SEND_FOR_APPROVAL;
+                break;
+            case ARCHIVED:
+            case GHOSTDRAFT:
+                eventName = c.getStatus().name();
                 break;
             default:
                 eventName = Event.PUBLISH_CONTENT;
