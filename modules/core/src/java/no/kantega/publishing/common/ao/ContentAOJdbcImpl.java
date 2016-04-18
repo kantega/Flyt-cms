@@ -19,35 +19,15 @@ package no.kantega.publishing.common.ao;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
-import no.kantega.publishing.api.content.ContentAO;
-import no.kantega.publishing.api.content.ContentHandler;
-import no.kantega.publishing.api.content.ContentIdHelper;
-import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.api.content.ContentStatus;
-import no.kantega.publishing.api.content.ContentTemplateAO;
+import no.kantega.publishing.api.content.*;
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.AssociationIdListComparator;
 import no.kantega.publishing.common.ContentComparator;
 import no.kantega.publishing.common.ao.rowmapper.AssociationRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentAttributeRowMapper;
 import no.kantega.publishing.common.ao.rowmapper.ContentRowMapper;
-import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.Attachment;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.ContentTemplate;
-import no.kantega.publishing.common.data.DisplayTemplate;
-import no.kantega.publishing.common.data.Multimedia;
-import no.kantega.publishing.common.data.SortOrder;
-import no.kantega.publishing.common.data.TemplateConfiguration;
-import no.kantega.publishing.common.data.UserContentChanges;
-import no.kantega.publishing.common.data.WorkList;
-import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentProperty;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ExpireAction;
-import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.exception.TransactionLockException;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
@@ -64,22 +44,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Comparator;
+import java.sql.*;
+import java.util.*;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.join;
@@ -783,6 +750,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 }
             } catch (SQLException e) {
                 // Could not close connection, probably closed already
+            }
+            if (!dbConnectionFactory.useTransactions()) {
+                // Remove lock
+                try {
+                    removeContentTransactionLock(content.getId(), c);
+                } catch (SQLException e) {
+                    log.error("Error when removeContentTransactionLock for " + content.getId(), e);
+                }
             }
         }
 
