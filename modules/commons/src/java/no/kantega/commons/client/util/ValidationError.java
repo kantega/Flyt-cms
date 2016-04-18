@@ -54,4 +54,13 @@ public class ValidationError {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "ValidationError{" +
+                "field='" + field + '\'' +
+                ", message='" + message + '\'' +
+                ", parameters=" + parameters +
+                '}';
+    }
 }

@@ -199,4 +199,18 @@ public class Topic {
     public void setImported(boolean imported) {
         this.imported = imported;
     }
+
+    @Override
+    public String toString() {
+        return "Topic{" +
+                "topicMapId=" + topicMapId +
+                ", id='" + id + '\'' +
+                ", instanceOf=" + instanceOf +
+                ", subjectIdentity='" + subjectIdentity + '\'' +
+                ", isTopicType=" + isTopicType +
+                ", isAssociation=" + isAssociation +
+                ", isSelectable=" + isSelectable +
+                ", baseNames=" + baseNames +
+                '}';
+    }
 }

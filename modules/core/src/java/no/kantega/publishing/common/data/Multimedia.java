@@ -246,7 +246,7 @@ public class Multimedia extends BaseObject {
     public void setProfileImageUserId(String profileImageUserId) {
         this.profileImageUserId = profileImageUserId;
     }
-    
+
     public int getNoFiles() {
         return noFiles;
     }
@@ -362,5 +362,17 @@ public class Multimedia extends BaseObject {
 
     public void setHasImageMap(boolean hasImageMap) {
         this.hasImageMap = hasImageMap;
+    }
+
+    @Override
+    public String toString() {
+        return "Multimedia{" +
+                "parentId=" + parentId +
+                ", contentId=" + contentId +
+                ", type=" + type +
+                ", name='" + name + '\'' +
+                ", filename='" + filename + '\'' +
+                ", size=" + size +
+                '}';
     }
 }

@@ -97,7 +97,7 @@ public class Attachment implements Serializable {
     public void setSize(int size) {
         this.size = size;
     }
-    
+
     public String getUrl() {
         String contextPath = Aksess.getContextPath();
         if (contextPath.endsWith("/")) {
@@ -115,5 +115,15 @@ public class Attachment implements Serializable {
         }else {
             return filename;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Attachment{" +
+                "contentId=" + contentId +
+                ", id=" + id +
+                ", filename='" + filename + '\'' +
+                ", size=" + size +
+                '}';
     }
 }

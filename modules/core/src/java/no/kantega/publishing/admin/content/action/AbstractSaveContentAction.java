@@ -64,6 +64,8 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
         HttpSession session = request.getSession();
         Content content = (Content)session.getAttribute(AdminSessionAttributes.CURRENT_EDIT_CONTENT);
+        log.debug("Content on start: {}");
+
         if (content == null) {
             return new ModelAndView(new RedirectView("Navigate.action"));
         }
@@ -73,7 +75,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
         Map<String, Object> model = getModel(content, request);
 
         if (request.getMethod().equalsIgnoreCase("POST")) {
-            log.info("Submit from user on content " + content.getTitle());
+            log.info("Submit from user on content " + content.getTitle() + " (" + content.getId() + ", " + content.getVisibilityStatus()+ ", " + content.getStatus() +")");
 
             boolean isModified = param.getBoolean("isModified");
 
@@ -91,7 +93,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             String action = param.getString("action");
 
             ValidationErrors errors = updateSubmittedValues(aksessService, content, param);
-
+            log.info("Updated {}, errors: {}", content, errors);
             String addRepeaterRow = param.getString("addRepeaterRow");
             String deleteRepeaterRow = param.getString("deleteRepeaterRow");
             if (addRepeaterRow != null && addRepeaterRow.length() > 0) {
@@ -170,6 +172,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
 
     private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status) throws NotAuthorizedException {
+        log.info("Saving content {} with status", content, status);
         String message;
         content = aksessService.checkInContent(content, status);
         message = null;

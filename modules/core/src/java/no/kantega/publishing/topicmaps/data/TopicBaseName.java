@@ -38,7 +38,15 @@ public class TopicBaseName {
     public void setBaseName(String baseName) {
         if (baseName.length() > 255) {
             baseName = baseName.substring(0, 254);
-        }        
+        }
         this.baseName = baseName;
+    }
+
+    @Override
+    public String toString() {
+        return "TopicBaseName{" +
+                "scope='" + scope + '\'' +
+                ", baseName='" + baseName + '\'' +
+                '}';
     }
 }

@@ -179,7 +179,20 @@ public class Association extends BaseObject {
 
     @Override
     public String toString() {
-        return String.format("{associationId: %s, contentId: %s, parentAssociationId: %s, siteId: %s, associationType: %s}",
-        associationId,contentId,parentAssociationId,siteId,associationtype);
+        return "Association{" +
+                "associationId=" + associationId +
+                ", contentId=" + contentId +
+                ", parentAssociationId=" + parentAssociationId +
+                ", category=" + category +
+                ", siteId=" + siteId +
+                ", associationtype=" + associationtype +
+                ", priority=" + priority +
+                ", name='" + name + '\'' +
+                ", path='" + path + '\'' +
+                ", depth=" + depth +
+                ", isCurrent=" + isCurrent +
+                ", isDeleted=" + isDeleted +
+                ", numberOfViews=" + numberOfViews +
+                '}';
     }
 }

@@ -91,4 +91,11 @@ public class ValidationErrors {
     public void addAll(ValidationErrors errors) {
         this.errors.addAll(errors.getErrors());
     }
+
+    @Override
+    public String toString() {
+        return "ValidationErrors{" +
+                "errors=" + errors +
+                '}';
+    }
 }

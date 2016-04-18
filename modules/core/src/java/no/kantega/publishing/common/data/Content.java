@@ -25,20 +25,12 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.attributes.Attribute;
 import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.data.attributes.RepeaterAttribute;
-import no.kantega.publishing.common.data.enums.AssociationType;
-import no.kantega.publishing.common.data.enums.ContentType;
-import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
-import no.kantega.publishing.common.data.enums.ExpireAction;
-import no.kantega.publishing.common.data.enums.ObjectType;
+import no.kantega.publishing.common.data.enums.*;
 import no.kantega.publishing.common.util.PrettyURLEncoder;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static no.kantega.publishing.api.content.attribute.AttributeDataType.CONTENT_DATA;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -987,6 +979,61 @@ public class Content extends BaseObject {
 
     @Override
     public String toString() {
-        return getTitle();
+        return "Content{" +
+                "type=" + type +
+                ", contentTemplateId=" + contentTemplateId +
+                ", metaDataTemplateId=" + metaDataTemplateId +
+                ", displayTemplateId=" + displayTemplateId +
+                ", documentTypeId=" + documentTypeId +
+                ", documentTypeIdForChildren=" + documentTypeIdForChildren +
+                ", groupId=" + groupId +
+                ", creator='" + creator + '\'' +
+                ", owner='" + owner + '\'' +
+                ", ownerPerson='" + ownerPerson + '\'' +
+                ", location='" + location + '\'' +
+                ", openInNewWindow=" + openInNewWindow +
+                ", alias='" + alias + '\'' +
+                ", createDate=" + createDate +
+                ", publishDate=" + publishDate +
+                ", expireDate=" + expireDate +
+                ", revisionDate=" + revisionDate +
+                ", changeFromDate=" + changeFromDate +
+                ", expireAction=" + expireAction +
+                ", visibilityStatus=" + visibilityStatus +
+                ", numberOfNotes=" + numberOfNotes +
+                ", versionId=" + versionId +
+                ", version=" + version +
+                ", status=" + status +
+                ", language=" + language +
+                ", title='" + title + '\'' +
+                ", altTitle='" + altTitle + '\'' +
+                ", description='" + description + '\'' +
+                ", image='" + image + '\'' +
+                ", keywords='" + keywords + '\'' +
+                ", publisher='" + publisher + '\'' +
+                ", lastModified=" + lastModified +
+                ", modifiedBy='" + modifiedBy + '\'' +
+                ", approvedBy='" + approvedBy + '\'' +
+                ", changeDescription='" + changeDescription + '\'' +
+                ", forumId=" + forumId +
+                ", associations=" + associations +
+                ", contentAttributes=" + contentAttributes +
+                ", metaAttributes=" + metaAttributes +
+                ", attachments=" + attachments +
+                ", multimedia=" + multimedia +
+                ", topics=" + topics +
+                ", isModified=" + isModified +
+                ", isCheckedOut=" + isCheckedOut +
+                ", isLocked=" + isLocked +
+                ", isSearchable=" + isSearchable +
+                ", isMinorChange=" + isMinorChange +
+                ", lastMajorChange=" + lastMajorChange +
+                ", lastMajorChangeBy='" + lastMajorChangeBy + '\'' +
+                ", ratingScore=" + ratingScore +
+                ", numberOfRatings=" + numberOfRatings +
+                ", numberOfComments=" + numberOfComments +
+                ", hearing=" + hearing +
+                ", attributesAreUpdatedFromTemplate=" + attributesAreUpdatedFromTemplate +
+                '}';
     }
 }

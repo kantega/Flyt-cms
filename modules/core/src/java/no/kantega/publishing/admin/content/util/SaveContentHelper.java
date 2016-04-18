@@ -25,7 +25,6 @@ import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttribute
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.AttributeHandler;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
@@ -51,27 +50,24 @@ public class SaveContentHelper {
     public ValidationErrors getHttpParameters(final ValidationErrors errors){
         final RequestParameters param = new RequestParameters(request, "utf-8");
 
-        content.doForEachAttribute(attributeDataType, new AttributeHandler() {
+        content.doForEachAttribute(attributeDataType, attr -> {
+            if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
+                UpdateAttributeFromRequestBehaviour updater = attr.getUpdateFromRequestBehaviour();
 
-            public void handleAttribute(Attribute attr) {
-                if (attr.isEditable() && !attr.isHidden(content) && roleCanEdit(attr, request)) {
-                    UpdateAttributeFromRequestBehaviour updater = attr.getUpdateFromRequestBehaviour();
+                updater.updateAttribute(param, content, attr);
 
-                    updater.updateAttribute(param, content, attr);
-
-                    // Map values to fixed content properties, such as publish date, title etc
-                    MapAttributeValueToContentPropertyBehaviour mapper = attr.getMapAttributeValueToContentPropertyBehaviour();
-                    if (mapper != null && attr.getField() != null) {
-                        String fieldNames = attr.getField();
-                        String[] fields = fieldNames.split(",");
-                        for (String field : fields) {
-                            mapper.mapAttributeValue(param, content, attr, field, errors);
-                        }
+                // Map values to fixed content properties, such as publish date, title etc
+                MapAttributeValueToContentPropertyBehaviour mapper = attr.getMapAttributeValueToContentPropertyBehaviour();
+                if (mapper != null && attr.getField() != null) {
+                    String fieldNames = attr.getField();
+                    String[] fields = fieldNames.split(",");
+                    for (String field : fields) {
+                        mapper.mapAttributeValue(param, content, attr, field, errors);
                     }
                 }
-                attr.validate(errors);
-
             }
+            attr.validate(errors);
+
         });
 
         return errors;

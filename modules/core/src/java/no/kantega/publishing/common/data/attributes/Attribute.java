@@ -19,14 +19,7 @@ package no.kantega.publishing.common.data.attributes;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.commons.util.XPathHelper;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.MapSimpleAttributeValueToContentPropertyBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.PersistSimpleAttributeBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistAttributeBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UnPersistSimpleAttributeBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateAttributeFromRequestBehaviour;
-import no.kantega.publishing.admin.content.behaviours.attributes.UpdateSimpleAttributeFromRequestBehaviour;
+import no.kantega.publishing.admin.content.behaviours.attributes.*;
 import no.kantega.publishing.api.cache.SiteCache;
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.api.model.Site;
@@ -37,7 +30,6 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.InvalidTemplateException;
 import no.kantega.publishing.spring.RootContext;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -52,7 +44,6 @@ import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.defaultString;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 /**
  * Representing a single attribute in a Content object.
@@ -447,13 +438,11 @@ public abstract class Attribute implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder toString = new StringBuilder(getClass().getSimpleName());
-        toString.append(" ");
-        toString.append(getTitle());
-        if (isNotBlank(value)) {
-            toString.append(": ");
-            toString.append(StringUtils.abbreviate(value, 20));
-        }
-        return toString.toString();
+        return getClass().getSimpleName() + "{" +
+                "name='" + name + '\'' +
+                ", field='" + field + '\'' +
+                ", value='" + value + '\'' +
+                ", parent=" + parent +
+                '}';
     }
 }
