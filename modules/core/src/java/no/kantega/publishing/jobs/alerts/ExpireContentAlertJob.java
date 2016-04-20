@@ -57,8 +57,11 @@ public class ExpireContentAlertJob {
         if (Aksess.getServerType() == ServerType.SLAVE) {
             log.info( "Job is disabled for server type slave");
             return;
+        } else if(Aksess.getConfiguration().getBoolean("ExpireContentAlertJob.disabled", false)) {
+            log.info( "ExpireContentAlertJob.disabled");
+            return;
         }
-        
+
         try {
             log.info( "Looking for content will expire in less than " + daysBeforeWarning + " days");
 
