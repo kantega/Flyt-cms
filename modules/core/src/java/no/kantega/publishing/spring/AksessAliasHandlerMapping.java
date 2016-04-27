@@ -33,7 +33,7 @@ public class AksessAliasHandlerMapping implements HandlerMapping, Ordered {
         LOG.debug("Checking request {} for match on alias", request.getRequestURI());
         HandlerExecutionChain handlerExecutionChain = null;
         String lookupPath = urlPathHelper.getLookupPathForRequest(request);
-        lookupPath = addTrailingSlash(lookupPath);
+        lookupPath = addTrailingSlash(lookupPath).toLowerCase();
 
         Set<String> aliases = contentAliasDao.getAllAliases();
 
