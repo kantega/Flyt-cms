@@ -39,7 +39,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
     @Cacheable(value = "ContentIdentifierCache")
     public ContentIdentifier getContentIdentifierBySiteIdAndAlias(int siteId, String alias) throws SystemException{
         String sql = "select associations.AssociationId, associations.SiteId, content.ContentId, content.Alias from associations, content" +
-                " where content.Alias = :alias and associations.Type = :associationtype and associations.SiteId = :siteid" +
+                " where lower(content.Alias) = :alias and associations.Type = :associationtype and associations.SiteId = :siteid" +
                 " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("alias", getNormalisedAlias(alias));
@@ -57,15 +57,15 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
 
     private String getNormalisedAlias(String alias) {
         if(alias.endsWith("/")){
-             return alias;
+             return alias.toLowerCase();
         } else {
-            return alias + "/";
+            return (alias + "/").toLowerCase();
         }
     }
 
     @Cacheable("ContentIdentifierCache")
     public String getAliasBySiteIdAndAssociationId(int siteId, int associationId) throws SystemException {
-        String sql = "select content.Alias from associations, content" +
+        String sql = "select lower(content.Alias) from associations, content" +
                 " where associations.Type = :associationtype and associations.SiteId = :siteid and associations.AssociationId = :associationid" +
                 " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)";
         Map<String, Object> parameters = new HashMap<>();
@@ -85,7 +85,7 @@ public class ContentIdentifierDaoJdbcImpl extends NamedParameterJdbcDaoSupport i
     @Override
     public List<ContentIdentifier> getContentIdentifiersByAlias(String alias) {
         String sql = "select associations.AssociationId, associations.SiteId, content.ContentId, content.Alias from associations, content" +
-                " where content.Alias = :alias and associations.Type = :associationtype" +
+                " where lower(content.Alias) = :alias and associations.Type = :associationtype" +
                 " and content.ContentId = associations.ContentId and (associations.IsDeleted = 0 or associations.IsDeleted is null)";
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("alias", getNormalisedAlias(alias));
