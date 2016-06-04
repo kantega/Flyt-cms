@@ -283,7 +283,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
     }
 
     private void setAlias(Content content, RequestParameters param, ValidationErrors errors) {
-        String alias = param.getString("alias", 2048);
+        String alias = param.getString("alias", 255);
         if (alias != null) {
             content.setAlias(alias);
             if (alias.length() > 0) {
