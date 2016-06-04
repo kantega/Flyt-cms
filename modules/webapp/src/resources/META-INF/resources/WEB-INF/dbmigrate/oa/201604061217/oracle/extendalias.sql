@@ -1,0 +1,1 @@
+ALTER TABLE content MODIFY (alias VARCHAR(2048));
