@@ -576,6 +576,8 @@
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
     </bean>
 
+    <bean class="no.kantega.publishing.admin.multimedia.action.EditAttachmentAction" />
+
     <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="AddAttributeAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/addattribute.jsp"/>
     </bean>
