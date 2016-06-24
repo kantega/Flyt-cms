@@ -19,6 +19,7 @@ package no.kantega.publishing.jobs.alerts;
 import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.mailsender.MailSender;
 import no.kantega.publishing.security.data.User;
 import org.slf4j.Logger;
@@ -35,7 +36,7 @@ public class ContentEmailAlertListener implements ContentAlertListener {
     private String mailTemplate = "expirecontent.vm";
     private String mailFrom = "noreply";
 
-    public void sendContentAlert(User user, List content) {
+    public void sendContentAlert(User user, List<Content> content) {
 
         String recipient = user.getEmail();
         if (recipient == null || !recipient.contains("@")) {

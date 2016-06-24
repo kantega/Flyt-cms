@@ -34,12 +34,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
+import java.util.*;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -66,7 +61,7 @@ public class RevisionContentAlertJob {
             query.setRevisionDateFrom(fromDate);
 
             Calendar calendar = new GregorianCalendar();
-            calendar.add(Calendar.DATE, 30);
+            calendar.add(Calendar.DATE, daysBeforeWarning);
             query.setRevisionDateTo(calendar.getTime());
             query.setSortOrder(new SortOrder(ContentProperty.TITLE, false));
 
