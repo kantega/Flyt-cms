@@ -16,10 +16,11 @@
 
 package no.kantega.publishing.jobs.alerts;
 
+import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.security.data.User;
 
 import java.util.List;
 
 public interface ContentAlertListener {
-    public void sendContentAlert(User user, List content);
+    void sendContentAlert(User user, List<Content> content);
 }
