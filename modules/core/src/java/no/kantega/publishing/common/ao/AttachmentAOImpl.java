@@ -29,18 +29,15 @@ import no.kantega.publishing.spring.RootContext;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.sql.Blob;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AttachmentAOImpl implements AttachmentAO {
 
-    private final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize";
+    private final String DB_COLS = "Id, ContentId, Language, Filename, Lastmodified, FileSize, IsSearchable";
     private ContentIdHelper contentIdHelper;
     private ContentEventListener contentNotifier;
 
@@ -58,13 +55,14 @@ public class AttachmentAOImpl implements AttachmentAO {
 
             if (attachmentExists) {
                 if (data != null) {
-                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ?, Filename = ?, Data = ?, LastModified = ?, FileSize = ? where Id = ?")) {
+                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ?, Filename = ?, Data = ?, LastModified = ?, FileSize = ?, IsSearchable = ? where Id = ?")) {
                         st.setInt(1, attachment.getContentId());
                         st.setString(2, attachment.getFilename());
                         st.setBinaryStream(3, new ByteArrayInputStream(data), (int) data.length);
                         st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
                         st.setInt(5, attachment.getSize());
                         st.setInt(6, attachment.getId());
+                        st.setBoolean(7, attachment.isSearchable());
                         st.execute();
                     }
                 } else {
@@ -72,21 +70,24 @@ public class AttachmentAOImpl implements AttachmentAO {
                      * Content id of attachment can not be set before after content is saved in database.
                      * Update contentid now that content id has been set
                      */
-                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ? where Id = ?")) {
+                    try(PreparedStatement st = c.prepareStatement("update attachments set ContentId = ?, IsSearchable = ? where Id = ?")) {
                         st.setInt(1, attachment.getContentId());
-                        st.setInt(2, attachment.getId());
+                        st.setBoolean(2, attachment.isSearchable());
+                        st.setInt(3, attachment.getId());
                         st.execute();
                     }
                 }
             } else {
                 if (data != null) {
-                    try(PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize) values(?,?,?,?,?,?)", new String[] {"ID"})) {
+                    try(PreparedStatement st = c.prepareStatement("insert into attachments (ContentId, Language, Filename, Data, LastModified, FileSize, IsSearchable) values(?,?,?,?,?,?,?)", new String[] {"ID"})) {
                         st.setInt(1, attachment.getContentId());
                         st.setInt(2, attachment.getLanguage());
                         st.setString(3, attachment.getFilename());
                         st.setBinaryStream(4, new ByteArrayInputStream(data), data.length);
                         st.setTimestamp(5, new java.sql.Timestamp(new Date().getTime()));
                         st.setInt(6, attachment.getSize());
+                        st.setBoolean(7, attachment.isSearchable());
+
                         st.execute();
 
                         try(ResultSet rs = st.getGeneratedKeys()) {
@@ -213,7 +214,7 @@ public class AttachmentAOImpl implements AttachmentAO {
         file.setFilename(rs.getString("Filename"));
         file.setLastModified(rs.getTimestamp("LastModified"));
         file.setSize(rs.getInt("FileSize"));
-
+        file.setSearchable(rs.getBoolean("IsSearchable"));
         return file;
     }
 
@@ -225,11 +226,55 @@ public class AttachmentAOImpl implements AttachmentAO {
     @Override
     public void copyAttachment(int contentId, int newContentId) {
         try {
-            dbConnectionFactory.getJdbcTemplate().update("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, Data) " +
-                    "select ?, Language, Filename, Lastmodified, FileSize, Data from attachments where ContentId = ?", newContentId, contentId);
+            dbConnectionFactory.getJdbcTemplate().update("insert into attachments (ContentId, Language, Filename, Lastmodified, FileSize, IsSearchable, Data) " +
+                    "select ?, Language, Filename, Lastmodified, FileSize, IsSearchable, Data from attachments where ContentId = ?", newContentId, contentId);
         } catch (Exception e) {
             throw new SystemException("SQL feil ved kopiering av vedlegg", e);
         }
+    }
+
+    @Override
+    public List<Integer> getAllAttachmentIds() {
+        return dbConnectionFactory.getJdbcTemplate().queryForList("select Id from attachments", Integer.class);
+    }
+
+
+    @Override
+    public List<Attachment> getAttachments(List<Integer> allAttachmentIds) {
+        List<Attachment> attachments = new LinkedList<>();
+
+        if (!allAttachmentIds.isEmpty()) {
+            String query = "select " + DB_COLS + " from attachments where Id in " + getParamsString(allAttachmentIds);
+
+            try (Connection c = dbConnectionFactory.getConnection();
+                 PreparedStatement ps = c.prepareStatement(query)) {
+
+                for(int i = 1; i < allAttachmentIds.size() + 1; i++) {
+                    ps.setInt(i, allAttachmentIds.get(i - 1));
+                }
+                try(ResultSet rs = ps.executeQuery()) {
+                    while(rs.next()) {
+                        attachments.add(getAttachmentFromRS(rs));
+                    }
+
+                }
+            } catch (SQLException e) {
+                throw new SystemException("SQL Feil ved databasekall", e);
+            }
+        }
+        return attachments;
+    }
+
+    private static String getParamsString(List<Integer> allAttachmentIds) {
+        StringBuilder params = new StringBuilder("(");
+        for (int i = 0; i < allAttachmentIds.size(); i++) {
+            params.append('?');
+            if(i < allAttachmentIds.size() - 1) {
+                params.append(',');
+            }
+        }
+        params.append(")");
+        return params.toString();
     }
 
     public void setContentIdHelper(ContentIdHelper contentIdHelper) {

@@ -29,28 +29,28 @@ public interface LinkDao {
     /**
      * Empties the link list.
      */
-    public void deleteAllLinks();
+    void deleteAllLinks();
 
 
     /**
      *
      * @param emitter
      */
-    public void saveAllLinks(LinkEmitter emitter);
+    void saveAllLinks(LinkEmitter emitter);
 
     /**
      *
      * @param emitter
      * @param content
      */
-    public void saveLinksForContent(LinkEmitter emitter, Content content);
+    void saveLinksForContent(LinkEmitter emitter, Content content);
 
     /**
      *
      * @param linkQueryGenerator
      * @param handler
      */
-    public void doForEachLink(LinkQueryGenerator linkQueryGenerator, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
+    void doForEachLink(LinkQueryGenerator linkQueryGenerator, no.kantega.publishing.modules.linkcheck.check.LinkHandler handler);
 
     /**
      * Find all broken links under given parent
@@ -59,7 +59,7 @@ public interface LinkDao {
      * @param sortBy - string to sort on
      * @return List of broken links
      */
-    public List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sortBy);
+    List<LinkOccurrence> getBrokenLinksUnderParent(ContentIdentifier parent, String sortBy);
 
     /**
      * All broken links
@@ -75,20 +75,20 @@ public interface LinkDao {
      * @param contentId - The id of the content to investigate
      * @return List of link occurrences
      */
-    public List<LinkOccurrence> getBrokenLinksforContentId(int contentId);
+    List<LinkOccurrence> getBrokenLinksforContentId(int contentId);
 
 
     /**
      * Removes links for a given contentId.
      * @param contentId - The contentId for which to remove links
      */
-    public void deleteLinksForContentId(int contentId);
+    void deleteLinksForContentId(int contentId);
 
 
     /**
      * Returns the total number of broken links.
      * @return int - Total
      */
-    public int getNumberOfLinks();
+    int getNumberOfLinks();
 
 }

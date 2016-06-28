@@ -30,14 +30,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ConnectionCallback;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.support.JdbcDaoSupport;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.Date;
 import java.util.List;
 
@@ -300,10 +295,8 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
     }
 
     private List<LinkOccurrence> findMatchingLinkOccurrences(String query, Object[] args) {
-        return getJdbcTemplate().query(query, args, new RowMapper<LinkOccurrence>() {
-            public LinkOccurrence mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return getOccurrenceFromResultSet(rs);
-            }
+        return getJdbcTemplate().query(query, args, (rs, rowNum) -> {
+            return getOccurrenceFromResultSet(rs);
         });
     }
 

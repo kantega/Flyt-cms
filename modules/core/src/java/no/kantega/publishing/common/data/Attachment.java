@@ -35,6 +35,7 @@ public class Attachment implements Serializable {
     private String filename = "";
     private Date lastModified = null;
     private int size = 0;
+    private boolean isSearchable = true;
 
     private byte[] data = null;
 
@@ -125,5 +126,14 @@ public class Attachment implements Serializable {
                 ", filename='" + filename + '\'' +
                 ", size=" + size +
                 '}';
+    }
+
+    public boolean isSearchable() {
+        return isSearchable;
+    }
+
+    public Attachment setSearchable(boolean searchable) {
+        isSearchable = searchable;
+        return this;
     }
 }

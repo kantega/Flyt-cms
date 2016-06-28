@@ -51,6 +51,11 @@
         }
     }
 
+    function toggleSeachable(id, checked) {
+        $.post('${pageContext.request.contextPath}/admin/attachment/' + id + '/togglesearchable', function(response) {
+            openaksess.common.debug(id + ' set to searchable: ' + checked);
+        }, 'json');
+    }
 </script>
     <table border="0" cellspacing="0" cellpadding="0" width="600">
         <tr class="tableHeading">
@@ -58,6 +63,7 @@
             <td><strong><kantega:label key="aksess.attachments.size"/></strong></td>
             <td><strong><kantega:label key="aksess.attachments.lastmodified"/></strong></td>
             <td>&nbsp;</td>
+            <td><strong><kantega:label key="aksess.attachments.searchable"/></strong></td>
         </tr>
     <%
         List attachments = (List)request.getAttribute("attachments");
@@ -87,19 +93,19 @@
                     <a href="Javascript:updateAttachment(<%=a.getId()%>)" class="button"><span class="edit"><kantega:label key="aksess.button.replaceattachment"/></span></a>
                     <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="button"><span class="delete"><kantega:label key="aksess.button.deleteattachment"/></span></a>
                 </td>
+                <td><input type="checkbox" <% if(a.isSearchable()){%>checked<%}%> onchange="toggleSeachable(<%=a.getId()%>, this.checked)" /></td>
             </tr>
     <%
         }
     %>
             <tr>
                 <td colspan="4" align="right">
-                     <a href="Javascript:addAttachment()" class="button"><span class="new"><kantega:label key="aksess.button.newattachment"/></a></span>
+                     <a href="Javascript:addAttachment()" class="button"><span class="new"><kantega:label key="aksess.button.newattachment"/></span></a>
                 </td>
             </tr>
     </table>
 
     <%
-        
         if (attachments.size() == 0) {
     %>
             <div class=helpText><kantega:label key="aksess.attachments.hjelp"/></div>

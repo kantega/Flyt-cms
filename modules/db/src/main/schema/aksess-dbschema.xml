@@ -54,6 +54,7 @@
         <column name="Data" required="false" type="BLOB" size="2147483647"/>
         <column name="LastModified" required="true" type="TIMESTAMP" size="23,3"/>
         <column name="FileSize" required="true" type="INTEGER" size="11" default="0"/>
+        <column name="IsSearchable" required="false" type="INTEGER" size="10" default="1"/>
         <index name="idx_attachments">
             <index-column name="ContentId"/>
         </index>

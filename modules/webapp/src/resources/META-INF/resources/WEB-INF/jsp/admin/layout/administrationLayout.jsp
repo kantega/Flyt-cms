@@ -31,7 +31,7 @@
                 if (title.indexOf(linkTitle) != -1) {
                     $(this).addClass("selected");
                 }
-            });            
+            });
         });
     </script>
 </kantega:section>
@@ -52,7 +52,7 @@
         UIServices uiServices = (UIServices) WebApplicationContextUtils.getRequiredWebApplicationContext(getServletConfig().getServletContext()).getBean("uiServices");
 
         MenuItem menu = uiServices.createMenu();
-        
+
         final String root = Aksess.getContextPath();
         final String adminRoot = root + "/admin/administration/";
 
@@ -90,6 +90,7 @@
             overViewMenu.addLink("aksess.contentexpire.title", adminRoot + "ListContentExpiration.action");
             overViewMenu.addLink("aksess.userchanges.title", adminRoot + "ListUserChanges.action");
             overViewMenu.addLink("aksess.mailsubscription.title", adminRoot + "ViewMailSubscribers.action");
+            overViewMenu.addLink("aksess.unusedattachments.title", adminRoot + "unusedAttachments");
         }
 
         menu.addLink("aksess.resetlinkchecker.title", adminRoot + "ResetLinkChecker.action");
@@ -112,7 +113,7 @@
                     }
 
                 }
-        
+
             }
         }
         pageContext.setAttribute("adminMenu", menu);
