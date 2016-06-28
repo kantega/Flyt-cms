@@ -43,7 +43,7 @@
     </script>
     <admin:box>
         <h1><kantega:label key="aksess.unusedattachments.title"/></h1>
-
+        <p><kantega:label key="aksess.unusedattachments.disclaimer"/></p>
         <table>
             <tr>
                 <th>Vedlegg</th>
