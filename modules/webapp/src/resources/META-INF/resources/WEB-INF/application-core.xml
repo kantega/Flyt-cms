@@ -305,6 +305,7 @@
 
     <bean class="no.kantega.publishing.modules.mailsender.MailSenderLegacyImpl"/>
 
+    <bean class="no.kantega.publishing.jobs.alerts.UnusedAttachmentsFinder" />
 
     <beans profile="useCaching">
         <cache:annotation-driven mode="proxy" cache-manager="cacheManager" />
