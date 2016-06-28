@@ -21,7 +21,7 @@ public class UnusedAttachmentsFinder {
     @Autowired
     private LinkDao linkDao;
 
-    private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap?id=(<apId>\\d+))|(.*/attachment/(<prettyId>\\d+).*)");
+    private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+))|(.*/attachment/(?<prettyId>\\d+).*)");
 
     public List<Attachment> getUnusedAttachments() {
         List<Integer> referredAttachments = new LinkedList<>();
@@ -45,10 +45,14 @@ public class UnusedAttachmentsFinder {
 
     private String getAttachmentId(String url) {
         Matcher matcher = attachmentPattern.matcher(url);
-        String attachmentId = matcher.group("apId");
-        if(attachmentId == null) {
-            attachmentId = matcher.group("prettyId");
+        if(matcher.matches()) {
+            String attachmentId = matcher.group("apId");
+            if (attachmentId == null) {
+                attachmentId = matcher.group("prettyId");
+            }
+            return attachmentId;
+        } else {
+            return null;
         }
-        return attachmentId;
     }
 }
