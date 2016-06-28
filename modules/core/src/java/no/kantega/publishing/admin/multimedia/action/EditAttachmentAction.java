@@ -46,4 +46,22 @@ public class EditAttachmentAction {
         }
         return new ResponseEntity(HttpStatus.FORBIDDEN);
     }
+
+    @RequestMapping(value = "/{attachmentId}/delete", method = RequestMethod.POST)
+    public ResponseEntity deleteAttachment(@PathVariable Integer attachmentId, HttpServletRequest request) {
+        SecuritySession securitySession = SecuritySession.getInstance(request);
+        ContentManagementService cms = new ContentManagementService(securitySession);
+        Attachment attachment = attachmentAO.getAttachment(attachmentId);
+
+        try {
+            if(securitySession.isAuthorized(cms.getContent(ContentIdentifier.fromContentId(attachment.getContentId())), Privilege.UPDATE_CONTENT)) {
+                attachmentAO.deleteAttachment(attachmentId);
+                log.info("{} deleted attachment {}", securitySession.getIdentity().getUserId(), attachment.isSearchable(), attachmentId);
+                return new ResponseEntity(HttpStatus.NO_CONTENT);
+            }
+        } catch (NotAuthorizedException e) {
+            log.warn("{} tried to update attachment {}, but was not authorized", securitySession.getIdentity().getUserId(), attachmentId);
+        }
+        return new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
 }

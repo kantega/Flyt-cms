@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 public class AttachmentAOImpl implements AttachmentAO {
@@ -230,6 +231,50 @@ public class AttachmentAOImpl implements AttachmentAO {
         } catch (Exception e) {
             throw new SystemException("SQL feil ved kopiering av vedlegg", e);
         }
+    }
+
+    @Override
+    public List<Integer> getAllAttachmentIds() {
+        return dbConnectionFactory.getJdbcTemplate().queryForList("select Id from attachments", Integer.class);
+    }
+
+
+    @Override
+    public List<Attachment> getAttachments(List<Integer> allAttachmentIds) {
+        List<Attachment> attachments = new LinkedList<>();
+
+        if (!allAttachmentIds.isEmpty()) {
+            String query = "select " + DB_COLS + " from attachments where Id in " + getParamsString(allAttachmentIds);
+
+            try (Connection c = dbConnectionFactory.getConnection();
+                 PreparedStatement ps = c.prepareStatement(query)) {
+
+                for(int i = 1; i < allAttachmentIds.size() + 1; i++) {
+                    ps.setInt(i, allAttachmentIds.get(i - 1));
+                }
+                try(ResultSet rs = ps.executeQuery()) {
+                    while(rs.next()) {
+                        attachments.add(getAttachmentFromRS(rs));
+                    }
+
+                }
+            } catch (SQLException e) {
+                throw new SystemException("SQL Feil ved databasekall", e);
+            }
+        }
+        return attachments;
+    }
+
+    private static String getParamsString(List<Integer> allAttachmentIds) {
+        StringBuilder params = new StringBuilder("(");
+        for (int i = 0; i < allAttachmentIds.size(); i++) {
+            params.append('?');
+            if(i < allAttachmentIds.size() - 1) {
+                params.append(',');
+            }
+        }
+        params.append(")");
+        return params.toString();
     }
 
     public void setContentIdHelper(ContentIdHelper contentIdHelper) {

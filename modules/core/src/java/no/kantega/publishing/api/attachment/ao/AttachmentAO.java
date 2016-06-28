@@ -19,4 +19,8 @@ public interface AttachmentAO {
     List<Attachment> getAttachmentList(ContentIdentifier cid) throws SystemException;
 
     void copyAttachment(int contentId, int newContentId);
+
+    List<Integer> getAllAttachmentIds();
+
+    List<Attachment> getAttachments(List<Integer> allAttachmentIds);
 }
