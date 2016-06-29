@@ -64,7 +64,7 @@ public class RevisionContentAlertJob {
             query.setRevisionDateFrom(fromDate);
 
             Calendar calendar = new GregorianCalendar();
-            calendar.add(Calendar.DATE, 30);
+            calendar.add(Calendar.DATE, daysBeforeWarning);
             query.setRevisionDateTo(calendar.getTime());
 
             SortOrder sort = new SortOrder(ContentProperty.TITLE, false);

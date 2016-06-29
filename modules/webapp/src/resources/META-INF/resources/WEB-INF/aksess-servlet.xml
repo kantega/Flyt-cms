@@ -576,6 +576,8 @@
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/attachment-confirm.jsp"/>
     </bean>
 
+    <bean class="no.kantega.publishing.admin.multimedia.action.EditAttachmentAction" />
+
     <bean class="no.kantega.publishing.admin.viewcontroller.SimpleAdminController" id="AddAttributeAction">
         <property name="view" value="/WEB-INF/jsp/admin/publish/popups/addattribute.jsp"/>
     </bean>
@@ -796,7 +798,7 @@
     <!-- Various -->
     <bean class="no.kantega.publishing.admin.log.action.ViewServerlogController" id="viewServerlogController"/>
     <bean class="no.kantega.publishing.admin.administration.action.SqlToolController"/>
-
+    <bean class="no.kantega.publishing.admin.administration.action.UnusedAttachmentsAction" />
 
     <bean class="no.kantega.publishing.admin.log.action.LogJSErrorAction" id="LogJSErrorAction"/>
     <bean class="no.kantega.publishing.admin.ajax.AutocompleteTopicsAction" id="AutocompleteTopicsAction"/>

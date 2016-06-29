@@ -26,6 +26,7 @@
         <property name="multimediaDao" ref="aksessMultimediaDao"/>
     </bean>
     <bean id="cacheExpirator" class="no.kantega.publishing.cache.CacheExpirator"/>
+    <bean class="no.kantega.publishing.cache.MultimediaCacheExpirator"/>
 
     <bean id="contentListenerNotifierFactory" class="no.kantega.publishing.event.ContentListenerNotifierFactory">
         <property name="contentListenerNotifierId" value="contentListenerNotifier"/>

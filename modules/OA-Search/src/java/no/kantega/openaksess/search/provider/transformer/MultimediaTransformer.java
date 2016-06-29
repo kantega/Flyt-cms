@@ -1,5 +1,6 @@
 package no.kantega.openaksess.search.provider.transformer;
 
+import no.kantega.publishing.api.content.Language;
 import no.kantega.publishing.api.path.PathEntry;
 import no.kantega.publishing.common.ao.MultimediaDao;
 import no.kantega.publishing.common.data.Multimedia;
@@ -13,10 +14,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.*;
+
+import static java.util.Collections.emptyList;
 
 @Component
 public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia> {
@@ -31,6 +37,18 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         super(Multimedia.class);
     }
 
+    private ExecutorService executor;
+
+    @PostConstruct
+    public void init(){
+        executor = Executors.newSingleThreadExecutor();
+    }
+
+    @PreDestroy
+    public void shutdown(){
+        executor.shutdown();
+    }
+
     @Override
     public IndexableDocument transform(Multimedia document) {
         IndexableDocument indexableDocument = new IndexableDocument(generateUniqueID(document));
@@ -41,15 +59,17 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         indexableDocument.setDescription(document.getDescription());
         indexableDocument.setParentId(document.getParentId());
         indexableDocument.setSecurityId(document.getSecurityId());
-        indexableDocument.setLanguage("nno");
-        indexableDocument.addAttribute("url", document.getUrl());
 
-        indexableDocument.addAttribute("altTitle_no", document.getAltname());
+        indexableDocument.setLanguage(Language.getLanguageAsISOCode(Language.NORWEGIAN_BO));
+
+        indexableDocument.addAttribute("altname", document.getAltname());
         indexableDocument.addAttribute("author", document.getAuthor());
         indexableDocument.addAttribute("publishDate", document.getLastModified());
         indexableDocument.addAttribute("filename_str", document.getFilename());
         indexableDocument.addAttribute("filesize_i", document.getSize());
         indexableDocument.addAttribute("filetype_str", document.getMimeType().getType());
+
+        indexableDocument.addAttribute("url", document.getUrl());
 
         List<PathEntry> path = getMultimediaPath(document);
         indexableDocument.addAttribute("location", getPathString(path));
@@ -80,8 +100,20 @@ public class MultimediaTransformer extends DocumentTransformerAdapter<Multimedia
         return pathBuilder.toString();
     }
 
-    private List<PathEntry> getMultimediaPath(Multimedia document) {
-        return PathWorker.getMultimediaPath(document);
+    private List<PathEntry> getMultimediaPath(final Multimedia document) {
+        // Some times MultimediaTransformer.getMultimediaPath(...) hangs with stacktrace ending with java.net.SocketInputStream.socketRead0(Native Method)
+        try {
+            Future<List<PathEntry>> listFuture = executor.submit(new Callable<List<PathEntry>>() {
+                @Override
+                public List<PathEntry> call() throws Exception {
+                    return PathWorker.getMultimediaPath(document);
+                }
+            });
+            return listFuture.get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            log.error("Timedout getting path for multimedia {}", document.getId());
+            return emptyList();
+        }
     }
 
     @Override

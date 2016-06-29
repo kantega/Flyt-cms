@@ -25,11 +25,11 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
         List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia.getData());
         for (ExifMetadata metadata : metadatas) {
             String directory = metadata.getDirectory();
-            if (directory.equals(ExifMetadata.EXIF_DIRECTORY) || directory.equals(ExifMetadata.EXIF_SUBDIRECTORY)) {
+            if (directory.equalsIgnoreCase(ExifMetadata.EXIF_DIRECTORY) || directory.equalsIgnoreCase(ExifMetadata.EXIF_SUBDIRECTORY)) {
                 addExifMetadata(multimedia, metadata);
-            } else if (directory.equals(ExifMetadata.GPS_DIRECTORY)) {
+            } else if (directory.equalsIgnoreCase(ExifMetadata.GPS_DIRECTORY)) {
                 addExifGPSMetadata(multimedia, metadata);
-            } else if (directory.equals(ExifMetadata.IPTC_DIRECTORY)) {
+            } else if (directory.equalsIgnoreCase(ExifMetadata.IPTC_DIRECTORY)) {
                 addIptcMetadata(multimedia, metadata);
             }
         }

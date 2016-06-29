@@ -188,15 +188,15 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             } else {
 
                 try {
-                    contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by Version desc", contentId, requestedVersion);
+                    contentVersionId = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? and Version = ? order by Version desc", Integer.class, contentId, requestedVersion);
                 } catch (EmptyResultDataAccessException e) {
                     return null;
                 }
             }
         } else if(cid.getStatus() == ContentStatus.HEARING) {
             // Find version for hearing, if no hearing is found, active version is returned
-            int activeversion = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by Version desc", contentId);
-            contentVersionId = jdbcTemplate.queryForInt("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by Version desc", contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
+            int activeversion = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? and contentversion.IsActive = 1 order by Version desc", Integer.class, contentId);
+            contentVersionId = jdbcTemplate.queryForObject("select ContentVersionId from contentversion where ContentId = ? AND Status = ? AND ContentVersionId > ? order by Version desc", Integer.class, contentId, ContentStatus.HEARING.getTypeAsInt(), activeversion);
         } else {
             // Others should see active version
             contentVersionId = -1;
@@ -722,6 +722,14 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             } catch (SQLException e) {
                 // Could not close connection, probably closed already
             }
+            if (!dbConnectionFactory.useTransactions()) {
+                // Remove lock
+                try {
+                    removeContentTransactionLock(content.getId(), c);
+                } catch (SQLException e) {
+                    log.error("Error when removeContentTransactionLock for " + content.getId(), e);
+                }
+            }
         }
 
 
@@ -1232,7 +1240,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         if (contentId == -1) {
             return false;
         }
-        int cnt = getJdbcTemplate().queryForInt("select count(*) from contentversion where ContentId = ? and status IN (?,?)", contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
+        int cnt = getJdbcTemplate().queryForObject("select count(*) from contentversion where ContentId = ? and status IN (?,?)", Integer.class, contentId, ContentStatus.PUBLISHED.getTypeAsInt(), ContentStatus.ARCHIVED.getTypeAsInt());
         return cnt > 0;
     }
 

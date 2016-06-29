@@ -44,7 +44,7 @@ public class EditProfileController extends AbstractUserAdminController {
 
         ValidationErrors errors = new ValidationErrors();
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         model.put("domain", domain);
         model.put("errors", errors);
         model.put("configurations", getProfileConfiguration());
@@ -111,7 +111,7 @@ public class EditProfileController extends AbstractUserAdminController {
 
 
             // Redirect til innlegging av passord eller brukeroversikt
-            Map redirectModel = new HashMap();
+            Map<String, Object> redirectModel = new HashMap<>();
             redirectModel.put("domain", domain);
 
             PasswordManager passwordManager = config.getPasswordManager();
@@ -121,7 +121,7 @@ public class EditProfileController extends AbstractUserAdminController {
                 return new ModelAndView(new RedirectView("../password/reset"), redirectModel);
             } else {
                 // Gå til brukeroversikt
-                redirectModel.put("userId", profile.getIdentity().getUserId());                
+                redirectModel.put("userId", profile.getIdentity().getUserId());
                 redirectModel.put("message", "useradmin.profile.saved");
                 return new ModelAndView(new RedirectView("search"), redirectModel);
             }

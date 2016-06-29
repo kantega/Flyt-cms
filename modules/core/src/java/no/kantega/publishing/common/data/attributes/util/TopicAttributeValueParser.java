@@ -4,7 +4,10 @@ import no.kantega.publishing.topicmaps.ao.TopicAO;
 import no.kantega.publishing.topicmaps.data.Topic;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class TopicAttributeValueParser {
     public static Topic getValueAsTopic(String value) {
@@ -17,16 +20,16 @@ public class TopicAttributeValueParser {
     }
 
     public static List<Topic> getValueAsTopics(String value) {
-        List<Topic> topicList = new ArrayList<Topic>();
-
-        if (value == null || value.indexOf("") == -1) {
-            return topicList;
+        if (isBlank(value)) {
+            return Collections.emptyList();
         }
 
         String[] topics = value.split(",");
-        for (int i = 0; i < topics.length; i++) {
-            String[] topicStrings = topics[i].split(":");
-            if(topicStrings.length == 2) {
+        List<Topic> topicList = new ArrayList<>(topics.length);
+
+        for (String topic1 : topics) {
+            String[] topicStrings = topic1.split(":");
+            if (topicStrings.length == 2) {
                 int topicMapId = Integer.parseInt(topicStrings[0]);
                 String topicId = topicStrings[1];
                 Topic topic = TopicAO.getTopic(topicMapId, topicId);

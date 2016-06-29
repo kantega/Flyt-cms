@@ -111,8 +111,13 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(sql);
                 ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()) {
-                    ids.put(resultSet.getInt("id"));
+                while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
+                    int id = resultSet.getInt("id");
+                    log.trace("Got Id {}, queue size: {}", id, ids.size());
+                    if(!ids.offer(id, 5, TimeUnit.SECONDS)){
+                        log.info("Timed out offering id " + id);
+                    }
+                    log.trace("Put Id {}, queue size: {}", id, ids.size());
                 }
             } catch (Exception e) {
                 log.error("Error getting IDs", e);

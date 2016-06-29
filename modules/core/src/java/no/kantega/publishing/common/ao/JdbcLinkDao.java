@@ -296,6 +296,7 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
 
     private List<LinkOccurrence> findMatchingLinkOccurrences(String query, Object[] args) {
         return getJdbcTemplate().query(query, args, new RowMapper<LinkOccurrence>() {
+            @Override
             public LinkOccurrence mapRow(ResultSet rs, int rowNum) throws SQLException {
                 return getOccurrenceFromResultSet(rs);
             }

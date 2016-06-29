@@ -1,9 +1,9 @@
 package no.kantega.openaksess.rest.resources;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
 import no.kantega.openaksess.rest.representation.ContentTransferObject;
-import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
@@ -20,10 +20,6 @@ import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Kristian Myrhaug
- * @since 2015-08-11
- */
 @Path("/content")
 @Consumes("application/json")
 @Produces("application/json")
@@ -40,9 +36,10 @@ public class ContentResource {
 
     @GET
     public List<ContentTransferObject> get(@BeanParam ContentQueryTransferObject contentQuery){
-        ContentQuery test = new ContentQuery();
         ContentManagementService cms = new ContentManagementService(request);
-        List<Content> contentList = cms.getContentList(contentQuery.getQuery(), -1, new SortOrder(ContentProperty.TITLE));
+        ContentQuery query = contentQuery.getQuery();
+        query.setSortOrder(new SortOrder(ContentProperty.TITLE));
+        List<Content> contentList = cms.getContentList(query, query.getMaxRecords(), query.getSortOrder());
         if(!contentList.isEmpty()){
             return convertToTransferObject(contentList);
         }
@@ -71,8 +68,7 @@ public class ContentResource {
     public ContentTransferObject getByIdentifier(@PathParam("id") Integer id){
         ContentManagementService cms = new ContentManagementService(request);
 
-        ContentIdentifier cid = new ContentIdentifier();
-        cid.setAssociationId(id);
+        ContentIdentifier cid = ContentIdentifier.fromAssociationId(id);
 
         try{
             Content content = cms.getContent(cid);
