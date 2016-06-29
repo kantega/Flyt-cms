@@ -17,6 +17,7 @@ package no.kantega.publishing.admin.content.util;
  */
 
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
