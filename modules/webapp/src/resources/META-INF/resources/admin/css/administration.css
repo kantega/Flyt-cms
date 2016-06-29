@@ -22,7 +22,7 @@ body {
 }
 
 #MainPane {
-    overflow: auto;
+    overflow: visible;
 }
 
 .navigator {
