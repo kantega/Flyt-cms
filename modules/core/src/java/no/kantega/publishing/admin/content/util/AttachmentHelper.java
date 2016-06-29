@@ -18,18 +18,15 @@ package no.kantega.publishing.admin.content.util;
 
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.AttachmentAOImpl;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.FileAttribute;
-import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public class AttachmentHelper {
     public static void saveFileAsContentAttachment(Content content, FileAttribute fileAttribute, MultipartFile importFile) throws IOException {
-        AttachmentAO attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         int oldId = -1;
         try {
             oldId = Integer.parseInt(fileAttribute.getValue());
@@ -44,7 +41,7 @@ public class AttachmentHelper {
         if (!fileAttribute.isKeepOldVersions() && oldId != -1) {
             // Delete old version
             attachment.setId(oldId);
-        } else {
+        } else if (oldId != -1){
             setOldVersionNotSearchable(attachmentAO, oldId);
         }
 
