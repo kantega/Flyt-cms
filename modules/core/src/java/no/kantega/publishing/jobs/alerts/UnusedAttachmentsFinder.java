@@ -1,9 +1,12 @@
 package no.kantega.publishing.jobs.alerts;
 
-import no.kantega.publishing.api.attachment.ao.AttachmentAO;
-import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.common.ao.AttachmentAO;
+import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
+import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
+import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.LinkedList;
@@ -11,12 +14,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static java.util.Objects.nonNull;
 
 public class UnusedAttachmentsFinder {
-
-    @Autowired
-    private AttachmentAO attachmentAO;
 
     @Autowired
     private LinkDao linkDao;
@@ -24,23 +23,30 @@ public class UnusedAttachmentsFinder {
     private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+))|(.*/attachment/(?<prettyId>\\d+).*)");
 
     public List<Attachment> getUnusedAttachments() {
-        List<Integer> referredAttachments = new LinkedList<>();
+        final List<Integer> referredAttachments = new LinkedList<>();
 
         linkDao.doForEachLink(
-                () -> "select * from link where url like '%" + Aksess.VAR_WEB + "/attachment%'",
-                (linkId, url, occurrence) -> {
-                    String attachmentId = getAttachmentId(url);
+                new LinkQueryGenerator() {
+                    @Override
+                    public String getQuery() {
+                        return "select * from link where url like '%" + Aksess.VAR_WEB + "/attachment%'";
+                    }
+                },
+                new LinkHandler() {
+                    public void handleLink(int id, String link, LinkOccurrence occurrence) {
+                        String attachmentId = getAttachmentId(link);
 
-                    if(nonNull(attachmentId)) {
-                        referredAttachments.add(Integer.parseInt(attachmentId));
+                        if (attachmentId != null) {
+                            referredAttachments.add(Integer.parseInt(attachmentId));
 
+                        }
                     }
                 });
-        List<Integer> allAttachmentIds = attachmentAO.getAllAttachmentIds();
+        List<Integer> allAttachmentIds = AttachmentAO.getAllAttachmentIds();
 
         allAttachmentIds.removeAll(referredAttachments);
 
-        return attachmentAO.getAttachments(allAttachmentIds);
+        return AttachmentAO.getAttachments(allAttachmentIds);
     }
 
     private String getAttachmentId(String url) {

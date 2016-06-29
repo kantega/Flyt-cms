@@ -1,12 +1,12 @@
 package no.kantega.publishing.modules.mailsender;
 
-import no.kantega.commons.exception.ConfigurationException;
 import no.kantega.publishing.api.mail.Mailsender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.mail.internet.MimeBodyPart;
 import java.io.File;
+import java.util.Arrays;
 import java.util.Map;
 
 public class MailSenderLegacyImpl implements Mailsender {

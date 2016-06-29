@@ -39,7 +39,7 @@ public class ContentResource {
         ContentManagementService cms = new ContentManagementService(request);
         ContentQuery query = contentQuery.getQuery();
         query.setSortOrder(new SortOrder(ContentProperty.TITLE));
-        List<Content> contentList = cms.getContentList(query);
+        List<Content> contentList = cms.getContentList(query, query.getMaxRecords(), query.getSortOrder());
         if(!contentList.isEmpty()){
             return convertToTransferObject(contentList);
         }
