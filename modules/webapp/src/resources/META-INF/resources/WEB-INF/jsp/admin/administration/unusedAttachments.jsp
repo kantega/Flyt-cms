@@ -40,11 +40,27 @@
                 }, 'json');
             }
         }
+
+        function togglehideAttachmentAsContent(checked) {
+            var rows = $('.FILE');
+            if(checked) {
+                rows.hide();
+            } else {
+                rows.show();
+            }
+        }
     </script>
     <admin:box>
         <h1><kantega:label key="aksess.unusedattachments.title"/></h1>
         <p><kantega:label key="aksess.unusedattachments.disclaimer"/></p>
         <table>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><label for="hideAttachmentAsContent" ><kantega:label key="aksess.unusedattachments.hideAttachmentAsContent"/></label></td>
+                <td><input type="checkbox" id="hideAttachmentAsContent" onchange="togglehideAttachmentAsContent(this.checked)"></td>
+            </tr>
             <tr>
                 <th>Vedlegg</th>
                 <th>Modifisert</th>
@@ -54,7 +70,7 @@
             </tr>
         <c:forEach items="${unusedAttachments}" var="attachment">
             <aksess:use contentid="${attachment.associationId}">
-                <tr id="attachment${attachment.id}">
+                <tr id="attachment${attachment.id}" class="${aksess_this.type}">
                     <td><a href="${attachment.url}">${attachment.filename}</a></td>
                     <td><fmt:formatDate value="${attachment.lastModified}" pattern="dd.MM.yyyy" /></td>
                     <td><aksess:link ><aksess:getattribute name="title" /></aksess:link></td>

@@ -23,6 +23,7 @@ body {
 
 #MainPane {
     overflow: visible;
+    max-width: 85%;
 }
 
 .navigator {
