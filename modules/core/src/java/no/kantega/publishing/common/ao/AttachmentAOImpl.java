@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.collect.Lists;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
@@ -244,22 +245,25 @@ public class AttachmentAOImpl implements AttachmentAO {
         List<Attachment> attachments = new LinkedList<>();
 
         if (!allAttachmentIds.isEmpty()) {
-            String query = "select " + DB_COLS + " from attachments where Id in " + getParamsString(allAttachmentIds);
+            List<List<Integer>> partition = Lists.partition(allAttachmentIds, 500);
+            for (List<Integer> ids : partition) {
+                String query = "select " + DB_COLS + " from attachments where Id in " + getParamsString(ids);
 
-            try (Connection c = dbConnectionFactory.getConnection();
-                 PreparedStatement ps = c.prepareStatement(query)) {
+                try (Connection c = dbConnectionFactory.getConnection();
+                     PreparedStatement ps = c.prepareStatement(query)) {
 
-                for(int i = 1; i < allAttachmentIds.size() + 1; i++) {
-                    ps.setInt(i, allAttachmentIds.get(i - 1));
-                }
-                try(ResultSet rs = ps.executeQuery()) {
-                    while(rs.next()) {
-                        attachments.add(getAttachmentFromRS(rs));
+                    for(int i = 1; i < ids.size() + 1; i++) {
+                        ps.setInt(i, ids.get(i - 1));
                     }
+                    try(ResultSet rs = ps.executeQuery()) {
+                        while(rs.next()) {
+                            attachments.add(getAttachmentFromRS(rs));
+                        }
 
+                    }
+                } catch (SQLException e) {
+                    throw new SystemException("SQL Feil ved databasekall", e);
                 }
-            } catch (SQLException e) {
-                throw new SystemException("SQL Feil ved databasekall", e);
             }
         }
         return attachments;
