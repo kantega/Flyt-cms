@@ -41,7 +41,7 @@ public class AttachmentHelper {
         if (!fileAttribute.isKeepOldVersions() && oldId != -1) {
             // Delete old version
             attachment.setId(oldId);
-        } else {
+        } else if (oldId != -1){
             setOldVersionNotSearchable(oldId);
         }
 

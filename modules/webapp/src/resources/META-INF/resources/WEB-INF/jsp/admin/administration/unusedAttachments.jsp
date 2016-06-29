@@ -53,13 +53,15 @@
                 <th></th>
             </tr>
         <c:forEach items="${unusedAttachments}" var="attachment">
-            <tr id="attachment${attachment.id}">
-                <td><a href="${attachment.url}">${attachment.filename}</a></td>
-                <td><fmt:formatDate value="${attachment.lastModified}" pattern="dd.MM.yyyy" /></td>
-                <td><aksess:link contentid="${attachment.associationId}"><aksess:getattribute name="title" contentid="${attachment.associationId}" /></aksess:link></td>
-                <td><input type="checkbox" <c:if test="${attachment.searchable}">checked</c:if> onchange="toggleSearchable(${attachment.id}, this.checked)" /></td>
-                <td><button onclick="deleteAttachment(${attachment.id})">Slett</button></td>
-            </tr>
+            <aksess:use contentid="${attachment.associationId}">
+                <tr id="attachment${attachment.id}">
+                    <td><a href="${attachment.url}">${attachment.filename}</a></td>
+                    <td><fmt:formatDate value="${attachment.lastModified}" pattern="dd.MM.yyyy" /></td>
+                    <td><aksess:link ><aksess:getattribute name="title" /></aksess:link></td>
+                    <td><input type="checkbox" <c:if test="${attachment.searchable}">checked</c:if> onchange="toggleSearchable(${attachment.id}, this.checked)" /></td>
+                    <td><button onclick="deleteAttachment(${attachment.id})">Slett</button></td>
+                </tr>
+            </aksess:use>
         </c:forEach>
         </table>
     </admin:box>
