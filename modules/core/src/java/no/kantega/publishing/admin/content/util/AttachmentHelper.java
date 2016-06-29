@@ -16,6 +16,7 @@ package no.kantega.publishing.admin.content.util;
  * limitations under the License.
  */
 
+import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
@@ -40,6 +41,8 @@ public class AttachmentHelper {
         if (!fileAttribute.isKeepOldVersions() && oldId != -1) {
             // Delete old version
             attachment.setId(oldId);
+        } else {
+            setOldVersionNotSearchable(oldId);
         }
 
         byte[] data = importFile.getBytes();
@@ -55,6 +58,14 @@ public class AttachmentHelper {
         attachment.setData(null);
 
         ensureContentIdIsUpdatedWhenContentIsPublished(content, attachment);
+    }
+
+    private static void setOldVersionNotSearchable(int oldId) {
+        if(Aksess.getConfiguration().getBoolean("attachments.setOldVersionNotSearchable", true)) {
+            Attachment attachment = AttachmentAO.getAttachment(oldId);
+            attachment.setSearchable(false);
+            AttachmentAO.setAttachment(attachment);
+        }
     }
 
     private static void ensureContentIdIsUpdatedWhenContentIsPublished(Content content, Attachment attachment) {
