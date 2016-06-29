@@ -43,6 +43,8 @@ public class AttachmentHelper {
         if (!fileAttribute.isKeepOldVersions() && oldId != -1) {
             // Delete old version
             attachment.setId(oldId);
+        } else {
+            setOldVersionNotSearchable(attachmentAO, oldId);
         }
 
         byte[] data = importFile.getBytes();
@@ -58,6 +60,14 @@ public class AttachmentHelper {
         attachment.setData(null);
 
         ensureContentIdIsUpdatedWhenContentIsPublished(content, attachment);
+    }
+
+    private static void setOldVersionNotSearchable(AttachmentAO attachmentAO, int oldId) {
+        if(Aksess.getConfiguration().getBoolean("attachments.setOldVersionNotSearchable", true)) {
+            Attachment attachment = attachmentAO.getAttachment(oldId);
+            attachment.setSearchable(false);
+            attachmentAO.setAttachment(attachment);
+        }
     }
 
     private static void ensureContentIdIsUpdatedWhenContentIsPublished(Content content, Attachment attachment) {
