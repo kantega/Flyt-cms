@@ -421,7 +421,7 @@ public abstract class AbstractMenuTag extends BodyTagSupport {
             if (var != null) {
                 pageContext.setAttribute(var, status.getCurrent());
             }
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             return SKIP_BODY;
         }

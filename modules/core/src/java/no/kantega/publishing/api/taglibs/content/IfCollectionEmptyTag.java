@@ -44,7 +44,7 @@ public class IfCollectionEmptyTag extends AbstractGetCollectionTag {
             throw new JspTagException(e);
         }
 
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     /**

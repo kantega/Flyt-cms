@@ -27,7 +27,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 public class BoxTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(BoxTag.class);
     public int doStartTag()  throws JspException {
-        return EVAL_BODY_TAG;
+        return EVAL_BODY_BUFFERED;
     }
 
     public int doAfterBody() throws JspException {

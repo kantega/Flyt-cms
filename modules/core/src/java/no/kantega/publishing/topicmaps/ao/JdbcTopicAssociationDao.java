@@ -90,26 +90,23 @@ public class JdbcTopicAssociationDao extends JdbcDaoSupport implements TopicAsso
     public List<TopicAssociation> getTopicAssociations(Topic topic) {
 
         if (topic == null) {
-            return new ArrayList<TopicAssociation>();
+            return new ArrayList<>();
         }
 
-        String sql = "";
-
-        sql += " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmassociation.Imported, tmbasename.Basename, tmbasename.Scope FROM tmassociation";
-        sql += "   INNER JOIN tmbasename ON (tmassociation.TopicMapId = tmbasename.TopicMapId) AND (tmassociation.InstanceOf = tmbasename.TopicId) AND (tmassociation.Rolespec = tmbasename.Scope)";
-        sql += " WHERE (tmassociation.TopicRef = ? AND tmassociation.TopicMapId = ?) ORDER BY tmbasename.Basename";
+        String sql = " SELECT distinct tmassociation.InstanceOf, tmassociation.AssociatedTopicRef, tmassociation.Imported, tmbasename.Basename, tmbasename.Scope FROM tmassociation"
+                   +    " INNER JOIN tmbasename ON (tmassociation.TopicMapId = tmbasename.TopicMapId) AND (tmassociation.InstanceOf = tmbasename.TopicId) AND (tmassociation.Rolespec = tmbasename.Scope)"
+                   + " WHERE (tmassociation.TopicRef = ? AND tmassociation.TopicMapId = ?) ORDER BY tmbasename.Basename";
 
 
         List<TopicAssociation> associations = getJdbcTemplate().query(sql, new TopicAssociationRowMapper(topic),
                 topic.getId(),
                 topic.getTopicMapId());
 
-        sql = "";
-        sql += " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation";
-        sql += " FROM tmtopic";
-        sql += "   INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)";
-        sql += "   INNER JOIN tmassociation ON (tmtopic.TopicId = tmassociation.TopicRef) AND (tmtopic.TopicMapId = tmassociation.TopicMapId) ";
-        sql += " WHERE tmassociation.AssociatedTopicRef = ? AND tmtopic.TopicMapId = ? ORDER BY tmbasename.Basename";
+        sql = " SELECT tmtopic.TopicId, tmtopic.TopicMapId, tmtopic.InstanceOf, tmtopic.SubjectIdentity, tmbasename.Basename, tmbasename.Scope, tmtopic.IsTopicType, tmtopic.IsAssociation"
+            + " FROM tmtopic"
+            + "   INNER JOIN tmbasename ON (tmtopic.TopicId = tmbasename.TopicId) AND (tmtopic.TopicMapId = tmbasename.TopicMapId)"
+            + "   INNER JOIN tmassociation ON (tmtopic.TopicId = tmassociation.TopicRef) AND (tmtopic.TopicMapId = tmassociation.TopicMapId) "
+            + " WHERE tmassociation.AssociatedTopicRef = ? AND tmtopic.TopicMapId = ? ORDER BY tmbasename.Basename";
 
         List<Map<String, Object>> rows = getJdbcTemplate().queryForList(sql, topic.getId(), topic.getTopicMapId());
         for (Map<String, Object> row : rows) {
@@ -127,7 +124,7 @@ public class JdbcTopicAssociationDao extends JdbcDaoSupport implements TopicAsso
         }
 
         // Update topics with usage count
-        List<Topic> topics = new ArrayList<Topic>();
+        List<Topic> topics = new ArrayList<>();
         for (TopicAssociation a : associations) {
             topics.add(a.getAssociatedTopicRef());
         }
@@ -138,7 +135,7 @@ public class JdbcTopicAssociationDao extends JdbcDaoSupport implements TopicAsso
 
     public boolean isTopicAssociatedWithInstanceOf(String topicId, int topicMapId, String instanceOf) {
         String sql = "SELECT count(*) FROM tmassociation WHERE (topicref = ? OR associatedtopicref = ?) AND topicmapid = ? AND instanceof = ?";
-        return  getJdbcTemplate().queryForInt(sql,topicId,topicId,topicMapId, instanceOf) > 0;
+        return  getJdbcTemplate().queryForObject(sql,Integer.class, topicId,topicId,topicMapId, instanceOf) > 0;
     }
 
     public void deleteTopicAssociations(Topic topic) {

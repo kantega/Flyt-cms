@@ -40,13 +40,13 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
 
     public void deleteMultimedia(int id) throws ObjectInUseException {
         // Check if there are any children
-        int noChildren = getJdbcTemplate().queryForInt("select COUNT(id) from multimedia where ParentId = ?", id);
+        int noChildren = getJdbcTemplate().queryForObject("select COUNT(id) from multimedia where ParentId = ?", Integer.class, id);
         if (noChildren > 0) {
             throw new ObjectInUseException("Multimedia with id " + id + " is in use");
         }
 
         // Get parent id
-        int parentId = getJdbcTemplate().queryForInt("select parentId from multimedia where Id = ?", id);
+        int parentId = getJdbcTemplate().queryForObject("select parentId from multimedia where Id = ?", Integer.class, id);
 
         getJdbcTemplate().update("delete from multimedia where Id = ?", id);
 
@@ -147,12 +147,12 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
 
 
     public int getMultimediaCount() {
-        return getJdbcTemplate().queryForInt("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?", MultimediaType.MEDIA.getTypeAsInt());
+        return getJdbcTemplate().queryForObject("SELECT COUNT(id) AS count FROM multimedia WHERE type = ?",  Integer.class, MultimediaType.MEDIA.getTypeAsInt());
     }
 
     public void moveMultimedia(int multimediaId, int newParentId) {
         // Get old parent id
-        int oldParentId = getJdbcTemplate().queryForInt("SELECT parentId FROM multimedia WHERE Id = ? ", multimediaId);
+        int oldParentId = getJdbcTemplate().queryForObject("SELECT parentId FROM multimedia WHERE Id = ? ", Integer.class, multimediaId);
 
         // Set new parent id
         getJdbcTemplate().update("UPDATE multimedia SET ParentId = ? WHERE Id = ?", newParentId, multimediaId);
@@ -295,13 +295,13 @@ public class JdbcMultimediaDao extends NamedParameterJdbcDaoSupport implements M
 
 
     private void updateNoSubFoldersAndFiles(int parentId) {
-        int noFiles = getJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.MEDIA.getTypeAsInt());
-        int noSubFolders = getJdbcTemplate().queryForInt("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", parentId, MultimediaType.FOLDER.getTypeAsInt());
+        int noFiles = getJdbcTemplate().queryForObject("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", Integer.class, parentId, MultimediaType.MEDIA.getTypeAsInt());
+        int noSubFolders = getJdbcTemplate().queryForObject("select count(Id) as cnt from multimedia where ParentId = ? and Type = ?", Integer.class, parentId, MultimediaType.FOLDER.getTypeAsInt());
         getJdbcTemplate().update("update multimedia set NoFiles = ?, NoSubFolders = ? where Id = ?", noFiles, noSubFolders, parentId);
     }
 
     private void updateNumberOfUsages(int multimediaId) {
-        int noUsages = getJdbcTemplate().queryForInt("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", multimediaId);
+        int noUsages = getJdbcTemplate().queryForObject("SELECT COUNT(*) FROM multimediausage WHERE MultimediaId = ?", Integer.class, multimediaId);
         getJdbcTemplate().update("UPDATE multimedia SET NoUsages = ? WHERE Id = ?", noUsages, multimediaId);
     }
 

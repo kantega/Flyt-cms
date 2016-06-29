@@ -6,10 +6,10 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-fragment_3_0.xsd">
 
-    <name>openaksess-rest</name>
+    <name>openaksess_rest</name>
 
     <servlet>
-        <servlet-name>JaxRS content-api</servlet-name>
+        <servlet-name>JaxRS contentapi</servlet-name>
         <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
         <init-param>
             <param-name>javax.ws.rs.Application</param-name>
@@ -19,7 +19,7 @@
     </servlet>
 
     <servlet-mapping>
-        <servlet-name>JaxRS content-api</servlet-name>
+        <servlet-name>JaxRS contentapi</servlet-name>
         <url-pattern>/rest/*</url-pattern>
     </servlet-mapping>
 

@@ -68,7 +68,7 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
 
     @SuppressWarnings("unchecked")
     @Override
-    public List<Rating> getRatingsForUser(String userId) {        
+    public List<Rating> getRatingsForUser(String userId) {
         return getJdbcTemplate().query("select * from ratings where UserId = ? order by RatingDate desc", ratingRowMapper, userId);
     }
 
@@ -92,8 +92,8 @@ public class JdbcRatingDao extends JdbcDaoSupport implements RatingDao {
         }, context);
     }
 
-    private class RatingRowMapper implements RowMapper {
-        public Object mapRow(ResultSet rs, int i) throws SQLException {
+    private class RatingRowMapper implements RowMapper<Rating> {
+        public Rating mapRow(ResultSet rs, int i) throws SQLException {
             Rating r = new Rating();
 
             r.setUserid(rs.getString("UserId"));

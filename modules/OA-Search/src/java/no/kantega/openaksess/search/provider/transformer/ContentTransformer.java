@@ -7,6 +7,7 @@ import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.*;
+import no.kantega.publishing.common.data.enums.AttributeProperty;
 import no.kantega.publishing.topicmaps.ao.TopicDao;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.IndexableDocumentCustomizer;
@@ -252,6 +253,8 @@ public class ContentTransformer extends DocumentTransformerAdapter<Content> {
             value = ((ListAttribute) attribute).getValues();
         } else if (attribute instanceof ContentidAttribute) {
             value = asList(StringUtils.split(attribute.getValue(), ','));
+        } else if (attribute instanceof UserAttribute) {
+            value = asList(attribute.getValue(), attribute.getProperty(AttributeProperty.NAME));
         } else {
             value = attribute.getValue();
         }

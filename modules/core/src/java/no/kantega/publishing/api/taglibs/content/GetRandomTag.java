@@ -185,7 +185,7 @@ public class GetRandomTag  extends BodyTagSupport {
                     // Finner ikke noe innhold
                     return SKIP_BODY;
                 }
-                query.setAssociatedId(associatedId);                
+                query.setAssociatedId(associatedId);
             }
 
             AssociationCategory category = null;
@@ -224,7 +224,7 @@ public class GetRandomTag  extends BodyTagSupport {
             pageContext.setAttribute("aksess_collection_" + name, (Content)collection.get(offset));
             pageContext.setAttribute("aksess_collection_offset" + name, offset);
             offset++;
-            return EVAL_BODY_TAG;
+            return EVAL_BODY_BUFFERED;
         } else {
             pageContext.removeAttribute("aksess_collection_" + name);
             pageContext.removeAttribute("aksess_collection_offset" + name);

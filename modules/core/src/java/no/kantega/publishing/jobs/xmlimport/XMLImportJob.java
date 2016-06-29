@@ -120,7 +120,10 @@ public class XMLImportJob  extends QuartzJobBean {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT).build())
+                            .setConnectTimeout(CONNECTION_TIMEOUT)
+                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
+                            .setSocketTimeout(CONNECTION_TIMEOUT)
+                            .build())
                     .setProxy(proxy);
 
             if(isNotBlank(proxyUser)) {
@@ -132,7 +135,10 @@ public class XMLImportJob  extends QuartzJobBean {
             httpClientBuilder = HttpClients.custom()
                     .setDefaultRequestConfig(RequestConfig.custom()
                             .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT).build());
+                            .setConnectTimeout(CONNECTION_TIMEOUT)
+                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
+                            .setSocketTimeout(CONNECTION_TIMEOUT)
+                            .build());
         }
     }
 }

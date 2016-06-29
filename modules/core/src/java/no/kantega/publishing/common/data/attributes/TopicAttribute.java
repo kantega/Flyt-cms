@@ -78,7 +78,7 @@ public class TopicAttribute  extends Attribute {
         if (property.equalsIgnoreCase(AttributeProperty.TOPICID)) {
             return getTopicId();
         } else if (property.equalsIgnoreCase(AttributeProperty.TOPICMAPID)) {
-            return "" + getTopicMapId();
+            return String.valueOf(getTopicMapId());
         } else {
             return super.getProperty(property);
         }

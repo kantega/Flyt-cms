@@ -66,7 +66,7 @@ public class JdbcTopicMapDao extends NamedParameterJdbcDaoSupport implements Top
     }
 
     public void deleteTopicMap(int topicMapId) throws ObjectInUseException {
-        int cnt = getJdbcTemplate().queryForInt("select count(*) from tmtopic where TopicMapId = ?", topicMapId);
+        int cnt = getJdbcTemplate().queryForObject("select count(*) from tmtopic where TopicMapId = ?", Integer.class, topicMapId);
         if (cnt > 0) {
             throw new ObjectInUseException("Topic map with id " + topicMapId + " is in use");
         }

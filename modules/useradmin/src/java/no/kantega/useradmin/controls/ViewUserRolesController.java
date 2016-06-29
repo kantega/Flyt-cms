@@ -18,6 +18,7 @@ package no.kantega.useradmin.controls;
 
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.security.api.identity.DefaultIdentity;
+import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.role.RoleManager;
 import no.kantega.security.api.role.RoleUpdateManager;
 import no.kantega.useradmin.model.RoleManagementConfiguration;
@@ -31,11 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Jul 5, 2007
- * Time: 1:17:02 PM
- */
 public class ViewUserRolesController extends AbstractUserAdminController {
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
         RequestParameters param = new RequestParameters(request);
@@ -43,16 +39,14 @@ public class ViewUserRolesController extends AbstractUserAdminController {
         String id = param.getString("userId");
         String domain = param.getString("domain");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
         model.put("userId", id);
         model.put("userDomain", domain);
 
 
-        DefaultIdentity identity = new DefaultIdentity();
-        identity.setUserId(id);
-        identity.setDomain(domain);
+        Identity identity = DefaultIdentity.withDomainAndUserId(domain, id);
 
-        List roleSets = new ArrayList();
+        List<RoleSet> roleSets = new ArrayList<>();
 
         List roleConfigs = getRoleConfiguration();
 

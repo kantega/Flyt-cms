@@ -1,0 +1,1 @@
+ALTER TABLE trafficlog MODIFY COLUMN RemoteAddress VARCHAR(4096);

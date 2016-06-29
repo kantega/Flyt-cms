@@ -28,10 +28,13 @@ public class MultimediaRequestHandlerHelper {
 
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         mediaService.streamMultimediaData(mm.getId(), new InputStreamHandler(bos));
-        mm.setData(bos.toByteArray());
+        Multimedia resized = new Multimedia();
+        resized.setType(mm.getType());
+        resized.setFilename(mm.getFilename());
+        resized.setData(bos.toByteArray());
 
-        mm = imageEditor.resizeMultimedia(mm, resizeParams);
+        resized = imageEditor.resizeMultimedia(resized, resizeParams);
 
-        return mm.getData();
+        return resized.getData();
     }
 }

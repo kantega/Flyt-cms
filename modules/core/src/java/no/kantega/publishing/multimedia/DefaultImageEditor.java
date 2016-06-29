@@ -114,22 +114,23 @@ public class DefaultImageEditor implements ImageEditor {
             writer = iter.next();
         }
 
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        ImageOutputStream ios = ImageIO.createImageOutputStream(bout);
-        writer.setOutput(ios);
+        try(ByteArrayOutputStream bout = new ByteArrayOutputStream();
+        ImageOutputStream ios = ImageIO.createImageOutputStream(bout)) {
+            writer.setOutput(ios);
 
-        ImageWriteParam iwparam = null;
-        if (imageFormat.equalsIgnoreCase("jpg")) {
-            iwparam = new JPEGImageWriteParam(Locale.getDefault());
-            iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-            float q = ((float) jpgOutputQuality)/((float)100);
-            iwparam.setCompressionQuality(q);
+            ImageWriteParam iwparam = null;
+            if (imageFormat.equalsIgnoreCase("jpg")) {
+                iwparam = new JPEGImageWriteParam(Locale.getDefault());
+                iwparam.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                float q = ((float) jpgOutputQuality) / ((float) 100);
+                iwparam.setCompressionQuality(q);
+            }
+            writer.write(null, new IIOImage(image, null, null), iwparam);
+
+            ios.flush();
+            writer.dispose();
+            multimedia.setData(bout.toByteArray());
         }
-        writer.write(null, new IIOImage(image, null, null), iwparam);
-
-        ios.flush();
-        writer.dispose();
-
 
         // Update filename and data
         String filename = multimedia.getFilename();
@@ -140,7 +141,6 @@ public class DefaultImageEditor implements ImageEditor {
         multimedia.setWidth(image.getWidth());
         multimedia.setHeight(image.getHeight());
         multimedia.setFilename(filename);
-        multimedia.setData(bout.toByteArray());
         return multimedia;
 
     }
