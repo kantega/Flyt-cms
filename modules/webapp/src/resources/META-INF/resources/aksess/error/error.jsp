@@ -50,7 +50,7 @@
 
 <kantega:section id="body">
     <div id="errorWrapper">
-        <img src="${pageContext.request.contextPath}/META-INF/resources/WEB-INF/jsp/admin/administration/admin/bitmaps/default/framework/error.png" alt="">
+        <img src="${pageContext.request.contextPath}/admin/bitmaps/default/framework/error.png" alt="">
         <div class="dialogBox">
             <h1>
                 <kantega:label key="aksess.error.error"/>
