@@ -22,9 +22,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.content.attribute.AttributeDataType;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.attributes.HtmltextAttribute;
-import no.kantega.publishing.common.data.attributes.UrlAttribute;
+import no.kantega.publishing.common.data.attributes.*;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import org.jsoup.Jsoup;
@@ -50,7 +48,7 @@ public class LinkExtractor {
 
     public synchronized void extractLinks(Content content, LinkHandler linkHandler) throws SystemException {
 
-        if(content.isExternalLink()) {
+        if (content.isExternalLink()) {
             linkHandler.contentLinkFound(content, content.getLocation());
         } else {
             content = contentAO.getContent(ContentIdentifier.fromContentId(content.getId()), true);
@@ -82,11 +80,26 @@ public class LinkExtractor {
                         }
                         linkHandler.attributeLinkFound(content, link, attrName);
                     }
+                } else if (attribute instanceof FileAttribute && isNotBlank(attribute.getValue())) {
+                    try {
+                        int attachmentId = Integer.parseInt(attribute.getValue());
+                        String link = Aksess.VAR_WEB + "/attachment.ap?id=" + attachmentId;
+                        linkHandler.attributeLinkFound(content, link, attrName);
+                    } catch (Exception e) {
+                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+                    }
+                } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
+                    try {
+                        int mediaId = Integer.parseInt(attribute.getValue());
+                        String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
+                        linkHandler.attributeLinkFound(content, link, attrName);
+                    } catch (Exception e) {
+                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+                    }
                 }
+
             }
 
         }
-
     }
-
 }
