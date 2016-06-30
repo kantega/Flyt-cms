@@ -41,11 +41,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -536,6 +532,10 @@ public class ContentQuery {
 
     public void setContentTemplate(int contentTemplate) {
         this.contentTemplate = asList(contentTemplate);
+    }
+
+    public void setContentTemplates(List<Integer> contentTemplates) {
+        this.contentTemplate = contentTemplates;
     }
 
     public void setContentTemplate(String contentTemplate) throws SystemException {
