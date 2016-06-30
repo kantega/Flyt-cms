@@ -98,7 +98,7 @@ public class LinkExtractor {
                     } catch (Exception e) {
                         log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
                     }
-                } else if (attribute instanceof MediaAttribute) {
+                } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
                     try {
                         int mediaId = Integer.parseInt(attribute.getValue());
                         String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
