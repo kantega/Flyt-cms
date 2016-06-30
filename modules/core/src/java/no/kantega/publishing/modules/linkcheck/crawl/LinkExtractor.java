@@ -55,51 +55,61 @@ public class LinkExtractor {
 
             List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
             for (Attribute attribute : attributes) {
-                String attrName = (isNotBlank(attribute.getTitle())) ? attribute.getTitle() : attribute.getName();
-                if (attribute instanceof HtmltextAttribute) {
-                    String html = attribute.getValue();
-                    try {
-                        if (html != null) {
-                            Elements links = Jsoup.parse(html).select("a[href]");
-                            for (Element link : links) {
-                                String href = link.attr("href");
-                                linkHandler.attributeLinkFound(content, href, attrName);
-
-                            }
-                        }
-                    } catch (Throwable e) {
-                        eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
-                        log.error("contentId: {}, associationid: {}, attribute: {} {}",
-                                content.getId(), content.getAssociation().getId(), attrName, html);
-                    }
-                } else if (attribute instanceof UrlAttribute) {
-                    String link = attribute.getValue();
-                    if (link != null && link.length() > 0) {
-                        if (link.startsWith("/")) {
-                            link = Aksess.VAR_WEB + link;
-                        }
-                        linkHandler.attributeLinkFound(content, link, attrName);
-                    }
-                } else if (attribute instanceof FileAttribute && isNotBlank(attribute.getValue())) {
-                    try {
-                        int attachmentId = Integer.parseInt(attribute.getValue());
-                        String link = Aksess.VAR_WEB + "/attachment.ap?id=" + attachmentId;
-                        linkHandler.attributeLinkFound(content, link, attrName);
-                    } catch (Exception e) {
-                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
-                    }
-                } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
-                    try {
-                        int mediaId = Integer.parseInt(attribute.getValue());
-                        String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
-                        linkHandler.attributeLinkFound(content, link, attrName);
-                    } catch (Exception e) {
-                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
-                    }
-                }
-
+                handleAttribute(content, linkHandler, attribute);
             }
 
+        }
+    }
+
+    private void handleAttribute(Content content, LinkHandler linkHandler, Attribute attribute) {
+        String attrName = (isNotBlank(attribute.getTitle())) ? attribute.getTitle() : attribute.getName();
+        if (attribute instanceof HtmltextAttribute) {
+            String html = attribute.getValue();
+            try {
+                if (html != null) {
+                    Elements links = Jsoup.parse(html).select("a[href]");
+                    for (Element link : links) {
+                        String href = link.attr("href");
+                        linkHandler.attributeLinkFound(content, href, attrName);
+
+                    }
+                }
+            } catch (Throwable e) {
+                eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
+                log.error("contentId: {}, associationid: {}, attribute: {} {}",
+                        content.getId(), content.getAssociation().getId(), attrName, html);
+            }
+        } else if (attribute instanceof UrlAttribute) {
+            String link = attribute.getValue();
+            if (link != null && link.length() > 0) {
+                if (link.startsWith("/")) {
+                    link = Aksess.VAR_WEB + link;
+                }
+                linkHandler.attributeLinkFound(content, link, attrName);
+            }
+        } else if (attribute instanceof FileAttribute && isNotBlank(attribute.getValue())) {
+            try {
+                int attachmentId = Integer.parseInt(attribute.getValue());
+                String link = Aksess.VAR_WEB + "/attachment.ap?id=" + attachmentId;
+                linkHandler.attributeLinkFound(content, link, attrName);
+            } catch (Exception e) {
+                log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+            }
+        } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
+            try {
+                int mediaId = Integer.parseInt(attribute.getValue());
+                String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
+                linkHandler.attributeLinkFound(content, link, attrName);
+            } catch (Exception e) {
+                log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+            }
+        } else if (attribute instanceof RepeaterAttribute) {
+            RepeaterAttribute repeaterAttribute = (RepeaterAttribute) attribute;
+            for (List<Attribute> attributes : repeaterAttribute) {
+                for (Attribute a : attributes) {
+                    handleAttribute(content, linkHandler, a);
+                }
+            }
         }
     }
 }
