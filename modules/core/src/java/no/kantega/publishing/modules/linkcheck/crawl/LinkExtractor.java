@@ -33,6 +33,7 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -40,28 +41,17 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class LinkExtractor {
     private static final Logger log = LoggerFactory.getLogger(LinkExtractor.class);
 
-    private SAXParser parser;
     private final EventLog eventLog;
     private final ContentAO contentAO;
 
     public LinkExtractor(EventLog eventLog, ContentAO contentAO) {
         this.eventLog = eventLog;
         this.contentAO = contentAO;
-        parser = new SAXParser();
 
-        try {
-            parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
-            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
-        } catch (SAXNotSupportedException | SAXNotRecognizedException e) {
-            throw new RuntimeException(e);
-        }
 
 
     }
     public synchronized void extractLinks(Content content, LinkHandler linkHandler) throws SystemException {
-        LinkExtractingHandler htmlHandler = new LinkExtractingHandler();
-
-        parser.setContentHandler(htmlHandler);
 
         if(content.isExternalLink()) {
             linkHandler.contentLinkFound(content, content.getLocation());
@@ -70,55 +60,81 @@ public class LinkExtractor {
 
             List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
             for (Attribute attribute : attributes) {
-                String attrName = (isNotBlank(attribute.getTitle())) ? attribute.getTitle() : attribute.getName();
-                if (attribute instanceof HtmltextAttribute) {
-                    String html = attribute.getValue();
-                    try {
-                        if (html != null) {
-                            parser.parse(new InputSource(new StringReader(html)));
-                        }
-                    } catch (Throwable e) {
-                        eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
-                        log.error("contentId: {}, associationid: {}, attribute: {} {}",
-                                content.getId(), content.getAssociation().getId(), attrName, html);
-                    }
-                } else if (attribute instanceof UrlAttribute) {
-                    String link = attribute.getValue();
-                    if (link != null && link.length() > 0) {
-                        if (link.startsWith("/")) {
-                            link = Aksess.VAR_WEB + link;
-                        }
-                        linkHandler.attributeLinkFound(content, link, attrName);
-                    }
-                } else if (attribute instanceof FileAttribute && isNotBlank(attribute.getValue())) {
-                    try {
-                        int attachmentId = Integer.parseInt(attribute.getValue());
-                        String link = Aksess.VAR_WEB + "/attachment.ap?id=" + attachmentId;
-                                linkHandler.attributeLinkFound(content, link, attrName);
-                    } catch (Exception e) {
-                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
-                    }
-                } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
-                    try {
-                        int mediaId = Integer.parseInt(attribute.getValue());
-                        String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
-                        linkHandler.attributeLinkFound(content, link, attrName);
-                    } catch (Exception e) {
-                        log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
-                    }
-                }
-
-                for (String link : htmlHandler.getLinks()) {
-                    linkHandler.attributeLinkFound(content, link, attrName);
-                }
-                htmlHandler.clear();
+                handleAttribute(content, linkHandler, attribute);
             }
 
         }
 
     }
 
-    private class LinkExtractingHandler extends DefaultHandler {
+    private void handleAttribute(Content content, LinkHandler linkHandler, Attribute attribute) {
+        String attrName = (isNotBlank(attribute.getTitle())) ? attribute.getTitle() : attribute.getName();
+        if (attribute instanceof HtmltextAttribute) {
+            LinkExtractingHandler htmlHandler = new LinkExtractingHandler();
+            SAXParser parser = getParser();
+            parser.setContentHandler(htmlHandler);
+
+            String html = attribute.getValue();
+            try {
+                if (html != null) {
+                    parser.parse(new InputSource(new StringReader(html)));
+                }
+            } catch (Throwable e) {
+                eventLog.log("LinkExtractor", "localhost", Event.FAILED_LINK_EXTRACT, String.format("Failed to extract links from %s", content.getUrl()), content);
+                log.error("contentId: {}, associationid: {}, attribute: {} {}",
+                        content.getId(), content.getAssociation().getId(), attrName, html);
+            }
+            for (String link : htmlHandler.getLinks()) {
+                linkHandler.attributeLinkFound(content, link, attrName);
+            }
+        } else if (attribute instanceof UrlAttribute) {
+            String link = attribute.getValue();
+            if (link != null && link.length() > 0) {
+                if (link.startsWith("/")) {
+                    link = Aksess.VAR_WEB + link;
+                }
+                linkHandler.attributeLinkFound(content, link, attrName);
+            }
+        } else if (attribute instanceof FileAttribute && isNotBlank(attribute.getValue())) {
+            try {
+                int attachmentId = Integer.parseInt(attribute.getValue());
+                String link = Aksess.VAR_WEB + "/attachment.ap?id=" + attachmentId;
+                        linkHandler.attributeLinkFound(content, link, attrName);
+            } catch (Exception e) {
+                log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+            }
+        } else if (attribute instanceof MediaAttribute && isNotBlank(attribute.getValue())) {
+            try {
+                int mediaId = Integer.parseInt(attribute.getValue());
+                String link = Aksess.VAR_WEB + "/multimedia.ap?id=" + mediaId;
+                linkHandler.attributeLinkFound(content, link, attrName);
+            } catch (Exception e) {
+                log.error("Error getting Content({}) FileAttribute {} with value {}", content.getId(), attribute.getName(), attribute.getValue());
+            }
+        } else if (attribute instanceof RepeaterAttribute) {
+            RepeaterAttribute repeaterAttribute = (RepeaterAttribute) attribute;
+            Iterator<List<Attribute>> iterator = repeaterAttribute.getIterator();
+            while(iterator.hasNext()) {
+                for (Attribute a : iterator.next()) {
+                    handleAttribute(content, linkHandler, a);
+                }
+            }
+        }
+    }
+
+    private SAXParser getParser() {
+        SAXParser parser = new SAXParser();
+
+        try {
+            parser.setFeature("http://cyberneko.org/html/features/balance-tags/document-fragment", true);
+            parser.setProperty("http://cyberneko.org/html/properties/names/elems", "match");
+        } catch (SAXNotSupportedException | SAXNotRecognizedException e) {
+            throw new RuntimeException(e);
+        }
+        return parser;
+    }
+
+    private static class LinkExtractingHandler extends DefaultHandler {
         private List<String> links = new ArrayList<>();
 
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
