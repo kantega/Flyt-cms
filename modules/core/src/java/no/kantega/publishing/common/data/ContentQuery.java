@@ -535,6 +535,10 @@ public class ContentQuery {
         this.contentTemplate = asList(contentTemplate);
     }
 
+    public void setContentTemplates(List<Integer> contentTemplates) {
+        this.contentTemplate = contentTemplates;
+    }
+
     public void setContentTemplate(String contentTemplate) throws SystemException {
         String templates[] = contentTemplate.split("\\|");
         this.contentTemplate = new ArrayList<>(templates.length);
