@@ -21,6 +21,9 @@ public class UnusedAttachmentsFinder {
     @Autowired
     private LinkDao linkDao;
 
+    @Autowired
+    private LinkEmitter emitter;
+
     private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+))|(.*/attachment/(?<prettyId>\\d+).*)");
 
     public List<Attachment> getUnusedAttachments() {
@@ -53,6 +56,41 @@ public class UnusedAttachmentsFinder {
             return attachmentId;
         } else {
             return null;
+        }
+    }
+
+    public List<Integer> getUnusedAttachmentsForContent(Integer contentId) {
+        ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
+        try {
+            linkDao.deleteLinksForContentId(contentId);
+            ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
+            linkDao.saveLinksForContent(emitter, cms.getContent(cid, false));
+            Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(contentId), new Predicate<LinkOccurrence>() {
+                @Override
+                public boolean apply(LinkOccurrence lo) {
+                    return lo.getUrl().contains("/attachment");
+                }
+            });
+            Collection<Integer> attachmentIds = transform(attachmentUris, new Function<LinkOccurrence, Integer>() {
+                @Override
+                public Integer apply(LinkOccurrence input) {
+                    String attachmentId = getAttachmentId(input.getUrl());
+                    if (attachmentId == null)
+                        throw new IllegalStateException("Error finding attachment id in LinkOccurrence " + input.getUrl());
+                    return Integer.parseInt(attachmentId);
+                }
+            });
+
+            List<Integer> attachmentsForContent = new ArrayList<>(transform(AttachmentAO.getAttachmentList(cid), new Function<Attachment, Integer>() {
+                @Override
+                public Integer apply(Attachment input) {
+                    return input.getId();
+                }
+            }));
+            attachmentsForContent.removeAll(attachmentIds);
+            return attachmentsForContent;
+        } catch (NotAuthorizedException e) {
+            throw new IllegalStateException("Fuck you, I'm Admin!");
         }
     }
 }

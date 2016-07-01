@@ -56,8 +56,24 @@
             openaksess.common.debug(id + ' set to searchable: ' + checked);
         }, 'json');
     }
+
+    function checkUnusedAttachments(contentId) {
+        $.get('${pageContext.request.contextPath}/admin/attachment/content/' + contentId + '/unused',
+                function (response) {
+                    var unusedIds = response;
+                    $('.unusedAttachment').each(function(i, elem){
+                        var attachment = $(elem);
+                        var attachmentId = parseInt(attachment.attr('data-attachmentid'), 10);
+                        if (unusedIds.indexOf(attachmentId) != -1) {
+                            attachment.addClass('isunused');
+                        } else {
+                            attachment.addClass('isused');
+                        }
+                    })
+                });
+    }
 </script>
-    <table border="0" cellspacing="0" cellpadding="0" width="600">
+    <table border="0" cellspacing="0" cellpadding="0">
         <tr class="tableHeading">
             <td><strong><kantega:label key="aksess.attachments.attachment"/></strong></td>
             <td><strong><kantega:label key="aksess.attachments.size"/></strong></td>
@@ -86,7 +102,10 @@
             }
     %>
             <tr class="tableRow<%=(i%2)%>">
-                <td><a href="${pageContext.request.contextPath}/attachment.ap?id=<%=a.getId()%>"><%=filename%></a></td>
+                <td>
+                    <a href="${pageContext.request.contextPath}/attachment.ap?id=<%=a.getId()%>"><%=filename%></a>
+                    <span class="unusedAttachment" data-attachmentid="<%=a.getId()%>"></span>
+                </td>
                 <td><%=FormatHelper.formatSize(a.getSize())%></td>
                 <td><%=modifiedDate%></td>
                 <td align="right">
@@ -112,6 +131,8 @@
     <%
         }
     %>
+
+    <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
 </kantega:section>
 <%@ include file="../layout/editContentLayout.jsp" %>
 

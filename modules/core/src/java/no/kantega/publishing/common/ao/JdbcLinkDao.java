@@ -23,7 +23,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.modules.linkcheck.check.CheckStatus;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
-import no.kantega.publishing.modules.linkcheck.check.NotCheckedSinceTerm;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -155,15 +154,19 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
      */
     @Override
     public void doForEachLink(final LinkQueryGenerator linkQueryGenerator, final no.kantega.publishing.modules.linkcheck.check.LinkHandler handler) {
-        final String query = linkQueryGenerator.getQuery();
+        final LinkQueryGenerator.Query query = linkQueryGenerator.getQuery();
         log.debug( "query={}", query);
         getJdbcTemplate().execute(new ConnectionCallback() {
             public Object doInConnection(Connection connection) throws SQLException, DataAccessException {
-                try(PreparedStatement p = connection.prepareStatement(query);
+                try(PreparedStatement p = connection.prepareStatement(query.query);
                 PreparedStatement updateStatement = connection.prepareStatement("UPDATE link set lastchecked=?, status=?, httpstatus=?, timeschecked = timeschecked + 1 where id=?")) {
-                    if(linkQueryGenerator instanceof NotCheckedSinceTerm){
-                        p.setDate(1, new java.sql.Date(((NotCheckedSinceTerm)linkQueryGenerator).getNotCheckedSince().getTime()));
+
+                    List<Object> params = query.params;
+                    for (int i = 0; i < params.size(); i++) {
+                        Object param = params.get(i);
+                        p.setObject(i+1, param);
                     }
+
                     try(ResultSet rs = p.executeQuery()) {
                         while (rs.next()) {
                             int id = rs.getInt("Id");
@@ -221,12 +224,17 @@ public class JdbcLinkDao extends JdbcDaoSupport implements LinkDao {
         return findMatchingLinkOccurrences("SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE ((NOT (link.status=1) AND link.lastchecked is not null) AND content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND linkoccurrence.linkid=link.id AND content.ContentId=?) ORDER BY link.lastchecked", new Object[]{contentId});
     }
 
+    @Override
+    public List<LinkOccurrence> getLinksforContentId(int contentId) {
+        return findMatchingLinkOccurrences("SELECT linkoccurrence.Id, linkoccurrence.ContentId, contentversion.Title, linkoccurrence.AttributeName, linkoccurrence.linkId, link.url, link.lastchecked, link.status, link.httpstatus, link.timeschecked FROM link, linkoccurrence, content, contentversion WHERE (content.ContentId=linkoccurrence.contentid AND content.ContentId=contentversion.ContentID AND contentversion.IsActive=1 AND linkoccurrence.linkid=link.id AND content.ContentId=?) ORDER BY link.lastchecked", new Object[]{contentId});
+    }
+
     /**
      * @see LinkDao#deleteLinksForContentId(int)
      */
     @Override
     public void deleteLinksForContentId(int contentId) {
-        getJdbcTemplate().execute("delete from linkoccurrence where ContentId = " + contentId);
+        getJdbcTemplate().update("delete from linkoccurrence where ContentId = ?", contentId);
     }
 
 
