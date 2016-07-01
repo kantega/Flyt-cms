@@ -3,6 +3,8 @@ package no.kantega.publishing.modules.linkcheck.check;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 
 public class NotCheckedSinceTerm implements LinkQueryGenerator {
     private final Date notCheckedSince;
@@ -15,31 +17,29 @@ public class NotCheckedSinceTerm implements LinkQueryGenerator {
         driver = dbConnectionFactory.getDriverName();
 
     }
-    public Date getNotCheckedSince() {
-        return notCheckedSince;
-    }
-
-    public int getMaxLinksPerDay() {
-        return maxLinksPerDay;
-    }
 
     @Override
-    public String getQuery() {
+    public Query getQuery() {
+        List<Object> params = new LinkedList<>();
         StringBuilder query = new StringBuilder();
         if (driver.contains("jtds")) {
-            query.append("select top ").append(maxLinksPerDay);
+            query.append("select top ?");
+            params.add(maxLinksPerDay);
         } else {
             query.append("select");
         }
 
         query.append(" Id, url from link where lastchecked is null or lastchecked < ?");
+        params.add(notCheckedSince);
 
         if (driver.contains("mysql") || driver.contains("postgresql")) {
             // Only limit if not using join
-            query.append(" limit 0,").append(maxLinksPerDay);
+            query.append(" limit 0,?");
+            params.add(maxLinksPerDay);
         } else if(driver.contains("oracle")){
-            query.append("AND ROWNUM <= ").append(maxLinksPerDay);
+            query.append("AND ROWNUM <= ?");
+            params.add(maxLinksPerDay);
         }
-        return query.toString();
+        return new Query(query.toString(), params);
     }
 }
