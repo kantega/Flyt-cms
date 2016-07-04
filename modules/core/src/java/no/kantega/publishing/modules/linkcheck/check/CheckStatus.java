@@ -20,7 +20,7 @@ package no.kantega.publishing.modules.linkcheck.check;
  * Status for checked url
  */
 public enum CheckStatus {
-
+    UNKNOWN(0),
     OK(1),
     UNKNOWN_HOST(2),
     HTTP_NOT_200(3),

@@ -66,8 +66,10 @@
                         var attachmentId = parseInt(attachment.attr('data-attachmentid'), 10);
                         if (unusedIds.indexOf(attachmentId) != -1) {
                             attachment.addClass('isunused');
+                            attachment.attr('title', '<kantega:label key="aksess.attachments.isunused"/>')
                         } else {
                             attachment.addClass('isused');
+                            attachment.attr('title', '<kantega:label key="aksess.attachments.isused"/>')
                         }
                     })
                 });
@@ -100,6 +102,7 @@
             if (filename.length() > 50) {
                filename = filename.substring(0, 47) + "...";
             }
+            request.setAttribute("attachment", a);
     %>
             <tr class="tableRow<%=(i%2)%>">
                 <td>
@@ -112,7 +115,10 @@
                     <a href="Javascript:updateAttachment(<%=a.getId()%>)" class="button"><span class="edit"><kantega:label key="aksess.button.replaceattachment"/></span></a>
                     <a href="Javascript:deleteAttachment(<%=a.getId()%>)" class="button"><span class="delete"><kantega:label key="aksess.button.deleteattachment"/></span></a>
                 </td>
-                <td><input type="checkbox" <% if(a.isSearchable()){%>checked<%}%> onchange="toggleSeachable(<%=a.getId()%>, this.checked)" /></td>
+                <td><input type="checkbox"
+                           <c:if test="${attachment.searchable and currentContent.searchable}">checked</c:if>
+                           <c:if test="${not currentContent.searchable}">disabled</c:if>
+                           onchange="toggleSeachable(<%=a.getId()%>, this.checked)" /></td>
             </tr>
     <%
         }
@@ -129,10 +135,10 @@
     %>
             <div class=helpText><kantega:label key="aksess.attachments.hjelp"/></div>
     <%
-        }
+        } else {
     %>
-
-    <span class="button"><input type="button" class="select" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
+    <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
+    <%}%>
 </kantega:section>
 <%@ include file="../layout/editContentLayout.jsp" %>
 
