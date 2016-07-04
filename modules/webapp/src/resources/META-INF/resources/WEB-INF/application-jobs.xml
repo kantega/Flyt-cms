@@ -146,6 +146,8 @@
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
+    <bean id="attachmentCheckJob" class="no.kantega.publishing.modules.linkcheck.check.AttachmentCheckJob" />
+
     <bean name="linkEmitter" class="no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter"/>
 
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">
@@ -157,6 +159,18 @@
         <property name="targetObject" ref="linkCrawlJob"/>
         <property name="targetMethod" value="execute"/>
         <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="attachmentCheckJobJobDetail"
+          class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="attachmentCheckJob"/>
+        <property name="targetMethod" value="executeAttachmentCheckJob"/>
+        <property name="concurrent" value="false"/>
+    </bean>
+
+    <bean id="attachmentCheckTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+        <property name="jobDetail" ref="attachmentCheckJobJobDetail"/>
+        <property name="cronExpression" value="${jobs.attachmentCheckJob.trigger}"/>
     </bean>
 
     <bean id="linkCrawlTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
@@ -189,8 +203,6 @@
         <property name="concurrent" value="false"/>
     </bean>
 
-
-
     <bean name="contentImportJob" class="no.kantega.publishing.jobs.contentimport.ContentImportJob"/>
 
     <bean id="contentImportJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -216,6 +228,7 @@
                 <ref local="linkCrawlTrigger"/>
                 <ref local="contentImportTrigger"/>
                 <ref local="brokenLinkEventTrigger" />
+                <ref local="attachmentCheckTrigger" />
             </list>
         </property>
     </bean>
