@@ -57,6 +57,7 @@
     }
 
     function checkUnusedAttachments(contentId) {
+        $('.spinner').addClass('ajaxloading');
         $.get('${pageContext.request.contextPath}/admin/attachment/content/' + contentId + '/unused',
                 function (response) {
                     var unusedIds = response;
@@ -70,7 +71,9 @@
                             attachment.addClass('isused');
                             attachment.attr('title', '<kantega:label key="aksess.attachments.isused"/>')
                         }
-                    })
+                    });
+                    $('.spinner').removeClass('ajaxloading');
+
                 });
     }
 </script>
@@ -128,7 +131,7 @@
     %>
 </table>
 <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
-
+<span class="spinner"></span>
 <%
 }
 %>
