@@ -35,7 +35,7 @@ public class UnusedAttachmentsFinder {
     @Autowired
     private LinkEmitter emitter;
 
-    private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+))|(.*/attachment/(?<prettyId>\\d+).*)");
+    private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+).*)|(.*/attachment/(?<prettyId>\\d+).*)");
 
     public List<Attachment> getUnusedAttachments() {
         final List<Integer> referredAttachments = new LinkedList<>();
