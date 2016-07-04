@@ -50,11 +50,11 @@ public class AttachmentCheckJob {
         log.info("Checking attachments({}) for content {}", attachments.size(), content.getId());
         List<Integer> unusedAttachments = unusedAttachmentsFinder.getUnusedAttachmentsForContent(content.getId());
         for (Attachment attachment : attachments) {
-            if(unusedAttachments.contains(attachment.getId()) && attachment.isSearchable()) {
+            if(unusedAttachments.contains(attachment.getId()) && attachment.isSearchable() && content.isSearchable()) {
                 log.info("Setting attachment {}({}) not searchable", attachment.getFilename(), attachment.getId());
                 attachment.setSearchable(false);
                 attachmentAO.setAttachment(attachment);
-            } else if (!attachment.isSearchable()) {
+            } else if (!attachment.isSearchable() && content.isSearchable()) {
                 log.info("Setting attachment {}({}) searchable", attachment.getFilename(), attachment.getId());
                 attachment.setSearchable(true);
                 attachmentAO.setAttachment(attachment);

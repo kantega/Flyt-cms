@@ -1,1 +1,1 @@
-ALTER TABLE attachments ADD IsSearchable int DEFAULT 1;
+ALTER TABLE attachments ADD IsSearchable int not null DEFAULT 1;
