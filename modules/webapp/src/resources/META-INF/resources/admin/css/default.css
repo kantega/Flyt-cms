@@ -511,17 +511,17 @@ table.fullWidth {
     background: url("../bitmaps/sprite-common.png") no-repeat 10px -611px;
 }
 
-#EditContentPane .unusedAttachment {
+.unusedAttachment {
     width: 15px;
     height: 15px;
     display: inline-block;
     float: right;
 }
 
-#EditContentPane .unusedAttachment.isunused {
+.unusedAttachment.isunused {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px -348px;
 }
-#EditContentPane .unusedAttachment.isused {
+.unusedAttachment.isused {
     background: transparent url(../bitmaps/sprite-common.png) no-repeat scroll 0px -528px;
 }
 

@@ -184,6 +184,7 @@
                 <prop key="/admin/publish/OrgUnitNavigator.action">orgUnitNavigatorAjaxAction</prop>
                 <prop key="/admin/publish/popups/Lix.action">LixAction</prop>
                 <prop key="/admin/publish/popups/SaveHearing.action">SaveHearingAction</prop>
+                <prop key="/admin/publish/popups/ShowAttachments.action">showAttachmentsAction</prop>
 
                 <!-- Multimedia naviagator -->
                 <prop key="/admin/multimedia/Navigate.action">multimediaNavigateAction</prop>
@@ -560,6 +561,8 @@
         <property name="formView" value="/WEB-INF/jsp/admin/publish/popups/hearing.jsp"/>
         <property name="confirmView" value="/WEB-INF/jsp/admin/publish/popups/hearing-confirm.jsp"/>
     </bean>
+
+    <bean id="showAttachmentsAction" class="no.kantega.publishing.admin.content.action.ShowAttachmentsAction"/>
 
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckAction" id="spellcheckAction" />
 

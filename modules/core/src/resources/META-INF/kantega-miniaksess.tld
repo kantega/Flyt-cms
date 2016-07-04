@@ -89,7 +89,7 @@
             <name>cancelurl</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>        
+        </attribute>
         <attribute>
             <description>Additional query parameters, eg: queryParms="param1=some&amp;param2=thing"</description>
             <name>queryParams</name>
@@ -119,7 +119,7 @@
             <name>cssclass</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
-        </attribute>             
+        </attribute>
         <attribute>
             <description>Id of generated link</description>
             <name>linkid</name>
@@ -234,6 +234,13 @@
         <attribute>
             <description>Set to true to prevent form tag for generating info messages</description>
             <name>hideinfomessages</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+            <type>boolean</type>
+        </attribute>
+        <attribute>
+            <description>Enable button for opening modal showing all attachments</description>
+            <name>showattachmentmodal</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
             <type>boolean</type>

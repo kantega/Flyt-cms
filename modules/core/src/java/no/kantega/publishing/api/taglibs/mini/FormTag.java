@@ -25,7 +25,6 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
@@ -36,10 +35,10 @@ import java.util.Locale;
 
 public class FormTag extends BodyTagSupport {
     private static final Logger log = LoggerFactory.getLogger(FormTag.class);
-    private static WebApplicationContext webApplicationContext;
 
     private boolean allowDraft = false;
     private boolean hideInfoMessages = false;
+    private boolean showattachmentmodal = false;
 
     private String action;
 
@@ -125,6 +124,13 @@ public class FormTag extends BodyTagSupport {
                 cancelAction = cancelAction+"?redirectUrl="+cancelUrl;
             }
             out.write("    <input class=\"editContentButton cancel\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.button.cancel", locale)+"\" onclick=\"window.location.href ='"+cancelAction+"'\">");
+
+            if (showattachmentmodal) {
+                String url = "openaksess.common.modalWindow.open({title:'" + LocaleLabels.getLabel("aksess.tab.attachments", locale)
+                        + "', iframe:true, href: '" + request.getContextPath() + "/admin/publish/popups/ShowAttachments.action?contentId=" + currentEditContent.getId() + "' ,width: 600, height:550});";
+                out.write("    <input class=\"editContentButton attachments\" type=\"button\" value=\""+LocaleLabels.getLabel("aksess.tab.attachments", locale)+"\" onclick=\"" + url + "\">");
+            }
+
             out.write("</form>");
 
             allowDraft = false;
@@ -146,6 +152,10 @@ public class FormTag extends BodyTagSupport {
 
     public void setHideinfomessages(boolean hideInfoMessages) {
         this.hideInfoMessages = hideInfoMessages;
+    }
+
+    public void setShowattachmentmodal(boolean showattachmentmodal) {
+        this.showattachmentmodal = showattachmentmodal;
     }
 }
 
