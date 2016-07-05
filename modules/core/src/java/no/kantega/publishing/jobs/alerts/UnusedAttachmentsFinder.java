@@ -8,6 +8,8 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
@@ -16,10 +18,7 @@ import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
 import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,13 +76,16 @@ public class UnusedAttachmentsFinder {
         }
     }
 
-    public List<Integer> getUnusedAttachmentsForContent(Integer contentId) {
+    private List<Integer> getUsedAttachmentsForContentVersion(ContentIdentifier cid) throws ContentNotFoundException {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
         try {
-            linkDao.deleteLinksForContentId(contentId);
-            ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
-            linkDao.saveLinksForContent(emitter, cms.getContent(cid, false));
-            Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(contentId), new Predicate<LinkOccurrence>() {
+            linkDao.deleteLinksForContentId(cid.getContentId());
+            Content content = cms.getContent(cid, false);
+            if(content == null) {
+                throw new ContentNotFoundException(cid.toString());
+            }
+            linkDao.saveLinksForContent(emitter, content);
+            Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(cid.getContentId()), new Predicate<LinkOccurrence>() {
                 @Override
                 public boolean apply(LinkOccurrence lo) {
                     return lo.getUrl().contains("/attachment");
@@ -101,16 +103,38 @@ public class UnusedAttachmentsFinder {
                 }
             });
 
-            List<Integer> attachmentsForContent = new ArrayList<>(transform(AttachmentAO.getAttachmentList(cid), new Function<Attachment, Integer>() {
-                @Override
-                public Integer apply(Attachment input) {
-                    return input.getId();
-                }
-            }));
-            attachmentsForContent.removeAll(attachmentIds);
-            return attachmentsForContent;
+            return new ArrayList<>(attachmentIds);
         } catch (NotAuthorizedException e) {
             throw new IllegalStateException("Fuck you, I'm Admin!");
         }
+    }
+
+    public List<Integer> getUnusedAttachmentsForContent(Integer contentId) throws ContentNotFoundException {
+        ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
+        Collection<Integer> attachmentIds = getUsedAttachmentsForContentVersion(cid);
+
+        List<Integer> attachmentsForContent = new ArrayList<>(transform(AttachmentAO.getAttachmentList(cid), new Function<Attachment, Integer>() {
+            @Override
+            public Integer apply(Attachment input) {
+                return input.getId();
+            }
+        }));
+        attachmentsForContent.removeAll(attachmentIds);
+        return attachmentsForContent;
+    }
+
+    public Map<Integer, List<Integer>> attachmentIdsByContentVersion(Integer contentId) {
+        Map<Integer, List<Integer>> mapping = new LinkedHashMap<>();
+        try {
+            ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
+
+            for(Content c : cms.getAllContentVersions(ContentIdentifier.fromContentId(contentId))) {
+                ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
+                cid.setVersion(c.getVersion());
+                mapping.put(c.getVersion(), getUsedAttachmentsForContentVersion(cid));
+            }
+        } catch (ContentNotFoundException e) { /* Ignore */}
+
+        return mapping;
     }
 }

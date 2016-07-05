@@ -4,6 +4,7 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.jobs.alerts.UnusedAttachmentsFinder;
 import no.kantega.publishing.security.SecuritySession;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/attachment/")
@@ -69,6 +71,15 @@ public class EditAttachmentAction {
 
     @RequestMapping(value = "/content/{contentId}/unused", method = RequestMethod.GET)
     public ResponseEntity<List<Integer>> getUnusedAttachments(@PathVariable Integer contentId) {
-        return new ResponseEntity<>(unusedAttachmentsFinder.getUnusedAttachmentsForContent(contentId), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(unusedAttachmentsFinder.getUnusedAttachmentsForContent(contentId), HttpStatus.OK);
+        } catch (ContentNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(value = "/content/{contentId}/usedByVersion", method = RequestMethod.GET)
+    public ResponseEntity<Map<Integer, List<Integer>>> getUsedAttachmentsByVersion(@PathVariable Integer contentId) {
+         return new ResponseEntity<>(unusedAttachmentsFinder.attachmentIdsByContentVersion(contentId), HttpStatus.OK);
     }
 }

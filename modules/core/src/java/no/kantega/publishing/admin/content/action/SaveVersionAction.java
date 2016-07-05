@@ -55,7 +55,7 @@ public class SaveVersionAction extends AbstractSaveContentAction {
 
         ContentManagementService cms = new ContentManagementService(request);
 
-        List allVersions = cms.getAllContentVersions(cid);
+        List<Content> allVersions = cms.getAllContentVersions(cid);
         ContentTemplate contentTemplate = ContentTemplateCache.getTemplateById(content.getContentTemplateId());
 
         model.put("allVersions", allVersions);
