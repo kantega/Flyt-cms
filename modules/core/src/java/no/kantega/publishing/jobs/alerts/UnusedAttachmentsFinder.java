@@ -93,9 +93,11 @@ public class UnusedAttachmentsFinder {
                 @Override
                 public Integer apply(LinkOccurrence input) {
                     String attachmentId = getAttachmentId(input.getUrl());
-                    if (attachmentId == null)
-                        throw new IllegalStateException("Error finding attachment id in LinkOccurrence " + input.getUrl());
-                    return Integer.parseInt(attachmentId);
+                    if (attachmentId == null) {
+                        return null;
+                    } else {
+                        return Integer.parseInt(attachmentId);
+                    }
                 }
             });
 
