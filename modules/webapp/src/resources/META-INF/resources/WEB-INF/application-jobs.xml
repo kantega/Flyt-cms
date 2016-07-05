@@ -66,6 +66,10 @@
 
     <bean name="linkCheckJob" class="no.kantega.publishing.modules.linkcheck.check.LinkCheckerJob"/>
 
+    <bean id="attachmentCheckJob" class="no.kantega.publishing.modules.linkcheck.check.AttachmentCheckJob" />
+
+    <bean id="attachmentCheckJob" class="no.kantega.publishing.modules.linkcheck.check.AttachmentCheckJob" />
+
     <bean name="linkEmitter" class="no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter"/>
 
     <bean name="linkCrawlJob" class="no.kantega.publishing.modules.linkcheck.crawl.LinkCrawlerJob">

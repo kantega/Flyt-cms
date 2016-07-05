@@ -78,6 +78,8 @@ public interface LinkDao {
     List<LinkOccurrence> getBrokenLinksforContentId(int contentId);
 
 
+    List<LinkOccurrence> getLinksforContentId(int contentId);
+
     /**
      * Removes links for a given contentId.
      * @param contentId - The contentId for which to remove links
