@@ -133,10 +133,12 @@
 <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
 <span class="spinner"></span>
 <%
+} else {
+%>
+    <p><kantega:label key="aksess.attachments.empty"/></p>
+<%
 }
 %>
-
-
 
 </body>
 </html>
