@@ -74,6 +74,42 @@
                     })
                 });
     }
+
+    function markContentVersions(contentId) {
+        function getInverseMapping(response) {
+            var inverseMapping = {};
+            var versions = Object.keys(response);
+            for (var i = 0; i < versions.length; i++) {
+                var version = versions[i];
+                var attachmentIds = response[version];
+                for (var j = 0; j < attachmentIds.length; j++) {
+                    var attachmentId = attachmentIds[j];
+                    var versionsForAttachment = inverseMapping[attachmentId];
+                    if (!versionsForAttachment) {
+                        versionsForAttachment = [];
+                        inverseMapping[attachmentId] = versionsForAttachment;
+                    }
+                    versionsForAttachment.push(version)
+                }
+
+            }
+            return inverseMapping;
+        }
+
+        $.get('${pageContext.request.contextPath}/admin/attachment/content/' + contentId + '/usedByVersion',
+                function (response) {
+                    $('#usedinversionheading').html('<strong><kantega:label key="aksess.attachments.usedinversion"/></strong>');
+                    var inverseMapping = getInverseMapping(response);
+
+                    var attachmentIds = Object.keys(inverseMapping);
+                    for (var i = 0; i < attachmentIds.length; i++) {
+                        var attachmentId = attachmentIds[i];
+                        $('#attachment' + attachmentId + '.usedinversions').html(JSON.stringify(inverseMapping[attachmentId]))
+                    }
+
+
+                });
+    }
 </script>
     <table border="0" cellspacing="0" cellpadding="0">
         <tr class="tableHeading">
@@ -82,6 +118,7 @@
             <td><strong><kantega:label key="aksess.attachments.lastmodified"/></strong></td>
             <td>&nbsp;</td>
             <td><strong><kantega:label key="aksess.attachments.searchable"/></strong></td>
+            <td id="usedinversionheading"></td>
         </tr>
     <%
         List attachments = (List)request.getAttribute("attachments");
@@ -104,7 +141,7 @@
             }
             request.setAttribute("attachment", a);
     %>
-            <tr class="tableRow<%=(i%2)%>">
+            <tr class="tableRow<%=(i%2)%>" id="attachment<%=a.getId()%>">
                 <td>
                     <a href="${pageContext.request.contextPath}/attachment.ap?id=<%=a.getId()%>"><%=filename%></a>
                     <span class="unusedAttachment" data-attachmentid="<%=a.getId()%>"></span>
@@ -127,6 +164,7 @@
                 <td colspan="4" align="right">
                      <a href="Javascript:addAttachment()" class="button"><span class="new"><kantega:label key="aksess.button.newattachment"/></span></a>
                 </td>
+                <td class="usedinversions"></td>
             </tr>
     </table>
 
@@ -138,6 +176,7 @@
         } else {
     %>
     <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markunusedattachment"/>" onclick="checkUnusedAttachments(${currentContent.id})"></span>
+    <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markattachmentusedincontentversion"/>" onclick="markContentVersions(${currentContent.id})"></span>
     <%}%>
 </kantega:section>
 <%@ include file="../layout/editContentLayout.jsp" %>

@@ -4,6 +4,7 @@ import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.jobs.alerts.UnusedAttachmentsFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +40,7 @@ public class AttachmentCheckJob {
 
     private void checkAttachments(Content content, List<Attachment> attachments) {
         log.info("Checking attachments({}) for content {}", attachments.size(), content.getId());
+        try {
         List<Integer> unusedAttachments = unusedAttachmentsFinder.getUnusedAttachmentsForContent(content.getId());
         for (Attachment attachment : attachments) {
             if(unusedAttachments.contains(attachment.getId()) && attachment.isSearchable() && content.isSearchable()) {
@@ -51,5 +53,7 @@ public class AttachmentCheckJob {
                 attachmentAO.setAttachment(attachment);
             }
         }
-    }
+    }  catch (ContentNotFoundException e) {
+            log.error("Could not find content", e);
+        }
 }
