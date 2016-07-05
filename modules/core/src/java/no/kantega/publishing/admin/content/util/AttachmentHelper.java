@@ -21,11 +21,15 @@ import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.FileAttribute;
+import no.kantega.publishing.spring.RootContext;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
 public class AttachmentHelper {
+
+    private static AttachmentAO attachmentAO;
+
     public static void saveFileAsContentAttachment(Content content, FileAttribute fileAttribute, MultipartFile importFile) throws IOException {
         int oldId = -1;
         try {
@@ -42,7 +46,7 @@ public class AttachmentHelper {
             // Delete old version
             attachment.setId(oldId);
         } else if (oldId != -1){
-            setOldVersionNotSearchable(attachmentAO, oldId);
+            setOldVersionNotSearchable(getAttachmentAO(), oldId);
         }
 
         byte[] data = importFile.getBytes();
@@ -53,11 +57,18 @@ public class AttachmentHelper {
         attachment.setData(data);
         attachment.setSize(data.length);
 
-        fileAttribute.setValue(String.valueOf(attachmentAO.setAttachment(attachment)));
+        fileAttribute.setValue(String.valueOf(getAttachmentAO().setAttachment(attachment)));
 
         attachment.setData(null);
 
         ensureContentIdIsUpdatedWhenContentIsPublished(content, attachment);
+    }
+
+    private static AttachmentAO getAttachmentAO() {
+        if(attachmentAO == null) {
+            attachmentAO = RootContext.getInstance().getBean(AttachmentAO.class);
+        }
+        return attachmentAO;
     }
 
     private static void setOldVersionNotSearchable(AttachmentAO attachmentAO, int oldId) {

@@ -2,7 +2,6 @@ package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentAO;
-import no.kantega.publishing.api.content.ContentHandler;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.jobs.alerts.UnusedAttachmentsFinder;
@@ -30,20 +29,12 @@ public class AttachmentCheckJob {
     public void executeAttachmentCheckJob() {
         log.info("Starting AttachmentCheckJob");
 
-        contentAO.forAllContentObjects(new ContentHandler() {
-            @Override
-            public void handleContent(Content content) {
+        contentAO.forAllContentObjects(content -> {
                 List<Attachment> attachments = attachmentAO.getAttachmentList(content.getContentIdentifier());
                 if(!attachments.isEmpty()) {
                     checkAttachments(content, attachments);
                 }
-            }
-        }, new ContentAO.ContentHandlerStopper() {
-            @Override
-            public boolean isStopRequested() {
-                return false;
-            }
-        });
+        }, () -> false);
     }
 
     private void checkAttachments(Content content, List<Attachment> attachments) {

@@ -1,8 +1,8 @@
 package no.kantega.publishing.admin.multimedia.action;
 
 import no.kantega.commons.exception.NotAuthorizedException;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.ao.AttachmentAO;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.jobs.alerts.UnusedAttachmentsFinder;
