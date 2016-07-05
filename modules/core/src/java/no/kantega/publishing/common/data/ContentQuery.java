@@ -502,6 +502,10 @@ public class ContentQuery {
         this.contentList = asList(contentList);
     }
 
+    public void setContentList(List<ContentIdentifier> contentList) {
+        this.contentList = contentList;
+    }
+
     public List<ContentIdentifier> getContentList() {
         return contentList;
     }
