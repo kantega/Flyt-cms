@@ -96,6 +96,15 @@
             return inverseMapping;
         }
 
+        function toString(versions) {
+            var string = '';
+            for(var i = 0; i< versions.length; i++) {
+                if(i != 0) string = string + ',';
+                string = string + versions[i];
+            }
+            return string;
+        }
+
         $.get('${pageContext.request.contextPath}/admin/attachment/content/' + contentId + '/usedByVersion',
                 function (response) {
                     $('#usedinversionheading').html('<strong><kantega:label key="aksess.attachments.usedinversion"/></strong>');
@@ -104,7 +113,7 @@
                     var attachmentIds = Object.keys(inverseMapping);
                     for (var i = 0; i < attachmentIds.length; i++) {
                         var attachmentId = attachmentIds[i];
-                        $('#attachment' + attachmentId + '.usedinversions').html(JSON.stringify(inverseMapping[attachmentId]))
+                        $('#attachment' + attachmentId + ' .usedinversions').html(toString(inverseMapping[attachmentId]))
                     }
 
 
@@ -156,6 +165,7 @@
                            <c:if test="${attachment.searchable and currentContent.searchable}">checked</c:if>
                            <c:if test="${not currentContent.searchable}">disabled</c:if>
                            onchange="toggleSeachable(<%=a.getId()%>, this.checked)" /></td>
+                <td class="usedinversions"></td>
             </tr>
     <%
         }

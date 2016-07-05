@@ -17,7 +17,6 @@
 package no.kantega.publishing.modules.linkcheck.crawl;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.attributes.*;
@@ -56,8 +55,6 @@ public class LinkExtractor {
         if(content.isExternalLink()) {
             linkHandler.contentLinkFound(content, content.getLocation());
         } else {
-            content = contentAO.getContent(ContentIdentifier.fromContentId(content.getId()), true);
-
             List<Attribute> attributes = content.getAttributes(AttributeDataType.CONTENT_DATA);
             for (Attribute attribute : attributes) {
                 handleAttribute(content, linkHandler, attribute);

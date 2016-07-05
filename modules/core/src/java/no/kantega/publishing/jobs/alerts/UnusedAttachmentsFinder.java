@@ -2,7 +2,6 @@ package no.kantega.publishing.jobs.alerts;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AttachmentAO;
@@ -10,12 +9,11 @@ import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.content.api.ContentAO;
 import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
-import no.kantega.publishing.security.SecuritySession;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.*;
@@ -33,6 +31,9 @@ public class UnusedAttachmentsFinder {
 
     @Autowired
     private LinkEmitter emitter;
+
+    @Autowired
+    private ContentAO contentAO;
 
     private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+).*)|(.*/attachment/(?<prettyId>\\d+).*)");
 
@@ -77,36 +78,31 @@ public class UnusedAttachmentsFinder {
     }
 
     private List<Integer> getUsedAttachmentsForContentVersion(ContentIdentifier cid) throws ContentNotFoundException {
-        ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
-        try {
-            linkDao.deleteLinksForContentId(cid.getContentId());
-            Content content = cms.getContent(cid, false);
-            if(content == null) {
-                throw new ContentNotFoundException(cid.toString());
-            }
-            linkDao.saveLinksForContent(emitter, content);
-            Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(cid.getContentId()), new Predicate<LinkOccurrence>() {
-                @Override
-                public boolean apply(LinkOccurrence lo) {
-                    return lo.getUrl().contains("/attachment");
-                }
-            });
-            Collection<Integer> attachmentIds = transform(attachmentUris, new Function<LinkOccurrence, Integer>() {
-                @Override
-                public Integer apply(LinkOccurrence input) {
-                    String attachmentId = getAttachmentId(input.getUrl());
-                    if (attachmentId == null) {
-                        return null;
-                    } else {
-                        return Integer.parseInt(attachmentId);
-                    }
-                }
-            });
-
-            return new ArrayList<>(attachmentIds);
-        } catch (NotAuthorizedException e) {
-            throw new IllegalStateException("Fuck you, I'm Admin!");
+        linkDao.deleteLinksForContentId(cid.getContentId());
+        Content content = contentAO.getContent(cid, true);
+        if(content == null) {
+            throw new ContentNotFoundException(cid.toString());
         }
+        linkDao.saveLinksForContent(emitter, content);
+        Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(cid.getContentId()), new Predicate<LinkOccurrence>() {
+            @Override
+            public boolean apply(LinkOccurrence lo) {
+                return lo.getUrl().contains("/attachment");
+            }
+        });
+        Collection<Integer> attachmentIds = transform(attachmentUris, new Function<LinkOccurrence, Integer>() {
+            @Override
+            public Integer apply(LinkOccurrence input) {
+                String attachmentId = getAttachmentId(input.getUrl());
+                if (attachmentId == null) {
+                    return null;
+                } else {
+                    return Integer.parseInt(attachmentId);
+                }
+            }
+        });
+
+        return new ArrayList<>(attachmentIds);
     }
 
     public List<Integer> getUnusedAttachmentsForContent(Integer contentId) throws ContentNotFoundException {
@@ -126,9 +122,8 @@ public class UnusedAttachmentsFinder {
     public Map<Integer, List<Integer>> attachmentIdsByContentVersion(Integer contentId) {
         Map<Integer, List<Integer>> mapping = new LinkedHashMap<>();
         try {
-            ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
 
-            for(Content c : cms.getAllContentVersions(ContentIdentifier.fromContentId(contentId))) {
+            for(Content c : contentAO.getAllContentVersions(ContentIdentifier.fromContentId(contentId))) {
                 ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
                 cid.setVersion(c.getVersion());
                 mapping.put(c.getVersion(), getUsedAttachmentsForContentVersion(cid));
