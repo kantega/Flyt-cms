@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.collect.Lists;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -51,8 +52,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcDaoSupport;
 import java.sql.*;
 import java.util.*;
 import java.util.Date;
-
-import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  *
@@ -470,8 +469,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-            String attrquery = "select * from contentattributes where ContentVersionId in (" + join(contentMap.keySet(), ',') +") order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), new RowCallbackHandler() {
+            String attrquery = "select * from contentattributes where ContentVersionId in (:contentVersions) order by ContentVersionId";
+            RowCallbackHandler callback = new RowCallbackHandler() {
                 @Override
                 public void processRow(ResultSet rs) throws SQLException {
                     int cvid = rs.getInt("ContentVersionId");
@@ -480,7 +479,12 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                         ContentAOHelper.addAttributeFromRS(current, rs);
                     }
                 }
-            });
+            };
+            List<List<Integer>> partition = Lists.partition(new ArrayList<>(contentMap.keySet()), 1000);
+            for (List<Integer> contentVersionIds : partition) {
+                getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>singletonMap("contentVersions", contentVersionIds), callback);
+            }
+
             for (Content content : contentMap.values()) {
                 content.indexAttributes();
             }
