@@ -46,6 +46,7 @@ import java.util.*;
 
 import static com.google.common.collect.Lists.transform;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public class ContentQuery {
     private static final Logger log = LoggerFactory.getLogger(ContentQuery.class);
@@ -596,7 +597,11 @@ public class ContentQuery {
     }
 
     public void setDocumentType(int documentType) {
-        this.documentType = asList(documentType);
+        this.documentType = singletonList(documentType);
+    }
+
+    public void setDocumentType(List<Integer> documentTypes) {
+        this.documentType = documentTypes;
     }
 
     public void setExcludedDocumentTypes(String documentType) throws SystemException {
@@ -628,7 +633,7 @@ public class ContentQuery {
     }
 
     public void setDisplayTemplate(int displayTemplate) {
-        this.displayTemplate = Collections.singletonList(displayTemplate);
+        this.displayTemplate = singletonList(displayTemplate);
     }
 
     public void setDisplayTemplate(String displayTemplate) throws SystemException {
