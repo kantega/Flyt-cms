@@ -16,6 +16,7 @@
 
 package no.kantega.publishing.common.ao;
 
+import com.google.common.collect.Lists;
 import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.admin.content.behaviours.attributes.PersistAttributeBehaviour;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
@@ -49,7 +50,6 @@ import java.util.*;
 import java.util.Date;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.join;
 
 /**
  *
@@ -179,10 +179,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     }
 
     private void deleteOldGhostdrafts(Content content) {
-//        ContentIdentifier cid =  ContentIdentifier.fromAssociationId(content.getAssociation().getId());
-//        contentIdHelper.assureContentIdAndAssociationIdSet(cid);
-//        ContentIdentifier cid3 = content.getContentIdentifier();
-//        int id = content.getAssociation().getId(); //cid.getContentId();
         int id = content.getId();
         List<Integer> contentVersionIds = getJdbcTemplate().queryForList("select contentVersionId from contentversion where ContentId = ? and Status = ?", Integer.class, id, ContentStatus.GHOSTDRAFT.getTypeAsInt());
         // add normal drafts? and merge the two lists?
@@ -509,14 +505,20 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         int listSize = contentList.size();
         if (listSize > 0 && getAttributes) {
             // Hent attributter
-            String attrquery = "select * from contentattributes where ContentVersionId in (" + join(contentMap.keySet(), ',') +") order by ContentVersionId";
-            getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>emptyMap(), rs -> {
+
+            String attrquery = "select * from contentattributes where ContentVersionId in (:contentVersions) order by ContentVersionId";
+            RowCallbackHandler callback = rs -> {
                 int cvid = rs.getInt("ContentVersionId");
                 Content current = contentMap.get(cvid);
                 if (current != null) {
                     ContentAOHelper.addAttributeFromRS(current, rs);
                 }
-            });
+            };
+            List<List<Integer>> partition = Lists.partition(new ArrayList<>(contentMap.keySet()), 1000);
+            for (List<Integer> contentVersionIds : partition) {
+                getNamedParameterJdbcTemplate().query(attrquery, Collections.<String, Object>singletonMap("contentVersions", contentVersionIds), callback);
+            }
+
             for (Content content : contentMap.values()) {
                 content.indexAttributes();
             }
@@ -823,11 +825,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
             cid.setVersion(content.getVersion());
             cid.setLanguage(content.getLanguage());
             deleteContentVersion(cid, true);
-//            if(content.getStatus() != ContentStatus.GHOSTDRAFT){
-//                deleteContentVersion(cid, true);
-//            } else {
-//                deleteGhostcopyContentVersion(cid);
-//            }
         }
     }
 
