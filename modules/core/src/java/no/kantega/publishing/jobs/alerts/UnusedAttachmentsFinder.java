@@ -1,16 +1,13 @@
 package no.kantega.publishing.jobs.alerts;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
+import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.Aksess;
-import no.kantega.publishing.common.ao.AttachmentAO;
-import no.kantega.publishing.common.ao.LinkDao;
 import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
-import no.kantega.publishing.content.api.ContentAO;
-import no.kantega.publishing.modules.linkcheck.check.LinkHandler;
 import no.kantega.publishing.modules.linkcheck.check.LinkOccurrence;
 import no.kantega.publishing.modules.linkcheck.check.LinkQueryGenerator;
 import no.kantega.publishing.modules.linkcheck.crawl.LinkEmitter;
@@ -19,12 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-import static com.google.common.collect.Collections2.filter;
-import static com.google.common.collect.Collections2.transform;
-
+import static java.util.Objects.nonNull;
 
 public class UnusedAttachmentsFinder {
+
+    @Autowired
+    private AttachmentAO attachmentAO;
 
     @Autowired
     private LinkDao linkDao;
@@ -38,30 +37,23 @@ public class UnusedAttachmentsFinder {
     private static final Pattern attachmentPattern = Pattern.compile("(.*/attachment.ap\\?id=(?<apId>\\d+).*)|(.*/attachment/(?<prettyId>\\d+).*)");
 
     public List<Attachment> getUnusedAttachments() {
-        final List<Integer> referredAttachments = new LinkedList<>();
+        List<Integer> referredAttachments = new LinkedList<>();
 
         linkDao.doForEachLink(
-                new LinkQueryGenerator() {
-                    @Override
-                    public Query getQuery() {
-                        return new Query("select * from link where url like '%" + Aksess.VAR_WEB + "/attachment%'");
-                    }
-                },
-                new LinkHandler() {
-                    public void handleLink(int id, String link, LinkOccurrence occurrence) {
-                        String attachmentId = getAttachmentId(link);
+                () -> new LinkQueryGenerator.Query("select * from link where url like '%" + Aksess.VAR_WEB + "/attachment%'"),
+                (linkId, url, occurrence) -> {
+                    String attachmentId = getAttachmentId(url);
 
-                        if (attachmentId != null) {
-                            referredAttachments.add(Integer.parseInt(attachmentId));
+                    if(nonNull(attachmentId)) {
+                        referredAttachments.add(Integer.parseInt(attachmentId));
 
-                        }
                     }
                 });
-        List<Integer> allAttachmentIds = AttachmentAO.getAllAttachmentIds();
+        List<Integer> allAttachmentIds = attachmentAO.getAllAttachmentIds();
 
         allAttachmentIds.removeAll(referredAttachments);
 
-        return AttachmentAO.getAttachments(allAttachmentIds);
+        return attachmentAO.getAttachments(allAttachmentIds);
     }
 
     private String getAttachmentId(String url) {
@@ -84,37 +76,34 @@ public class UnusedAttachmentsFinder {
             throw new ContentNotFoundException(cid.toString());
         }
         linkDao.saveLinksForContent(emitter, content);
-        Collection<LinkOccurrence> attachmentUris = filter(linkDao.getLinksforContentId(cid.getContentId()), new Predicate<LinkOccurrence>() {
-            @Override
-            public boolean apply(LinkOccurrence lo) {
-                return lo.getUrl().contains("/attachment");
-            }
-        });
-        Collection<Integer> attachmentIds = transform(attachmentUris, new Function<LinkOccurrence, Integer>() {
-            @Override
-            public Integer apply(LinkOccurrence input) {
-                String attachmentId = getAttachmentId(input.getUrl());
-                if (attachmentId == null) {
-                    return null;
-                } else {
-                    return Integer.parseInt(attachmentId);
-                }
-            }
-        });
+        Collection<LinkOccurrence> attachmentUris = linkDao.getLinksforContentId(cid.getContentId())
+                .stream()
+                .filter(lo -> lo.getUrl().contains("/attachment"))
+                .collect(Collectors.toList());
+        Collection<Integer> attachmentIds =  attachmentUris
+                .stream()
+                .map(lo -> getAttachmentId(lo.getUrl()))
+                .filter(Objects::nonNull)
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
 
-        return new ArrayList<>(attachmentIds);
+        List<Integer> attachmentsForContent = attachmentAO.getAttachmentList(cid)
+                .stream()
+                .map(Attachment::getId)
+                .collect(Collectors.toList());
+
+        attachmentsForContent.removeAll(attachmentIds);
+        return attachmentsForContent;
     }
 
     public List<Integer> getUnusedAttachmentsForContent(Integer contentId) throws ContentNotFoundException {
         ContentIdentifier cid = ContentIdentifier.fromContentId(contentId);
         Collection<Integer> attachmentIds = getUsedAttachmentsForContentVersion(cid);
 
-        List<Integer> attachmentsForContent = new ArrayList<>(transform(AttachmentAO.getAttachmentList(cid), new Function<Attachment, Integer>() {
-            @Override
-            public Integer apply(Attachment input) {
-                return input.getId();
-            }
-        }));
+        List<Integer> attachmentsForContent = attachmentAO.getAttachmentList(cid)
+                .stream()
+                .map(Attachment::getId)
+                .collect(Collectors.toList());
         attachmentsForContent.removeAll(attachmentIds);
         return attachmentsForContent;
     }

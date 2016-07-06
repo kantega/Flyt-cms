@@ -675,7 +675,7 @@ public class Content extends BaseObject {
             return cached;
         }
 
-        List<Attribute> list = getAttributeList(name, type);
+        List<Attribute> list = getAttributeList(name, attributeDataType);
 
         if (name.contains("[") && name.contains("].")) {
             name = name.substring(name.indexOf("].") + 2, name.length());
@@ -743,7 +743,7 @@ public class Content extends BaseObject {
         } else {
             metaAttributes.add(attr);
         }
-        attributeIndex.put(attributeIndexKey(attr, type), attr);
+        attributeIndex.put(attributeIndexKey(attr, attributeDataType), attr);
     }
 
     public void removeAttribute(String name, AttributeDataType attributeDataType) {
@@ -758,7 +758,7 @@ public class Content extends BaseObject {
             Attribute attr = list.get(i);
             if (attr.getName().equalsIgnoreCase(name)) {
                 list.remove(attr);
-                attributeIndex.remove(attributeIndexKey(attr, type));
+                attributeIndex.remove(attributeIndexKey(attr, attributeDataType));
                 break;
             }
         }
