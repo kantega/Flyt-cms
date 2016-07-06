@@ -621,6 +621,7 @@ public class Content extends BaseObject {
         } else {
             metaAttributes = attr;
         }
+        indexAttributes();
     }
 
     /**
@@ -628,13 +629,13 @@ public class Content extends BaseObject {
      * @return the String value of the attribute or empty string.
      */
     public String getAttributeValue(String name) {
-        Attribute attr = getAttribute(name, CONTENT_DATA);
+        Attribute attr = getAttribute(name);
         if (attr != null) {
             String value = attr.getValue();
             if (value == null) {
                 return "";
             } else {
-                return attr.getValue();
+                return value;
             }
         } else {
             return "";
@@ -655,14 +656,7 @@ public class Content extends BaseObject {
      * @return the Attribute of type <code>AttributeDataType.CONTENT_DATA</code> or null.
      */
     public Attribute getAttribute(String name) {
-        String attributeName = name.toLowerCase();
-        if(attributeIndex.containsKey(attributeName)) {
-            return attributeIndex.get(attributeName);
-        } else {
-            Attribute attribute = getAttribute(name, AttributeDataType.CONTENT_DATA);
-            attributeIndex.put(attributeName, attribute);
-            return attribute;
-        }
+        return getAttribute(name, AttributeDataType.CONTENT_DATA);
     }
 
     /**
@@ -675,7 +669,13 @@ public class Content extends BaseObject {
         if (isBlank(name)) {
             throw new IllegalArgumentException("Name was blank");
         }
-        List<Attribute> list = getAttributeList(name, attributeDataType);
+        String attributeName = type + name.toLowerCase();
+        Attribute cached = attributeIndex.get(attributeName);
+        if(cached != null) {
+            return cached;
+        }
+
+        List<Attribute> list = getAttributeList(name, type);
 
         if (name.contains("[") && name.contains("].")) {
             name = name.substring(name.indexOf("].") + 2, name.length());
@@ -683,6 +683,7 @@ public class Content extends BaseObject {
 
         for (Attribute attr : list) {
             if (attr.getName().equalsIgnoreCase(name)) {
+                attributeIndex.put(attributeName, attr);
                 return attr;
             }
         }
@@ -739,10 +740,10 @@ public class Content extends BaseObject {
 
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             contentAttributes.add(attr);
-            attributeIndex.put(attr.getName().toLowerCase(), attr);
         } else {
             metaAttributes.add(attr);
         }
+        attributeIndex.put(attributeIndexKey(attr, type), attr);
     }
 
     public void removeAttribute(String name, AttributeDataType attributeDataType) {
@@ -757,10 +758,10 @@ public class Content extends BaseObject {
             Attribute attr = list.get(i);
             if (attr.getName().equalsIgnoreCase(name)) {
                 list.remove(attr);
+                attributeIndex.remove(attributeIndexKey(attr, type));
                 break;
             }
         }
-        attributeIndex.remove(name.toLowerCase());
     }
 
     public List<Attachment> getAttachments() {
@@ -1059,9 +1060,18 @@ public class Content extends BaseObject {
     public void indexAttributes() {
         Map<String, Attribute> contentAttributeIndex = new HashMap<>();
         Map<String, Attribute> contentAttributes = getContentAttributes();
-        for (Map.Entry<String, Attribute> entry : contentAttributes.entrySet()) {
-            contentAttributeIndex.put(entry.getKey().toLowerCase(), entry.getValue());
+        for (Attribute entry : contentAttributes.values()) {
+            contentAttributeIndex.put(attributeIndexKey(entry, AttributeDataType.CONTENT_DATA), entry);
+        }
+
+        Map<String, Attribute> metaAttributes = getMetaAttributes();
+        for (Attribute entry : metaAttributes.values()) {
+            contentAttributeIndex.put(attributeIndexKey(entry, AttributeDataType.META_DATA), entry);
         }
         attributeIndex = contentAttributeIndex;
+    }
+
+    private String attributeIndexKey(Attribute attribute, AttributeDataType type) {
+        return type + attribute.getName().toLowerCase();
     }
 }
