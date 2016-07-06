@@ -595,7 +595,11 @@ public class ContentQuery {
     }
 
     public void setDocumentType(int documentType) {
-        this.documentType = asList(documentType);
+        this.documentType = singletonList(documentType);
+    }
+
+    public void setDocumentType(List<Integer> documentTypes) {
+        this.documentType = documentTypes;
     }
 
     public void setExcludedDocumentTypes(String documentType) throws SystemException {
