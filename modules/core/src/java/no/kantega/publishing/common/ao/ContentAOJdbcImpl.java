@@ -306,7 +306,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
 
         // Get content attributes
         jdbcTemplate.query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
-
+        content.indexAttributes();
         List<Topic> topics = topicDao.getTopicsByContentId(contentId);
         content.setTopics(topics);
 
@@ -517,6 +517,9 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                     ContentAOHelper.addAttributeFromRS(current, rs);
                 }
             });
+            for (Content content : contentMap.values()) {
+                content.indexAttributes();
+            }
         }
 
         if (listSize > 0 && getTopics) {

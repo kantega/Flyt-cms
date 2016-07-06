@@ -125,6 +125,8 @@ public class Content extends BaseObject {
     // Topics
     private List<Topic> topics = new ArrayList<>();
 
+    private Map<String, Attribute> attributeIndex = new HashMap<>();
+
     // Status
     boolean isModified = false;
     boolean isCheckedOut = false;
@@ -650,6 +652,21 @@ public class Content extends BaseObject {
 
     /**
      * @param name the attribute name as specified in the content template xml.
+     * @return the Attribute of type <code>AttributeDataType.CONTENT_DATA</code> or null.
+     */
+    public Attribute getAttribute(String name) {
+        String attributeName = name.toLowerCase();
+        if(attributeIndex.containsKey(attributeName)) {
+            return attributeIndex.get(attributeName);
+        } else {
+            Attribute attribute = getAttribute(name, AttributeDataType.CONTENT_DATA);
+            attributeIndex.put(attributeName, attribute);
+            return attribute;
+        }
+    }
+
+    /**
+     * @param name the attribute name as specified in the content template xml.
      * @param attributeDataType type, either <code>AttributeDataType.CONTENT_DATA</code> or <code>AttributeDataType.META_DATA</code>
      *             or <code>AttributeDataType.ANY</code>
      * @return the Attribute or null.
@@ -722,13 +739,14 @@ public class Content extends BaseObject {
 
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             contentAttributes.add(attr);
+            attributeIndex.put(attr.getName().toLowerCase(), attr);
         } else {
             metaAttributes.add(attr);
         }
     }
 
     public void removeAttribute(String name, AttributeDataType attributeDataType) {
-        List list;
+        List<Attribute> list;
         if (attributeDataType == AttributeDataType.CONTENT_DATA) {
             list = contentAttributes;
         } else {
@@ -736,12 +754,13 @@ public class Content extends BaseObject {
         }
 
         for (int i = 0; i < list.size(); i++) {
-            Attribute attr = (Attribute)list.get(i);
+            Attribute attr = list.get(i);
             if (attr.getName().equalsIgnoreCase(name)) {
                 list.remove(attr);
                 break;
             }
         }
+        attributeIndex.remove(name.toLowerCase());
     }
 
     public List<Attachment> getAttachments() {
@@ -1035,5 +1054,14 @@ public class Content extends BaseObject {
                 ", hearing=" + hearing +
                 ", attributesAreUpdatedFromTemplate=" + attributesAreUpdatedFromTemplate +
                 '}';
+    }
+
+    public void indexAttributes() {
+        Map<String, Attribute> contentAttributeIndex = new HashMap<>();
+        Map<String, Attribute> contentAttributes = getContentAttributes();
+        for (Map.Entry<String, Attribute> entry : contentAttributes.entrySet()) {
+            contentAttributeIndex.put(entry.getKey().toLowerCase(), entry.getValue());
+        }
+        attributeIndex = contentAttributeIndex;
     }
 }
