@@ -667,7 +667,7 @@ public class Content extends BaseObject {
         if (isBlank(name)) {
             throw new IllegalArgumentException("Name was blank");
         }
-        String attributeName = type + name.toLowerCase();
+        String attributeName = attributeNameIndexKey(name.toLowerCase(), type);
         Attribute cached = attributeIndex.get(attributeName);
         if(cached != null) {
             return cached;
@@ -1017,5 +1017,9 @@ public class Content extends BaseObject {
 
     private String attributeIndexKey(Attribute attribute, int type) {
         return type + attribute.getName().toLowerCase();
+    }
+
+    private String attributeNameIndexKey(String attributeName, int type) {
+        return type + attributeName.toLowerCase();
     }
 }
