@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 public class SearchProfilesController extends AbstractUserAdminController  {
 
     public ModelAndView doHandleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -41,7 +43,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
         String query  = param.getString("q");
         String userId  = param.getString("userId");
 
-        Map model = new HashMap();
+        Map<String, Object> model = new HashMap<>();
 
         ProfileManagementConfiguration config = getProfileConfiguration(domain);
         if (config != null) {
@@ -56,7 +58,7 @@ public class SearchProfilesController extends AbstractUserAdminController  {
             }
             ProfileManager manager = config.getProfileManager();
 
-            if (userId != null && userId.length() > 0) {
+            if (isNotBlank(userId)) {
                 // Opprettet en bruker, vis denne
                 List<Profile> users = new ArrayList<>();
                 Identity identity = DefaultIdentity.withDomainAndUserId(domain, userId);
