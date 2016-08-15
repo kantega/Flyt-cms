@@ -2,7 +2,7 @@ package no.kantega.publishing.modules.linkcheck.check;
 
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,8 +11,8 @@ public class NotCheckedSinceTerm implements LinkQueryGenerator {
     private final int maxLinksPerDay;
     private final String driver;
 
-    public NotCheckedSinceTerm(Date notCheckedSince, int maxLinksPerDay) {
-        this.notCheckedSince = notCheckedSince;
+    public NotCheckedSinceTerm(java.util.Date notCheckedSince, int maxLinksPerDay) {
+        this.notCheckedSince = new Date(notCheckedSince.getTime());
         this.maxLinksPerDay = maxLinksPerDay;
         driver = dbConnectionFactory.getDriverName();
 
