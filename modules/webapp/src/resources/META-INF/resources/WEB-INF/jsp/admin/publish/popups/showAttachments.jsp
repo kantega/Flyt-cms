@@ -8,6 +8,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="admin" uri="http://www.kantega.no/aksess/tags/admin" %>
 <%@ taglib prefix="kantega" uri="http://www.kantega.no/aksess/tags/commons" %>
+<%@ taglib prefix="aksess" uri="http://www.kantega.no/aksess/tags/aksess" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -33,23 +34,7 @@
 </head>
 <body id="Content">
 <script language="Javascript" type="text/javascript">
-    <%-- function updateAttachment(id) {
-         var title;
-         if (id == -1) {
-             title = '<kantega:label key="aksess.attachment.add" escapeJavascript="true"/>';
-         } else {
-             title = '<kantega:label key="aksess.attachment.update" escapeJavascript="true"/>';
-         }
-         openaksess.common.modalWindow.open({title:title, iframe:true, href: "${pageContext.request.contextPath}/publish/popups/AddAttachment.action?attachmentId=" + id,width: 380, height:250});
-     }
 
-     function deleteAttachment(id) {
-         if (confirm("<kantega:label key="aksess.attachments.confirmdelete"/>")) {
-             window.onbeforeunload = null;
-             window.location.href = "DeleteAttachment.action?attachmentId=" + id;
-         }
-     }
-   --%>
     function toggleSeachable(id, checked) {
         $.post('${pageContext.request.contextPath}/admin/attachment/' + id + '/togglesearchable', function(response) {
             /*openaksess.common.debug(id + ' set to searchable: ' + checked);*/
@@ -183,6 +168,16 @@
 <span class="button"><input type="button" class="search" value="<kantega:label key="aksess.button.markattachmentusedincontentversion"/>" onclick="markContentVersions(${currentContent.id})"></span>
 
 <span class="spinner"></span>
+<div>
+    <kantega:label key="miniaksess.showAttachments.helptext" />
+</div>
+
+<script>
+    var doMarkunusedattachment = <aksess:getconfig key="miniaksess.markunusedattachment.onopen" default="false"/>;
+    if(doMarkunusedattachment) {
+        checkUnusedAttachments(${currentContent.id})
+    }
+</script>
 <%
 } else {
 %>
