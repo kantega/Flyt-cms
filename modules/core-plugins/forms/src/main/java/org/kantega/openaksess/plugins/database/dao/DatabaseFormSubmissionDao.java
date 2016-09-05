@@ -20,15 +20,16 @@ import no.kantega.publishing.api.forms.model.*;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.*;
-import java.util.Date;
 
 public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     private FormSubmissionMapper formSubmissionMapper = new FormSubmissionMapper();
@@ -95,17 +96,15 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
             // Insert new
             GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
-            jdbcTemplate.update(new PreparedStatementCreator() {
-                public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", new String[] {"FORMSUBMISSIONID"});
-                    p.setInt(1, form.getForm().getId());
-                    p.setString(2, form.getSubmittedByName());
-                    p.setString(3, userId);
-                    p.setString(4, form.getPassword());
-                    p.setString(5, form.getSubmittedByEmail());
-                    p.setTimestamp(6, new Timestamp(new Date().getTime()));
-                    return p;
-                }
+            jdbcTemplate.update(connection -> {
+                PreparedStatement p = connection.prepareStatement("INSERT INTO formsubmission (FormId, SubmittedBy, AuthenticatedIdentity, Password, Email, SubmittedDate) VALUES (?,?,?,?,?,?)", new String[] {"FORMSUBMISSIONID"});
+                p.setInt(1, form.getForm().getId());
+                p.setString(2, form.getSubmittedByName());
+                p.setString(3, userId);
+                p.setString(4, form.getPassword());
+                p.setString(5, form.getSubmittedByEmail());
+                p.setTimestamp(6, new Timestamp(new Date().getTime()));
+                return p;
             }, keyHolder);
 
             id = keyHolder.getKey().intValue();
@@ -167,7 +166,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", formSubmissionId);
     }
 
-    private class FormSubmissionMapper implements RowMapper<DefaultFormSubmission> {
+    private static class FormSubmissionMapper implements RowMapper<DefaultFormSubmission> {
         public DefaultFormSubmission mapRow(ResultSet rs, int i) throws SQLException {
             DefaultFormSubmission formSubmission = new DefaultFormSubmission();
             formSubmission.setFormSubmissionId(rs.getInt("FormSubmissionId"));
@@ -201,7 +200,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         }
     }
 
-    private class FormSubmissionValuesCallbackHandler implements RowCallbackHandler {
+    private static class FormSubmissionValuesCallbackHandler implements RowCallbackHandler {
         private Map<Integer, DefaultFormSubmission> formSubmissions = new HashMap<>();
 
         public void setFormSubmission(List<DefaultFormSubmission> submissions) {
