@@ -46,26 +46,26 @@ public class ScheduleLogAO {
     }
 
     public static void setLastrun(String service , Date lastRun) throws SystemException {
-        Date previous = getLastRun(service);
-
         if (lastRun == null) lastRun = new Date();
 
-        try (Connection c = dbConnectionFactory.getConnection();
-             PreparedStatement st = getLastRunStatement(c, previous)) {
-            st.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
-            st.setString(2, service);
+        try (Connection c = dbConnectionFactory.getConnection()) {
+            boolean autoCommit = c.getAutoCommit();
+            try(PreparedStatement delete = c.prepareStatement("delete from schedulelog where service = ?");
+                PreparedStatement insert = c.prepareStatement("insert into schedulelog(LastRun, Service) values(?,?)")) {
+                c.setAutoCommit(false);
+                delete.setString(1, service);
+                delete.executeUpdate();
 
-            st.executeUpdate();
+                insert.setTimestamp(1, new java.sql.Timestamp(lastRun.getTime()));
+                insert.setString(2, service);
+
+                insert.executeUpdate();
+            } finally {
+                c.commit();
+                c.setAutoCommit(autoCommit);
+            }
         } catch (SQLException e) {
             throw new SystemException("SQL feil", e);
-        }
-    }
-
-    private static PreparedStatement getLastRunStatement(Connection c, Date lastRun) throws SQLException {
-        if (lastRun == null) {
-            return c.prepareStatement("insert into schedulelog(LastRun, Service) values(?,?)");
-        } else {
-            return c.prepareStatement("update schedulelog set LastRun = ? where Service = ?");
         }
     }
 }
