@@ -61,3 +61,15 @@ table th.date {
 #statusFilter label {
     display: inline-block;
 }
+
+dl.inline-dl dd {
+    display: inline;
+    margin: 0;
+}
+dl.inline-dl dd:after{
+    display: block;
+    content: '';
+}
+dl.inline-dl dt{
+    display: inline-block;
+}

@@ -30,6 +30,12 @@ public interface FormSubmissionDao {
     FormSubmission getFormSubmissionById(int formSubmissionId);
 
     /**
+     * Get FormSubmissions
+     * @return - FormSubmission
+     */
+    List<FormSubmission> getFormSubmission();
+
+    /**
      * Get all form submissions for given form
      * @param formId - id of form
      * @return - List of FormSubmission
