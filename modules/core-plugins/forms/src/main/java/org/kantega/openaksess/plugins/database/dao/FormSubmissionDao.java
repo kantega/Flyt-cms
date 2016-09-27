@@ -33,7 +33,7 @@ public interface FormSubmissionDao {
      * Get FormSubmissions
      * @return - FormSubmission
      */
-    List<FormSubmission> getFormSubmission();
+    List<FormSubmission> getFormSubmissions();
 
     /**
      * Get all form submissions for given form

@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 
 
 public class DeleteFormSubmissionsAction extends AbstractController {
-    FormSubmissionDao dao;
+    private FormSubmissionDao dao;
 
     protected ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {
         int formId = ServletRequestUtils.getIntParameter(request, "formId", -1);

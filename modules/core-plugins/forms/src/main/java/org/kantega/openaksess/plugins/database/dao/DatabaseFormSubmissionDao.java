@@ -17,10 +17,8 @@
 package org.kantega.openaksess.plugins.database.dao;
 
 import no.kantega.publishing.api.forms.model.*;
-import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
-import org.kantega.openaksess.plugins.database.controller.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,7 +36,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     private JdbcTemplate jdbcTemplate;
 
     public FormSubmission getFormSubmissionById(int formSubmissionId) {
-        List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionMapper, formSubmissionId);
+        List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionMapper, formSubmissionId);
         if (list.size() > 0) {
             FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
             callback.setFormSubmission(list);
@@ -50,17 +48,17 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     }
 
     @Override
-    public List<FormSubmission> getFormSubmission() {
-        List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission", formSubmissionMapper);
+    public List<FormSubmission> getFormSubmissions() {
+        List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission", formSubmissionMapper);
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
         jdbcTemplate.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission) ORDER BY FieldNumber", new Object[]{}, callback);
-        return (List<FormSubmission>)(List)list;
+        return list;
     }
 
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormId(int formId) {
-        List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
+        List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
@@ -71,16 +69,15 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     }
 
 
-    @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormIdAndIdentity(int formId, String identity) {
-        List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
+        List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
 
         FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
         callback.setFormSubmission(list);
 
         jdbcTemplate.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?) ORDER BY FieldNumber", new Object[]{formId, identity}, callback);
 
-        return (List<FormSubmission>)(List)list;
+        return list;
     }
 
     public int saveFormSubmission(final FormSubmission form) {
@@ -141,7 +138,6 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         return id;
     }
 
-    @SuppressWarnings("unchecked")
     public List<String> getFieldNamesForForm(int formId) {
         List<String> uniqueNames = new ArrayList<>();
         Map<String, String> mapNames = new HashMap<>();
@@ -178,7 +174,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", formSubmissionId);
     }
 
-    private static class FormSubmissionMapper implements RowMapper<DefaultFormSubmission> {
+    private static class FormSubmissionMapper implements RowMapper<FormSubmission> {
         public DefaultFormSubmission mapRow(ResultSet rs, int i) throws SQLException {
             DefaultFormSubmission formSubmission = new DefaultFormSubmission();
             formSubmission.setFormSubmissionId(rs.getInt("FormSubmissionId"));
@@ -213,22 +209,22 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
     }
 
     private static class FormSubmissionValuesCallbackHandler implements RowCallbackHandler {
-        private Map<Integer, DefaultFormSubmission> formSubmissions = new HashMap<>();
+        private Map<Integer, FormSubmission> formSubmissions = new HashMap<>();
 
-        public void setFormSubmission(List<DefaultFormSubmission> submissions) {
-            for (DefaultFormSubmission s : submissions) {
+        public void setFormSubmission(List<FormSubmission> submissions) {
+            for (FormSubmission s : submissions) {
                 formSubmissions.put(s.getFormSubmissionId(), s);
             }
         }
 
         public void processRow(ResultSet rs) throws SQLException {
             int id = rs.getInt("FormSubmissionId");
-            DefaultFormSubmission submission = formSubmissions.get(id);
+            FormSubmission submission = formSubmissions.get(id);
             if (submission != null) {
                 List<FormValue> formValues = submission.getValues();
                 if (formValues == null) {
                     formValues = new ArrayList<>();
-                    submission.setValues(formValues);
+                    ((DefaultFormSubmission)submission).setValues(formValues);
                 }
 
                 String name = rs.getString("FieldName");
