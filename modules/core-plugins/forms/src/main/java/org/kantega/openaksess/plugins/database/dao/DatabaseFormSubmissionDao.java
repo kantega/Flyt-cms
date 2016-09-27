@@ -17,8 +17,10 @@
 package org.kantega.openaksess.plugins.database.dao;
 
 import no.kantega.publishing.api.forms.model.*;
+import no.kantega.publishing.api.forms.model.FormSubmission;
 import no.kantega.security.api.identity.DefaultIdentity;
 import no.kantega.security.api.identity.Identity;
+import org.kantega.openaksess.plugins.database.controller.*;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,6 +49,15 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         }
     }
 
+    @Override
+    public List<FormSubmission> getFormSubmission() {
+        List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission", formSubmissionMapper);
+        FormSubmissionValuesCallbackHandler callback = new FormSubmissionValuesCallbackHandler();
+        callback.setFormSubmission(list);
+        jdbcTemplate.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission) ORDER BY FieldNumber", new Object[]{}, callback);
+        return (List<FormSubmission>)(List)list;
+    }
+
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormId(int formId) {
         List<DefaultFormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
@@ -58,6 +69,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
         return (List<FormSubmission>)(List)list;
     }
+
 
     @SuppressWarnings("unchecked")
     public List<FormSubmission> getFormSubmissionsByFormIdAndIdentity(int formId, String identity) {

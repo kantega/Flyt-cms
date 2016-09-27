@@ -21,7 +21,41 @@
     <import resource="databaseformdelivery.xml"/>
     <import resource="pdf-and-emailformdelivery.xml"/>
 
+
+    <bean class="no.kantega.publishing.api.plugin.OpenAksessPluginAdapter">
+        <constructor-arg value="org.kantega.openaksess.plugins.forms"/>
+        <property name="handlerMappings">
+            <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+                <property name="alwaysUseFullPath" value="true"/>
+                <property name="mappings">
+                    <props>
+                        <prop key="/admin/administration/submittedForms">formSubmission</prop>
+                    </props>
+                </property>
+                <property name="interceptors">
+                    <bean class="no.kantega.publishing.security.interceptors.AdminRoleInterceptor"/>
+                </property>
+            </bean>
+        </property>
+
+        <property name="UIContributions">
+            <bean class="org.kantega.openaksess.plugins.database.controller.FormSubmissionMenuContribution"/>
+        </property>
+    </bean>
+
+    <bean id="formSubmission" class="org.kantega.openaksess.plugins.database.controller.FormSubmissionList"/>
+
     <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
         <property name="dataSource" ref="aksessDataSource"/>
     </bean>
+
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>classpath:org/kantega/openaksess/plugins/forms/forms</value>
+
+            </list>
+        </property>
+    </bean>
+
 </beans>

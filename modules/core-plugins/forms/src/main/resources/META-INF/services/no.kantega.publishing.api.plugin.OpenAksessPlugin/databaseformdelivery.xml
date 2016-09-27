@@ -25,6 +25,7 @@
                 <property name="mappings">
                     <value>
                         /admin/publish/DeleteFormSubmissions.action=deleteFormSubmissionsAction
+                        /admin/publish/DeleteSubmission.action=deleteSubmissionAction
                         /admin/publish/FormSubmissionsExportExcel.action=formSubmissionsExportExcelAction
                     </value>
                 </property>
@@ -45,6 +46,10 @@
     </bean>
 
     <bean id="deleteFormSubmissionsAction" class="org.kantega.openaksess.plugins.database.controller.DeleteFormSubmissionsAction">
+        <property name="dao" ref="formSubmissionDao"/>
+    </bean>
+
+    <bean id="deleteSubmissionAction" class="org.kantega.openaksess.plugins.database.controller.DeleteSubmissionAction">
         <property name="dao" ref="formSubmissionDao"/>
     </bean>
 
