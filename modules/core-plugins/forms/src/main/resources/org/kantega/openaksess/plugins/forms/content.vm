@@ -1,0 +1,41 @@
+<h2>#pluginMessage('forms.title')</h2>
+<div class="forms">
+    #foreach( ${form} in ${forms})
+        <div class="form">
+            <h3><a href="${form.path}" >${form.title}</a></h3>
+            <table class="fullWidth">
+                <tr>
+                    <th>#pluginMessage('forms.submitted')</th>
+                    #foreach(${field} in ${form.fields})
+                        <th>${field}</th>
+                    #end
+                    <th></th>
+                </tr>
+
+                #foreach(${submission} in ${form.submissions})
+                    <tr id="${submission.id}">
+                        <td>${submission.submissionDate}</td>
+                        #foreach(${formValue} in ${submission.values})
+                            <td>${formValue}</td>
+                        #end
+                        <td><button onclick="delete_submission(${submission.id}, '${contextPath}', '#pluginMessage('forms.deleteConfirm')')">#pluginMessage('forms.delete')</button></td>
+                    </tr>
+                #end
+            </table>
+        </div>
+    #end
+</div>
+
+<script>
+    function delete_submission(row_id, contextPath, confirmMessage){
+        if (window.confirm(confirmMessage)){
+            $.ajax({
+                type: 'POST',
+                url: contextPath + "/admin/publish/DeleteSubmission.action",
+                data : { 'id' : row_id }
+            }).done(function() {
+                $("#" + row_id).remove();
+            });
+        }
+    }
+</script>

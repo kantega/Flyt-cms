@@ -30,6 +30,7 @@
                 <property name="mappings">
                     <props>
                         <prop key="/admin/administration/submittedForms">formSubmission</prop>
+                        <prop key="/admin/submittedForm">formSubmission</prop>
                     </props>
                 </property>
                 <property name="interceptors">
@@ -43,7 +44,7 @@
         </property>
     </bean>
 
-    <bean id="formSubmission" class="org.kantega.openaksess.plugins.database.controller.FormSubmissionList"/>
+    <bean id="formSubmission" class="org.kantega.openaksess.plugins.database.controller.FormSubmissionsController"/>
 
     <bean id="eventLogAO" class="no.kantega.publishing.common.ao.EventLogAO">
         <property name="dataSource" ref="aksessDataSource"/>

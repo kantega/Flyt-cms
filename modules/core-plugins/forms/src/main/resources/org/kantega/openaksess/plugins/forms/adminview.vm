@@ -1,0 +1,9 @@
+#section("content")
+#box()
+
+#parse("content.vm")
+
+#end
+#end
+#applyAdminLayout()
+

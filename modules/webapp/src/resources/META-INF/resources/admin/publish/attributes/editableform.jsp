@@ -205,6 +205,8 @@
         if (!content.isNew()) {
     %>
     <a href="FormSubmissionsExportExcel.action?formId=<%=content.getId()%>" target="_new" class="button"><span class=""><kantega:label key="aksess.formeditor.exportformdata"/></span></a>
+    <a href="javascript:void(0)" onclick="openaksess.common.modalWindow.open({title:'Form content', iframe:true, href: '${pageContext.request.contextPath}/admin/submittedForm?formId=<%=content.getId()%>',width: $(window).width() * 0.75, height:$(window).height() * 0.75});" class="button"><span class=""><kantega:label key="aksess.formeditor.showformdata"/></span></a>
+
     <%
         if (SecuritySession.getInstance(request).isAuthorized(content, Privilege.APPROVE_CONTENT)) {
     %>

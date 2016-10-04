@@ -56,7 +56,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         return list;
     }
 
-    @SuppressWarnings("unchecked")
+    @Override
     public List<FormSubmission> getFormSubmissionsByFormId(int formId) {
         List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ?", formSubmissionMapper, formId);
 
@@ -65,10 +65,10 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
 
         jdbcTemplate.query("SELECT * FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?) ORDER BY FieldNumber", new Object[]{formId}, callback);
 
-        return (List<FormSubmission>)(List)list;
+        return list;
     }
 
-
+    @Override
     public List<FormSubmission> getFormSubmissionsByFormIdAndIdentity(int formId, String identity) {
         List<FormSubmission> list = jdbcTemplate.query("SELECT * FROM formsubmission WHERE FormId = ? AND AuthenticatedIdentity = ?", new FormSubmissionMapper(), formId, identity);
 
@@ -80,6 +80,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         return list;
     }
 
+    @Override
     public int saveFormSubmission(final FormSubmission form) {
         int id = form.getFormSubmissionId();
 
@@ -138,6 +139,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         return id;
     }
 
+    @Override
     public List<String> getFieldNamesForForm(int formId) {
         List<String> uniqueNames = new ArrayList<>();
         Map<String, String> mapNames = new HashMap<>();
@@ -153,11 +155,13 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         return uniqueNames;
     }
 
+    @Override
     public void deleteFormSubmissionsByFormId(int formId) {
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE FormId = ?)", formId);
         jdbcTemplate.update("DELETE FROM formsubmission WHERE FormId = ?", formId);
     }
 
+    @Override
     public void deleteFormSubmissionsOlderThanDate(Calendar dateLimit) {
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId IN (SELECT FormSubmissionId FROM formsubmission WHERE SubmittedDate < ?)",
                 new Timestamp(dateLimit.getTime().getTime()));
@@ -169,6 +173,7 @@ public class DatabaseFormSubmissionDao implements FormSubmissionDao {
         this.jdbcTemplate  = new JdbcTemplate(dataSource);
     }
 
+    @Override
     public void deleteFormSubmissionById(int formSubmissionId) {
         jdbcTemplate.update("DELETE FROM formsubmission WHERE FormSubmissionId = ?", formSubmissionId);
         jdbcTemplate.update("DELETE FROM formsubmissionvalues WHERE FormSubmissionId = ?", formSubmissionId);

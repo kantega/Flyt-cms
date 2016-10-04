@@ -1,52 +1,11 @@
-###setTitle('jobexecuter.title')
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="${contextPath}/wro-oa/admin-popuplayout.css">
+    <link rel="stylesheet" type="text/css" href="${contextPath}/wro-oa/admin-commonlayout.css">
 
-
-#section("content")
-#box()
-
-<h2>#pluginMessage('forms.title')</h2>
-<table class="fullWidth">
-    <thead>
-    <tr>
-        <th>#pluginMessage('forms.submitted')</th>
-        <th>#pluginMessage('forms.values')</th>
-        <th>&nbsp; </th>
-    </tr>
-    </thead>
-    <tbody>
-        #foreach( $field in $fieldList)
-        <tr id="$field.getFormSubmissionId()">
-            <td>
-
-                <dl class="inline-dl">
-                    <dt><strong>Navn</strong></dt>
-                    <dd> $!field.getSubmittedByName()</dd>
-                    <dt><strong>Epost</strong></dt>
-                    <dd>$!field.getSubmittedByEmail()</dd>
-                    <dt><strong>Dato</strong></dt>
-                    <dd>$!field.getSubmissionDate()</dd>
-                </dl>
-            <td>
-                <dl class="inline-dl">
-                    #foreach ($fieldValue in $field.getValues())
-                        <dt><strong>$fieldValue.getName()</strong></dt>
-                        <dd>$fieldValue.getValuesAsString()</dd>
-                    #end
-                </dl>
-
-            </td>
-            <td><button onclick="delete_submission($field.getFormSubmissionId(), '$contextPath', '#pluginMessage('forms.deleteConfirm')')">#pluginMessage('forms.delete')</button></td>
-        </tr>
-        #end
-
-    </tbody>
-</table>
-
-#end
-#end
-#applyAdminLayout()
-
-
-<script>
-     #include("FormSubmission.js")
-</script>
+    <script type="text/javascript" src='${contextPath}/wro-oa/admin-popuplayout.js'></script>
+</head>
+<body>
+    #parse("content.vm")
+</body>
+</html>

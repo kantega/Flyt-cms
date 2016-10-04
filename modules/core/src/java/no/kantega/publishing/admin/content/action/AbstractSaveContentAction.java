@@ -93,7 +93,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
             String action = param.getString("action");
 
             ValidationErrors errors = updateSubmittedValues(aksessService, content, param);
-            log.info("Updated {}, errors: {}", content, errors);
+            log.debug("Updated {}, errors: {}", content, errors);
             String addRepeaterRow = param.getString("addRepeaterRow");
             String deleteRepeaterRow = param.getString("deleteRepeaterRow");
             if (addRepeaterRow != null && addRepeaterRow.length() > 0) {
