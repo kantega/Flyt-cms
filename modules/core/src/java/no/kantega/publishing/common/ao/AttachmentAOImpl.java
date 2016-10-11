@@ -62,8 +62,8 @@ public class AttachmentAOImpl implements AttachmentAO {
                         st.setBinaryStream(3, new ByteArrayInputStream(data), (int) data.length);
                         st.setTimestamp(4, new java.sql.Timestamp(new Date().getTime()));
                         st.setInt(5, attachment.getSize());
-                        st.setInt(6, attachment.getId());
-                        st.setBoolean(7, attachment.isSearchable());
+                        st.setBoolean(6, attachment.isSearchable());
+                        st.setInt(7, attachment.getId());
                         st.execute();
                     }
                 } else {
