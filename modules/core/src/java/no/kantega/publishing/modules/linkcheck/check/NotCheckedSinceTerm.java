@@ -23,7 +23,7 @@ public class NotCheckedSinceTerm implements LinkQueryGenerator {
         List<Object> params = new LinkedList<>();
         StringBuilder query = new StringBuilder();
         if (driver.contains("jtds")) {
-            query.append("select top ?");
+            query.append("select top (?)");
             params.add(maxLinksPerDay);
         } else {
             query.append("select");
