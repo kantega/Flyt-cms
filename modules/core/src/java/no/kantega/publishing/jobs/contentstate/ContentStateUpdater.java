@@ -25,16 +25,23 @@ import no.kantega.publishing.common.data.enums.ContentVisibilityStatus;
 import no.kantega.publishing.common.data.enums.ExpireAction;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.content.api.ContentAO;
+import no.kantega.publishing.event.ContentEvent;
+import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import javax.annotation.Resource;
 
 public class ContentStateUpdater {
     private static final Logger log = LoggerFactory.getLogger(ContentStateUpdater.class);
 
     @Autowired
     private ContentAO contentAO;
+
+    @Resource(name = "contentListenerNotifier")
+    private ContentEventListener contentEventListener;
 
     public void expireContent() {
         ContentManagementService cms = new ContentManagementService(SecuritySession.createNewAdminInstance());
@@ -53,6 +60,7 @@ public class ContentStateUpdater {
                     log.info("VisibilityStatus of " + content.getTitle() + "(" + content.getId() + ") was set to " + newVisibilityStatus);
                     cms.setContentVisibilityStatus(content, newVisibilityStatus);
 
+                    contentEventListener.contentExpired(new ContentEvent().setContent(content));
                 }
             }
 

@@ -17,7 +17,7 @@
 package no.kantega.publishing.jobs.contentstate;
 
 import no.kantega.commons.exception.SystemException;
-import no.kantega.publishing.common.Aksess;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.enums.ExpireAction;
@@ -28,12 +28,17 @@ import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.util.SecurityHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
 
     private static final Logger log = LoggerFactory.getLogger(DeleteIfExpiredListener.class);
+
+    @Autowired
+    private SystemConfiguration configuration;
 
     public void contentExpired(ContentEvent event) {
         Content content = event.getContent();
@@ -44,18 +49,26 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
                 log.info("Deleting content with id=" + content.getId() +"('" +content.getTitle() +"') because it has expired");
 
                 String lastModifiedBy = content.getModifiedBy();
-                ContentManagementService cms = new ContentManagementService(SecuritySession.createNewUserInstance(SecurityHelper.createApiIdentity(lastModifiedBy)));
+                ContentManagementService cms = new ContentManagementService(getSecuritySession(lastModifiedBy));
 
                 List<Association> associations = content.getAssociations();
                 int tmpAssociations[] = new int[associations.size()];
                 for (int i = 0; i < tmpAssociations.length; i++) {
                     tmpAssociations[i] = associations.get(i).getAssociationId();
                 }
-                boolean deleteMultiple = Aksess.getConfiguration().getBoolean("expired.content.delete.multiple", false);
+                boolean deleteMultiple = configuration.getBoolean("expired.content.delete.multiple", false);
                 cms.deleteAssociationsById(tmpAssociations, deleteMultiple);
             } catch (SystemException e) {
                 log.error("Could not delete content", e);
             }
+        }
+    }
+
+    private SecuritySession getSecuritySession(String lastModifiedBy) {
+        if(Objects.equals(lastModifiedBy, "admin")){
+            return SecuritySession.createNewAdminInstance();
+        } else {
+            return SecuritySession.createNewUserInstance(SecurityHelper.createApiIdentity(lastModifiedBy));
         }
     }
 
