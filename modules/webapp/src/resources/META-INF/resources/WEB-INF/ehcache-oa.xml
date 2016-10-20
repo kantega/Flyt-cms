@@ -2,11 +2,11 @@
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd" name="openAksessCache">
 
     <defaultCache
-            maxElementsInMemory="10000"
+            maxElementsInMemory="100"
             eternal="false"
             timeToIdleSeconds="120"
             timeToLiveSeconds="120"
-            overflowToDisk="false"
+            overflowToDisk="true"
             memoryStoreEvictionPolicy="LRU"
             statistics="false"/>
 

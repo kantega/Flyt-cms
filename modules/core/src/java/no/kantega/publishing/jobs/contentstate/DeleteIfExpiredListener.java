@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Objects;
 
 public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
 
@@ -48,7 +49,7 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
                 log.info("Deleting content with id=" + content.getId() +"('" +content.getTitle() +"') because it has expired");
 
                 String lastModifiedBy = content.getModifiedBy();
-                ContentManagementService cms = new ContentManagementService(SecuritySession.createNewUserInstance(SecurityHelper.createApiIdentity(lastModifiedBy)));
+                ContentManagementService cms = new ContentManagementService(getSecuritySession(lastModifiedBy));
 
                 List<Association> associations = content.getAssociations();
                 int tmpAssociations[] = new int[associations.size()];
@@ -60,6 +61,14 @@ public class DeleteIfExpiredListener extends ContentEventListenerAdapter {
             } catch (SystemException e) {
                 log.error("Could not delete content", e);
             }
+        }
+    }
+
+    private SecuritySession getSecuritySession(String lastModifiedBy) {
+        if(Objects.equals(lastModifiedBy, "admin")){
+            return SecuritySession.createNewAdminInstance();
+        } else {
+            return SecuritySession.createNewUserInstance(SecurityHelper.createApiIdentity(lastModifiedBy));
         }
     }
 
