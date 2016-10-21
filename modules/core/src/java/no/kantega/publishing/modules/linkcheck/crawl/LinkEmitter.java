@@ -60,53 +60,18 @@ public class LinkEmitter {
             final Counter attributeLinkCount = new Counter();
             long start = System.currentTimeMillis();
 
-            contentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
-                public void handleContent(Content content) {
-                    getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
-                    linkDao.deleteLinksForContentId(content.getId());
-
-                    contentCount.increment();
-
-                    try {
-                        linkExtractor.extractLinks(content, new LinkHandler() {
-                            public void contentLinkFound(Content content, String link) {
-                                if(isValidLink(link)) {
-                                    log.debug("Extracted {} from content with id {}", link, content.getId());
-                                    contentLinkCount.increment();
-                                    handler.contentLinkFound(content, link);
-                                }
-                            }
-
-                            public void attributeLinkFound(Content content, String link, String attributeName) {
-                                if(isValidLink(link)) {
-                                    log.debug("Extracted {} from attribute {}", link, attributeName);
-                                    attributeLinkCount.increment();
-                                    handler.attributeLinkFound(content,  link, attributeName);
-                                }
-                            }
-
-                        });
-                    } catch (SystemException e) {
-                        log.error("Error extracting links from Content " + content.getId() +" [" + content.getTitle() +"].", e);
-                    }
-                }
-            });
-            log.info("Found " + contentLinkCount.getI() +" page links and " +attributeLinkCount.getI() +" attribute links in " + contentCount.getI() +" pages in " + (System.currentTimeMillis() -start) +" ms.");
-        } catch (SystemException e) {
-            log.error("Excteption getting  content for link checking", e);
-        }
-    }
-    public void emittLinksForContent(final LinkHandler handler, Content content){
-        ContentHandler contentHandler = new ContentHandler() {
-            @Override
-            public void handleContent(Content content) {
+            contentAO.doForEachInContentList(new ContentQuery(), content -> {
+                getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
                 linkDao.deleteLinksForContentId(content.getId());
 
-                try{
+                contentCount.increment();
+
+                try {
                     linkExtractor.extractLinks(content, new LinkHandler() {
                         public void contentLinkFound(Content content, String link) {
                             if(isValidLink(link)) {
                                 log.debug("Extracted {} from content with id {}", link, content.getId());
+                                contentLinkCount.increment();
                                 handler.contentLinkFound(content, link);
                             }
                         }
@@ -114,23 +79,52 @@ public class LinkEmitter {
                         public void attributeLinkFound(Content content, String link, String attributeName) {
                             if(isValidLink(link)) {
                                 log.debug("Extracted {} from attribute {}", link, attributeName);
+                                attributeLinkCount.increment();
                                 handler.attributeLinkFound(content,  link, attributeName);
                             }
                         }
 
                     });
-                }catch (SystemException e){
-                    log.error("Error extracting links from content "+content.getId() + " [" + content.getTitle() + "].",e);
+                } catch (SystemException e) {
+                    log.error("Error extracting links from Content " + content.getId() +" [" + content.getTitle() +"].", e);
                 }
+            });
+            log.info("Found " + contentLinkCount.getI() +" page links and " +attributeLinkCount.getI() +" attribute links in " + contentCount.getI() +" pages in " + (System.currentTimeMillis() -start) +" ms.");
+        } catch (SystemException e) {
+            log.error("Excteption getting  content for link checking", e);
+        }
+    }
+
+    public void emittLinksForContent(final LinkHandler handler, Content content){
+        ContentHandler contentHandler = content1 -> {
+            linkDao.deleteLinksForContentId(content1.getId());
+
+            try{
+                linkExtractor.extractLinks(content1, new LinkHandler() {
+                    public void contentLinkFound(Content content1, String link) {
+                        if(isValidLink(link)) {
+                            log.debug("Extracted {} from content with id {}", link, content1.getId());
+                            handler.contentLinkFound(content1, link);
+                        }
+                    }
+
+                    public void attributeLinkFound(Content content1, String link, String attributeName) {
+                        if(isValidLink(link)) {
+                            log.debug("Extracted {} from attribute {}", link, attributeName);
+                            handler.attributeLinkFound(content1,  link, attributeName);
+                        }
+                    }
+
+                });
+            }catch (SystemException e){
+                log.error("Error extracting links from content "+ content1.getId() + " [" + content1.getTitle() + "].",e);
             }
         };
         contentHandler.handleContent(content);
     }
+
     private boolean isValidLink(String link) {
         return link.startsWith("http") || link.startsWith(Aksess.VAR_WEB);
     }
 
-    public void setLinkDao(LinkDao linkDao) {
-        this.linkDao = linkDao;
-    }
 }

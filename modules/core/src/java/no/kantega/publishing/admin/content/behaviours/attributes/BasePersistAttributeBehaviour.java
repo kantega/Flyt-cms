@@ -17,7 +17,7 @@ public abstract class BasePersistAttributeBehaviour implements PersistAttributeB
         try(PreparedStatement st = c.prepareStatement("delete from contentattributes where ContentVersionId = ? AND AttributeType = ? AND DataType = ? AND  Name = ?")) {
             st.setInt(1, content.getVersionId());
             st.setString(2, clsName);
-            st.setInt(3, attribute.getType());
+            st.setInt(3, attribute.getType().getDataTypeAsId());
             st.setString(4, attribute.getNameIncludingPath());
             st.execute();
         }
@@ -25,7 +25,7 @@ public abstract class BasePersistAttributeBehaviour implements PersistAttributeB
 
             st.setInt(1, content.getVersionId());
             st.setString(2, clsName);
-            st.setInt(3, attribute.getType());
+            st.setInt(3, attribute.getType().getDataTypeAsId());
             st.setString(4, attribute.getNameIncludingPath());
 
             String value = getValuesAsString(attribute);
