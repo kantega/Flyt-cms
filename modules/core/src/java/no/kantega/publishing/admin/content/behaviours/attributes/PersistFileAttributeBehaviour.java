@@ -30,7 +30,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour {
+public class PersistFileAttributeBehaviour extends PersistSimpleAttributeBehaviour {
+
+    @Override
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         AttachmentAO attachmentAO = RootContext.getInstance().getBean(AttachmentAOImpl.class);
         if (attribute instanceof FileAttribute) {
@@ -56,8 +58,6 @@ public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour 
             }
 
         }
-
-        PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
-        saveSimple.persistAttribute(c, content, attribute);
+        super.persistAttribute(c, content, attribute);
     }
 }

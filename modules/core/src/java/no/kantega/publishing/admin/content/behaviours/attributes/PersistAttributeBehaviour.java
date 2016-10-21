@@ -24,5 +24,5 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface PersistAttributeBehaviour {
-    public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException;
+    void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException;
 }

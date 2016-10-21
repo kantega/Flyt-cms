@@ -574,9 +574,8 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
                 if(handledContentIds.add(contentId) && (contentQuery.getMaxRecords() == -1 || count < contentQuery.getMaxRecords() + contentQuery.getOffset())){
                     if (count >= contentQuery.getOffset()) {
                         Content content = contentRowMapper.mapRow(rs, count++);
-                        getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
                         handler.handleContent(content);
-                    }else {
+                    } else {
                         count++;
                     }
                 }

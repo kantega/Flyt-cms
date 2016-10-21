@@ -4,6 +4,7 @@ import no.kantega.publishing.common.data.Content
 import no.kantega.publishing.common.data.ContentQuery
 import no.kantega.publishing.common.util.database.dbConnectionFactory
 import no.kantega.publishing.content.api.ContentAO
+import no.kantega.publishing.event.ContentEvent
 import no.kantega.publishing.event.ContentEventListener
 
 // Delete content with expire action delete that are expired
@@ -22,8 +23,7 @@ Lists.partition(toDelete, 1000).each {
     contentAO.doForEachInContentList(cq, -1, null, new ContentHandler() {
         @Override
         void handleContent(Content content) {
-            /*listener.contentExpired(new ContentEvent().setContent(content))*/
-            println content.modifiedBy
+            listener.contentExpired(new ContentEvent().setContent(content))
         }
     })
 }

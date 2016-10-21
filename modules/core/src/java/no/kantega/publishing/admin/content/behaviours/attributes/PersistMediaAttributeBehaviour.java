@@ -45,12 +45,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 /**
  *
  */
-public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour {
+public class PersistMediaAttributeBehaviour extends PersistSimpleAttributeBehaviour {
     private static final Logger log = LoggerFactory.getLogger(PersistMediaAttributeBehaviour.class);
 
     private static MultimediaDao multimediaAO;
     private static MultimediaUploadHandler multimediaUploadHandler;
 
+    @Override
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (multimediaAO == null) {
             multimediaAO = RootContext.getInstance().getBean(MultimediaDao.class);
@@ -116,8 +117,7 @@ public class PersistMediaAttributeBehaviour implements PersistAttributeBehaviour
             }
         }
 
-        PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
-        saveSimple.persistAttribute(c, content, attribute);
+        super.persistAttribute(c, content, attribute);
     }
 
     //Update content.image
