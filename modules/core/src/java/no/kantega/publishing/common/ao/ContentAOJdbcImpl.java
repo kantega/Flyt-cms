@@ -70,7 +70,6 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
     @Override
     public ContentIdentifier deleteContent(ContentIdentifier cid) {
         contentIdHelper.assureContentIdAndAssociationIdSet(cid);
-        ContentIdentifier parent = getParent(cid);
 
         int id = cid.getContentId();
         // Slett tilgangsrettigheter
@@ -101,7 +100,7 @@ public class ContentAOJdbcImpl extends NamedParameterJdbcDaoSupport implements C
         jdbcTemplate.update("delete from contentversion where ContentId = ?", id);
         jdbcTemplate.update("delete from content where ContentId = ?", id);
 
-        return parent;
+        return getParent(cid);
     }
 
     @Override
