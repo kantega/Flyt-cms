@@ -20,6 +20,7 @@ import no.kantega.commons.exception.SystemException;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.ContentHandler;
 import no.kantega.publishing.common.ao.LinkDao;
+import no.kantega.publishing.common.ao.rowmapper.ContentAttributeRowMapper;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.ContentQuery;
 import no.kantega.publishing.common.util.Counter;
@@ -30,6 +31,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+
+import static no.kantega.publishing.common.util.database.dbConnectionFactory.getJdbcTemplate;
 
 public class LinkEmitter {
     private LinkExtractor linkExtractor;
@@ -59,7 +62,7 @@ public class LinkEmitter {
 
             contentAO.doForEachInContentList(new ContentQuery(), -1, null, new ContentHandler() {
                 public void handleContent(Content content) {
-
+                    getJdbcTemplate().query("select * from contentattributes where ContentVersionId = ?", new ContentAttributeRowMapper(content), content.getVersionId());
                     linkDao.deleteLinksForContentId(content.getId());
 
                     contentCount.increment();

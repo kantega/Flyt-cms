@@ -16,13 +16,13 @@
 
 package no.kantega.publishing.admin.content.behaviours.attributes;
 
-import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.common.data.Content;
 import no.kantega.commons.exception.SystemException;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.attributes.Attribute;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface PersistAttributeBehaviour {
-    public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException;
+    void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException;
 }

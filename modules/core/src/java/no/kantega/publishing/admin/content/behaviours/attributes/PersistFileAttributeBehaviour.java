@@ -27,8 +27,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour {
+public class PersistFileAttributeBehaviour extends PersistSimpleAttributeBehaviour {
 
+    @Override
     public void persistAttribute(Connection c, Content content, Attribute attribute) throws SQLException, SystemException {
         if (attribute instanceof FileAttribute) {
             FileAttribute fattr = (FileAttribute)attribute;
@@ -53,8 +54,7 @@ public class PersistFileAttributeBehaviour implements PersistAttributeBehaviour 
             }
 
         }
-
-        PersistSimpleAttributeBehaviour saveSimple = new PersistSimpleAttributeBehaviour();
-        saveSimple.persistAttribute(c, content, attribute);
+        super.persistAttribute(c, content, attribute);
     }
+
 }
