@@ -23,7 +23,7 @@ public class ImageOrientationReset {
 
     public Multimedia resetOrientation(Multimedia multimedia) {
         try {
-            List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia.getData());
+            List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia);
             int degreesToRotate = 0;
             for (ExifMetadata metadata : metadatas) {
                 String directory = metadata.getDirectory();

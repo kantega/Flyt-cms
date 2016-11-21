@@ -1,12 +1,18 @@
 package no.kantega.publishing.multimedia.metadata.exif;
 
+import com.drew.imaging.ImageProcessingException;
+import com.drew.imaging.bmp.BmpMetadataReader;
+import com.drew.imaging.gif.GifMetadataReader;
 import com.drew.imaging.jpeg.JpegMetadataReader;
 import com.drew.imaging.jpeg.JpegProcessingException;
+import com.drew.imaging.png.PngMetadataReader;
+import com.drew.imaging.png.PngProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Metadata;
 import com.drew.metadata.MetadataException;
 import com.drew.metadata.Tag;
 import no.kantega.publishing.common.data.ExifMetadata;
+import no.kantega.publishing.common.data.Multimedia;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,41 +21,61 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.endsWith;
+
 public class DrewNoakesExifMetadataExtractor implements ExifMetadataExtractor {
     private static final Logger log = LoggerFactory.getLogger(DrewNoakesExifMetadataExtractor.class);
 
-    public List<ExifMetadata> getMetadataForImage(byte[] imageData) {
+    public List<ExifMetadata> getMetadataForImage(Multimedia imageData) {
         List<ExifMetadata> exifMetadatas = new ArrayList<>();
 
-        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData)){
-            exifMetadatas = extractMetadata(inputStream);
-        } catch (IOException | JpegProcessingException e) {
+        try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageData.getData())){
+            exifMetadatas = extractMetadata(imageData.getFilename(), inputStream);
+        } catch (IOException | ImageProcessingException e) {
             log.error("", e);
         }
 
         return exifMetadatas;
     }
 
-    private List<ExifMetadata> extractMetadata(ByteArrayInputStream inputStream) throws JpegProcessingException, IOException {
+    private List<ExifMetadata> extractMetadata(String filename, ByteArrayInputStream inputStream) throws JpegProcessingException, IOException, PngProcessingException {
         List<ExifMetadata> exifMetadatas = new ArrayList<>();
 
-        Metadata metadata = JpegMetadataReader.readMetadata(inputStream);
+        Metadata metadata = getMetadataForFile(filename, inputStream);
 
-        for (Directory directory : metadata.getDirectories()) {
-            for (Tag tag : directory.getTags()) {
-                try {
-                    ExifMetadata exifMetadata = getMetadataFromTag(directory, tag);
-                    if (exifMetadata != null) {
-                        exifMetadatas.add(exifMetadata);
+        if (nonNull(metadata)) {
+            for (Directory directory : metadata.getDirectories()) {
+                for (Tag tag : directory.getTags()) {
+                    try {
+                        ExifMetadata exifMetadata = getMetadataFromTag(directory, tag);
+                        if (exifMetadata != null) {
+                            exifMetadatas.add(exifMetadata);
+                        }
+
+                    } catch (MetadataException e) {
+                        log.error("", e);
                     }
-
-                } catch (MetadataException e) {
-                    log.error("", e);
                 }
             }
         }
 
         return exifMetadatas;
+    }
+
+    private Metadata getMetadataForFile(String filename, ByteArrayInputStream inputStream) throws JpegProcessingException, IOException, PngProcessingException {
+        filename = filename.toLowerCase();
+        if (endsWith(filename, ".jpeg") || endsWith(filename, ".jpg")) {
+            return JpegMetadataReader.readMetadata(inputStream);
+        } else if(endsWith(filename, ".png")) {
+            return PngMetadataReader.readMetadata(inputStream);
+        } else if(endsWith(filename, ".gif")) {
+            return GifMetadataReader.readMetadata(inputStream);
+        } else if(endsWith(filename, ".bmp")) {
+            return BmpMetadataReader.readMetadata(inputStream);
+        } else {
+            return null;
+        }
     }
 
     private ExifMetadata getMetadataFromTag(Directory directory, Tag tag) throws MetadataException {

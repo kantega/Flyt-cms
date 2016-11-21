@@ -24,7 +24,7 @@ public class JpegImageMetadataExtractor implements MultimediaMetadataExtractor {
     }
 
     public Multimedia extractMetadata(Multimedia multimedia) {
-        List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia.getData());
+        List<ExifMetadata> metadatas = exifMetadataExtractor.getMetadataForImage(multimedia);
         for (ExifMetadata metadata : metadatas) {
             String directory = metadata.getDirectory();
             switch (directory) {
