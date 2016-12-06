@@ -16,7 +16,9 @@
 
 package no.kantega.publishing.api.content;
 
-public class ContentIdentifier {
+import java.io.Serializable;
+
+public class ContentIdentifier implements Serializable {
 
     private int contentId = -1; // Peker til innhold - tilsvarer content.getId()
     private int associationId = -1; // Peker til menypunkt - tilsvarer association.getAssociationId()
