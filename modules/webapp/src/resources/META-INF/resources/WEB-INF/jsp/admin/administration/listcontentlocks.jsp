@@ -57,6 +57,7 @@
                         ContentLock contentLock = (ContentLock) i.next();
                         ContentIdentifier cid =  ContentIdentifier.fromContentId(contentLock.getContentId());
                         Content c = cms.getContent(cid);
+                        if(c != null){
                 %>
                 <tr class="tableRow<%=count++%2%>" >
                     <td>
@@ -72,7 +73,7 @@
                         <a href="RemoveContentLock.action?contentId=<%=contentLock.getContentId()%>" class="button delete"><span><kantega:label key="aksess.locks.remove"/></span></a>
                     </td>
                 </tr>
-                <%}%>
+                <%}}%>
             </table>
 
             <div class="ui-state-highlight"><kantega:label key="aksess.locks.hjelp"/></div>
