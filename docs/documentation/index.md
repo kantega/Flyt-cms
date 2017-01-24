@@ -1,5 +1,4 @@
 
-
 # Getting started
 
 
@@ -10,7 +9,7 @@ This tutorial will show you how to get started using FlytCMS by using Maven 3 to
 
 Before you start you will to have the software installed on your development machine:
 
-*   JDK 7 or newer
+*   JDK 8 or newer
 *   [Maven 3](http://maven.apache.org/download.html)
 *   A Java IDE (or text editor)
 
@@ -28,7 +27,7 @@ Create an empty database and a user with read/write access and rights to create 
 Create a blank FlytCMS project by using mvn archetype:generate
 
 ```
-mvn archetype:generate -DarchetypeGroupId=no.kantega.archetypes -DarchetypeArtifactId=aksess-project -DarchetypeVersion=latest
+mvn archetype:generate -DarchetypeGroupId=org.kantega.archetypes -DarchetypeArtifactId=openaksess-project -DarchetypeVersion=2.5 -DarchetypeRepository=https://opensource.kantega.no/nexus/content/repositories/releases
 ```
 
 You will now be asked to enter some configuration parameters:
@@ -48,14 +47,12 @@ You will now be asked to enter some configuration parameters:
 >
 > **databasePassword:**
 > Password to login to database
+>
+> **aksessVersion:**
+> The version of Flyt CMS to use, see what the latest is here: opensource.kantega.no/nexus/content/repositories/releases/org/kantega/openaksess/openaksess-webapp/
 ```
 
 After you have entered the configuration parameters, Maven will ask you to confirm your settings, press Y to continue.
-
-Maven will now download and setup a project which consists of two modules:
-
-### core
-Java core module - this is where you place any Java code in your project
 
 ### webapp
 Web module - this is where you create your JSP view templates, CSS and other web files.
