@@ -3,12 +3,13 @@ package no.kantega.openaksess.rest.resources;
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
+import no.kantega.openaksess.rest.representation.ContentTemplateConfigurationTransferObject;
+import no.kantega.openaksess.rest.representation.ContentTemplateTransferObject;
 import no.kantega.openaksess.rest.representation.ContentTransferObject;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
-import no.kantega.publishing.common.data.Content;
-import no.kantega.publishing.common.data.ContentQuery;
-import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.cache.TemplateConfigurationCache;
+import no.kantega.publishing.common.data.*;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
@@ -24,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Path("/content")
 @Consumes("application/json")
@@ -60,7 +62,7 @@ public class ContentResource {
             ContentIdentifier cid = contentIdHelper.fromUrl(url);
             ContentManagementService cms = new ContentManagementService(request);
             Content content = cms.getContent(cid);
-            return new ContentTransferObject(content, request);
+            return new ContentTransferObject(content);
         } catch (ContentNotFoundException e) {
             throw new Fault(404, "Content not found", null, false, false);
         } catch (no.kantega.commons.exception.NotAuthorizedException e) {
@@ -78,7 +80,7 @@ public class ContentResource {
         try{
             Content content = cms.getContent(cid);
             if(content != null){
-                return new ContentTransferObject(content, request);
+                return new ContentTransferObject(content);
             }
             throw new Fault(404, "Content not found", null, false, false);
         } catch (NotAuthorizedException e) {
@@ -86,12 +88,20 @@ public class ContentResource {
         }
     }
 
+    @GET
+    @Path("/templatesConfig")
+    public ContentTemplateConfigurationTransferObject getAllTemplates(){
+        TemplateConfigurationCache instance = TemplateConfigurationCache.getInstance();
+        TemplateConfiguration templateConfiguration = instance.getTemplateConfiguration();
+
+        return new ContentTemplateConfigurationTransferObject(templateConfiguration);
+    }
+
     private List<ContentTransferObject> convertToTransferObject(List<Content> contentList){
-        List<ContentTransferObject> contentTransferObjectList = new ArrayList<>(contentList.size());
-        for(Content content : contentList){
-            contentTransferObjectList.add(new ContentTransferObject(content, request));
-        }
-        return contentTransferObjectList;
+        return contentList
+                .stream()
+                .map(ContentTransferObject::new)
+                .collect(Collectors.toList());
     }
 
 }

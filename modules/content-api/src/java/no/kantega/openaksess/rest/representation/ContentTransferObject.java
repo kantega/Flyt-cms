@@ -6,24 +6,23 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @XmlRootElement(name = "content")
 @XmlAccessorType(XmlAccessType.NONE)
 public class ContentTransferObject {
     private Content content;
-    private HttpServletRequest request;
 
-    public ContentTransferObject(Content content, HttpServletRequest request){
+    public ContentTransferObject(Content content){
         this.content = content;
-        this.request = request;
     }
 
     @XmlElement
@@ -45,6 +44,14 @@ public class ContentTransferObject {
             transferObjectMap.put(entry.getKey(), new AttributeTransferObject(entry.getValue()));
         }
         return transferObjectMap;
+    }
+
+    @XmlElement
+    public List<AttachmentTransferObject> getAttachments(){
+        return content.getAttachments()
+                .stream()
+                .map(AttachmentTransferObject::new)
+                .collect(Collectors.toList());
     }
 
     @XmlElement
@@ -76,5 +83,10 @@ public class ContentTransferObject {
     @XmlElement
     public Date getLastModified(){
         return content.getLastModified();
+    }
+
+    @XmlElement
+    public int getContentTemplateId(){
+        return content.getContentTemplateId();
     }
 }
