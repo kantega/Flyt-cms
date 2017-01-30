@@ -5,6 +5,8 @@ import no.kantega.publishing.common.data.Attachment;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @XmlAccessorType(XmlAccessType.NONE)
 public class AttachmentTransferObject {
@@ -25,8 +27,9 @@ public class AttachmentTransferObject {
     }
 
     @XmlElement
-    public long getLastModified(){
-        return attachment.getLastModified().getTime();
+    public String getLastModified(){
+        if (attachment.getLastModified() == null) return null;
+        return LocalDateTime.ofInstant(attachment.getLastModified().toInstant(), ZoneId.systemDefault()).toString();
     }
 
     @XmlElement

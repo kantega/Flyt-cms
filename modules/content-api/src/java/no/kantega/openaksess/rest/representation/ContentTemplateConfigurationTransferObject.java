@@ -2,7 +2,6 @@ package no.kantega.openaksess.rest.representation;
 
 import no.kantega.publishing.common.data.TemplateConfiguration;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -15,11 +14,9 @@ import java.util.stream.Collectors;
 public class ContentTemplateConfigurationTransferObject {
 
     private TemplateConfiguration templateConfiguration;
-    private HttpServletRequest request;
 
-    public ContentTemplateConfigurationTransferObject(TemplateConfiguration templateConfiguration, HttpServletRequest request) {
+    public ContentTemplateConfigurationTransferObject(TemplateConfiguration templateConfiguration) {
         this.templateConfiguration = templateConfiguration;
-        this.request = request;
     }
 
 
@@ -38,7 +35,4 @@ public class ContentTemplateConfigurationTransferObject {
                 .map(SiteTransferObject::new)
                 .collect(Collectors.toList());
     }
-
-
-
 }

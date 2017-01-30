@@ -6,7 +6,6 @@ import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,11 +20,9 @@ import java.util.stream.Collectors;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ContentTransferObject {
     private Content content;
-    private HttpServletRequest request;
 
-    public ContentTransferObject(Content content, HttpServletRequest request){
+    public ContentTransferObject(Content content){
         this.content = content;
-        this.request = request;
     }
 
     @XmlElement

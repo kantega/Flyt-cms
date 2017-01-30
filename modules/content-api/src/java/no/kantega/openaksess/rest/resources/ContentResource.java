@@ -62,7 +62,7 @@ public class ContentResource {
             ContentIdentifier cid = contentIdHelper.fromUrl(url);
             ContentManagementService cms = new ContentManagementService(request);
             Content content = cms.getContent(cid);
-            return new ContentTransferObject(content, request);
+            return new ContentTransferObject(content);
         } catch (ContentNotFoundException e) {
             throw new Fault(404, "Content not found", null, false, false);
         } catch (no.kantega.commons.exception.NotAuthorizedException e) {
@@ -80,7 +80,7 @@ public class ContentResource {
         try{
             Content content = cms.getContent(cid);
             if(content != null){
-                return new ContentTransferObject(content, request);
+                return new ContentTransferObject(content);
             }
             throw new Fault(404, "Content not found", null, false, false);
         } catch (NotAuthorizedException e) {
@@ -94,13 +94,13 @@ public class ContentResource {
         TemplateConfigurationCache instance = TemplateConfigurationCache.getInstance();
         TemplateConfiguration templateConfiguration = instance.getTemplateConfiguration();
 
-        return new ContentTemplateConfigurationTransferObject(templateConfiguration, request);
+        return new ContentTemplateConfigurationTransferObject(templateConfiguration);
     }
 
     private List<ContentTransferObject> convertToTransferObject(List<Content> contentList){
         return contentList
                 .stream()
-                .map(content -> new ContentTransferObject(content, request))
+                .map(ContentTransferObject::new)
                 .collect(Collectors.toList());
     }
 

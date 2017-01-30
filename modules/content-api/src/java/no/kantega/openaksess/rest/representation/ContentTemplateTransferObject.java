@@ -1,13 +1,11 @@
 package no.kantega.openaksess.rest.representation;
 
-import no.kantega.publishing.common.data.AssociationCategory;
 import no.kantega.publishing.common.data.ContentTemplate;
-import org.w3c.dom.Document;
+import no.kantega.publishing.common.data.DocumentType;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
+import org.w3c.dom.NodeList;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -52,7 +50,11 @@ public class ContentTemplateTransferObject {
 
     @XmlElement
     public String getDocumentType(){
-        return this.contentTemplate.getDocumentType().getName();
+        DocumentType documentType = contentTemplate.getDocumentType();
+        if(documentType!=null){
+            return documentType.getName();
+        }
+        return "No type";
     }
 
     @XmlElement
@@ -66,25 +68,49 @@ public class ContentTemplateTransferObject {
     }
 
     @XmlElement
-    public List<String> getAssociationCategories(){
-        return this.contentTemplate.getAssociationCategories()
-                .stream()
-                .map(AssociationCategory::getName)
-                .collect(Collectors.toList());
-    }
-
-    @XmlElement
-    public List<Map<String, String>> getAttributes(){
-        List<Map<String, String>> attributes = new ArrayList<>();
+    public List<Map<String, Object>> getAttributes(){
+        List<Map<String, Object>> attributes = new ArrayList<>();
         for (Element element : this.contentTemplate.getAttributeElements()) {
-            NamedNodeMap elementattributes = ((Element) element).getAttributes();
-            Map<String, String> attributeItems = new HashMap<>();
-            for(int i = 0; i < elementattributes.getLength(); i++){
-                Node item = elementattributes.item(i);
-                attributeItems.put(item.getNodeName(), item.getNodeValue());
-            }
-            attributes.add(attributeItems);
+            attributes.add(createAttributeTransferElement(element));
         }
         return attributes;
     }
+
+    // Attribute helper methods
+    private  Map<String, Object> createAttributeTransferElement(Element element){
+        NamedNodeMap elementattributes = ((Element) element).getAttributes();
+        Map<String, Object> attributeItems = new HashMap<>();
+        for(int i = 0; i < elementattributes.getLength(); i++){
+            Node item = elementattributes.item(i);
+            attributeItems.put(item.getNodeName(), item.getNodeValue());
+        }
+        attributeItems.put("attributeType", element.getTagName());
+        if(element.getTagName().equals("repeater")){
+            attributeItems.put("repeaterAttributes", getRepeaterChildren(element));
+        }
+        return attributeItems;
+    }
+
+    private List<Map<String, String>> getRepeaterChildren(Element element){
+        List<Map<String, String>> repeaterAttributes = new ArrayList<>();
+        NodeList children = ((Element) element).getChildNodes();
+        for (int i = 0; i < children.getLength(); i++){
+            Node child = children.item(i);
+            if(child.getNodeName().equals("attribute")){
+                // put attribute object in list
+                NamedNodeMap attributeMap = child.getAttributes();
+                Map<String, String> attr = new HashMap<>();
+                for(int j = 0; j < attributeMap.getLength(); j++){
+                    attr.put(attributeMap.item(j).getNodeName(), attributeMap.item(j).getNodeValue());
+                }
+                repeaterAttributes.add(attr);
+            }
+        }
+        return repeaterAttributes;
+    }
+
+
+
 }
+
+
