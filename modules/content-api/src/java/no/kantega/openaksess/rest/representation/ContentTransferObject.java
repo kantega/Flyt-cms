@@ -13,7 +13,9 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @XmlRootElement(name = "content")
 @XmlAccessorType(XmlAccessType.NONE)
@@ -48,6 +50,14 @@ public class ContentTransferObject {
     }
 
     @XmlElement
+    public List<AttachmentTransferObject> getAttachments(){
+        return content.getAttachments()
+                .stream()
+                .map(AttachmentTransferObject::new)
+                .collect(Collectors.toList());
+    }
+
+    @XmlElement
     public String getDescription(){
         return content.getDescription();
     }
@@ -76,5 +86,10 @@ public class ContentTransferObject {
     @XmlElement
     public Date getLastModified(){
         return content.getLastModified();
+    }
+
+    @XmlElement
+    public int getContentTemplateId(){
+        return content.getContentTemplateId();
     }
 }
