@@ -4,26 +4,23 @@ import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.openaksess.rest.domain.Fault;
 import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
 import no.kantega.openaksess.rest.representation.ContentTemplateConfigurationTransferObject;
-import no.kantega.openaksess.rest.representation.ContentTemplateTransferObject;
 import no.kantega.openaksess.rest.representation.ContentTransferObject;
+import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
-import no.kantega.publishing.common.data.*;
+import no.kantega.publishing.common.data.Content;
+import no.kantega.publishing.common.data.ContentQuery;
+import no.kantega.publishing.common.data.SortOrder;
+import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.BeanParam;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,13 +29,15 @@ import java.util.stream.Collectors;
 @Produces("application/json")
 public class ContentResource {
 
-    private ContentIdHelper contentIdHelper;
+    private final ContentIdHelper contentIdHelper;
+    private final AttachmentAO attachmentAO;
     @Context
     private HttpServletRequest request;
 
     @Inject
-    public ContentResource(ContentIdHelper contentIdHelper) {
+    public ContentResource(ContentIdHelper contentIdHelper, AttachmentAO attachmentAO) {
         this.contentIdHelper = contentIdHelper;
+        this.attachmentAO = attachmentAO;
     }
 
     @GET
@@ -62,7 +61,7 @@ public class ContentResource {
             ContentIdentifier cid = contentIdHelper.fromUrl(url);
             ContentManagementService cms = new ContentManagementService(request);
             Content content = cms.getContent(cid);
-            return new ContentTransferObject(content);
+            return new ContentTransferObject(content, attachmentAO.getAttachmentList(cid));
         } catch (ContentNotFoundException e) {
             throw new Fault(404, "Content not found", null, false, false);
         } catch (no.kantega.commons.exception.NotAuthorizedException e) {
@@ -80,7 +79,8 @@ public class ContentResource {
         try{
             Content content = cms.getContent(cid);
             if(content != null){
-                return new ContentTransferObject(content);
+                contentIdHelper.assureAssociationIdSet(cid);
+                return new ContentTransferObject(content, attachmentAO.getAttachmentList(cid));
             }
             throw new Fault(404, "Content not found", null, false, false);
         } catch (NotAuthorizedException e) {
@@ -100,7 +100,7 @@ public class ContentResource {
     private List<ContentTransferObject> convertToTransferObject(List<Content> contentList){
         return contentList
                 .stream()
-                .map(ContentTransferObject::new)
+                .map((content) -> new ContentTransferObject(content, attachmentAO.getAttachmentList(content.getContentIdentifier())))
                 .collect(Collectors.toList());
     }
 

@@ -2,6 +2,7 @@ package no.kantega.openaksess.rest.representation;
 
 import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.common.cache.DocumentTypeCache;
+import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 @XmlAccessorType(XmlAccessType.NONE)
 public class ContentTransferObject {
     private Content content;
+    private final List<Attachment> attachments;
 
-    public ContentTransferObject(Content content){
+    public ContentTransferObject(Content content, List<Attachment> attachments){
         this.content = content;
+        this.attachments = attachments;
     }
 
     @XmlElement
@@ -47,9 +50,8 @@ public class ContentTransferObject {
     }
 
     @XmlElement
-    public List<AttachmentTransferObject> getAttachments(){
-        return content.getAttachments()
-                .stream()
+    public List<AttachmentTransferObject> getAttachments() {
+        return this.attachments.stream()
                 .map(AttachmentTransferObject::new)
                 .collect(Collectors.toList());
     }
