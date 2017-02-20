@@ -6,6 +6,7 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
+import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -90,5 +91,10 @@ public class ContentTransferObject {
     @XmlElement
     public int getContentTemplateId(){
         return content.getContentTemplateId();
+    }
+
+    @XmlElement
+    public List<TopicTransferObject> getTopics(){
+        return content.getTopics().stream().map(TopicTransferObject::new).collect(Collectors.toList());
     }
 }

@@ -2,9 +2,7 @@ package no.kantega.openaksess.rest.resources;
 
 import no.kantega.commons.exception.NotAuthorizedException;
 import no.kantega.openaksess.rest.domain.Fault;
-import no.kantega.openaksess.rest.representation.ContentQueryTransferObject;
-import no.kantega.openaksess.rest.representation.ContentTemplateConfigurationTransferObject;
-import no.kantega.openaksess.rest.representation.ContentTransferObject;
+import no.kantega.openaksess.rest.representation.*;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifier;
@@ -16,6 +14,9 @@ import no.kantega.publishing.common.data.TemplateConfiguration;
 import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
+import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.topicmaps.data.Topic;
+import no.kantega.publishing.topicmaps.data.TopicMap;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
@@ -95,6 +96,23 @@ public class ContentResource {
         TemplateConfiguration templateConfiguration = instance.getTemplateConfiguration();
 
         return new ContentTemplateConfigurationTransferObject(templateConfiguration);
+    }
+
+    @GET
+    @Path("/topicMaps")
+    public List<TopicMapTransferObject> getTopicMap(){
+        TopicMapService tms = new TopicMapService(request);
+        List<TopicMap> maps = tms.getTopicMaps();
+        return maps.stream().map(TopicMapTransferObject::new).collect(Collectors.toList());
+    }
+
+
+    @GET
+    @Path("/topics")
+    public List<TopicTransferObject> getTopics(){
+        TopicMapService tms = new TopicMapService(request);
+        List<Topic> topics = tms.getAllTopics();
+        return topics.stream().map(TopicTransferObject::new).collect(Collectors.toList());
     }
 
     private List<ContentTransferObject> convertToTransferObject(List<Content> contentList){
