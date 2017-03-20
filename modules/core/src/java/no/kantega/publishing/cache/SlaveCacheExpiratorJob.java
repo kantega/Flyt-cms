@@ -58,6 +58,10 @@ public class SlaveCacheExpiratorJob {
         EventLogQuery eventLogQuery = new EventLogQuery().setFrom(new Date(lastRun));
         final List<EventLogEntry> entiresSinceLast = eventLog.getQueryResult(eventLogQuery);
 
+        if(!entiresSinceLast.isEmpty()) {
+            // Flush the content list (search) cache
+            contentListCache.removeAll();
+        }
 
         // Remove any Content objects (keyed by Association)
         for (EventLogEntry eventLogEntry : entiresSinceLast) {
@@ -65,8 +69,7 @@ public class SlaveCacheExpiratorJob {
             // If this was a move, flush everything
             if(Event.MOVE_CONTENT.equals(eventLogEntry.getEventName())) {
                 contentCache.removeAll();
-                // Flush the content list (search) cache
-                contentListCache.removeAll();
+
                 // Flush the site map cache
                 siteMapCache.removeAll();
             }
