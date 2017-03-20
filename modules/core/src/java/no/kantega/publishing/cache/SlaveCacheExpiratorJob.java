@@ -2,12 +2,11 @@ package no.kantega.publishing.cache;
 
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.xmlcache.XMLCacheEntry;
 import no.kantega.publishing.api.xmlcache.XmlCache;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
-import no.kantega.publishing.common.data.enums.ServerType;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.eventlog.EventLogEntry;
@@ -36,13 +35,16 @@ public class SlaveCacheExpiratorJob {
     @Autowired
     private CacheManager cacheManager;
 
+    @Autowired
+    private SystemConfiguration configuration;
+
     @Scheduled(fixedRateString = "${jobs.slaveCacheExpirator.period}", initialDelay = 1000 * 60 )
     public void expireSlaveCache() {
-        if (Aksess.getServerType() != ServerType.SLAVE) {
-            log.error("This job should not run on server type " + Aksess.getServerType());
+        if (configuration.getBoolean("SlaveCacheExpiratorJob.enabled", false)) {
+            log.debug("SlaveCacheExpiratorJob.enabled: false");
             return;
         }
-        if(!Aksess.getConfiguration().getBoolean("caching.enabled", false)) {
+        if(!configuration.getBoolean("caching.enabled", false)) {
             return;
         }
 
@@ -98,6 +100,6 @@ public class SlaveCacheExpiratorJob {
 
 
         lastRun = thisRun;
-        
+
     }
 }
