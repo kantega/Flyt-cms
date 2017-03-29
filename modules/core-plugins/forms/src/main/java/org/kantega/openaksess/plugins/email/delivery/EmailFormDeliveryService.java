@@ -16,10 +16,10 @@
 
 package org.kantega.openaksess.plugins.email.delivery;
 
+import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.publishing.api.forms.delivery.FormDeliveryService;
 import no.kantega.publishing.api.forms.model.Form;
 import no.kantega.publishing.api.forms.model.FormSubmission;
-import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.eventlog.Event;
 import no.kantega.publishing.eventlog.EventLog;
 import no.kantega.publishing.modules.mailsender.MailSender;
@@ -50,6 +50,9 @@ public class EmailFormDeliveryService implements FormDeliveryService {
     @Autowired
     private EventLog eventLog;
 
+    @Autowired
+    private SystemConfiguration configuration;
+
     public String getId() {
         return "aksessEmail";
     }
@@ -63,14 +66,13 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         try {
             String from = formSubmission.getSubmittedByEmail();
             boolean notEmailAddress = from == null || !from.contains("@");
-            if (notEmailAddress) {
+            if (notEmailAddress || configuration.getBoolean("EmailFormDeliveryService.useConfiguredFromAddress", false)) {
                 // Use default sender
-                from = Aksess.getConfiguration().getString("mail.from");
+                from = configuration.getString("mail.from");
             }
             String to = form.getEmail();
 
-            Map<String, Object> param = new HashMap<>();
-            param.put("form", formSubmission);
+            Map<String, Object> param = Collections.<String, Object>singletonMap("form", formSubmission);
 
             sendEmail(formSubmission, from, to, param);
             log.info("Sent formsubmission {} on email", formSubmission.getFormSubmissionId());

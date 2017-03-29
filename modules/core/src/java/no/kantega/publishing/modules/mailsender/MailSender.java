@@ -34,11 +34,7 @@ import org.springframework.core.io.ResourceLoader;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Multipart;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -225,10 +221,10 @@ public class MailSender {
             // Send meldingen
             Transport.send(message);
 
-            eventLog.log("System", null, Event.EMAIL_SENT, to + ":" + subject, null);
+            eventLog.log("System", null, Event.EMAIL_SENT, "From" + from + " to " + ":" + subject, null);
 
             // Logg sending
-            log.info("Sending email to " + to + " with subject " + subject);
+            log.info("Sending email from " + from + "to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
             eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
