@@ -6,7 +6,6 @@ import no.kantega.publishing.common.data.Attachment;
 import no.kantega.publishing.common.data.Content;
 import no.kantega.publishing.common.data.DocumentType;
 import no.kantega.publishing.common.data.attributes.Attribute;
-import no.kantega.publishing.topicmaps.data.Topic;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -75,6 +74,16 @@ public class ContentTransferObject {
     @XmlElement
     public Date getPublishdate() {
         return content.getPublishDate();
+    }
+    
+    @XmlElement
+    public String getStatus(){
+        return content.getStatus().name();
+    }
+
+    @XmlElement
+    public String getVisibilityStatus(){
+        return content.getVisibilityStatus().name();
     }
 
     @XmlElement
