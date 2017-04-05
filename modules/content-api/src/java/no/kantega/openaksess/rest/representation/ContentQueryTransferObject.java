@@ -20,6 +20,14 @@ public class ContentQueryTransferObject {
         this.query = new ContentQuery();
     }
 
+    @QueryParam("includeAllStatuses")
+    public void setIncludeAllStatuses(boolean includeAllStatuses){
+            query.setIncludeDrafts(includeAllStatuses);
+            query.setIncludeWaitingForApproval(includeAllStatuses);
+            query.setShowArchived(includeAllStatuses);
+            query.setShowExpired(includeAllStatuses);
+    }
+
     @QueryParam("displayTemplate")
     public void setDisplayTemplate(Integer displayTemplate) {
         if(displayTemplate != null){

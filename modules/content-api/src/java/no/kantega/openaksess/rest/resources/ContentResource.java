@@ -15,6 +15,8 @@ import no.kantega.publishing.common.data.enums.ContentProperty;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.common.service.TopicMapService;
+import no.kantega.publishing.security.SecuritySession;
+import no.kantega.publishing.security.service.SecurityService;
 import no.kantega.publishing.topicmaps.data.Topic;
 import no.kantega.publishing.topicmaps.data.TopicMap;
 
@@ -44,6 +46,10 @@ public class ContentResource {
     @GET
     public List<ContentTransferObject> get(@BeanParam ContentQueryTransferObject contentQuery){
         ContentManagementService cms = new ContentManagementService(request);
+        SecuritySession ss = SecuritySession.getInstance(request);
+        if(!ss.isUserInRole("admin")){
+            contentQuery.setIncludeAllStatuses(false);
+        }
         ContentQuery query = contentQuery.getQuery();
         query.setSortOrder(new SortOrder(ContentProperty.TITLE));
         List<Content> contentList = cms.getContentList(query);
