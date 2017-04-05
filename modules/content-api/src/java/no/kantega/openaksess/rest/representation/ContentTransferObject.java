@@ -75,7 +75,7 @@ public class ContentTransferObject {
     public Date getPublishdate() {
         return content.getPublishDate();
     }
-    
+
     @XmlElement
     public String getStatus(){
         return content.getStatus().name();
@@ -84,6 +84,11 @@ public class ContentTransferObject {
     @XmlElement
     public String getVisibilityStatus(){
         return content.getVisibilityStatus().name();
+    }
+
+    @XmlElement
+    public Date getExpireDate(){
+        return content.getExpireDate();
     }
 
     @XmlElement
