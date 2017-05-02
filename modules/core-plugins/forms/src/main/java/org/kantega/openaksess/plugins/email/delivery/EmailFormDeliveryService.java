@@ -33,7 +33,11 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.util.ByteArrayDataSource;
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
 /**
@@ -66,9 +70,10 @@ public class EmailFormDeliveryService implements FormDeliveryService {
         try {
             String from = formSubmission.getSubmittedByEmail();
             boolean notEmailAddress = from == null || !from.contains("@");
-            if (notEmailAddress || configuration.getBoolean("EmailFormDeliveryService.useConfiguredFromAddress", false)) {
+            String fromAddress = configuration.getString("EmailFormDeliveryService.fromAddress");
+            if (notEmailAddress || isNotBlank(fromAddress)) {
                 // Use default sender
-                from = configuration.getString("mail.from");
+                from = "On behalf of  " + from + " <" +fromAddress + ">";
             }
             String to = form.getEmail();
 
@@ -85,26 +90,19 @@ public class EmailFormDeliveryService implements FormDeliveryService {
 
     private void sendEmail(FormSubmission formSubmission, String from, String to, Map<String, Object> param) throws Exception {
         String xml = xmlFormsubmissionConverter.createXMLFromFormSubmission(formSubmission);
-        byte[] pdf = pdfGenerator.createPDF(xml, xslFoDocumentPath);
-
-        List<MimeBodyPart> bodyparts = new ArrayList<>();
 
         String body = MailSender.createStringFromVelocityTemplate(mailTemplate, param);
         MimeBodyPart messagePart = MailSender.createMimeBodyPartFromStringMessage(body);
-        bodyparts.add(messagePart);
 
         MimeBodyPart attachmentPart = new MimeBodyPart();
-        DataSource ds = new ByteArrayDataSource(pdf, "application/pdf");
+        DataSource ds = new ByteArrayDataSource(pdfGenerator.createPDF(xml, xslFoDocumentPath), "application/pdf");
 
         attachmentPart.setDataHandler(new DataHandler(ds));
         attachmentPart.setHeader("Content-ID", "<pdf" + new Date().getTime() + ">");
         attachmentPart.addHeader("Content-Description", pdfFilename);
         attachmentPart.addHeader("Content-Disposition", "attachment; filename=\"" + pdfFilename + "\"");
 
-
-        bodyparts.add(attachmentPart);
-
-        MailSender.send(from, to, formSubmission.getForm().getTitle(), bodyparts.toArray(new MimeBodyPart[bodyparts.size()]));
+        MailSender.send(from, to, formSubmission.getForm().getTitle(), new MimeBodyPart[]{messagePart, attachmentPart});
     }
 
     public void setMailTemplate(String mailTemplate) {
