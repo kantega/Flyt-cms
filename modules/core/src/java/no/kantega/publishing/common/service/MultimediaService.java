@@ -264,8 +264,6 @@ public class MultimediaService {
         mm.setOwnerPerson(securitySession.getUser().getId());
         multimediaAO.setMultimedia(mm);
 
-        //Clear profile cache
-        MultimediaEventListener multimediaListenerNotifier = RootContext.getInstance().getBean("multimediaListenerNotifier", MultimediaEventListener.class);
         multimediaListenerNotifier.afterSetMultimedia(new MultimediaEvent(mm));
     }
 
