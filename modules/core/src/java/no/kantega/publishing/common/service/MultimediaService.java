@@ -263,6 +263,8 @@ public class MultimediaService {
         }
         mm.setOwnerPerson(securitySession.getUser().getId());
         multimediaAO.setMultimedia(mm);
+
+        multimediaListenerNotifier.afterSetMultimedia(new MultimediaEvent(mm));
     }
 
 }
