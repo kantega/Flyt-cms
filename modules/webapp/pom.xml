@@ -214,6 +214,13 @@
             <artifactId>metrics-ehcache</artifactId>
             <version>${metrics.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>5.4.1.Final</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
 </project>
