@@ -138,6 +138,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
      */
     protected void sendEmail(List<Content> content, List<MailSubscription> subscriptions, Site site) {
         Map<String, List<Content>> subscribers = new HashMap<>();
+        log.debug("sendEmail({}, {}, {})", content, subscriptions, site);
 
         for (MailSubscription subscription : subscriptions) {
             String email = subscription.getEmail();
@@ -156,7 +157,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
                 }
             }
         }
-
+        log.debug("{}", subscribers);
         for (Map.Entry<String, List<Content>> email : subscribers.entrySet()) {
             // Send email to this user
             List<Content> subscriberContent = email.getValue();
@@ -184,6 +185,7 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
                 }
             }
         }
+        log.debug("isSubscriptionMatch({}, {}, {}) = false", subscription, c, site);
         return false;
     }
 
@@ -191,17 +193,21 @@ public class ContentMailSubscriptionAgent implements MailSubscriptionAgent {
      * Return true if all specified criteria match for an association.
      *
      */
-    protected boolean isSubscriptionMatchForAssociation(MailSubscription subscription, Content c, Association a) {
+    private boolean isSubscriptionMatchForAssociation(MailSubscription subscription, Content c, Association a) {
         // We don't support matching "anything"
         if(subscription.getChannel() <= 0 && subscription.getDocumenttype() <= 0) {
+            log.debug("isSubscriptionMatchForAssociation: subscription.getChannel() <= 0 && subscription.getDocumenttype() <= 0");
             return false;
         }
         // A specified channel should match
         if(subscription.getChannel() > 0 && subscription.getChannel() != a.getParentAssociationId()) {
+            log.debug("isSubscriptionMatchForAssociation: subscription.getChannel() > 0 && subscription.getChannel() != a.getParentAssociationId()");
             return false;
         }
         // A specified document type should match
-        return !(subscription.getDocumenttype() > 0 && subscription.getDocumenttype() != c.getDocumentTypeId());
+        boolean match = !(subscription.getDocumenttype() > 0 && subscription.getDocumenttype() != c.getDocumentTypeId());
+        log.debug("!(subscription.getDocumenttype() > 0 && subscription.getDocumenttype() != c.getDocumentTypeId())={}", match);
+        return match;
 
     }
 

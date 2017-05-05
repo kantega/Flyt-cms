@@ -58,7 +58,7 @@ public class MailSubscriptionJob extends QuartzJobBean implements StatefulJob {
 
             if (previousRun != null) {
                 for (MailSubscriptionAgent agent : mailSubscriptionAgents) {
-                    log.info( "Sending mailsubscriptions using agent " + agent.getClass().getSimpleName());
+                    log.info( "Sending mailsubscriptions({}) using agent {}", agent.getClass().getSimpleName(), interval);
                     agent.emailNewContentSincePreviousDate(previousRun, interval);
                 }
             }

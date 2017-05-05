@@ -65,4 +65,14 @@ public class MailSubscription {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    @Override
+    public String toString() {
+        return "MailSubscription{" + "channel=" + channel +
+                ", documenttype=" + documenttype +
+                ", language=" + language +
+                ", interval=" + interval +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }

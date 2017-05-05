@@ -46,7 +46,7 @@ public class DefaultMailSubscriptionService implements MailSubscriptionDeliveryS
 
         String from = getMailFrom(config, alias);
         String subject = getMailSubject(subscriberContent, config, alias);
-
+        log.debug("{}", subscriberContent);
         if (subscriberContent.size() > 0) {
             param.put("contentlist", subscriberContent);
             param.put("baseurl",baseurl);
