@@ -155,6 +155,7 @@ public class MailSender {
         initEventLog();
 
         try {
+            log.debug("Mail from {}, to {}, cc {}, bcc {}, subject {}", from, to, cc, bcc, subject);
             Properties props = new Properties();
 
             Configuration config = Aksess.getConfiguration();
@@ -179,6 +180,7 @@ public class MailSender {
                 to = catchAllTo;
                 cc = null;
                 bcc = null;
+                log.debug("catchall: {}",catchAllTo);
             }
 
             props.setProperty("mail.smtp.host", host);
