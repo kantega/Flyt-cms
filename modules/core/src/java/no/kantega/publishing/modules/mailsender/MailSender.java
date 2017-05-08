@@ -45,6 +45,7 @@ import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -252,6 +253,7 @@ public class MailSender {
     public static String createStringFromVelocityTemplate(String templateFile, Map<String, Object> parameters) throws SystemException {
         try {
             Velocity.init();
+            parameters = new HashMap<>(parameters);
 
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(templateFile);
