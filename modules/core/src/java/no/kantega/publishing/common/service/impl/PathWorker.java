@@ -25,6 +25,8 @@ import no.kantega.publishing.common.data.Multimedia;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.spring.RootContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -37,6 +39,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class PathWorker {
+    public static Logger log = LoggerFactory.getLogger(PathWorker.class);
 
     private static ContentIdHelper contentIdHelper;
 
@@ -100,8 +103,14 @@ public class PathWorker {
             if(rs.next()) {
                 int id = rs.getInt("Id");
                 parentId = rs.getInt("ParentId");
+                if(parentId == id) {
+                    log.warn("getMultimediaPath: Id == ParentId: " + id);
+                    break;
+                }
                 PathEntry entry = new PathEntry(id, rs.getString("Name"));
                 pathEntries.add(0, entry);
+            } else {
+                break;
             }
         }
 
