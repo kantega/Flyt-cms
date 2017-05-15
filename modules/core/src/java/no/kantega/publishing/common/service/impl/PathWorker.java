@@ -103,6 +103,10 @@ public class PathWorker {
                 PathEntryWithParent entry = jdbcTemplate.queryForObject("select Id, ParentId, Name from multimedia where id = ?", pathEntryWithParentRowMapper, parentId);
                 parentId = entry.parentId;
                 pathEntries.add(0, entry);
+                if(entry.getId() == parentId) {
+                    log.warn("getMultimediaPath: Id == ParentId: " + parentId);
+                    break;
+                }
             }
         } catch (DataAccessException e) {
             log.error("", e);
