@@ -52,10 +52,11 @@ public class IndexableAttachmentProvider implements IndexableDocumentProvider {
         try (Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT DISTINCT attachments.Id " + FROM_CLAUSE);
             ResultSet resultSet = preparedStatement.executeQuery()){
-            while (resultSet.next()  &&(progressReporter!= null) &&!progressReporter.isFinished()){
+            while (resultSet.next()  && (progressReporter!= null) &&!progressReporter.isFinished()){
                 int id = resultSet.getInt("Id");
                 provideDocument(indexableDocumentQueue, id);
             }
+            indexableDocumentQueue.put(IndexableDocumentProvider.END);
         } catch (Exception e) {
             log.error("Error getting IDs", e);
         }

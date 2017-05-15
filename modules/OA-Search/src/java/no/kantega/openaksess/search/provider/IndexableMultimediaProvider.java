@@ -62,7 +62,7 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
             LinkedBlockingQueue<Integer> ids = new LinkedBlockingQueue<>(100);
             //Progressreporters is set to finish to stop reindexing, this if test is needed to hinder creation of IDProducers after the canceled reindex
             if(progressReporter!=null && !progressReporter.isFinished()){
-                log.info("creating IDProudcer ! - " + this.getClass());
+                log.info("creating IDProducer " + this.getClass());
 
                 taskExecutor.execute(new IDProducer(dataSource, ids));
                 while (!progressReporter.isFinished()) {
@@ -82,7 +82,10 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                         progressReporter.reportProgress();
                     }
                 }
+                indexableDocumentQueue.put(IndexableDocumentProvider.END);
             }
+        } catch (InterruptedException e) {
+            log.error("Error transforming Content", e);
         } finally {
             progressReporter = null;
         }
@@ -114,7 +117,7 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                 while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
                     int id = resultSet.getInt("id");
                     log.trace("Got Id {}, queue size: {}", id, ids.size());
-                    if(!ids.offer(id, 5, TimeUnit.SECONDS)){
+                    if(!ids.offer(id, 60, TimeUnit.SECONDS)){
                         log.info("Timed out offering id " + id);
                     }
                     log.trace("Put Id {}, queue size: {}", id, ids.size());

@@ -20,7 +20,6 @@ import java.util.concurrent.*;
 
 import static com.google.common.collect.Collections2.filter;
 import static com.google.common.collect.Collections2.transform;
-import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
 @Component
 public class IndexRebuilder {
@@ -87,10 +86,14 @@ public class IndexRebuilder {
                 documentIndexer.commit();
                 try {
                     int pollMistakes = 0;
-                    while (hasNotReachedMaxRetries(pollMistakes) && notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                    int endsSeen = 0;
+                    while (hasNotReachedMaxRetries(pollMistakes) && endsSeen < progressReporters.size()) {
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
-                            if (poll.shouldIndex()) {
+                            if(poll == IndexableDocumentProvider.END) {
+                                log.info("IndexableDocumentProvider.END");
+                                endsSeen++;
+                            } else if (poll.shouldIndex()) {
                                 log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                                 documentIndexer.indexDocument(poll);
                             } else {
