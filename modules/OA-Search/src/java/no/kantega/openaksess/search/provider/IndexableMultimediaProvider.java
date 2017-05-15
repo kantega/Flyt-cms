@@ -87,7 +87,10 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                         progressReporter.reportProgress();
                     }
                 }
+                indexableDocumentQueue.put(IndexableDocumentProvider.END);
             }
+        } catch (InterruptedException e) {
+            log.error("Error transforming Content", e);
         } finally {
             progressReporter = null;
         }
@@ -119,7 +122,7 @@ public class IndexableMultimediaProvider implements IndexableDocumentProvider {
                 while (resultSet.next()  && (progressReporter != null) && !progressReporter.isFinished()) {
                     int id = resultSet.getInt("id");
                     log.trace("Got Id {}, queue size: {}", id, ids.size());
-                    if(!ids.offer(id, 5, TimeUnit.SECONDS)){
+                    if(!ids.offer(id, 60, TimeUnit.SECONDS)){
                         log.info("Timed out offering id " + id);
                     }
                     log.trace("Put Id {}, queue size: {}", id, ids.size());

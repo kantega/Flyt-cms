@@ -66,11 +66,13 @@ public class IndexableContentProvider implements IndexableDocumentProvider {
                     } finally {
                         progressReporter.reportProgress();
                     }
-
                 }
-            }
-        } finally {
+                indexableDocuments.put(IndexableDocumentProvider.END);
 
+            }
+        } catch (Exception e) {
+            log.error("Error providing Content", e);
+        }  finally {
             progressReporter = null;
         }
 

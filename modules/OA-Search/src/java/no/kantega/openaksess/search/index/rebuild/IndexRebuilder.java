@@ -1,6 +1,5 @@
 package no.kantega.openaksess.search.index.rebuild;
 
-import no.kantega.publishing.api.configuration.SystemConfiguration;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import no.kantega.search.api.index.ProgressReporter;
@@ -17,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
-import static no.kantega.openaksess.search.index.rebuild.ProgressReporterUtils.notAllProgressReportersAreMarkedAsFinished;
 
 @Component
 public class IndexRebuilder {
@@ -79,12 +77,17 @@ public class IndexRebuilder {
                 documentIndexer.commit();
                 try {
                     int pollMistakes = 0;
-                    while (hasNotReachedMaxRetries(pollMistakes) && notAllProgressReportersAreMarkedAsFinished(progressReporters)) {
+                    int endsSeen = 0;
+                    while (hasNotReachedMaxRetries(pollMistakes) && endsSeen < progressReporters.size()) {
                         log.debug("indexableDocuments size: {}", indexableDocuments.size());
                         IndexableDocument poll = indexableDocuments.poll(60, TimeUnit.SECONDS);
                         if (poll != null) {
                             log.debug("Got document {}, size: {}", poll.getId(), indexableDocuments.size());
-                            if (poll.shouldIndex()) {
+
+                            if(poll == IndexableDocumentProvider.END) {
+                                log.info("IndexableDocumentProvider.END");
+                                endsSeen++;
+                            } else if (poll.shouldIndex()) {
                                 log.info("Indexing document {} {}", poll.getUId(), poll.getTitle());
                                 documentIndexer.indexDocument(poll);
                             } else {
