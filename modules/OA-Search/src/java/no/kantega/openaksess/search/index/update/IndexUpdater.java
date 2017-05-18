@@ -5,6 +5,7 @@ import no.kantega.openaksess.search.provider.transformer.ContentTransformer;
 import no.kantega.publishing.api.attachment.ao.AttachmentAO;
 import no.kantega.publishing.api.content.ContentAO;
 import no.kantega.publishing.api.content.ContentIdentifier;
+import no.kantega.publishing.api.content.ContentStatus;
 import no.kantega.publishing.common.ao.AssociationAO;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Attachment;
@@ -188,7 +189,7 @@ public class IndexUpdater extends ContentEventListenerAdapter {
     private void updateIndex(Association association) {
         ContentIdentifier cid = ContentIdentifier.fromAssociationId(association.getAssociationId());
         Content content = contentAO.getContent(cid, true);
-        if (content != null) {
+        if (content != null && content.getStatus() != ContentStatus.DRAFT && content.getStatus() != ContentStatus.GHOSTDRAFT) {
             IndexableDocument indexableDocument = contentTransformer.transform(content);
             if (indexableDocument.shouldIndex()) {
                 documentIndexer.indexDocumentAndCommit(indexableDocument);
