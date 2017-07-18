@@ -65,7 +65,7 @@
                 <input type="text" placeholder="<kantega:label key="aksess.login.username"/>" id="j_username" name="j_username" value="${username}" size="25" maxlength="60" <c:if test="${!autocomplete}">autocomplete="off"</c:if>>
             </div>
             <div id="Password">
-                <label for="j_password"><kantega:label key="aksess.login.aksess.login.password"/></label>
+                <label for="j_password"><kantega:label key="aksess.login.password"/></label>
                 <input type="password" id="j_password" placeholder="Passord" name="j_password" size="25" maxlength="60">
             </div>
             <c:set var="isRememberMe"><aksess:getconfig key="security.login.rememberme.enabled"/></c:set>
