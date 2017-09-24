@@ -32,6 +32,7 @@ import no.kantega.publishing.content.api.ContentIdHelper;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +68,7 @@ public class ContentRequestHandler implements ServletContextAware {
     private ServletContext servletContext;
 
     private boolean addPagetypeToResponseHeader;
+    private static String MDC_CONTENT;
 
     @RequestMapping("/")
     public ModelAndView handleRoot(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
@@ -119,6 +121,7 @@ public class ContentRequestHandler implements ServletContextAware {
         ContentManagementService cms = new ContentManagementService(securitySession, request);
         try {
             Content content = cms.getContent(cid, true);
+            MDC.put(MDC_CONTENT, content.getPath());
             // Send NOT_FOUND if expired or not published
             boolean isAdminMode = HttpHelper.isAdminMode(request);
             if (content != null) {
@@ -173,6 +176,8 @@ public class ContentRequestHandler implements ServletContextAware {
             }
             log.error(request.getRequestURI(), e);
             throw new ServletException(e);
+        } finally {
+            MDC.remove(MDC_CONTENT);
         }
 
         return null;

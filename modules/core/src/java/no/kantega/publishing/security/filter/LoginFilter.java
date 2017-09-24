@@ -17,6 +17,7 @@
 package no.kantega.publishing.security.filter;
 
 import no.kantega.publishing.security.SecuritySession;
+import org.slf4j.MDC;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ import java.util.regex.Pattern;
  *
  */
 public class LoginFilter implements Filter {
+    public static final String MDC_USER_FIELD = "user";
     private Pattern excludedFilesPattern = null;
     private Pattern exclucedHostsPattern = null;
 
@@ -52,6 +54,12 @@ public class LoginFilter implements Filter {
 
         try {
             SecuritySession securitySession = SecuritySession.getInstance(request);
+
+            if(!securitySession.isLoggedIn()) {
+                MDC.put(MDC_USER_FIELD, securitySession.getUser().getId());
+            } else {
+                MDC.put(MDC_USER_FIELD, ((HttpServletRequest) servletRequest).getSession().getId());
+            }
 
             String path = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
 
@@ -81,6 +89,8 @@ public class LoginFilter implements Filter {
             filterChain.doFilter(request, response);
         } catch (Exception e) {
             throw new ServletException(e);
+        } finally {
+            MDC.remove(MDC_USER_FIELD);
         }
     }
 

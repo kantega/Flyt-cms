@@ -24,6 +24,7 @@ import no.kantega.publishing.common.service.ContentManagementService;
 import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.*;
@@ -39,6 +40,8 @@ import static no.kantega.commons.util.URLHelper.getUrlWithHttps;
  * Filter for admin space that ensures user is logged in and check that request is not csrf-attempt.
  */
 public class AdminFilter implements Filter {
+    private static final String MDC_USER_FIELD = "user";
+
     private ServletContext servletContext;
     private CrossSiteRequestForgeryContentRewriter crossSiteRequestForgeryContentRewriter;
     private Logger  log = LoggerFactory.getLogger(getClass());
@@ -94,6 +97,8 @@ public class AdminFilter implements Filter {
                 }
                 response.setDateHeader("Expires", 0);
             }
+            MDC.put(MDC_USER_FIELD, securitySession.getUser().getId());
+
 
             filterChain.doFilter(request,  response);
         } catch (Exception e) {
@@ -135,6 +140,8 @@ public class AdminFilter implements Filter {
             handler.setThrowable(cause, request.getRequestURI());
             request.getSession(true).setAttribute("handler", handler);
             request.getRequestDispatcher(Aksess.ERROR_URL).forward(request, response);
+        } finally {
+            MDC.remove(MDC_USER_FIELD);
         }
     }
 
