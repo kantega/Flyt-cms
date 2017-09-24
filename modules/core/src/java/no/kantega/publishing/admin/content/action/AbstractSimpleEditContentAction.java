@@ -57,7 +57,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
      * @return - SecuritySession
      */
     protected SecuritySession getSecuritySession(HttpServletRequest request) {
-        return SecuritySession.getInstance(request);        
+        return SecuritySession.getInstance(request);
     }
 
     /**
@@ -83,28 +83,33 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        SecuritySession securitySession = getSecuritySession(request);
-        if (securitySession == null || !securitySession.isLoggedIn()) {
-            throw new NotAuthorizedException("Not logged in");
-        }
-        
-        if (request.getMethod().equalsIgnoreCase("POST")) {
-            // Save page
-            return handleSubmit(request, response);
-        } else {
-            // Edit page
-            Content content = getContentForEdit(request);
-            if (isAllowedToEdit(request, content)) {
-                ContentManagementService cms = new ContentManagementService(securitySession);
-                if (!content.isNew()) {
-                    // Existing content must be checked out before edit
-                    content = cms.checkOutContent(content.getContentIdentifier());
-                }
-                request.setAttribute(AdminRequestParameters.MINI_ADMIN_MODE, true);
-                return showEditForm(request, content);
-            } else {
-                throw new NotAuthorizedException("Not authorized to edit " + content.getId());
+        try {
+            SecuritySession securitySession = getSecuritySession(request);
+            if (securitySession == null || !securitySession.isLoggedIn()) {
+                throw new NotAuthorizedException("Not logged in");
             }
+
+            if (request.getMethod().equalsIgnoreCase("POST")) {
+                // Save page
+                return handleSubmit(request, response);
+            } else {
+                // Edit page
+                Content content = getContentForEdit(request);
+                if (isAllowedToEdit(request, content)) {
+                    ContentManagementService cms = new ContentManagementService(securitySession);
+                    if (!content.isNew()) {
+                        // Existing content must be checked out before edit
+                        content = cms.checkOutContent(content.getContentIdentifier());
+                    }
+                    request.setAttribute(AdminRequestParameters.MINI_ADMIN_MODE, true);
+                    return showEditForm(request, content);
+                } else {
+                    throw new NotAuthorizedException("Not authorized to edit " + content.getId());
+                }
+            }
+        } catch (Exception e) {
+            log.error("Error handling request", e);
+            throw new SystemException("Error handling SimpleEditContent request", e);
         }
     }
 
