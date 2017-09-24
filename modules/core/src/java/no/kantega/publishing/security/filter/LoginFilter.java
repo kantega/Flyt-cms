@@ -55,7 +55,7 @@ public class LoginFilter implements Filter {
         try {
             SecuritySession securitySession = SecuritySession.getInstance(request);
 
-            if(!securitySession.isLoggedIn()) {
+            if(securitySession.isLoggedIn()) {
                 MDC.put(MDC_USER_FIELD, securitySession.getUser().getId());
             } else {
                 MDC.put(MDC_USER_FIELD, ((HttpServletRequest) servletRequest).getSession().getId());
