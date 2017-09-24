@@ -68,7 +68,7 @@ public class ContentRequestHandler implements ServletContextAware {
     private ServletContext servletContext;
 
     private boolean addPagetypeToResponseHeader;
-    private static String MDC_CONTENT;
+    private static final String MDC_CONTENT = "content";
 
     @RequestMapping("/")
     public ModelAndView handleRoot(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ContentNotFoundException {
