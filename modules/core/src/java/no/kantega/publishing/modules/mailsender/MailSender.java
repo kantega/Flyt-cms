@@ -228,7 +228,7 @@ public class MailSender {
             log.info("Sending email to " + to + " with subject " + subject);
         } catch (MessagingException e) {
             String errormessage = "Subject: " + subject + " | Error: " + e.getMessage();
-            eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage, null);
+            eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, errormessage + " | to: " + to, null);
             log.error("Error sending mail", e);
             throw new SystemException("Error sending email to : " + to + " with subject " + subject, e);
         }

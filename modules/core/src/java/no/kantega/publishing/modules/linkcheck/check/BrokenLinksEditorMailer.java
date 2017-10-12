@@ -67,7 +67,7 @@ public class BrokenLinksEditorMailer implements BrokenLinkEventListener {
 		} else{
             String message = "finner ikke mailEditor eller mailFrom i config, kan ikke sende mail om brukne lenker";
             log.error(message);
-            eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, message, null);
+            eventLog.log("System", null, Event.FAILED_EMAIL_SUBMISSION, message + " | to: " + mailEditor, null);
         }
 	}
 
