@@ -141,7 +141,11 @@ public class dbConnectionFactory {
             // Use non-pooled datasource for table creation since validation query might fail
             ensureDatabaseExists(rawDataSource);
             if(shouldMigrateDatabase) {
-                migrateDatabase(servletContext, rawDataSource);
+                try {
+                    migrateDatabase(servletContext, rawDataSource);
+                } catch (Throwable cause) {
+                    throw new DbMigrationException("Could not migrate datasource", cause);
+                }
             }
 
             if (dbUseTransactions) {
@@ -154,6 +158,9 @@ public class dbConnectionFactory {
                 proxyDs = (DataSource) Proxy.newProxyInstance(DataSource.class.getClassLoader(), new Class[] {DataSource.class}, new DataSourceWrapper(ds));
             }
 
+        } catch (DbMigrationException cause) {
+            log.error(cause.getMessage(), cause);
+            throw cause;
         } catch (Exception e) {
             log.error( "********* could not read aksess.conf **********", e);
         }
@@ -476,6 +483,26 @@ public class dbConnectionFactory {
                 return method.invoke(wrapped, objects);
             }
 
+        }
+    }
+    private static class DbMigrationException extends RuntimeException {
+
+        public DbMigrationException() {}
+
+        public DbMigrationException(String message) {
+            super(message);
+        }
+
+        public DbMigrationException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public DbMigrationException(Throwable cause) {
+            super(cause);
+        }
+
+        public DbMigrationException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+            super(message, cause, enableSuppression, writableStackTrace);
         }
     }
 }
