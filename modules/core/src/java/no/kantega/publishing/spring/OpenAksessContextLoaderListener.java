@@ -170,7 +170,7 @@ public class OpenAksessContextLoaderListener extends ContextLoaderListener {
 
 
         if(configuration.getBoolean("caching.enabled", true)){
-            wac.getEnvironment().setActiveProfiles("useCaching");
+            wac.getEnvironment().addActiveProfile("useCaching");
         }
 
         Aksess.setContextPath(servletContext.getContextPath());
