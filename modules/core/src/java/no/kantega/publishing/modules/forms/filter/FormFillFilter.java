@@ -30,7 +30,6 @@ public class FormFillFilter implements Filter {
     public Document runFilter(Document document) {
         for (Element div : document.getElementsByTag("div")) {
             if (div.attr("class").contains("formElement")) {
-                currentFieldIndex++;
                 boolean hasError = false;
                 for (FormError error : errors) {
                     if (error.getIndex() == currentFieldIndex) {
@@ -41,6 +40,7 @@ public class FormFillFilter implements Filter {
                 if (hasError) {
                     div.addClass("error");
                 }
+                currentFieldIndex++;
             }
         }
 
