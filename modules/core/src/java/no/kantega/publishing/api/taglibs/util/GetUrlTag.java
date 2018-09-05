@@ -32,7 +32,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.taglibs.standard.tag.common.core.ImportSupport.isAbsoluteUrl;
+import static org.apache.taglibs.standard.util.UrlUtil.isAbsoluteUrl;
 
 public class GetUrlTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUrlTag.class);

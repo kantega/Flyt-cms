@@ -95,9 +95,15 @@
             </dependency>
 
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jstl</artifactId>
-                <version>${jstl.version}</version>
+                <groupId>org.apache.taglibs</groupId>
+                <artifactId>taglibs-standard-impl</artifactId>
+                <version>${apache.taglibs.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.taglibs</groupId>
+                <artifactId>taglibs-standard-spec</artifactId>
+                <version>${apache.taglibs.version}</version>
             </dependency>
 
             <dependency>
@@ -255,7 +261,7 @@
         <psql.version>9.2-1002.jdbc4</psql.version>
         <servlet.version>3.0.1</servlet.version>
         <jsp.version>2.2</jsp.version>
-        <jstl.version>1.2</jstl.version>
+        <apache.taglibs.version>1.2.5</apache.taglibs.version>
         <hsqldb.version>2.0.0</hsqldb.version>
         <aspectj.version>1.6.12</aspectj.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
