@@ -40,6 +40,16 @@ public class StatusServlet extends HttpServlet {
     }
 
     @Override
+    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
+    @Override
+    protected void doHead(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        doGet(req, resp);
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         boolean weAreAvailable = checkAvailabilityFile();
         boolean databaseIsUp = checkDatabase();
