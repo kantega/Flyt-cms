@@ -70,7 +70,7 @@
         <dependency>
             <groupId>org.simplericity.datadirlocator</groupId>
             <artifactId>datadirlocator</artifactId>
-            <version>1.2</version>
+            <version>1.10</version>
         </dependency>
 
         <dependency>
