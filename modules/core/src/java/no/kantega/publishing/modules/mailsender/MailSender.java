@@ -184,6 +184,10 @@ public class MailSender {
 
             props.setProperty("mail.smtp.host", host);
 
+            props.setProperty("mail.smtp.timeout", String.valueOf(config.getInt("mail.smtp.timeout", 5000)));
+            props.setProperty("mail.smtp.connectiontimeout", String.valueOf(config.getInt("mail.smtp.connectiontimeout", 5000)));
+            props.setProperty("mail.smtp.writetimeout", String.valueOf(config.getInt("mail.smtp.writetimeout", 5000)));
+
             Session session = Session.getDefaultInstance(props);
 
             boolean debug = config.getBoolean("mail.debug", false);
