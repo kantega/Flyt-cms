@@ -70,7 +70,7 @@
         <repository>
             <id>nexus</id>
             <name>Kantega Maven Repository</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -78,7 +78,7 @@
         <repository>
             <id>snapshots</id>
             <name>Kantega Snapshots</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
