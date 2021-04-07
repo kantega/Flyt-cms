@@ -61,12 +61,8 @@ public class EmailFormDeliveryService implements FormDeliveryService {
             return;
         }
         try {
-            String from = formSubmission.getSubmittedByEmail();
-            boolean notEmailAddress = from == null || !from.contains("@");
-            if (notEmailAddress) {
-                // Use default sender
-                from = Aksess.getConfiguration().getString("mail.from");
-            }
+            // Always use mail.from as sender, since most mail servers won't accept senders from different domains
+            String from = Aksess.getConfiguration().getString("mail.from");
             String to = form.getEmail();
 
             Map<String, Object> param = new HashMap<>();
