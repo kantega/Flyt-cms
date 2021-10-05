@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess-core-plugins-parent</artifactId>
-        <version>7.9.33</version>
+        <version>7.10.0-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-core-plugins</artifactId>
     <name>OpenAksess core plugins</name>
@@ -31,12 +31,14 @@
             <artifactId>openaksess-dbdiff-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+<!--
 
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>openaksess-forms-plugin</artifactId>
             <version>${project.version}</version>
         </dependency>
+-->
 
         <dependency>
             <groupId>${project.groupId}</groupId>
