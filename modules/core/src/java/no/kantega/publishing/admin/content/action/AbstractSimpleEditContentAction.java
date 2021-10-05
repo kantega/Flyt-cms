@@ -3,11 +3,7 @@ package no.kantega.publishing.admin.content.action;
 import no.kantega.commons.client.util.RequestParameters;
 import no.kantega.commons.client.util.ValidationErrors;
 import no.kantega.commons.configuration.Configuration;
-import no.kantega.commons.exception.ConfigurationException;
-import no.kantega.commons.exception.InvalidFileException;
-import no.kantega.commons.exception.InvalidParameterException;
-import no.kantega.commons.exception.NotAuthorizedException;
-import no.kantega.commons.exception.SystemException;
+import no.kantega.commons.exception.*;
 import no.kantega.publishing.admin.AdminRequestParameters;
 import no.kantega.publishing.admin.AdminSessionAttributes;
 import no.kantega.publishing.admin.content.util.AttributeHelper;
@@ -38,6 +34,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import static java.util.Collections.emptyMap;
 
 public abstract class AbstractSimpleEditContentAction implements Controller {
     private static final Logger log = LoggerFactory.getLogger(AbstractSimpleEditContentAction.class);
@@ -153,7 +151,7 @@ public abstract class AbstractSimpleEditContentAction implements Controller {
 
         addCustomRequestAttributes(request, content);
 
-        return new ModelAndView(getView(), null);
+        return new ModelAndView(getView(), emptyMap());
     }
 
     private ModelAndView handleSubmit(HttpServletRequest request, HttpServletResponse response) throws InvalidFileException, InvalidTemplateException, NotAuthorizedException, ObjectLockedException, ConfigurationException {

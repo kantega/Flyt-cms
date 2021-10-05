@@ -41,11 +41,7 @@ import java.net.URL;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -213,7 +209,7 @@ public class dbConnectionFactory {
         }
     }
 
-    public static void migrateDatabase(ServletContext servletContext, DataSource dataSource) {
+    public static void migrateDatabase(ServletContext servletContext, DataSource dataSource) throws SQLException {
         DbMigrate migrate = new DbMigrate();
 
         try {
