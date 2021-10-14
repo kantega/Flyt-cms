@@ -858,9 +858,9 @@
         <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
     </bean>
 
-    <bean id="ratingController" class="no.kantega.publishing.rating.controller.RatingController">
+<!--    <bean id="ratingController" class="no.kantega.publishing.rating.controller.RatingController">
         <property name="jsonView" ref="aksessJsonView"/>
-    </bean>
+    </bean>-->
 
     <bean id="localeResolver" class="no.kantega.publishing.spring.AksessAdminLocaleResolver"/>
 

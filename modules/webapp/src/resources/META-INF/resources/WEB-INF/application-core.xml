@@ -127,7 +127,7 @@
     <bean class="no.kantega.publishing.admin.content.spellcheck.SpellcheckerServiceImpl" id="aksessSpellCheckerService"/>
 
     <bean id="contentRatingNotificationListener" class="no.kantega.publishing.rating.ContentRatingNotificationListener"/>
-    <bean id="ratingScoreCalculator" class="no.kantega.publishing.api.rating.AverageRatingScoreCalculator"/>
+ <!--   <bean id="ratingScoreCalculator" class="no.kantega.publishing.api.rating.AverageRatingScoreCalculator"/>
 
     <bean id="ratingDao" class="no.kantega.publishing.rating.dao.JdbcRatingDao">
         <property name="dataSource" ref="aksessDataSource"/>
@@ -145,7 +145,7 @@
             </map>
         </property>
     </bean>
-
+-->
     <bean id="aksessImageEditor" class="no.kantega.publishing.multimedia.DefaultImageEditor">
         <property name="imageResizeAlgorithm">
             <bean class="no.kantega.publishing.multimedia.resizers.LanczosImageResizeAlgorithm"/>
