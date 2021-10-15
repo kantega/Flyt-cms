@@ -32,7 +32,6 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.taglibs.standard.tag.common.core.ImportSupport.isAbsoluteUrl;
 
 public class GetUrlTag extends TagSupport {
     private static final Logger log = LoggerFactory.getLogger(GetUrlTag.class);
@@ -182,5 +181,24 @@ public class GetUrlTag extends TagSupport {
 
     public void setAbsoluteUrl(boolean absoluteUrl) {
         this.absoluteUrl = absoluteUrl;
+    }
+
+    private static boolean isAbsoluteUrl(String url) {
+        if (url == null) {
+            return false;
+        } else {
+            int colonPos;
+            if ((colonPos = url.indexOf(":")) == -1) {
+                return false;
+            } else {
+                for(int i = 0; i < colonPos; ++i) {
+                    if ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+.-".indexOf(url.charAt(i)) == -1) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
     }
 }

@@ -16,12 +16,7 @@
 
 package no.kantega.commons.filter;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -34,7 +29,7 @@ import java.util.regex.Pattern;
  */
 public class FarFutureExpiresDirectoryFilter implements Filter {
 
-    private Pattern resourcePattern = Pattern.compile("/expires/([a-f0-9]*)(/.*)");
+    private final Pattern resourcePattern = Pattern.compile("/expires/([a-f0-9]*)(/.*)");
 
     private static final long YEAR = (long) 365*24*60*60*1000;
 
