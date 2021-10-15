@@ -172,7 +172,7 @@ public abstract class AbstractSaveContentAction extends AbstractContentAction {
 
 
     private ModelAndView saveContentInDb(ContentManagementService aksessService, HttpSession session, Content content, Map<String, Object> model, ContentStatus status) throws NotAuthorizedException {
-        log.info("Saving content {} with status", content, status);
+        log.debug("Saving content {} with status {}", content, status);
         String message;
         content = aksessService.checkInContent(content, status);
         message = null;
