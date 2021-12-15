@@ -389,7 +389,7 @@
     </build>
 
     <properties>
-        <aksess-maven-plugin.version>2.23-SNAPSHOT</aksess-maven-plugin.version>
+        <aksess-maven-plugin.version>2.23</aksess-maven-plugin.version>
         <securityapi.version>2.9</securityapi.version>
         <securityapi.openimpl.version>2.24</securityapi.openimpl.version>
 
