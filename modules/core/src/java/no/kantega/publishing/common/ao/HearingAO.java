@@ -35,6 +35,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.sql.*;
 import java.util.List;
+import java.util.Map;
 
 
 public class HearingAO {
@@ -254,7 +255,11 @@ public class HearingAO {
         if(count > 0) {
             return true;
         } else {
-            OrganizationManager manager = RootContext.getInstance().getBeansOfType(OrganizationManager.class).values().iterator().next();
+            Map<String, OrganizationManager> orgmanagers = RootContext.getInstance().getBeansOfType(OrganizationManager.class);
+            if(orgmanagers.isEmpty()) {
+                return false;
+            }
+            OrganizationManager manager = orgmanagers.values().iterator().next();
             List above = manager.getOrgUnitsAboveUser(user);
             if(above.size() > 0) {
                 StringBuilder buffer = new StringBuilder();
