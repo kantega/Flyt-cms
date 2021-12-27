@@ -134,7 +134,7 @@
             <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>jstl</artifactId>
-                <version>${jstl.version}</version>
+                <version>1.2</version>
             </dependency>
 
             <dependency>
