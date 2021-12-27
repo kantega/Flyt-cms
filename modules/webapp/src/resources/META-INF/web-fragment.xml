@@ -59,11 +59,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>TinyMCEServlet</servlet-name>
-        <servlet-class>no.kantega.publishing.TinyMCEServlet</servlet-class>
-    </servlet>
-
-    <servlet>
         <servlet-name>StatusServlet</servlet-name>
         <servlet-class>no.kantega.publishing.web.servlet.StatusServlet</servlet-class>
     </servlet>
@@ -86,11 +81,6 @@
     <servlet-mapping>
         <servlet-name>aksess</servlet-name>
         <url-pattern>/oap/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>TinyMCEServlet</servlet-name>
-        <url-pattern>/aksess/tiny_mce/tiny_mce_gzip.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
