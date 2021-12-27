@@ -46,7 +46,7 @@ public class HearingAO {
 
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        return template.queryForObject("select * from hearing where HearingId = ?",
+        return template.queryForObject("select * from Hearing where HearingId = ?",
                 new Integer[] {id},
                 new RowMapper<Hearing>() {
                     public Hearing mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -60,7 +60,7 @@ public class HearingAO {
 
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-        List<Hearing> list = template.query("select * from hearing where ContentVersionId = ?",
+        List<Hearing> list = template.query("select * from Hearing where ContentVersionId = ?",
                 new Integer[] {contentVersionId},
                 new RowMapper<Hearing>() {
                     public Hearing mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -145,7 +145,7 @@ public class HearingAO {
         JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
         if(hearing.getId() > 0) {
-            template.update("update hearing set ContentVersionId = ?, Deadline = ? where HearingId = ?",
+            template.update("update Hearing set ContentVersionId = ?, Deadline = ? where HearingId = ?",
                     new Object[] {
                             hearing.getContentVersionId(),
                             new Timestamp(hearing.getDeadLine().getTime()),
@@ -158,7 +158,7 @@ public class HearingAO {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("insert into hearing (ContentVersionId, Deadline) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement p = connection.prepareStatement("insert into Hearing (ContentVersionId, Deadline) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, hearing.getContentVersionId());
                     p.setTimestamp(2, new Timestamp(hearing.getDeadLine().getTime()));
                     return p;
@@ -190,7 +190,7 @@ public class HearingAO {
 
             template.update(new PreparedStatementCreator() {
                 public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                    PreparedStatement p = connection.prepareStatement("insert into hearinginvitee (HearingId, InviteeType, InviteeRef) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                    PreparedStatement p = connection.prepareStatement("insert into HearingInvitee (HearingId, InviteeType, InviteeRef) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
                     p.setInt(1, invitee.getHearingId());
                     p.setInt(2, invitee.getType());
                     p.setString(3, invitee.getReference());
@@ -215,7 +215,7 @@ public class HearingAO {
     private static List<HearingInvitee> getInviteesForHearingByType(int hearingId, int type) {
             JdbcTemplate template = new JdbcTemplate(dbConnectionFactory.getDataSource());
 
-            return template.query("select HearingInviteeId, HearingId, InviteeType, InviteeRef from hearinginvitee where hearingId=? AND InviteeType = ?",
+            return template.query("select HearingInviteeId, HearingId, InviteeType, InviteeRef from HearingInvitee where hearingId=? AND InviteeType = ?",
                     new Integer[] {hearingId, type},
                     new RowMapper<HearingInvitee>() {
                         public HearingInvitee mapRow(ResultSet resultSet, int i) throws SQLException {

@@ -34,7 +34,7 @@ import java.util.Map;
 /**
  *
  */
-public abstract class AbstractContentAction extends AbstractController {
+    public abstract class AbstractContentAction extends AbstractController {
 
     @Autowired
     private ContentTemplateAO contentTemplateAO;
