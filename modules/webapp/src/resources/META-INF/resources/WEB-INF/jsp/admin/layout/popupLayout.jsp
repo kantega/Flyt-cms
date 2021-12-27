@@ -72,7 +72,7 @@
             } else {
                 try {
                     var tinymce = getParent().tinymce;
-                    var ed = tinymce.editors[0];
+                    var ed = tinymce.activeEditor;
                     ed.windowManager.windows[0].close();
                 } catch (e) {
                     openaksess.common.debug("Failed to close tiny modal " + e);
