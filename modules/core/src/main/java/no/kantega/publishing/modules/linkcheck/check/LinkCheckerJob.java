@@ -402,31 +402,27 @@ public class LinkCheckerJob implements InitializingBean {
     }
 
     private void init() {
+        httpClientBuilder = getHttpClientBuilder();
+
         if(isNotBlank(proxyHost)) {
             HttpHost proxy = new HttpHost(proxyHost, proxyPort);
-
-            httpClientBuilder = HttpClients.custom()
-                    .setDefaultRequestConfig(RequestConfig.custom()
-                            .setRedirectsEnabled(true)
-                            .setConnectTimeout(CONNECTION_TIMEOUT)
-                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
-                            .setSocketTimeout(CONNECTION_TIMEOUT)
-                            .build())
-                    .setProxy(proxy);
+            httpClientBuilder.setProxy(proxy);
 
             if(isNotBlank(proxyUser)) {
                 CredentialsProvider credsProvider = new BasicCredentialsProvider();
                 credsProvider.setCredentials(AuthScope.ANY, new UsernamePasswordCredentials(proxyUser, proxyPassword));
                 httpClientBuilder.setDefaultCredentialsProvider(credsProvider);
             }
-        } else {
-            httpClientBuilder = HttpClients.custom()
-                    .setDefaultRequestConfig(RequestConfig.custom()
-                            .setRedirectsEnabled(true)
-                            .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
-                            .setConnectTimeout(CONNECTION_TIMEOUT)
-                            .setSocketTimeout(CONNECTION_TIMEOUT)
-                            .build());
         }
+    }
+
+    private HttpClientBuilder getHttpClientBuilder() {
+        return HttpClients.custom()
+            .setDefaultRequestConfig(RequestConfig.custom()
+                .setRedirectsEnabled(true)
+                .setConnectTimeout(CONNECTION_TIMEOUT)
+                .setConnectionRequestTimeout(CONNECTION_TIMEOUT)
+                .setSocketTimeout(CONNECTION_TIMEOUT)
+                .build());
     }
 }
