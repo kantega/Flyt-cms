@@ -6,11 +6,11 @@ Description of the various files included when you create a project using Maven
 
 Contains database connection and other project specific configuration. Configuration in this file is merged with configuration from Aksess when you build your project.
 
-## webapp/src/resources/
+## webapp/src/main/resources/
 
 Property files for locale specific text in templates.  A default file for Norwegian and English is included.
 
-## webapp/src/webapp/
+## webapp/src/main/webapp/
 
 Web application main directory. This is where all display templates, CSS, static images and other files which create a site are placed.  This folder is merged with OpenAksess files to create a WAR file when you build your project.
 

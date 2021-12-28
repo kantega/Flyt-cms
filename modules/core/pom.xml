@@ -410,14 +410,14 @@
         </plugins>
         <resources>
             <resource>
-                <directory>src/resources</directory>
+                <directory>src/main/resources</directory>
                 <excludes>
                     <exclude>no/kantega/publishing/common/aksessVersion.properties</exclude>
                 </excludes>
                 <filtering>false</filtering>
             </resource>
             <resource>
-                <directory>src/resources</directory>
+                <directory>src/main/resources</directory>
                 <includes>
                     <include>no/kantega/publishing/common/aksessVersion.properties</include>
                 </includes>
@@ -433,7 +433,7 @@
                 <artifactId>maven-taglib-plugin</artifactId>
                 <version>2.3.2-kantega-r200</version>
                 <configuration>
-                    <taglib.src.dir>src/resources/META-INF</taglib.src.dir>
+                    <taglib.src.dir>src/main/resources/META-INF</taglib.src.dir>
                 </configuration>
             </plugin>
         </plugins>
