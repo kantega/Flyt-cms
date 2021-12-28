@@ -104,7 +104,11 @@ public class Attachment implements Serializable {
         if (contextPath.endsWith("/")) {
             contextPath = contextPath.substring(0, contextPath.length() - 1);
         }
-        return contextPath + Aksess.ATTACHMENT_URL_PREFIX + "/" + id + "/" + encode(getFilenameWithSuffixLowerCase());
+        return contextPath + getPath();
+    }
+
+    public String getPath() {
+        return Aksess.ATTACHMENT_URL_PREFIX + "/" + id + "/" + encode(getFilenameWithSuffixLowerCase());
     }
 
     private String getFilenameWithSuffixLowerCase() {

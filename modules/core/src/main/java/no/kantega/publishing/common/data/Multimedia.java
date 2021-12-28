@@ -223,8 +223,12 @@ public class Multimedia extends BaseObject {
         if (filename == null) {
             return Aksess.getContextPath() + "/multimedia.ap?id=" + id;
         } else {
-            return Aksess.getContextPath() + PrettyURLEncoder.createMultimediaUrl(id, filename);
+            return Aksess.getContextPath() + getPath();
         }
+    }
+
+    public String getPath() {
+        return PrettyURLEncoder.createMultimediaUrl(id, filename);
     }
 
     public String getOwner() {
