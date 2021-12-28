@@ -62,7 +62,7 @@ public class DispatchDirective extends Directive {
         }
         final HttpServletRequest request = AksessRequestFilter.getRequest();
         final CharResponseWrapper response = new CharResponseWrapper(AksessRequestFilter.getResponse());
-
+        response.setDummyOutputStream();
         try {
             request.getRequestDispatcher(name).forward(request, response);
         } catch (ServletException e) {
@@ -72,6 +72,5 @@ public class DispatchDirective extends Directive {
         writer.write(response.toString());
         return false;
     }
-    
 
 }
