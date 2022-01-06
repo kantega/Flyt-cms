@@ -15,6 +15,7 @@
 <%@ page import="org.slf4j.LoggerFactory" %>
 <%@ page import="org.springframework.context.ApplicationContext" %>
 <%@ page import="org.springframework.web.context.support.WebApplicationContextUtils" %>
+<%@ page import="org.apache.commons.io.IOUtils" %>
 <%--
   ~ Copyright 2009 Kantega AS
   ~
@@ -135,6 +136,8 @@
 <div class="inputs">
     <textarea name="${fieldName}" id="${fieldName}" class="tinymce_textfield" cols="80" rows="20" style="width: ${attributeWidth}; height: ${attributeHeight}">${value}</textarea><br>
     <script type="text/javascript">
+        // see https://www.tiny.cloud/docs-4x/configure/content-formatting/#style_formats
+        var style_formats = <%=IOUtils.toString(pageContext.getServletContext().getResource("/admin/publish/attributes/htmltext_style_formats.js"))%>;
         var options = {
             schema: "html5",
             selector: "textarea#${fieldName}",
@@ -163,15 +166,10 @@
             table_default_attributes : {
                 border: '1'
             },
-            style_formats: [
-                {title: 'Bold text', inline: 'b'},
-                {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
-                {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
-                {title: 'Example 1', inline: 'span', classes: 'example1'},
-                {title: 'Example 2', inline: 'span', classes: 'example2'},
-                {title: 'Table styles'},
-                {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
-            ]
+            style_formats: style_formats,
+            table_class_list: style_formats,
+            table_cell_class_list: style_formats,
+            table_row_class_list: style_formats,
             <aksess:getconfig key="editor.custom.tinymceparameters"/>
         };
 
