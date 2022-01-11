@@ -138,6 +138,10 @@
     <script type="text/javascript">
         // see https://www.tiny.cloud/docs-4x/configure/content-formatting/#style_formats
         var style_formats = <%=IOUtils.toString(pageContext.getServletContext().getResource("/admin/publish/attributes/htmltext_style_formats.js"))%>;
+        var tableClassMapper = function(list, element) {
+            return list.filter(style => (style.selector || '').indexOf(element) !== -1)
+                       .map(style => ({title: style.title, value: style.classes}));
+        }
         var options = {
             schema: "html5",
             selector: "textarea#${fieldName}",
@@ -164,12 +168,11 @@
             block_formats: "${blockFormats}",
             table_style_by_css : true,
             table_default_attributes : {
-                border: '1'
             },
             style_formats: style_formats,
-            table_class_list: style_formats,
-            table_cell_class_list: style_formats,
-            table_row_class_list: style_formats,
+            table_class_list: tableClassMapper(style_formats, 'table'),
+            table_row_class_list: tableClassMapper(style_formats, 'tr'),
+            table_cell_class_list: tableClassMapper(style_formats, 'td'),
             <aksess:getconfig key="editor.custom.tinymceparameters"/>
         };
 
