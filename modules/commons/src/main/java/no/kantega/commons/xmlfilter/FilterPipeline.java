@@ -47,7 +47,8 @@ public class FilterPipeline {
                 document = filter.runFilter(document);
             }
 
-            return document.getElementsByTag("body").html();
+            return document.getElementsByTag("body").html()
+                .replace("&lt;@WEB@>", "<@WEB@>");
         } catch (Exception e) {
             log.error("Could not filter", e);
             throw new SystemException("Could not filter", e);

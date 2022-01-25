@@ -88,11 +88,11 @@ public class RemoveNestedSpanTagsFilter implements Filter {
                 }
             } else if (source instanceof TextNode) {
                 TextNode sourceText = (TextNode) source;
-                TextNode destText = new TextNode(sourceText.getWholeText(), source.baseUri());
+                TextNode destText = new TextNode(sourceText.getWholeText());
                 destination.appendChild(destText);
             } else if (source instanceof DataNode) {
                 DataNode sourceData = (DataNode) source;
-                DataNode destData = new DataNode(sourceData.getWholeData(), source.baseUri());
+                DataNode destData = new DataNode(sourceData.getWholeData());
                 destination.appendChild(destData);
             }
         }
@@ -127,8 +127,7 @@ public class RemoveNestedSpanTagsFilter implements Filter {
 
     private void copySafeNodes(Element source, Element dest) {
         CleaningVisitor cleaningVisitor = new CleaningVisitor(dest);
-        NodeTraversor traversor = new NodeTraversor(cleaningVisitor);
-        traversor.traverse(source);
+        NodeTraversor.traverse(cleaningVisitor, source);
     }
 
     private static Element createSafeElement(Element sourceEl) {
