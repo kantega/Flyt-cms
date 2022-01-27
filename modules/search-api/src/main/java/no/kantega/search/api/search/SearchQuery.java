@@ -473,4 +473,35 @@ public class SearchQuery {
     public void setLogQuery(boolean logQuery) {
         this.logQuery = logQuery;
     }
+
+    @Override
+    public String toString() {
+        return "SearchQuery{" +
+            ", originalQuery='" + originalQuery + '\'' +
+            ", filterQueries=" + filterQueries +
+            ", highlightSearchResultDescription=" + highlightSearchResultDescription +
+            ", facetFields=" + facetFields +
+            ", facetQueries=" + facetQueries +
+            ", dateRangeFacets=" + dateRangeFacets +
+            ", resultsPerPage=" + resultsPerPage +
+            ", pageNumber=" + pageNumber +
+            ", groupField='" + groupField + '\'' +
+            ", groupQueries=" + groupQueries +
+            ", offset=" + offset +
+            ", fuzzySearch=" + fuzzySearch +
+            ", boostByPublishDate=" + boostByPublishDate +
+            ", boostByLastModifiedDate=" + boostByLastModifiedDate +
+            ", indexedLanguage=" + indexedLanguage +
+            ", appendFiltersToPageUrls=" + appendFiltersToPageUrls +
+            ", queryType=" + queryType +
+            ", additionalQueryFields=" + additionalQueryFields +
+            ", boostFunctions=" + boostFunctions +
+            ", boostQueries=" + boostQueries +
+            ", resultFields=" + resultFields +
+            ", sortField='" + sortField + '\'' +
+            ", sortOrder=" + sortOrder +
+            ", useCollatedSuggestions=" + useCollatedSuggestions +
+            ", logQuery=" + logQuery +
+            '}';
+    }
 }

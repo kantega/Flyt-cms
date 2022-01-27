@@ -13,6 +13,7 @@ import org.apache.solr.common.util.NamedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ import java.util.Map;
 import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 import static org.apache.commons.lang3.StringUtils.defaultString;
 
+@Primary
 @Component
 public class SolrDocumentIndexer implements DocumentIndexer {
     private final Logger log  = LoggerFactory.getLogger(getClass());

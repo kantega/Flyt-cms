@@ -144,4 +144,24 @@ public class IndexableDocument {
     public int getParentId() {
         return parentId;
     }
+
+    @Override
+    public String toString() {
+        return "IndexableDocument{" +
+            "uid='" + uid + '\'' +
+            ", id='" + id + '\'' +
+            ", contentType='" + contentType + '\'' +
+            ", title='" + title + '\'' +
+            ", description='" + description + '\'' +
+            ", contentStatus='" + contentStatus + '\'' +
+            ", visibility='" + visibility + '\'' +
+            ", siteId=" + siteId +
+            ", language='" + language + '\'' +
+            ", fileContent=" + fileContent +
+            ", attributes=" + attributes +
+            ", shouldIndex=" + shouldIndex +
+            ", securityId=" + securityId +
+            ", parentId=" + parentId +
+            '}';
+    }
 }

@@ -436,7 +436,7 @@
 
         <poi.version>3.13</poi.version>
         <tika.version>1.11</tika.version>
-        <pdfbox.version>1.8.10</pdfbox.version>
+        <pdfbox.version>2.0.22</pdfbox.version>
         <asm.version>5.0.4</asm.version>
         <cglib.version>3.3.0</cglib.version>
         <jackson.version>2.13.0</jackson.version>

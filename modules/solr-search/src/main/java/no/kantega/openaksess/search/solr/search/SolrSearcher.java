@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ import static no.kantega.search.api.util.FieldUtils.getLanguageSuffix;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 
+@Primary
 @Component
 public class SolrSearcher implements Searcher {
     private final Logger log = LoggerFactory.getLogger(getClass());
