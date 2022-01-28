@@ -17,7 +17,6 @@
 package no.kantega.publishing.common.util;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.CharArrayWriter;
@@ -28,12 +27,10 @@ import java.io.PrintWriter;
  * HttpServletResponseWrapper for gathering responsebody and rewriting it in ContentRewriteFilter.
  */
 public class CharResponseWrapper extends HttpServletResponseWrapper {
-    private final CharArrayWriter output;
+    private CharArrayWriter output;
     private String contentType;
     private boolean shouldWrap = true;
-    private boolean dummyOutputStream = false;
 
-    @Override
     public String toString() {
         return output.toString();
     }
@@ -46,25 +43,19 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
 
     public PrintWriter getWriter() throws IOException {
         if (isWrapped()) {
-	        super.getWriter(); // initialize writer
+            super.getWriter();
             return new PrintWriter(output);
         } else {
             return super.getWriter();
         }
     }
 
-    @Override
     public ServletOutputStream getOutputStream() throws IOException {
-        // returning dummy to make sure noone closes outputstream
-        if (dummyOutputStream) {
-            return new DummyServletOutputStream();
-        } else {
-            shouldWrap = false;
-            return super.getOutputStream();
-        }
+        shouldWrap = false;
+        return super.getOutputStream();
     }
 
-    @Override
+
     public void setContentType(String contentType) {
         super.setContentType(contentType);
         this.contentType = contentType;
@@ -75,38 +66,7 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
                 && (contentType.startsWith("text/html") || contentType.startsWith("text/xml"));
     }
 
-    @Override
     public String getContentType() {
         return contentType;
-    }
-
-    public void setDummyOutputStream() {
-        this.dummyOutputStream = true;
-    }
-
-    private static class DummyServletOutputStream extends ServletOutputStream {
-        @Override
-        public boolean isReady() {
-            return false;
-        }
-
-        @Override
-        public void setWriteListener(WriteListener writeListener) {
-
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-
-        }
-
-        @Override
-        public void close() throws IOException {
-        }
-
-        @Override
-        public void flush() throws IOException {
-
-        }
     }
 }
