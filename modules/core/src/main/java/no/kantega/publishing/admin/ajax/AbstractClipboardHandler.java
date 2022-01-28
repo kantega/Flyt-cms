@@ -4,8 +4,10 @@ import no.kantega.publishing.admin.model.Clipboard;
 import no.kantega.publishing.admin.model.ClipboardStatus;
 import no.kantega.publishing.api.model.BaseObject;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -31,7 +33,7 @@ public abstract class AbstractClipboardHandler {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @RequestMapping("/isEmpty.action")
+    @RequestMapping(value="/isEmpty.action", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody boolean isClipboardEmpty(HttpServletRequest request) {
         return getClipboard(request.getSession()).isEmpty();
     }

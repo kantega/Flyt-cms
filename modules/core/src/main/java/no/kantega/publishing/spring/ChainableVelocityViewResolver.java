@@ -2,11 +2,11 @@ package no.kantega.publishing.spring;
 
 import no.kantega.commons.filter.AksessRequestFilter;
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
+import no.kantega.publishing.spring.velocity.VelocityViewResolver;
 import org.apache.velocity.exception.ResourceNotFoundException;
 import org.kantega.jexmec.PluginManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
 
 import java.util.Locale;
 

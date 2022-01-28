@@ -1,7 +1,7 @@
 package no.kantega.publishing.modules.forms.validate;
 
 import no.kantega.publishing.api.forms.model.FormValue;
-import static org.apache.commons.lang.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.List;
 
 public class FormElementNorwPhoneNumValidator implements FormElementValidator {

@@ -27,7 +27,7 @@
         <constructor-arg value="org.kantega.openaksess.groovyplugin"/>
         <property name="handlerMappings">
             <list>
-                <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+                <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
                     <property name="interceptors">
                         <list>
                             <ref bean="adminRoleInterceptor"/>

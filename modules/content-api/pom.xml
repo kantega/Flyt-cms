@@ -45,10 +45,15 @@
             <artifactId>jersey-media-json-jackson</artifactId>
             <version>${jersey.version}</version>
         </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <version>${javax.inject.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.glassfish.jersey.ext</groupId>
-            <artifactId>jersey-spring3</artifactId>
+            <artifactId>jersey-spring5</artifactId>
             <version>${jersey.version}</version>
             <exclusions>
                 <exclusion>
@@ -91,5 +96,8 @@
         </dependency>
 
     </dependencies>
+    <properties>
+        <javax.inject.version>1</javax.inject.version>
+    </properties>
 
 </project>

@@ -2,9 +2,9 @@ package no.kantega.publishing.spring;
 
 import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.web.servlet.support.PluginRequestContext;
+import no.kantega.publishing.spring.velocity.VelocityView;
 import no.kantega.publishing.web.servlet.support.DefaultPluginRequestContext;
 import org.apache.velocity.context.Context;
-import org.springframework.web.servlet.view.velocity.VelocityView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
