@@ -5,6 +5,7 @@ import no.kantega.publishing.api.content.ContentIdentifier;
 import no.kantega.publishing.api.link.LinkDao;
 import no.kantega.publishing.common.exception.ContentNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +25,7 @@ public class CountBrokenLinksAction {
     private ContentIdHelper contentIdHelper;
 
     @ResponseBody
-    @RequestMapping(value = "/admin/publish/CountBrokenLinks.action", method = RequestMethod.GET)
+    @RequestMapping(value = "/admin/publish/CountBrokenLinks.action", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
     public int getBrokenLinkCount(HttpServletRequest request, @RequestParam(required = false) String url) throws ContentNotFoundException {
         if (isBlank(url)) {
             return linkDao.getAllBrokenLinks("").size();

@@ -9,6 +9,7 @@ import no.kantega.publishing.api.model.Site;
 import no.kantega.publishing.common.data.Association;
 import no.kantega.publishing.common.data.Content;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

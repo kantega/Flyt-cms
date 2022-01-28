@@ -34,7 +34,11 @@ import org.springframework.core.io.ResourceLoader;
 
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
-import javax.mail.*;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
@@ -259,7 +263,7 @@ public class MailSender {
             ResourceLoader source = (ResourceLoader) RootContext.getInstance().getBean("emailTemplateResourceLoader");
             Resource resource = source.getResource(templateFile);
 
-            parameters.put("dateFormatter", new DateTool());            
+            parameters.put("dateFormatter", new DateTool());
 
             Configuration config = Aksess.getConfiguration();
 

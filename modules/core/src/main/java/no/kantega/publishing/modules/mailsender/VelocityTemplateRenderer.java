@@ -9,6 +9,7 @@ import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.app.event.EventCartridge;
 import org.apache.velocity.app.event.ReferenceInsertionEventHandler;
+import org.apache.velocity.context.Context;
 import org.apache.velocity.tools.generic.DateTool;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -50,8 +51,9 @@ public class VelocityTemplateRenderer {
                     EventCartridge eventCartridge = new EventCartridge();
                     context.attachEventCartridge(eventCartridge);
                     eventCartridge.addReferenceInsertionEventHandler(new ReferenceInsertionEventHandler() {
-                        public Object referenceInsert(String reference, Object value) {
-                            return escapeHtml4(value.toString());
+                        @Override
+                        public Object referenceInsert(Context context, String s, Object o) {
+                            return escapeHtml4(o.toString());
                         }
                     });
                 }
