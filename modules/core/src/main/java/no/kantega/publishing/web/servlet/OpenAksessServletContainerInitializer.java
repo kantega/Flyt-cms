@@ -1,6 +1,7 @@
 package no.kantega.publishing.web.servlet;
 
 import no.kantega.commons.filter.*;
+import no.kantega.publishing.client.filter.ContentRewriteFilter;
 import no.kantega.publishing.client.filter.OpenAksessConfiguredFilter;
 import no.kantega.publishing.plugin.provider.StalePluginClassLoaderFilter;
 import no.kantega.publishing.security.PluginDelegatingFilter;
@@ -81,8 +82,8 @@ public class OpenAksessServletContainerInitializer implements ServletContainerIn
         ctx.addFilter("AdminRoleFilter", RoleFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/admin/tools/*");
 
-/*        ctx.addFilter("ContentRewriteFilter", ContentRewriteFilter.class)
-                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");*/
+        ctx.addFilter("ContentRewriteFilter", ContentRewriteFilter.class)
+                .addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
 
         ctx.addFilter("AksessRequestFilter", AksessRequestFilter.class)
                 .addMappingForUrlPatterns(dispatchRequests, false, "/*");
