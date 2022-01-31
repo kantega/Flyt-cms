@@ -35,7 +35,7 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
         return output.toString();
     }
 
-    public CharResponseWrapper(HttpServletResponse response){
+    public CharResponseWrapper(HttpServletResponse response) {
         super(response);
         output = new CharArrayWriter();
     }
@@ -51,7 +51,6 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
     }
 
     public ServletOutputStream getOutputStream() throws IOException {
-        shouldWrap = false;
         return super.getOutputStream();
     }
 
