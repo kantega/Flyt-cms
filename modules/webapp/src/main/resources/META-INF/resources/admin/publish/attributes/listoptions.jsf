@@ -51,7 +51,7 @@
         Content content = (Content)request.getAttribute("content");
         String fieldName = (String) request.getAttribute("fieldName");
         Boolean alwaysUseSelectList = (Boolean) request.getAttribute("alwaysUseSelectList");
-        
+
         String value = attribute.getValue();
         List<ListOption> options = attribute.getListOptions(content.getLanguage());
         if (attribute.getMultiple() && alwaysUseSelectList == null) {
@@ -95,6 +95,7 @@
                 out.write(" multiple size=\"8\"");
             }
             out.write(" name=\"" + fieldName + "\">");
+            Locale locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
             if (options != null) {
                 for (ListOption option : options) {
                     String optText = option.getText();
@@ -102,7 +103,6 @@
                     boolean attributeValueIsAksessThis = String.valueOf(content.getAssociation().getAssociationId()).equals(optVal);
                     if (!attributeValueIsAksessThis) {
                         if (isBlank(optVal) && isBlank(optText)) {
-                            Locale locale = LocaleLabels.getLocaleFromRequestOrDefault(request);
                             optText = LocaleLabels.getLabel("aksess.list.ingen", locale);
                         }else if (isBlank(optVal)) {
                             optVal = optText;

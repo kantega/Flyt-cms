@@ -29,7 +29,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class BeanAttribute extends ListAttribute {
 
-    private Class clazz;
+    private Class<?> clazz;
 
     public List<ListOption> getListOptions(int language) {
 
@@ -37,10 +37,7 @@ public class BeanAttribute extends ListAttribute {
         for (Map.Entry<String, ?> bean : beans.entrySet()) {
             String beanClass = bean.getValue().getClass().getName();
             String id = bean.getKey();
-            ListOption option = new ListOption();
-            option.setValue(id);
-            option.setText(id + " (" + beanClass + ")");
-            options.add(option);
+            options.add(new ListOption(id, id + " (" + beanClass + ")", false));
         }
 
         return options;

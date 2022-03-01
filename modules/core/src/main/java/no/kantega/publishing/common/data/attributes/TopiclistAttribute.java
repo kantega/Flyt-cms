@@ -101,10 +101,7 @@ public class TopiclistAttribute extends ListAttribute {
         List<ListOption> options = new ArrayList<>(topics.size());
 
         for (Topic topic : topics) {
-            ListOption option = new ListOption();
-            option.setText(topic.getBaseName());
-            option.setValue(topic.getTopicMapId() + ":" + topic.getId());
-            options.add(option);
+            options.add(new ListOption(topic.getTopicMapId() + ":" + topic.getId(), topic.getBaseName(), false));
         }
         return options;
     }

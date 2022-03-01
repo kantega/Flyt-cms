@@ -103,10 +103,7 @@ public class ContentlistAttribute extends ListAttribute {
             List<Content> all = contentAO.getContentList(query, false);
             for (Content c : all) {
                 String id = String.valueOf(c.getAssociation().getId());
-                ListOption option = new ListOption();
-                option.setText(c.getTitle());
-                option.setValue(id);
-                options.add(option);
+                options.add(new ListOption(c.getTitle(), id, false));
             }
         } catch (SystemException e) {
             log.error("", e);
@@ -118,7 +115,7 @@ public class ContentlistAttribute extends ListAttribute {
     private void addEmptyOption(List<ListOption> options) {
         // When multiple is true, checkboxes are chosen so it is not necessary to show empty option.
         if (!multiple && showEmptyOption) {
-            ListOption emptyOption = new ListOption();
+            ListOption emptyOption = new ListOption("", "", false);
             options.add(emptyOption);
         }
     }

@@ -16,13 +16,12 @@
 
 package no.kantega.publishing.common.ao;
 
+import no.kantega.commons.util.LocaleLabels;
 import no.kantega.publishing.common.data.ListOption;
 import no.kantega.publishing.common.util.database.dbConnectionFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -45,15 +44,13 @@ public class EditableListAO {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dbConnectionFactory.getDataSource());
         String language = (ignoreVariant)? getLocaleAsString(locale, true) + '%' : getLocaleAsString(locale, false);
 
-        List<ListOption> options = jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY DefaultSelected DESC, Value", new Object[]{attributeKey.toLowerCase(), language}, new RowMapper<ListOption>(){
-            public ListOption mapRow(ResultSet rs, int i) throws SQLException {
-                ListOption option = new ListOption();
-                option.setText(rs.getString("Value"));
-                option.setValue(rs.getString("Value"));
-                option.setDefaultSelected(rs.getInt("DefaultSelected") == 1);
-                return option;
-            }
-        });
+        List<ListOption> options = new ArrayList<>();
+        options.add(new ListOption("", LocaleLabels.getLabel("aksess.list.ingen", locale), false));
+        options.addAll(
+            jdbcTemplate.query("SELECT * FROM attribute_editablelist WHERE AttributeKey = ? AND Language LIKE ? ORDER BY DefaultSelected DESC, Value",
+            new Object[]{attributeKey.toLowerCase(), language},
+            (rs, i) -> new ListOption(rs.getString("Value"), rs.getString("Value"), rs.getInt("DefaultSelected") == 1)
+        ));
         return options;
     }
 

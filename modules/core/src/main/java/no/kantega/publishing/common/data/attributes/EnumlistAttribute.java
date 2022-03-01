@@ -44,11 +44,11 @@ public class EnumlistAttribute extends ListAttribute {
 		}
 	}
 
-	private void loadEnumValues(Element config) {		
+	private void loadEnumValues(Element config) {
 		String enumclassName = config.getAttribute("enumclass");
 		if (enumclassName != null) {
 			try {
-				Class enumclass = Class.forName(enumclassName);
+				Class<?> enumclass = Class.forName(enumclassName);
 				for (Object enumValue : enumclass.getEnumConstants()) {
 					options.add(asListOption(enumValue));
 				}
@@ -59,12 +59,9 @@ public class EnumlistAttribute extends ListAttribute {
 	}
 
 	private ListOption asListOption(Object enumValue) {
-		ListOption option = new ListOption();
-		option.setText(enumValue.toString().toLowerCase());
-		option.setValue(enumValue.toString());
-		return option;
+        return new ListOption(enumValue.toString().toLowerCase(), enumValue.toString(), false);
 	}
-	
+
 	protected List<ListOption> getOptions() {
 		return options;
 	}

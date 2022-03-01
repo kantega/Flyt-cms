@@ -69,13 +69,7 @@ public class ListAttribute extends Attribute {
                     String optText = elmOption.getFirstChild().getNodeValue();
                     String optVal  = elmOption.getAttribute("value");
                     String optSel  = elmOption.getAttribute("selected");
-                    ListOption option = new ListOption();
-                    option.setText(optText);
-                    option.setValue(optVal);
-                    if ("true".equalsIgnoreCase(optSel)) {
-                        option.setDefaultSelected(true);
-                    }
-                    options.add(option);
+                    options.add(new ListOption(optVal, optText, "true".equalsIgnoreCase(optSel)));
                 }
 
             } catch (XPathExpressionException e) {
@@ -103,7 +97,7 @@ public class ListAttribute extends Attribute {
         } else if (!getKey().isEmpty()) {
             List<ListOption> listOptions = new ArrayList<>();
             if (!multiple) {
-                ListOption emptyOption = new ListOption();
+                ListOption emptyOption = new ListOption("", "", false);
                 listOptions.add(emptyOption);
             }
             listOptions.addAll(EditableListAO.getOptions(key, Language.getLanguageAsLocale(language), ignoreVariant));

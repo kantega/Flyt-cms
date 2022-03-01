@@ -16,37 +16,26 @@
 
 package no.kantega.publishing.common.data;
 
-/**
- * User: Anders Skar, Kantega AS
- * Date: Feb 19, 2007
- * Time: 3:31:46 PM
- */
 public class ListOption {
-    private String value = "";
-    private String text = "";
-    private boolean isDefaultSelected;
+    private final String value;
+    private final String text;
+    private final boolean isDefaultSelected;
+
+    public ListOption(String value, String text, boolean isDefaultSelected) {
+        this.value = value;
+        this.text = text;
+        this.isDefaultSelected = isDefaultSelected;
+    }
 
     public String getValue() {
         return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getText() {
         return text;
     }
 
-    public void setText(String text) {
-        this.text = text;
-    }
-
     public boolean isDefaultSelected() {
         return isDefaultSelected;
-    }
-
-    public void setDefaultSelected(boolean isDefaultSelected) {
-        this.isDefaultSelected = isDefaultSelected;
     }
 }
