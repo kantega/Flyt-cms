@@ -19,31 +19,31 @@ public class DummyDocumentIndexer implements DocumentIndexer {
 
     @Override
     public void indexDocumentAndCommit(IndexableDocument document) {
-        log.warn("noop indexDocumentAndCommit({})", document);
+        log.debug("noop indexDocumentAndCommit({})", document);
     }
 
     @Override
     public void commit() {
-        log.warn("noop commit()");
+        log.debug("noop commit()");
     }
 
     @Override
     public void deleteByUid(List<String> Uids) {
-        log.warn("noop deleteByUid({})", Uids);
+        log.debug("noop deleteByUid({})", Uids);
     }
 
     @Override
     public void deleteAllDocuments() {
-        log.warn("noop deleteAllDocuments()");
+        log.debug("noop deleteAllDocuments()");
     }
 
     @Override
     public void optimize() {
-        log.warn("noop optimize()");
+        log.debug("noop optimize()");
     }
 
     @Override
     public void deleteByDocType(String docType) {
-        log.warn("noop deleteByDocType({})", docType);
+        log.debug("noop deleteByDocType({})", docType);
     }
 }
