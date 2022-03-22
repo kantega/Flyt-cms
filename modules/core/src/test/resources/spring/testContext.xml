@@ -17,7 +17,6 @@
     </bean>
 
     <jdbc:embedded-database id="dataSource" type="DERBY">
-        <jdbc:script location="classpath:init.sql"/>
         <jdbc:script location="classpath:dbschema/aksess-database-derby-test-nodrop.sql"/>
         <jdbc:script location="classpath:data.sql"/>
     </jdbc:embedded-database>

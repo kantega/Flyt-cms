@@ -9,10 +9,12 @@ import no.kantega.publishing.api.content.ContentAliasDao;
 import no.kantega.publishing.api.content.ContentIdHelper;
 import no.kantega.publishing.api.content.ContentIdentifierDao;
 import no.kantega.publishing.api.content.ContentTemplateAO;
+import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.security.RememberMeHandler;
 import no.kantega.publishing.api.services.security.PermissionAO;
 import no.kantega.publishing.api.xmlcache.XmlCache;
 import no.kantega.publishing.client.ContentRequestDispatcher;
+import no.kantega.publishing.client.filter.UrlContentRewriter;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.TemplateConfigurationCache;
 import no.kantega.publishing.common.traffic.TrafficLogger;
@@ -31,6 +33,7 @@ import no.kantega.security.api.identity.Identity;
 import no.kantega.security.api.identity.IdentityResolver;
 import no.kantega.security.api.profile.DefaultProfile;
 import no.kantega.security.api.profile.ProfileManager;
+import org.kantega.jexmec.PluginManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -42,8 +45,8 @@ import java.util.HashSet;
 import java.util.Properties;
 
 import static java.util.Arrays.asList;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.isA;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -73,6 +76,15 @@ public class ControllerTestConfig {
     @Bean
     public ContentRequestDispatcher ContentRequestDispatcher(){
         return mock(ContentRequestDispatcher.class);
+    }
+
+    @Bean
+    public PluginManager<OpenAksessPlugin> PluginManager(){
+        return mock(PluginManager.class);
+    }
+    @Bean
+    public UrlContentRewriter UrlContentRewriter(){
+        return mock(UrlContentRewriter.class);
     }
 
     @Bean(name = "securityRealm")

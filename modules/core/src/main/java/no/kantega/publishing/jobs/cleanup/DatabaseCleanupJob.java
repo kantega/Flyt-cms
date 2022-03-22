@@ -30,9 +30,9 @@ import no.kantega.publishing.eventlog.EventLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 
-import javax.annotation.Resource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -49,7 +49,8 @@ public class DatabaseCleanupJob {
     @Autowired
     private ContentAO contentAO;
 
-    @Resource(name = "contentListenerNotifier")
+    @Qualifier("contentListenerNotifier")
+    @Autowired
     private ContentEventListener contentEventListener;
 
     @Autowired

@@ -31,8 +31,7 @@ import no.kantega.publishing.security.SecuritySession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class ContentStateUpdater {
     private static final Logger log = LoggerFactory.getLogger(ContentStateUpdater.class);
@@ -40,7 +39,8 @@ public class ContentStateUpdater {
     @Autowired
     private ContentAO contentAO;
 
-    @Resource(name = "contentListenerNotifier")
+    @Qualifier("contentListenerNotifier")
+    @Autowired
     private ContentEventListener contentEventListener;
 
     public void expireContent() {

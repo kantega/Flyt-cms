@@ -37,11 +37,11 @@ import no.kantega.publishing.event.ContentEventListener;
 import no.kantega.publishing.security.SecuritySession;
 import no.kantega.publishing.security.data.enums.Privilege;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.AbstractController;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
@@ -57,7 +57,8 @@ public class AddContentAction extends AbstractController {
     @Autowired
     private ContentIdHelper contentIdHelper;
 
-    @Resource(name = "contentListenerNotifier")
+    @Qualifier("contentListenerNotifier")
+    @Autowired
     private ContentEventListener contentEventListener;
 
     public ModelAndView handleRequestInternal(HttpServletRequest request, HttpServletResponse response) throws Exception {

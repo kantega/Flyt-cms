@@ -16,7 +16,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 import javax.sql.DataSource;
 import java.lang.reflect.Field;
 
-import static org.mockito.Matchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

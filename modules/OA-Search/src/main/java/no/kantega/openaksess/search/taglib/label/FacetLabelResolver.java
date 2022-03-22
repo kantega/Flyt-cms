@@ -3,10 +3,10 @@ package no.kantega.openaksess.search.taglib.label;
 import no.kantega.commons.util.LocaleLabels;
 import no.kantega.openaksess.search.taglib.label.resolver.LabelResolver;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
@@ -64,7 +64,8 @@ public class FacetLabelResolver {
         }
     }
 
-    @Resource(name = "facetValueToLabelKeys")
+    @Qualifier("facetValueToLabelKeys")
+    @Autowired
     public void setFacetValueToLabelKeys(Map<String, String> facetValueToLabelKeys) {
         this.facetValueToLabelKeys = facetValueToLabelKeys;
     }
