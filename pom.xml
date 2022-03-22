@@ -115,6 +115,11 @@
                 <version>${javax.servlet.jsp-api.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>${javax.annotation-api.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>javax.el</groupId>
@@ -294,6 +299,9 @@
                 <groupId>org.kantega.openaksess</groupId>
                 <artifactId>generate-project-xml-maven-plugin</artifactId>
                 <inherited>false</inherited>
+                <configuration>
+                    <mavencompilerplugintarget>${java.target.version}</mavencompilerplugintarget>
+                </configuration>
                 <executions>
                     <execution>
                         <id>generate-project-parent</id>
@@ -333,15 +341,11 @@
                 <plugin>
                     <groupId>org.kantega.openaksess</groupId>
                     <artifactId>generate-project-xml-maven-plugin</artifactId>
-                    <version>1.39</version>
+                    <version>1.41</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                    <configuration>
-                        <source>11</source>
-                        <target>11</target>
-                    </configuration>
+                    <version>3.9.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-release-plugin</artifactId>
@@ -385,6 +389,14 @@
     </build>
 
     <properties>
+        <java.target.version>11</java.target.version>
+        <maven.compiler.source>${java.target.version}</maven.compiler.source>
+        <maven.compiler.target>${java.target.version}</maven.compiler.target>
+        <maven.compiler.release>${java.target.version}</maven.compiler.release>
+        <maven.compiler.parameters>true</maven.compiler.parameters>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
         <aksess-maven-plugin.version>2.23</aksess-maven-plugin.version>
         <securityapi.version>2.9</securityapi.version>
         <securityapi.openimpl.version>2.24</securityapi.openimpl.version>
@@ -409,9 +421,10 @@
         <servlet.version>3.1.0</servlet.version>
         <jsp.version>2.2</jsp.version>
         <javax.servlet.jsp-api.version>2.3.2-b01</javax.servlet.jsp-api.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <jstl.version>1.2.5</jstl.version>
         <jstl-api.version>1.2</jstl-api.version>
-        <javax.servlet.jstl-api>1.2.1</javax.servlet.jstl-api>
+        <javax.servlet.jstl-api.version>1.2.1</javax.servlet.jstl-api.version>
         <javax.el.version>3.0.1-b04</javax.el.version>
 
         <hsqldb.version>2.0.0</hsqldb.version>

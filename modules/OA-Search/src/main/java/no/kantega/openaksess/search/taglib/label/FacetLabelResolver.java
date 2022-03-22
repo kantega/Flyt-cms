@@ -64,9 +64,8 @@ public class FacetLabelResolver {
         }
     }
 
-    @Qualifier("facetValueToLabelKeys")
     @Autowired
-    public void setFacetValueToLabelKeys(Map<String, String> facetValueToLabelKeys) {
+    public void setFacetValueToLabelKeys(@Qualifier("facetValueToLabelKeys") Map<String, String> facetValueToLabelKeys) {
         this.facetValueToLabelKeys = facetValueToLabelKeys;
     }
 }
