@@ -24,7 +24,6 @@ import no.kantega.publishing.api.plugin.OpenAksessPlugin;
 import no.kantega.publishing.api.requestlisteners.ContentRequestListener;
 import no.kantega.publishing.client.device.DeviceCategory;
 import no.kantega.publishing.client.device.DeviceCategoryDetector;
-import no.kantega.publishing.client.filter.ContentRewriter;
 import no.kantega.publishing.client.filter.UrlContentRewriter;
 import no.kantega.publishing.common.Aksess;
 import no.kantega.publishing.common.cache.DisplayTemplateCache;
@@ -44,7 +43,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 /**
  *
@@ -53,7 +51,6 @@ public class ContentRequestDispatcher {
     private PluginManager<OpenAksessPlugin> pluginManager;
 
     private SiteCache siteCache;
-    private List<ContentRewriter> contentRewriters;
     private UrlContentRewriter urlRewriter;
     private DeviceCategoryDetector deviceCategoryDetector = new DeviceCategoryDetector();
 
@@ -130,10 +127,9 @@ public class ContentRequestDispatcher {
         CharResponseWrapper wrappedResponse = null;
         HttpServletResponse originalResponse = response;
 
-        if (shouldFilterOutput(adminMode)) {
+        if (shouldFilterOutput(adminMode, originalUri)) {
             // Rewrite URLs
             wrappedResponse = new CharResponseWrapper(response);
-            wrappedResponse.setDummyOutputStream();
             response = wrappedResponse;
         }
 
@@ -149,13 +145,10 @@ public class ContentRequestDispatcher {
             request.getRequestDispatcher(view).forward(request, response);
 
         }
-        if(shouldFilterOutput(adminMode)) {
+        if(shouldFilterOutput(adminMode, originalUri)) {
             // Write output
             if (wrappedResponse.isWrapped()) {
-                String result = wrappedResponse.toString();
-                for(ContentRewriter rewriter : contentRewriters) {
-                    result = rewriter.rewriteContent(request, result);
-                }
+                String result = urlRewriter.rewriteContent(request,wrappedResponse.toString());
                 PrintWriter out = originalResponse.getWriter();
                 out.write(result);
                 out.flush();
@@ -176,8 +169,8 @@ public class ContentRequestDispatcher {
         }
     }
 
-    private boolean shouldFilterOutput(boolean adminMode) {
-        return !adminMode && Aksess.isUrlRewritingEnabled();
+    private boolean shouldFilterOutput(boolean adminMode, String originalUri) {
+        return !adminMode && Aksess.isUrlRewritingEnabled() && originalUri != null;
     }
 
 
@@ -192,12 +185,7 @@ public class ContentRequestDispatcher {
     }
 
     @Autowired
-    public void setUrlRewriter(List<ContentRewriter> contentRewriters) {
-        this.contentRewriters = contentRewriters;
-        for (ContentRewriter contentRewriter : contentRewriters) {
-            if(contentRewriter instanceof UrlContentRewriter) {
-                urlRewriter = (UrlContentRewriter) contentRewriter;
-            }
-        }
+    public void setUrlRewriter(UrlContentRewriter urlRewriter) {
+        this.urlRewriter = urlRewriter;
     }
 }
