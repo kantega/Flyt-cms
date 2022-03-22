@@ -16,6 +16,7 @@ import static no.kantega.openaksess.search.solr.Utils.getDummySearchContext;
 import static org.apache.commons.collections.CollectionUtils.select;
 import static org.junit.Assert.*;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:/META-INF/spring/applicationContext-solrSearch-test.xml"})
 public class SearcherIntegrationTest {
