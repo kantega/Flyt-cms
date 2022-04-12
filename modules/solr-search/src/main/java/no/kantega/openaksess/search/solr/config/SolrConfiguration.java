@@ -3,13 +3,10 @@ package no.kantega.openaksess.search.solr.config;
 import no.kantega.search.api.IndexableDocumentCustomizer;
 import no.kantega.search.api.provider.DocumentTransformer;
 import org.apache.solr.client.solrj.SolrClient;
-import org.apache.solr.client.solrj.embedded.EmbeddedSolrServer;
 import org.apache.solr.client.solrj.impl.CloudSolrClient;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
-import org.apache.solr.core.CoreContainer;
+import org.apache.solr.client.solrj.impl.Http2SolrClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +21,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static no.kantega.openaksess.search.solr.config.SolrConfigInitializer.initSolrConfigIfAbsent;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Configuration
@@ -44,26 +40,26 @@ public class SolrConfiguration {
     @Value("${cloudSolrServer:}")
     private String cloudSolrServer;
 
-    @Autowired(required = false)
-    private List<DocumentTransformer<?>> transformers;
+    private final List<DocumentTransformer<?>> transformers;
 
-    @Autowired(required = false)
-    private List<IndexableDocumentCustomizer<?>> customizers;
+    private final List<IndexableDocumentCustomizer<?>> customizers;
 
-    @Bean(destroyMethod = "shutdown")
+    public SolrConfiguration(List<DocumentTransformer<?>> transformers, List<IndexableDocumentCustomizer<?>> customizers) {
+        this.transformers = transformers;
+        this.customizers = customizers;
+    }
+
+    @Bean(destroyMethod = "close")
     public SolrClient getSolrServer() throws IOException, SAXException, ParserConfigurationException, URISyntaxException {
         if(isNotBlank(cloudSolrServer)){
             log.info("Using CloudSolrServer " + cloudSolrServer);
-            return new CloudSolrClient(cloudSolrServer);
+            return new CloudSolrClient.Builder(List.of(cloudSolrServer.split(","))).build();
         } else if(isNotBlank(httpSolrServerUrl)){
             log.info("Using HttpSolrServer " + httpSolrServerUrl);
-            return new HttpSolrClient(httpSolrServerUrl);
+            return new Http2SolrClient.Builder(httpSolrServerUrl).build();
         } else {
             log.info("Using EmbeddedSolrServer");
-            File solrConfigFile = initSolrConfigIfAbsent(solrHome, disableUpdateSolrHome);
-            CoreContainer container = CoreContainer.createAndLoad(solrHome.toPath(), solrConfigFile.toPath());
-
-            return new EmbeddedSolrServer(container, "oacore");
+            return null;
         }
     }
 

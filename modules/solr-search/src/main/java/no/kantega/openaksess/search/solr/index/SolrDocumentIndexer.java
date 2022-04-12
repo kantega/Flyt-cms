@@ -3,7 +3,6 @@ package no.kantega.openaksess.search.solr.index;
 import no.kantega.search.api.IndexableDocument;
 import no.kantega.search.api.index.DocumentIndexer;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.pdfbox.cos.COSName;
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.request.ContentStreamUpdateRequest;
 import org.apache.solr.client.solrj.response.UpdateResponse;
@@ -12,7 +11,6 @@ import org.apache.solr.common.params.ModifiableSolrParams;
 import org.apache.solr.common.util.NamedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -34,9 +32,12 @@ import static org.apache.commons.lang3.StringUtils.defaultString;
 public class SolrDocumentIndexer implements DocumentIndexer {
     private final Logger log  = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private SolrClient solrServer;
+    private final SolrClient solrServer;
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+
+    public SolrDocumentIndexer(SolrClient solrServer) {
+        this.solrServer = solrServer;
+    }
 
     @Async
     public void indexDocument(IndexableDocument document) {
@@ -62,8 +63,6 @@ public class SolrDocumentIndexer implements DocumentIndexer {
                     if(!deletedFileContent){
                         log.error("Could not delete file {}", fileContent.getAbsolutePath());
                     }
-                    // Remove when memory leak is fixed http://www.searchworkings.org/forum/-/message_boards/view_message/510823
-                    COSName.clearResources();
                 }
 
             }

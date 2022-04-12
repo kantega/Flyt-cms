@@ -42,7 +42,7 @@ public class IndexPopulator {
                     for (Map.Entry<String, String> stringStringEntry : resultObject.entrySet()) {
                         String key = stringStringEntry.getKey();
                         SolrInputField value = new SolrInputField(key);
-                        value.setValue(stringStringEntry.getValue(), 1);
+                        value.setValue(stringStringEntry.getValue());
                         transformedMap.put(key, value);
                     }
                     return new SolrInputDocument(transformedMap);
