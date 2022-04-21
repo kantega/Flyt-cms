@@ -26,7 +26,7 @@
     <packaging>pom</packaging>
     <version>7.11.0-SNAPSHOT</version>
     <name>OpenAksess</name>
-    <url>http://opensource.kantega.no/aksess</url>
+    <url>https://opensource.kantega.no/aksess</url>
 
     <scm>
         <connection>scm:git:git@gitlab.kantega.no:flyt-cms/flyt-cms.git</connection>
@@ -42,7 +42,7 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <url>http:s//www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -382,7 +382,7 @@
     </build>
 
     <properties>
-        <java.target.version>11</java.target.version>
+        <java.target.version>17</java.target.version>
         <maven.compiler.source>${java.target.version}</maven.compiler.source>
         <maven.compiler.target>${java.target.version}</maven.compiler.target>
         <maven.compiler.release>${java.target.version}</maven.compiler.release>
