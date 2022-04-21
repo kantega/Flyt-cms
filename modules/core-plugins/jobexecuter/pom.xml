@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess-core-plugins-parent</artifactId>
-        <version>7.11.0-SNAPSHOT</version>
+        <version>7.11.0</version>
     </parent>
     <artifactId>openaksess-jobexecuter-plugin</artifactId>
     <name>OpenAksess OpenAksess Jobexecuter Plugin</name>
@@ -33,4 +33,8 @@
     </dependencies>
 
 
+
+  <scm>
+    <tag>openaksess-7.11.0</tag>
+  </scm>
 </project>
