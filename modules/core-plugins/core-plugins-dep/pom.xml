@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess-core-plugins-parent</artifactId>
-        <version>7.11.0</version>
+        <version>7.11.1-SNAPSHOT</version>
     </parent>
     <artifactId>openaksess-core-plugins</artifactId>
     <name>OpenAksess core plugins</name>
@@ -58,8 +58,4 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
-
-  <scm>
-    <tag>openaksess-7.11.0</tag>
-  </scm>
 </project>
