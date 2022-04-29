@@ -382,7 +382,7 @@
     </build>
 
     <properties>
-        <java.target.version>17</java.target.version>
+        <java.target.version>11</java.target.version>
         <maven.compiler.source>${java.target.version}</maven.compiler.source>
         <maven.compiler.target>${java.target.version}</maven.compiler.target>
         <maven.compiler.release>${java.target.version}</maven.compiler.release>
