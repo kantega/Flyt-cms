@@ -139,8 +139,10 @@
         // see https://www.tiny.cloud/docs-4x/configure/content-formatting/#style_formats
         var style_formats = <%=IOUtils.toString(pageContext.getServletContext().getResource("/admin/publish/attributes/htmltext_style_formats.js"))%>;
         var tableClassMapper = function(list, element) {
-            return list.filter(style => (style.selector || '').indexOf(element) !== -1)
-                       .map(style => ({title: style.title, value: style.classes}));
+            return [{title: '-ingen-', value: ''}].concat(
+                list.filter(style => (style.selector || '').indexOf(element) !== -1)
+                       .map(style => ({title: style.title, value: style.classes}))
+            );
         }
         var options = {
             schema: "html5",
@@ -170,6 +172,8 @@
             table_default_attributes : {
             },
             style_formats: style_formats,
+            style_formats_autohide: true,
+            style_formats_merge: true,
             table_class_list: tableClassMapper(style_formats, 'table'),
             table_row_class_list: tableClassMapper(style_formats, 'tr'),
             table_cell_class_list: tableClassMapper(style_formats, 'td'),
