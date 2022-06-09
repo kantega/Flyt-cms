@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.kantega.openaksess</groupId>
         <artifactId>openaksess-core-plugins-parent</artifactId>
-        <version>7.11.3-SNAPSHOT</version>
+        <version>7.11.3</version>
     </parent>
     <artifactId>openaksess-forms-plugin</artifactId>
     <name>OpenAksess Forms Plugin</name>
@@ -80,4 +80,8 @@
         </dependency>
 
     </dependencies>
+
+  <scm>
+    <tag>openaksess-7.11.3</tag>
+  </scm>
 </project>
