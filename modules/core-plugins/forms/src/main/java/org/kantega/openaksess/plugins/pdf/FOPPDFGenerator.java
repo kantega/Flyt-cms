@@ -2,6 +2,7 @@ package org.kantega.openaksess.plugins.pdf;
 
 import org.apache.fop.apps.Fop;
 import org.apache.fop.apps.FopFactory;
+import org.apache.fop.apps.FopFactoryBuilder;
 import org.apache.fop.apps.MimeConstants;
 
 import javax.xml.transform.Result;
@@ -11,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.stream.StreamSource;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.StringReader;
 
 /**
@@ -18,7 +20,8 @@ import java.io.StringReader;
  */
 public class FOPPDFGenerator implements PDFGenerator {
 
-    private FopFactory fopFactory = FopFactory.newInstance();
+
+    private FopFactory fopFactory = new FopFactoryBuilder(new File(".").getAbsoluteFile().toURI()).build();
     private TransformerFactory tFactory = TransformerFactory.newInstance();
 
     public byte[] createPDF(String xml, String xslFoUrl) throws Exception {
