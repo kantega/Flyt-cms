@@ -47,14 +47,6 @@
         </license>
     </licenses>
 
-    <distributionManagement>
-        <repository>
-            <id>flyt-cms.opensource.kantega.no</id>
-            <name>opensource.kantega.no release repository</name>
-            <url>https://opensource.kantega.no/nexus/content/repositories/flytcms/</url>
-        </repository>
-    </distributionManagement>
-
     <pluginRepositories>
         <pluginRepository>
             <id>opensource.kantega.no</id>
