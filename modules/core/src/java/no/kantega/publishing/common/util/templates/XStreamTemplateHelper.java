@@ -30,6 +30,16 @@ public class XStreamTemplateHelper {
         XStream xstream = new XStream();
         xstream.registerConverter(new DisplayTemplateControllerValueConverter());
 
+        xstream.allowTypes(new Class[]{
+            AssociationCategory.class,
+            DocumentType.class,
+            ContentTemplate.class,
+            DisplayTemplateControllerId.class,
+            DisplayTemplate.class,
+            Site.class,
+            TemplateConfiguration.class
+        });
+
         // Alias classnames
         xstream.alias("associationCategory", AssociationCategory.class);
         xstream.alias("documentType", DocumentType.class);
