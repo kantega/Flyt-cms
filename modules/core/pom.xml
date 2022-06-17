@@ -151,7 +151,7 @@
         <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
-            <version>3.2</version>
+            <version>${commons-collections.version}</version>
         </dependency>
 
         <dependency>
@@ -232,7 +232,7 @@
         <dependency>
             <groupId>com.thoughtworks.xstream</groupId>
             <artifactId>xstream</artifactId>
-            <version>1.4.2</version>
+            <version>1.4.19</version>
         </dependency>
 
         <dependency>

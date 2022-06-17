@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.kantega.opensource-parent</groupId>
         <artifactId>opensource-parent</artifactId>
-        <version>1.8</version>
+        <version>1.9</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.kantega.openaksess</groupId>
@@ -59,7 +59,7 @@
         <pluginRepository>
             <id>opensource.kantega.no</id>
             <name>Kantega Open Source Repository</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -70,7 +70,7 @@
         <repository>
             <id>nexus</id>
             <name>Kantega Maven Repository</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public/</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -78,7 +78,7 @@
         <repository>
             <id>snapshots</id>
             <name>Kantega Snapshots</name>
-            <url>http://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
+            <url>https://opensource.kantega.no/nexus/content/groups/public-snapshots/</url>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
@@ -368,9 +368,9 @@
         <commons-logging.version>1.1</commons-logging.version>
         <dbcp.version>2.1.1</dbcp.version>
         <httpclient.version>4.3.1</httpclient.version>
-        <fileupload.version>1.2.1</fileupload.version>
+        <fileupload.version>1.4</fileupload.version>
         <nekohtml.version>1.9.19</nekohtml.version>
-        <springframework.version>3.2.12.RELEASE</springframework.version>
+        <springframework.version>3.2.18.RELEASE</springframework.version>
 
         <xalan.version>2.7.1</xalan.version>
         <xml-apis.version>1.4.01</xml-apis.version>
@@ -393,13 +393,13 @@
         <metrics.version>3.0.1</metrics.version>
         <groovy.version>2.1.8</groovy.version>
         <slf4j-api.version>1.7.5</slf4j-api.version>
-        <logback.version>1.1.2</logback.version>
+        <logback.version>1.2.11</logback.version>
         <derby.version>10.5.3.0_1</derby.version>
         <commons-lang.version>2.6</commons-lang.version>
         <commons-io.version>2.4</commons-io.version>
         <commons-lang3.version>3.3.2</commons-lang3.version>
         <commons-compress.version>1.9</commons-compress.version>
-        <commons-collections.version>3.2.1</commons-collections.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <commons-collections4.version>4.0</commons-collections4.version>
 
         <poi.version>3.11-beta2</poi.version>
@@ -407,7 +407,7 @@
         <pdfbox.version>1.8.7</pdfbox.version>
         <asm.version>5.0.3</asm.version>
         <cglib.version>3.1</cglib.version>
-        <jackson.version>2.4.2</jackson.version>
+        <jackson.version>2.13.3</jackson.version>
         <velocity.version>1.7</velocity.version>
         <velocity-tools.version>2.0</velocity-tools.version>
         <junit.version>4.12</junit.version>
