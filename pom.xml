@@ -454,7 +454,7 @@
         <jakartamail-api.version>1.6.7</jakartamail-api.version>
         <maven.javadoc.failOnError>false</maven.javadoc.failOnError>
         <xstream.version>1.4.19</xstream.version>
-        <jsoup.version>1.14.3</jsoup.version>
+        <jsoup.version>1.15.3</jsoup.version>
 
         <jaxrs.version>2.1.1</jaxrs.version>
         <jersey.version>2.35</jersey.version>
